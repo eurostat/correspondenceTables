@@ -1,0 +1,102 @@
+NST 2007,Name,URI
+01,"Products of agriculture, hunting, and forestry; fish and other fishing products",01
+01.1,Cereals,011
+01.2,Potatoes,012
+01.3,Sugar beet ,013
+01.4,Other fresh fruit and vegetables,014
+01.5,Products of forestry and logging,015
+01.6,Live plants and flowers,016
+01.7,Other substances of vegetable origin,017
+01.8,Live animals,018
+01.9,"Raw milk from bovine cattle, sheep and goats",019
+01.A,Other raw materials of animal origin,01A
+01.B,Fish and other fishing products ,01B
+02,Coal and lignite; crude petroleum and natural gas,02
+02.1,Coal and lignite ,021
+02.2,Crude petroleum ,022
+02.3,Natural gas ,023
+03,Metal ores and other mining and quarrying products; peat; uranium and thorium,03
+03.1,Iron ores,031
+03.2,Non ferrous metal ores (except uranium and thorium ores),032
+03.3,Chemical and (natural) fertilizer minerals,033
+03.4,Salt,034
+03.5,"Stone, sand, gravel, clay, peat and other mining and quarrying products n.e.c.",035
+03.6,Uranium and thorium ores,036
+04,"Food products, beverages and tobacco",04
+04.1,"Meat, raw hides and skins and meat products",041
+04.2,"Fish and fish products, processed and preserved",042
+04.3,"Fruit and vegetables, processed and preserved",043
+04.4,Animal and vegetable oils and fats,044
+04.5,Dairy products and ice cream,045
+04.6,"Grain mill products, starches, starch products and prepared animal feeds",046
+04.7,Beverages,047
+04.8,Other food products n.e.c. and tobacco products (except in parcel service or grouped),048
+04.9,Various food products and tobacco products in parcel service or grouped,049
+05,Textiles and textile products; leather and leather products,05
+05.1,Textiles ,051
+05.2,Wearing apparel and articles of fur,052
+05.3,Leather and leather products ,053
+06,"Wood and products of wood and cork (except furniture); articles of straw and plaiting materials; pulp, paper and paper products; printed matter and recorded media",06
+06.1,Products of wood and cork (except furniture),061
+06.2,"Pulp, paper and paper products",062
+06.3,Printed matter and recorded media,063
+07,Coke and refined petroleum products ,07
+07.1,"Coke oven products; briquettes, ovoids and similar solid fuels",071
+07.2,Liquid refined petroleum products ,072
+07.3,"Gaseous, liquefied or compressed petroleum products",073
+07.4,Solid or waxy refined petroleum products,074
+08,"Chemicals, chemical products, and man-made fibers; rubber and plastic products ; nuclear fuel",08
+08.1,Basic mineral chemical products,081
+08.2,Basic organic chemical products,082
+08.3,Nitrogen compounds and fertilizers (except natural fertilizers),083
+08.4,Basic plastics and synthetic rubber in primary forms,084
+08.5,Pharmaceuticals and parachemicals including pesticides and other agro-chemical products ,085
+08.6,Rubber or plastic products,086
+08.7,Nuclear fuel,087
+09,Other non metallic mineral products,09
+09.1,"Glass and glass products, ceramic and porcelain products",091
+09.2,"Cement, lime and plaster",092
+09.3,"Other construction materials, manufactures",093
+10,"Basic metals; fabricated metal products, except machinery and equipment",10
+10.1,Basic iron and steel and ferro-alloys and products of the first processing of iron and steel (except tubes),101
+10.2,Non ferrous metals and products thereof,102
+10.3,"Tubes, pipes, hollow profiles and related fittings",103
+10.4,Structural metal products,104
+10.5,"Boilers, hardware, weapons and other fabricated metal products ",105
+11,"Machinery and equipment n.e.c.; office machinery and computers; electrical machinery and apparatus n.e.c.; radio, television and communication equipment and apparatus; medical, precision and optical instruments; watches and clocks ",11
+11.1,Agricultural and forestry machinery,111
+11.2,Domestic appliances n.e.c. (White goods),112
+11.3,Office machinery and computers,113
+11.4,Electric machinery and apparatus n.e.c.,114
+11.5,Electronic components and emission and transmission appliances,115
+11.6,Television and radio receivers; sound or video recording or reproducing apparatus and associated goods (Brown goods),116
+11.7,"Medical, precision and optical instruments, watches and clocks",117
+11.8,"Other machines, machine tools and parts",118
+12,Transport equipment ,12
+12.1,Automobile industry products,121
+12.2,Other transport equipment,122
+13,Furniture; other manufactured goods n.e.c.,13
+13.1,Furniture ,131
+13.2,Other manufactured goods,132
+14,Secondary raw materials; municipal wastes and other wastes ,14
+14.1,Household and municipal waste,141
+14.2,Other waste and secondary raw materials,142
+15,"Mail, parcels",15
+15.1,Mail,151
+15.2,"Parcels, small packages",152
+16,Equipment and material utilized in the transport of goods ,16
+16.1,"Containers and swap bodies in service, empty",161
+16.2,"Pallets and other packaging in service, empty",162
+17,Goods moved in the course of household and office removals; baggage and articles accompanying travellers; motor vehicles being moved for repair; other non market goods n.e.c. ,17
+17.1,Household removal,171
+17.2,Baggage and articles accompanying travellers,172
+17.3,Vehicles for repair,173
+17.4,"Plant equipment, scaffolding",174
+17.5,Other non market goods n.e.c.,175
+18,Grouped goods: a mixture of types of goods which are transported together,18
+18.0,Grouped goods,180
+19,Unidentifiable goods: goods which for any reason cannot be identified and therefore cannot be assigned to groups 01-16.,19
+19.1,Unidentifiable goods in containers or swap bodies,191
+19.2,Other unidentifiable goods,192
+20,Other goods n.e.c. ,20
+20.0,Other goods not elsewhere classified,200

@@ -1,0 +1,31 @@
+﻿BEC Rev. 4,Description,Parent Code,Level,IsBasicLevel
+1,Food and beverages,TOTAL,1,0
+11,"Food and beverages, primary",1,2,0
+111,"Food and beverages, primary, mainly for industry",11,3,1
+112,"Food and beverages, primary, mainly for household consumption",11,3,1
+12,"Food and beverages, processed",1,2,0
+121,"Food and beverages, processed, mainly for industry",12,3,1
+122,"Food and beverages, processed, mainly for household consumption",12,3,1
+2,Industrial supplies nes,TOTAL,1,0
+21,"Industrial supplies nes, primary",2,2,1
+22,"Industrial supplies nes, processed",2,2,1
+3,Fuels and lubricants,TOTAL,1,0
+31,"Fuels and lubricants, primary",3,2,1
+32,"Fuels and lubricants, processed",3,2,0
+321,"Fuels and lubricants, processed, motor spirit",32,3,1
+322,"Fuels and lubricants, processed (other than motor spirit)",32,3,1
+4,"Capital goods (except transport equipment), and parts and accessories thereof",TOTAL,1,0
+41,Capital goods (except transport equipment),4,2,1
+42,Parts and accessories of capital goods (except transport equipment),4,2,1
+5,"Transport equipment, and parts and accessories thereof",TOTAL,1,0
+51,"Transport equipment, passenger motor cars",5,2,1
+52,"Transport equipment, other",5,2,0
+521,"Transport equipment, other, industrial",52,3,1
+522,"Transport equipment, other, non-industrial",52,3,1
+53,Parts and accessories of transport equipment,5,2,1
+6,Consumption goods nes,TOTAL,1,0
+61,"Consumption goods nes, durable",6,2,1
+62,"Consumption goods nes, semi-durable",6,2,1
+63,"Consumption goods nes, non-durable",6,2,1
+7,Goods nes,TOTAL,1,1
+TOTAL,All Categories,,0,0
