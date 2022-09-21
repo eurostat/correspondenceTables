@@ -1,0 +1,512 @@
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+# For the Update Correspondence Table.
+# The following code lines call the function "updateCorrespondence"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondence("CN2021.csv", "CPA2.1.csv", "CN2022.csv", "CN2021_CPA2.1.csv", "CN2021_CN2022.csv", "updateCorrespondence.csv")
+x=1
+x
+# The following for loop creates the desirable correspondence
+# table.  The operations are conducted for each unique element of
+# classification A of the correspondence table A:C1.
+cat("\014")
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+#cat("\014")
+print("  ")
+#cat("\014")
+print()
+#cat("\014")
+print( )
+#cat("\014")
+print("\n")
+prnt.test <- function(x){
+cat("\n")
+cat(x)
+cat("\n")
+cat(x)
+}
+prnt.test(x="test")
+prnt.test <- function(x){}
+cat(x)
+cat("\n")
+cat(x)
+}
+prnt.test(x="test")
+prnt.test <- function(x){
+cat(x)
+cat("\n")
+cat(x)
+}
+prnt.test(x="test")
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+G = exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+imax <- 5000000
+for (i in seq_len(imax)) {
+cat("\r", "slightly different length message:", i)
+}
+imax <- 5000
+for (i in seq_len(imax)) {
+cat("\r", "slightly different length message:", i)
+}
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+# Change the default values.
+exNovoCorrespondence(NamesCsv, "exNovoCorrespondence.csv", 1, "A", 0.3)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+# For the Εx Novo Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", 1)
+# Change the default values.
+newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", 1, "A", 0.3)
+library(correspondenceTables)
+library(devtools)
+build_manual(path=getwd())
+# The following code line loads the already installed package "correspondenceTables".
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "A", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "A", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "B", 0.8, 0.9)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "B", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "A", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "B", 0.8, 0.9)
+getwd()
+library(devtools)
+build_manual(path=getwd())
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+getwd()
+setwd("C:/Users/Dell/Desktop")
+getwd()
+# The following code line installs the package "devtools" which is needed.
+# If the package "devtools" is already installed in the system, then skip the following code line.
+install.packages("devtools")
+# The user needs to put just the return key of the computer keyboard, in order to install the package "readr"
+# (if it is not already installed in the system) and the package "correspondenceTables" as well
+# NOTE: The user must put the return key in the console, NOT in the Rscript.
+devtools::install()
+# The user needs to put just the return key of the computer keyboard, in order to install the package "readr"
+# (if it is not already installed in the system) and the package "correspondenceTables" as well
+# NOTE: The user must put the return key in the console, NOT in the Rscript.
+devtools::install()
+# The following code line loads the already installed package "correspondenceTables".
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+# For the Εx Novo Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", 1)
+# Change the default values.
+newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", 1, "A", 0.3)
+# The following code line loads the already installed package "correspondenceTables".
+library(correspondenceTables)
+install.packages("C:/Users/Dell/Desktop/PACKAGES/1. v1 (C1-S1)/correspondenceTables.zip", repos = NULL, type = "win.binary")
+# The following code line loads the already installed package "correspondenceTables".
+library(correspondenceTables)
+install.packages("C:/Users/Dell/Desktop/Downloads/ade4_1.7-19.zip", repos = NULL, type = "win.binary")
+library(ade4)
+methods
+stats
+install.packages("C:/Users/Dell/Desktop/PACKAGES/1. v1 (C1-S1)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+correspondenceTables
+newCorrespondenceTable
+library(correspondenceTables)
+newCorrespondenceTable
+setwd("C:/Users/Dell/Desktop")
+install.packages("C:/Users/Dell/Desktop/PACKAGES/1. v1 (C1-S1)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+library(correspondenceTables)
+library(readr)
+install.packages("C:/Users/Dell/Desktop/PACKAGES/1. v1 (C1-S1)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+aCode
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+bCode
+aStarCode
+ab
+aaStar
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+library(correspondenceTables)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+library(correspondenceTables)
+# The following lines are for the data (.csv files) that ARE INCLUDED in the package "correspondenceTables".
+# For the Update Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA2.1.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA2.1.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv")
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "none", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "A", 0.8, 0.9)
+# Change the default values.
+updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "B", 0.8, 0.9)
+# For the Εx Novo Correspondence Table.
+# Run the following code lines in order to get the path of the csv files that are included
+# in the package "correspondenceTables".
+NamesCsv <- system.file("extdata", "names.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ";")
+A[1, 1] <- system.file("extdata", "exCN2022.csv", package = "correspondenceTables")
+A[1, 2] <- system.file("extdata", "exCN2022_CPA2.1_1.csv", package = "correspondenceTables")
+A[2, 2] <- system.file("extdata", "exCPA2.1.csv", package = "correspondenceTables")
+A[2, 3] <- system.file("extdata", "exNaceRev2_CPA2.1_1.csv", package = "correspondenceTables")
+A[3, 3] <- system.file("extdata", "exNaceRev2.csv", package = "correspondenceTables")
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ";")
+# Change the default values.
+newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", 1, "A", 0.3)

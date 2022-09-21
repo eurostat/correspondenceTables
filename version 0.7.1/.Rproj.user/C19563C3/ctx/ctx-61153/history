@@ -1,0 +1,512 @@
+print(z, row.names = FALSE)
+UPC[[2]]
+UPC[[1]]
+z
+print(z, row.names = FALSE)
+UPC[[2]]
+library(correspondenceTables)
+#SAMPLE 1
+NamesCsv <- system.file("extdata", "names1.csv", package = "correspondenceTables")
+NamesCsv <- system.file("extdata", "names4.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+# Change the default values.
+NCT <- newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", "A", 0.9)
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/11. v11 (update v10)(add vignette)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+browseVignettes("correspondenceTables")
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+.Last.error.trace
+.Last.error.trace
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA21.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "PRODCOM2021.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_PRODCOM2021.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+aCode <- system.file("extdata", "NAICS2017.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "NAICS2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "NACE.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables")
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "NST2007.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_NST2007.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "SITC4.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_SITC4.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "BEC4.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_BEC4.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv",
+"A", 0.8, 0.9)
+library(correspondenceTables)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv",
+"A", 0.8, 0.9)
+print(UPC[[1]][1:10, 1:8])
+print(UPC[[2]])
+NamesCsv <- system.file("extdata", "names1.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1, 1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index - 1):mat.index, mat.index] <- system.file("extdata", A[(mat.index -
+1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+NamesCsv <- system.file("extdata", "names2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1, 1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index - 1):mat.index, mat.index] <- system.file("extdata", A[(mat.index -
+1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+NamesCsv <- system.file("extdata", "names3.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1, 1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index - 1):mat.index, mat.index] <- system.file("extdata", A[(mat.index -
+1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+NamesCsv <- system.file("extdata", "names4.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1, 1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index - 1):mat.index, mat.index] <- system.file("extdata", A[(mat.index -
+1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+NCT <- newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", "A", 0.9)
+print(NCT[[1]][1:10, 1:6])
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv",
+"A", 0.8, 0.9)
+print(UPC[[1]][1:10, 1:8])
+print(UPC[[2]])
+devtools::build_vignettes(".")
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv",
+"A", 0.8, 0.9)
+print(UPC[[1]][1:10, 1:8])
+print(UPC[[2]])
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+browseVignettes("correspondenceTables")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/11. v11 (update v10)(add vignette)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+browseVignettes("correspondenceTables")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/11. v11 (update v10)(add vignette)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+browseVignettes("correspondenceTables")
+library(correspondenceTables)
+RShowDoc(R-admin, type = c("pdf", "html", "txt"), correspondenceTables)
+RShowDoc("R-admin", type = c("pdf", "html", "txt"), correspondenceTables)
+RShowDoc("R-admin", type = c("pdf", "html", "txt"), "correspondenceTables")
+RShowDoc("R-data", type = c("pdf", "html", "txt"), "correspondenceTables")
+RShowDoc("R-exts", type = c("pdf", "html", "txt"), "correspondenceTables")
+RShowDoc("R-intor", type = c("pdf", "html", "txt"), "correspondenceTables")
+RShowDoc("R-intro", type = c("pdf", "html", "txt"), "correspondenceTables")
+RShowDoc("R-ints", type = c("pdf", "html", "txt"), "correspondenceTables")
+RShowDoc("R-ints", type = c("pdf", "html", "txt"), "correspondenceTables")
+library(ggplot2)
+?help
+help(package=ggplot2)
+help(package="correspondenceTables")
+browseVignettes(correspondenceTables)
+browseVignettes("correspondenceTables")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/11. v11 (update v10)(add vignette)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/11. v11 (update v10)(add vignette)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+browseVignettes("correspondenceTables")
+devtools::build_vignettes(".")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/11. v11 (update v10)(add vignette)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+browseVignettes("correspondenceTables")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/11. v11 (update v10)(add vignette)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+#SAMPLE 1
+NamesCsv <- system.file("extdata", "names1.csv", package = "correspondenceTables")
+NamesCsv
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+write.csv(x = A, file = "names.csv")
+getwd()
+write.csv(x = A, file = "names.csv", row.names = FALSE)
+write.csv(x = A, file = "names.csv", row.names = FALSE, header = FALSE)
+write.csv(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE)
+write.csv(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE )
+write.csv(x = A, file = "names.csv", row.names = FALSE)
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+NCT <- newCorrespondenceTable("names.csv")
+library(correspondenceTables)
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+NCT <- newCorrespondenceTable("names.csv")
+read.csv("names.csv", sep = ",", header = FALSE, colClasses = c("character"), encoding = "UTF-8")
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE)
+write.table(x = A, file = "names.csv", sep = ",", row.names = FALSE, col.names = FALSE)
+write.table(x = A, file = "names.csv", sep = ",", row.names = FALSE, col.names = FALSE)
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+NCT <- newCorrespondenceTable("names.csv")
+getwd()
+NCT[[2]]
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/12. v12 (update v11)(change in names.csv for all names1,2,3,4)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+browseVignettes("correspondenceTables")
+aCode <- system.file("extdata", "NAICS2017.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "NAICS2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "NACE.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables")
+# Change the default values.
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "A", 0.8, 0.9)
+# The following code line loads the already installed package "correspondenceTables".
+library(correspondenceTables)
+# Change the default values.
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv", "A", 0.8, 0.9)
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv",
+"A", 0.8, 0.9)
+library(correspondenceTables)
+library(correspondenceTables)
+library(correspondenceTables)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA21.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv",
+"A", 0.8, 0.9)
+print(UPC[[1]][1:10, 1:7])
+print(UPC[[2]])
+devtools::build_vignettes(".")
+.Last.error.trace
+library(correspondenceTables)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+NamesCsv <- system.file("extdata", "names4.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1, 1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index - 1):mat.index, mat.index] <- system.file("extdata", A[(mat.index -
+1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+print(NCT[[1]][1:10, 1:6])
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+library(devtools)
+build_manual(path=getwd())
+library(devtools)
+build_manual(path=getwd())
+library(devtools)
+build_manual(path=getwd())
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/14. v14 (update v13)(2nd update from Photis)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/14. v14 (update v13)(2nd update from Photis)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+library(correspondenceTables)
+browseVignettes("correspondenceTables")
+devtools::build_vignettes(".")
+install.packages("C:/Users/Dell/Desktop/R-PACKAGE/PACKAGES/14. v14 (update v13)(2nd update from Photis)/correspondenceTables_0.1.0.tar.gz", repos = NULL, type = "source")
+library(correspondenceTables)
+browseVignettes("correspondenceTables")
+browseVignettes("correspondenceTables")
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA21.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+aCode
+getwd()
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "updateCorrespondenceTable.csv",
+"A", 0.8, 0.9)
+NamesCsv <- system.file("extdata", "names1.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1, 1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index - 1):mat.index, mat.index] <- system.file("extdata", A[(mat.index -
+1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "ModifiedNames2v1.csv", package = "correspondenceTables")
+NamesCsv
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+NamesCsv
+A
+# Change the default values.
+NCT <- newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", "A", 0.9)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "ModifiedNames2v1.csv", package = "correspondenceTables")
+NamesCsv
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+# Change the default values.
+NCT <- newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v1.csv", package = "correspondenceTables")
+NamesCsv
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+NCT <- newCorrespondenceTable(NamesCsv)
+# Change the default values.
+NCT <- newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+NamesCsv
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+NamesCsv <- system.file("extdata", "ModifiedNames2v3.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+NCT <- newCorrespondenceTable(NamesCsv)
+# Change the default values.
+NCT <- newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v3.csv", package = "correspondenceTables")
+NamesCsv <- system.file("extdata", "ModifiedNames2v3.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+A
+NamesCsv <- system.file("extdata", "ModifiedNames2v3.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+A
+write.table(x = A, file = NamesCsv, row.names = FALSE, col.names = FALSE, sep = ",")
+# Change the default values.
+NCT <- newCorrespondenceTable(NamesCsv, "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+NamesCsv
+,
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+A
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+# Change the default values.
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+library(correspondenceTables)
+NamesCsv <- system.file("extdata", "ModifiedNames2v1.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+A
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v1.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+A[1, 1] <- system.file("extdata", A[1,1], package = "correspondenceTables")
+for (mat.index in 2:ncol(A)) {
+A[(mat.index-1):mat.index, mat.index] <- system.file("extdata", A[(mat.index-1):mat.index, mat.index], package = "correspondenceTables")
+}
+A
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+system.file("extdata",A, package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A
+A[2,1]
+dim(A)
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+for (i in 1:nrow(A)) {
+for (j in 1:ncol(A)) }
+A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+for (i in 1:nrow(A)) {
+for (j in 1:ncol(A)) }
+A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+}}
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+for (i in 1:nrow(A)) {
+for (j in 1:ncol(A)) {
+A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+}}
+A
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+A[1,1]
+A[1,2]
+A[2,1]
+i=2
+j=1
+A[i,j]!=""
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+for (i in 1:nrow(A)) {
+for (j in 1:ncol(A)) {
+if( A[i,j]!=""  )
+A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+}}
+A
+NamesCsv <- system.file("extdata", "ModifiedNames2v1.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+for (i in 1:nrow(A)) {
+for (j in 1:ncol(A)) {
+if( A[i,j]!=""  )
+A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+}}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v2.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+for (i in 1:nrow(A)) {
+for (j in 1:ncol(A)) {
+if( A[i,j]!=""  )
+A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+}}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+NamesCsv <- system.file("extdata", "ModifiedNames2v3.csv", package = "correspondenceTables")
+A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+for (i in 1:nrow(A)) {
+for (j in 1:ncol(A)) {
+if( A[i,j]!=""  )
+A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+}}
+write.table(x = A, file = "names.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+# The following code lines call the function "newCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.9)
+library(correspondenceTables)
+aCode <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
+aStarCode <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
+bCode <- system.file("extdata", "CPA21.csv", package = "correspondenceTables")
+ab <- system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables")
+aaStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+aCode
+aStarCode
+bCode
+ab
+aaStar
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "C:/Users/Dell/Desktop", "A", 0.8, 0.9)
+# The following code lines call the function "updateCorrespondenceTable"
+# of the package "correspondenceTables".
+# Use of default values.
+# Change the default values.
+UPC <- updateCorrespondenceTable(aCode, bCode, aStarCode, ab, aaStar, "C:/Users/Dell/Desktop/ddd.csv", "A", 0.8, 0.9)
+aCode
+bCode
+aStarCode
+ab
+aaStar
+library(correspondenceTables)
+setwd("C:/Users/Dell/Desktop/extdata")
+newCorrespondenceTable("ModifiedNames2v1.csv", "newCorrespondenceTable.csv", "A", 0.3)
+newCorrespondenceTable("ModifiedNames2v2.csv", "newCorrespondenceTable.csv", "A", 0.3)
+newCorrespondenceTable("ModifiedNames2v3.csv", "newCorrespondenceTable.csv", "A", 0.3)
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
+library(correspondenceTables)
+devtools::build_vignettes(".")
+devtools::build_vignettes(".")
