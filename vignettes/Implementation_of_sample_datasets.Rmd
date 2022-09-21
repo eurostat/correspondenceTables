@@ -215,7 +215,10 @@ Execute the following code to apply function newCorrespondenceTable() on these d
 NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase4.csv", "none", 0.96)
 ```
 
-
+```{r include=FALSE}
+csv_files<-list.files("vignettes", pattern = ".csv")
+if (length(csv_files)>0) rm(csv_files)
+```
 
 
 
