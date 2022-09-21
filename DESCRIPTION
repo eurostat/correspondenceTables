@@ -12,7 +12,6 @@ Description: The package contains two functions.
     The other function creates a candidate correspondence table between two classifications when there are correspondence tables leading from the first classification to the second one via intermediate ''pivot'' classifications. 
 License: EUPL
 Encoding: UTF-8
-LazyData: true
 Imports: readr
 Suggests: 
     knitr,
