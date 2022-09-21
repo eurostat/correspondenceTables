@@ -1,0 +1,24 @@
+Package: correspondenceTables
+Type: Package
+Title: Functions for creating or updating correspondence tables between two statistical classifications
+Date: 2022-09-21
+Version: 0.7.1
+Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
+      person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
+      person("Martin", "Karlberg", role = "ctb"),
+      person("Mátyás", "Mészáros", email = "matyas.meszaros@ec.europa.eu", role = "cre"))
+Description: The package contains two functions.
+    One function updates the correspondence table between two statistical classifications when one of the classifications gets updated to a new version.
+    The other function creates a candidate correspondence table between two classifications when there are correspondence tables leading from the first classification to the second one via intermediate ''pivot'' classifications. 
+License: EUPL
+Encoding: UTF-8
+LazyData: true
+Imports: readr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+NeedsCompilation: no
+URL: https://github.com/eurostat/correspondenceTables
+BugReports: https://github.com/eurostat/correspondenceTables/issues
+Maintainer: Mátyás Mészáros <matyas.meszaros@ec.europa.eu>

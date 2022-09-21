@@ -1,5 +1,0 @@
-"0","A <- system.file(""extdata"", ""CN2021.csv"", package = ""correspondenceTables"")"
-"0","AStar <- system.file(""extdata"", ""CN2022.csv"", package = ""correspondenceTables"")"
-"0","B <- system.file(""extdata"", ""CPA21.csv"", package = ""correspondenceTables"")"
-"0","AB <- system.file(""extdata"", ""CN2021_CPA21.csv"", package = ""correspondenceTables"")"
-"0","AAStar <- system.file(""extdata"", ""CN2021_CN2022.csv"", package = ""correspondenceTables"")"

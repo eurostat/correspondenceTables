@@ -1,1 +1,0 @@
-{"frames":[{"func":"print(NCT[[1]][1:10, 1:6])","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in print(NCT[[1]][1:10, 1:6]) : object 'NCT' not found\n"}

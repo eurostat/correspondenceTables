@@ -1,5 +1,0 @@
-"0","aCode <- system.file(""extdata"", ""NAICS2017.csv"", package = ""correspondenceTables"")"
-"0","aStarCode <- system.file(""extdata"", ""NAICS2022.csv"", package = ""correspondenceTables"")"
-"0","bCode <- system.file(""extdata"", ""NACE.csv"", package = ""correspondenceTables"")"
-"0","ab <- system.file(""extdata"", ""NAICS2017_NACE.csv"", package = ""correspondenceTables"")"
-"0","aaStar <- system.file(""extdata"", ""NAICS2017_NAICS2022.csv"", package = ""correspondenceTables"")"
