@@ -18,7 +18,8 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-URL: https://github.com/eurostat/correspondenceTables
+URL: https://github.com/eurostat/correspondenceTables,
+    https://eurostat.github.io/correspondenceTables
 BugReports: https://github.com/eurostat/correspondenceTables/issues
 Maintainer: Mátyás Mészáros <matyas.meszaros@ec.europa.eu>
 RoxygenNote: 7.1.2

@@ -173,18 +173,19 @@ library. All sample datasets may be found there.
 }
 
 \examples{
-   \dontrun{
-        ## Application of function updateCorrespondenceTable() with CN 2021 being the
-        ## original classification A, CPA 2.1 being the target classification B, CN 2022
-        ## being the updated version A*, CN 2021:CPA 2.1 being the previous correspondence
-        ## table A:B, and CN 2021:CN 2022 being the A:A* concordance table. The desired
-        ## name for the csv file that will contain the updated correspondence table is
-        ## "updateCorrespondenceTable.csv", the reference classification is B, and the
-        ## maximum acceptable proportions of unmatched codes between the original
-        ## classification A and the target classification B, and between the original
-        ## classification A and the updated classification A* are 0.4 and 0.4, respectively.
+ \dontrun{
+ ## Application of function updateCorrespondenceTable() with CN 2021 being the
+ ## original classification A, CPA 2.1 being the target classification B, CN 2022
+ ## being the updated version A*, CN 2021:CPA 2.1 being the previous correspondence
+ ## table A:B, and CN 2021:CN 2022 being the A:A* concordance table. The desired
+ ## name for the csv file that will contain the updated correspondence table is
+ ## "updateCorrespondenceTable.csv", the reference classification is B, and the
+ ## maximum acceptable proportions of unmatched codes between the original
+ ## classification A and the target classification B, and between the original
+ ## classification A and the updated classification A* are 0.4 and 0.4, respectively.
     
-        UPC <- updateCorrespondenceTable("CN2021.csv", "CPA21.csv", "CN2022.csv", "CN2021_CPA21.csv",
-                                     "CN2021_CN2022.csv", "updateCorrespondenceTable.csv", "B", 0.4, 0.4)
+ UPC <- updateCorrespondenceTable("CN2021.csv", "CPA21.csv", "CN2022.csv",
+                                  "CN2021_CPA21.csv", "CN2021_CN2022.csv", 
+                                  "updateCorrespondenceTable.csv", "B", 0.4, 0.4)
     }
 }

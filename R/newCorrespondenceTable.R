@@ -145,7 +145,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     if (!file.exists(Tables)) {
         stop(simpleError(paste("There is no file with name", Tables, "in your working directory.")))
     } else {
-        x <- as.matrix(read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
+        x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
             encoding = "UTF-8"))
         mat.list <- apply(x, 2, function(x) {
             as.character(which(x != ""))
@@ -169,7 +169,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         while (file.exists(CSVout)) {
             message(paste("Your working directory contains already a file with the name that you selected for the output file: ",
                 CSVout))
-            answer <- menu(c("Yes", "No"), title = "Do you want to overwrite it?")
+            answer <- utils::menu(c("Yes", "No"), title = "Do you want to overwrite it?")
             if (answer == 2) {
                 CSVout <- readline(prompt = "Please enter a new name for the output file: ")
             }
@@ -222,7 +222,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # Create a list of the classifications and the known correspondence tables
     # as data frames.
     RRR <- lapply(inputs[1:length(inputs)], function(x) {
-        read.csv(x, sep = ",", check.names = FALSE, colClasses = c("character"),
+        utils::read.csv(x, sep = ",", check.names = FALSE, colClasses = c("character"),
             encoding = "UTF-8")
     })
 
@@ -240,7 +240,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     })
 
     # Select the correspondence tables.
-    R <- RR[tail(c(1:length(RR)), (length(RR) - 1)/2)]
+    R <- RR[utils::tail(c(1:length(RR)), (length(RR) - 1)/2)]
 
     # Check the dimensions of the files
     for (i in 1:nrow(x)) {
@@ -925,9 +925,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         # move from classification B to classification A.  Until the next
         # comment, all the lines are the same as in the case that we move from
         # classification A to classification B.
-        RRR_BtoA <- RRR[c(rev(1:(k + 2)), rev(tail(c(1:length(RRR)), (length(RRR) -
+        RRR_BtoA <- RRR[c(rev(1:(k + 2)), rev(utils::tail(c(1:length(RRR)), (length(RRR) -
             1)/2)))]
-        if (length(rev(tail(c(1:length(RR)), (length(RR) - 1)/2))) >= 3) {
+        if (length(rev(utils::tail(c(1:length(RR)), (length(RR) - 1)/2))) >= 3) {
             for (rev in (k + 4):(length(RRR_BtoA) - 1)) {
                 column_2 <- RRR_BtoA[[rev]][, 2]
                 RRR_BtoA[[rev]][, 2] <- RRR_BtoA[[rev]][, 1]
@@ -939,7 +939,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
             matrix(unlist(x), ncol = ncol(x))
         })
 
-        R <- RR[tail(c(1:length(RR)), (length(RR) - 1)/2)]
+        R <- RR[utils::tail(c(1:length(RR)), (length(RR) - 1)/2)]
 
         F_BtoA <- list()
 
@@ -1482,9 +1482,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                   length(which(x == ""))
                 }) >= 1, ]
                 F2 <- matrix(unlist(F2), ncol = k + 2)
-                f <- aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[, 2],
+                f <- stats::aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[, 2],
                   list(num = matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[, 2]),
-                  length)[which(aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[,
+                  length)[which(stats::aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[,
                   2], list(num = matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[,
                   2]), length)[, 2] > 1), 1]
                 reviewF1 <- rep(0, nrow(F1))
@@ -1505,8 +1505,8 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                 F2 <- matrix(unlist(F2), ncol = k + 3)
                 F2 <- data.frame(F2)
                 colnames(F2) <- colnames(F1)
-                f1 <- aggregate(F1[, c(1, ncol(F1) - 1)], by = F1[, c(1, ncol(F1) -
-                  1)], length)[1:(ncol(F1[, c(1, ncol(F1) - 1)]) + 1)][which(aggregate(F1[,
+                f1 <- stats::aggregate(F1[, c(1, ncol(F1) - 1)], by = F1[, c(1, ncol(F1) -
+                  1)], length)[1:(ncol(F1[, c(1, ncol(F1) - 1)]) + 1)][which(stats::aggregate(F1[,
                   c(1, ncol(F1) - 1)], by = F1[, c(1, ncol(F1) - 1)], length)[1:(ncol(F1[,
                   c(1, ncol(F1) - 1)]) + 1)][, 3] >= 2), 1:2]
                 redundancyF1 <- rep(0, nrow(F1))
@@ -1535,9 +1535,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                   length(which(x == ""))
                 }) >= 1, ]
                 F2 <- matrix(unlist(F2), ncol = k + 2)
-                f <- aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[, 1],
+                f <- stats::aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[, 1],
                   list(num = matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[, 1]),
-                  length)[which(aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[,
+                  length)[which(stats::aggregate(matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[,
                   1], list(num = matrix(unique(F1[, c(1, ncol(F1))]), ncol = 2)[,
                   1]), length)[, 2] > 1), 1]
                 reviewF1 <- rep(0, nrow(F1))
@@ -1558,8 +1558,8 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                 F2 <- matrix(unlist(F2), ncol = k + 3)
                 F2 <- data.frame(F2)
                 colnames(F2) <- colnames(F1)
-                f1 <- aggregate(F1[, c(1, ncol(F1) - 1)], by = F1[, c(1, ncol(F1) -
-                  1)], length)[1:(ncol(F1[, c(1, ncol(F1) - 1)]) + 1)][which(aggregate(F1[,
+                f1 <- stats::aggregate(F1[, c(1, ncol(F1) - 1)], by = F1[, c(1, ncol(F1) -
+                  1)], length)[1:(ncol(F1[, c(1, ncol(F1) - 1)]) + 1)][which(stats::aggregate(F1[,
                   c(1, ncol(F1) - 1)], by = F1[, c(1, ncol(F1) - 1)], length)[1:(ncol(F1[,
                   c(1, ncol(F1) - 1)]) + 1)][, 3] >= 2), 1:2]
                 redundancyF1 <- rep(0, nrow(F1))
@@ -1593,8 +1593,8 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                 F2 <- matrix(unlist(F2), ncol = k + 2)
                 F2 <- data.frame(F2)
                 colnames(F2) <- colnames(F1)
-                f1 <- aggregate(F1[, c(1, ncol(F1))], by = F1[, c(1, ncol(F1))],
-                  length)[1:(ncol(F1[, c(1, ncol(F1))]) + 1)][which(aggregate(F1[,
+                f1 <- stats::aggregate(F1[, c(1, ncol(F1))], by = F1[, c(1, ncol(F1))],
+                  length)[1:(ncol(F1[, c(1, ncol(F1))]) + 1)][which(stats::aggregate(F1[,
                   c(1, ncol(F1))], by = F1[, c(1, ncol(F1))], length)[1:(ncol(F1[,
                   c(1, ncol(F1))]) + 1)][, 3] >= 2), 1:2]
                 redundancyF1 <- rep(0, nrow(F1))
@@ -1695,8 +1695,8 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
         # Final redundancy flag
         correspondenceAB$Redundancy <- 0
-        f1 <- aggregate(correspondenceAB[, c(1, k + 2)], by = correspondenceAB[,
-            c(1, k + 2)], length)[1:(ncol(correspondenceAB[, c(1, k + 2)]) + 1)][which(aggregate(correspondenceAB[,
+        f1 <- stats::aggregate(correspondenceAB[, c(1, k + 2)], by = correspondenceAB[,
+            c(1, k + 2)], length)[1:(ncol(correspondenceAB[, c(1, k + 2)]) + 1)][which(stats::aggregate(correspondenceAB[,
             c(1, k + 2)], by = correspondenceAB[, c(1, k + 2)], length)[1:(ncol(correspondenceAB[,
             c(1, k + 2)]) + 1)][, 3] >= 2), 1:2]
         correspondenceAB$Redundancy[which(apply(correspondenceAB[, c(1, k + 2)],
@@ -1762,7 +1762,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
             }
 
             # Find which .csv files are the correspondence tables.
-            Tail <- tail(c(1:length(RRR)), (length(RRR) - 1)/2)
+            Tail <- utils::tail(c(1:length(RRR)), (length(RRR) - 1)/2)
 
             # The following if statement is applied if there are any
             # supplementary information for the correspondence table A:C1, in
@@ -1875,7 +1875,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         if (!is.null(CSVout)) {
             readr::write_excel_csv(data.frame(Final, check.names = FALSE), file = CSVout,
                 col_names = TRUE)
-            write.csv(CsvNames, file = paste0(Name1, "classificationNames_", Name2),
+            utils::write.csv(CsvNames, file = paste0(Name1, "classificationNames_", Name2),
                 row.names = FALSE)
         }
 

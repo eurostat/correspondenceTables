@@ -140,19 +140,20 @@
 #' library. All sample datasets may be found there.
 #' }
 #' @examples
-#'    \dontrun{
-#'         ## Application of function updateCorrespondenceTable() with CN 2021 being the
-#'         ## original classification A, CPA 2.1 being the target classification B, CN 2022
-#'         ## being the updated version A*, CN 2021:CPA 2.1 being the previous correspondence
-#'         ## table A:B, and CN 2021:CN 2022 being the A:A* concordance table. The desired
-#'         ## name for the csv file that will contain the updated correspondence table is
-#'         ## "updateCorrespondenceTable.csv", the reference classification is B, and the
-#'         ## maximum acceptable proportions of unmatched codes between the original
-#'         ## classification A and the target classification B, and between the original
-#'         ## classification A and the updated classification A* are 0.4 and 0.4, respectively.
+#'  \dontrun{
+#'  ## Application of function updateCorrespondenceTable() with CN 2021 being the
+#'  ## original classification A, CPA 2.1 being the target classification B, CN 2022
+#'  ## being the updated version A*, CN 2021:CPA 2.1 being the previous correspondence
+#'  ## table A:B, and CN 2021:CN 2022 being the A:A* concordance table. The desired
+#'  ## name for the csv file that will contain the updated correspondence table is
+#'  ## "updateCorrespondenceTable.csv", the reference classification is B, and the
+#'  ## maximum acceptable proportions of unmatched codes between the original
+#'  ## classification A and the target classification B, and between the original
+#'  ## classification A and the updated classification A* are 0.4 and 0.4, respectively.
 #'     
-#'         UPC <- updateCorrespondenceTable("CN2021.csv", "CPA21.csv", "CN2022.csv", "CN2021_CPA21.csv",
-#'                                      "CN2021_CN2022.csv", "updateCorrespondenceTable.csv", "B", 0.4, 0.4)
+#'  UPC <- updateCorrespondenceTable("CN2021.csv", "CPA21.csv", "CN2022.csv",
+#'                                   "CN2021_CPA21.csv", "CN2021_CN2022.csv", 
+#'                                   "updateCorrespondenceTable.csv", "B", 0.4, 0.4)
 #'     }
 
 
@@ -177,7 +178,7 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
         while (file.exists(CSVout)) {
             message(paste("Your working directory contains already a file with the name that you selected for the output file: ",
                 CSVout))
-            answer <- menu(c("Yes", "No"), title = "Do you want to overwrite it?")
+            answer <- utils::menu(c("Yes", "No"), title = "Do you want to overwrite it?")
             if (answer == 2) {
                 CSVout <- readline(prompt = "Please enter a new name for the output file: ")
             }
@@ -210,25 +211,25 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
     }
     # The following code lines read the classifications A, AStar, and B.
 
-    classA <- read.csv(A, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
+    classA <- utils::read.csv(A, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
         encoding = "UTF-8")
     colnames(classA) <- removeBOM(colnames(classA))
 
-    classAStar <- read.csv(AStar, sep = ",", header = TRUE, check.names = FALSE,
+    classAStar <- utils::read.csv(AStar, sep = ",", header = TRUE, check.names = FALSE,
         colClasses = c("character"), encoding = "UTF-8")
     colnames(classAStar) <- removeBOM(colnames(classAStar))
 
-    classB <- read.csv(B, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
+    classB <- utils::read.csv(B, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
         encoding = "UTF-8")
     colnames(classB) <- removeBOM(colnames(classB))
 
     # The following code lines read the correspondence tables AAStar and AB.
 
-    corrAAStar <- read.csv(AAStar, sep = ",", header = TRUE, check.names = FALSE,
+    corrAAStar <- utils::read.csv(AAStar, sep = ",", header = TRUE, check.names = FALSE,
         colClasses = c("character"), encoding = "UTF-8")
     colnames(corrAAStar) <- removeBOM(colnames(corrAAStar))
 
-    corrAB <- read.csv(AB, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
+    corrAB <- utils::read.csv(AB, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
         encoding = "UTF-8")
     colnames(corrAB) <- removeBOM(colnames(corrAB))
 
@@ -416,8 +417,8 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
             F2 <- Review[apply(Review, 1, function(x) {
                 length(which(x == ""))
             }) >= 1, ]
-            f <- aggregate(unique(F1[, 2:3])[, idx], list(num = unique(F1[, 2:3])[,
-                idx]), length)[which(aggregate(unique(F1[, 2:3])[, idx], list(num = unique(F1[,
+            f <- stats::aggregate(unique(F1[, 2:3])[, idx], list(num = unique(F1[, 2:3])[,
+                idx]), length)[which(stats::aggregate(unique(F1[, 2:3])[, idx], list(num = unique(F1[,
                 2:3])[, idx]), length)[, 2] > 1), 1]
             F1[which(F1[, idx + 1] %in% f), 4] <- 1
             Review <- rbind(F1, F2)
@@ -485,8 +486,8 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
             # The 'redundancy' flag is constructed if the reference
             # classification is either A or B.
 
-            f1 <- aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[, 2:3]) +
-                1)][which(aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[,
+            f1 <- stats::aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[, 2:3]) +
+                1)][which(stats::aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[,
                 2:3]) + 1)][, 3] >= 2), 1:2]
             F1[which(apply(F1[, 2:3], 1, paste, collapse = " ") %in% apply(f1, 1,
                 paste, collapse = " ")), 4] <- 1
@@ -510,8 +511,8 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
                 F2 <- cbind(F2, 0)
                 colnames(F2) <- c("R1", "R2", "R3", "R4", "R5")
             }
-            f1 <- aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[, 2:3]) +
-                1)][which(aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[,
+            f1 <- stats::aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[, 2:3]) +
+                1)][which(stats::aggregate(F1[, 2:3], by = F1[, 2:3], length)[1:(ncol(F1[,
                 2:3]) + 1)][, 3] >= 2), 1:2]
             F1 <- data.frame(F1[, 1:3], 0, 0)
             F1[which(apply(F1[, 2:3], 1, paste, collapse = " ") %in% apply(f1, 1,
@@ -630,8 +631,8 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
 
         # Final redundancy flag
         List$Redundancy <- 0
-        f1 <- aggregate(List[, 2:3], by = List[, 2:3], length)[1:(ncol(List[, 2:3]) +
-            1)][which(aggregate(List[, 2:3], by = List[, 2:3], length)[1:(ncol(List[,
+        f1 <- stats::aggregate(List[, 2:3], by = List[, 2:3], length)[1:(ncol(List[, 2:3]) +
+            1)][which(stats::aggregate(List[, 2:3], by = List[, 2:3], length)[1:(ncol(List[,
             2:3]) + 1)][, 3] >= 2), 1:2]
         List$Redundancy[which(apply(List[, 2:3], 1, paste, collapse = " ") %in% apply(f1,
             1, paste, collapse = " "))] <- 1
@@ -784,7 +785,7 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
         if (!is.null(CSVout)) {
             readr::write_excel_csv(data.frame(Final, check.names = FALSE), file = CSVout,
                 col_names = TRUE)
-            write.csv(CsvNames, file = paste0(Name1, "classificationNames_", Name2),
+            utils::write.csv(CsvNames, file = paste0(Name1, "classificationNames_", Name2),
                 row.names = FALSE)
         }
 

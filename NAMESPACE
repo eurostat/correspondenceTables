@@ -2,3 +2,9 @@
 
 export(newCorrespondenceTable)
 export(updateCorrespondenceTable)
+importFrom(readr,write_excel_csv)
+importFrom(stats,aggregate)
+importFrom(utils,menu)
+importFrom(utils,read.csv)
+importFrom(utils,tail)
+importFrom(utils,write.csv)
