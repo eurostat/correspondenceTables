@@ -11,6 +11,8 @@ vignette: >
 ```{r, include = FALSE}
 library(correspondenceTables)
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+csv_files<-list.files("vignettes", pattern = ".csv")
+if (length(csv_files)>0) rm(csv_files)
 ```
 
 This vignette provides information about applying the correspondenceTables package on the sample datasets included in it.
