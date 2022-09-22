@@ -11,7 +11,9 @@ vignette: >
 ```{r, include = FALSE}
 library(correspondenceTables)
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-csv_files<-list.files("vignettes", pattern = ".csv")
+message(getwd())
+if (grepl("vignettes", getwd())) {rootdir<-"."} else {rootdir<-"vignettes"}
+csv_files<-list.files(rootdir, pattern = ".csv")
 if (length(csv_files)>0) unlink(csv_files)
 ```
 
@@ -217,8 +219,8 @@ Execute the following code to apply function newCorrespondenceTable() on these d
 NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase4.csv", "none", 0.96)
 ```
 
-```{r include=FALSE}
-if (grepl("vigntettes", getwd())) {rootdir<-"."} else {rootdir<-"vignettes"}
+```{r message=TRUE, warning=TRUE, include=FALSE}
+if (grepl("vignettes", getwd())) {rootdir<-"."} else {rootdir<-"vignettes"}
 csv_files<-list.files(rootdir, pattern = ".csv")
 if (length(csv_files)>0) unlink(csv_files)
 ```

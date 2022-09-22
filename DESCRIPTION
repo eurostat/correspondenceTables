@@ -5,7 +5,7 @@ Date: 2022-09-22
 Version: 0.7.2
 Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
       person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
-      person("Martin", "Karlberg", role = "ctb"),
+      person("Martin", "Karlberg", role = "aut"),
       person("Mátyás", "Mészáros", email = "matyas.meszaros@ec.europa.eu", role = "cre"))
 Description: 
     A candidate correspondence table between two classifications can be created when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications. 
