@@ -1,3 +1,143 @@
+#' @title Ex novo creation of candidate correspondence tables between two classifications via pivot tables
+#' @description Creation of a candidate correspondence table between two classifications, A and B, when there are
+#'   correspondence tables leading from the first classification to the second one via \eqn{k} intermediate pivot 
+#'   classifications \eqn{C_1, \ldots, C_k}. The correspondence tables leading from A to B are A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}: \eqn{1 \le i \le k -1}\}, B:\eqn{C_k}.
+#' @param Tables A string of type character containing the name of a csv file which contains the names of the files that
+#'   contain the classifications and the intermediate correspondence tables (see "Details" below).
+#' @param CSVout The preferred name for the \emph{output csv files} that will contain the candidate correspondence table 
+#'   and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}. If the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output is exported into two csv files whose names contain the provided name (see "Value" below).
+#' @param Reference The reference classification among A and B. If a classification is the reference to the other, and hence
+#'  \emph{hierarchically superior} to it, each code of the other classification is expected to be mapped to at most one code
+#'   of the reference classification. The valid values are \code{"none"}, \code{"A"}, and \code{"B"}. If the selected value
+#'   is \code{"A"} or \code{"B"}, a "Review" flag column (indicating the records violating this expectation) is included
+#'   in the output (see "Explanation of the flags" below).
+#' @param MismatchTolerance The maximum acceptable proportion of rows in the candidate correspondence table which contain
+#'   no code for classification A or no code for classification B. The default value is \code{0.2}. The valid values are 
+#'   real numbers in the interval [0, 1].
+#' @export
+#' @details 
+#' File and file name requirements:
+#'     \itemize{
+#'         \item The file that corresponds to argument \code{Tables} and the files to which the contents of \code{Tables} 
+#'         lead, must be in \emph{csv format with comma as delimiter}. If full paths are not provided, then these files must
+#'          be available in the working directory. No two filenames provided must be identical.
+#'         \item The file that corresponds to argument \code{Tables} must contain filenames, \emph{and nothing else}, in 
+#'         a \eqn{(k+2)} × \eqn{(k+2)} table, where \eqn{k}, a positive integer, is the number of "pivot" classifications. 
+#'         The cells in the main diagonal of the table provide the filenames of the files which contain, with this order, 
+#'         the classifications A, \eqn{C_1}, \eqn{\ldots}, \eqn{C_k} and B. The off-diagonal directly above the main 
+#'         diagonal contains the filenames of the files that contain, with this order, the correspondence tables 
+#'         A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and B:\eqn{C_k}. All other cells of the table 
+#'         must be empty.
+#'         \item If any of the two files where the output will be stored is read protected (for instance because it is open 
+#'         elsewhere) an error message will be reported and execution will be halted.
+#'     }
+#' Classification table requirements:
+#'     \itemize{
+#'         \item Each of the files that contain classifications must contain at least one column and at least two rows. 
+#'         The first column contains the codes of the respective classification. The first row contains column headers. 
+#'         The header of the first column is the name of the respective classification (e.g., "CN 2021").
+#'         \item The classification codes contained in a classification file (expected in its first column as mentioned 
+#'         above) must be unique. No two identical codes are allowed in the column.
+#'         \item If any of the files that contain classifications has additional columns the first one of them is assumed 
+#'         to contain the labels of the respective classification codes.
+#'     }
+#' Correspondence table requirements:
+#'     \itemize{
+#'         \item The files that contain correspondence tables must contain at least two columns and at least two rows. 
+#'         The first column of the file that contains A:\eqn{C_1} contains the codes of classification A. The second column 
+#'         contains the codes of classification \eqn{C_1}. Similar requirements apply to the files that contain 
+#'         \eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1} and B:\eqn{C_k}. The first row of each of the files that contain 
+#'         correspondence tables contains column headers. The names of the first two columns are the names of the respective 
+#'         classifications.
+#'         \item The pairs of classification codes contained in a correspondence table file (expected in its first two columns 
+#'         as mentioned above) must be unique. No two identical pairs of codes are allowed in the first two columns.
+#'     }
+#' Interdependency requirements:
+#'     \itemize{
+#'         \item At least one code of classification A must appear in both the file of classification A and the file of 
+#'         correspondence table A:\eqn{C_1}.
+#'         \item At least one code of classification B must appear in both the file of classification B and the file of 
+#'         correspondence table B:\eqn{C_k}, where \eqn{k}, \eqn{k\ge 1}, is the number of pivot classifications.
+#'         \item If there is only one pivot classification, \eqn{C_1}, at least one code of it must appear in both the file of 
+#'         correspondence table A:\eqn{C_1} and the file of correspondence table B:\eqn{C_1}.
+#'         \item If the pivot classifications are \eqn{k} with \eqn{k\ge 2} then at least one code of \eqn{C_1} must appear in 
+#'         both the file of correspondence table A:\eqn{C_1} and the file of correspondence table \eqn{C_1}:\eqn{C_2}, at least one code of each of the \eqn{C_i}, \eqn{i = 2, \ldots, k-1} (if \eqn{k\ge 3}) must appear in both the file of correspondence table \eqn{C_{i-1}}:\eqn{C_i} and the file of correspondence table \eqn{C_i}:\eqn{C_{i+1}}, and at least one code of \eqn{C_k} must appear in both the file of correspondence table \eqn{C_{k-1}}:\eqn{C_k} and the file of correspondence table B:\eqn{C_k}.
+#'     }
+#' Mismatch tolerance:
+#'     \itemize{
+#'         \item The ratio that is compared with \code{MismatchTolerance} has as numerator the number of rows in the candidate 
+#'         correspondence table which contain no code for classification A or no code for classification B and as denominator 
+#'         the total number of rows of this table. If the ratio exceeds \code{MismatchTolerance} the execution of the function 
+#'         is halted.
+#'     }
+#' If any of the conditions required from the arguments is violated an error message is produced and execution is stopped.
+#' 
+#' @section Explanation of the flags:
+#' 
+#' \itemize{
+#'     \item  The "Review" flag is produced only if argument Reference has been set equal to "\code{A}" or "\code{B}". For 
+#'     each row of the candidate correspondence table, if \code{Reference} = "\code{A}" the value of "Review" is equal to 
+#'     \code{1} if the code of B maps to more than one code of A, and \code{0} otherwise. If \code{Reference} = "\code{B}" 
+#'     the value of "Review" is equal to \code{1} if the code of A maps to more than one code of B, and \code{0} otherwise. 
+#'     The value of the flag is empty if the row does not contain a code of A or a code of B.
+#'     \item For each row of the candidate correspondence table, the value of "Redundancy" is equal to \code{1} if the row 
+#'     contains a combination of codes of A and B that also appears in at least one other row of the candidate 
+#'     correspondence table.
+#'     \item For each row of the candidate correspondence table, the value of "Unmatched" is equal to \code{1} if the row 
+#'     contains a code of A but no code of B or if it contains a code of B but no code of A. The value of the flag is 
+#'     \code{0} if the row contains codes for both A and B.
+#'     \item For each row of the candidate correspondence table, the value of "NoMatchFromA" is equal to \code{1} if the row 
+#'     contains a code of A that appears in the table of classification A but not in correspondence table A:\eqn{C_1}. The 
+#'     value of the flag is \code{0} if the row contains a code of A that appears in both the table of classification A and 
+#'     correspondencetable A:\eqn{C_1}. Finally, the value of the flag is empty if the row contains no code of A or if it 
+#'     contains a code of A that appears in correspondence table A:\eqn{C_1} but not in the table of classification A.
+#'     \item For each row of the candidate correspondence table, the value of "NoMatchFromB" is equal to \code{1} if the row 
+#'     contains a code of B that appears in the table of classification B but not in correspondence table B:\eqn{C_k}. The 
+#'     value of the flag is \code{0} if the row contains a code of B that appears in both the table of classification B and 
+#'     correspondence table B:\eqn{C_k}. Finally, the value of the flag is empty if the row contains no code of B or if it 
+#'     contains a code of B that appears in correspondence table B:\eqn{C_k} but not in the table of classification B.
+#' }
+#' 
+#' @section Sample datasets included in the package:
+#' 
+#' Running \code{browseVignettes("correspondenceTables")} in the console opens an html page in the user's default browser. Selecting HTML from the menu, users can read information about the use of the sample datasets that are included in the package.
+#' If they wish to access the csv files with the sample data, users have two options:
+#' \itemize{
+#' \item Option 1: Unpack into any folder of their choice the tar.gz file into which the package has arrived. All sample 
+#' datasets may be found in the "inst/extdata" subfolder of this folder.
+#' \item Option 2: Go to the "extdata" subfolder of the folder in which the package has been installed in their PC's \code{R} 
+#' library. All sample datasets may be found there.
+#' }
+#' 
+#' @return 
+#'  \code{newCorrespondenceTable()} returns a list with two elements, both of which are data frames.
+#' \itemize{
+#'     \item The first element is the candidate correspondence table A:B, including the codes of all "pivot" classifications,
+#'      augmented with flags "Review" (if applicable), "Redundancy", "Unmatched", "NoMatchFromA", "NoMatchFromB" and with all 
+#'      the additional columns of the classification and intermediate correspondence table files.
+#'     \item The second element contains the names of classification A, the "pivot" classifications and classification B as 
+#'     read from the top left-hand side cell of the respective input files.
+#'     \item If the value of argument \code{CSVout} a string of type \code{character}, the elements of the list are exported 
+#'     into files of csv format. The name of the file for the first element is the value of argument \code{CSVout} and the 
+#'     name of the file for the second element is classificationNames_\code{CSVout}. For example, if 
+#'     \code{CSVout} = "newCorrespondenceTable.csv", the elements of the list are exported into "newCorrespondenceTable.csv" 
+#'     and "classificationNames_newCorrespondenceTable.csv" respectively.
+#' }
+#' 
+#' @examples 
+#' \dontrun{
+#'      ## Application of function newCorrespondenceTable() with "names.csv" being the
+#'      ## file that contains the names of classifications and intermediate tables in a
+#'      ## sparse square matrix. The desired name for the csv file that will contain
+#'      ## the candidate correspondence table is "newCorrespondenceTable.csv", the
+#'      ## reference classification is A and the maximum acceptable proportion of
+#'      ## unmatched codes between A and B is 0.5.
+#'         
+#'      newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.5)
+#'     }
+
+
+
 newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", MismatchTolerance = 0.2) {
 
     # Check if the file that contains the names of both classifications and
