@@ -28,7 +28,9 @@ This package is a tool to help you in the creation and updates of correspondence
 ## content
 
 The package contains 2 functions:
+
 1. `newCorrespondenceTable` to create a candidate correspondence table between two classifications when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications.
+
 2. `updateCorrespondenceTable` to update the correspondence table between two statistical classifications when one of the classifications gets updated to a new version.
 
 
