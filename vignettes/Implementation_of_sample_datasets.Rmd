@@ -218,7 +218,8 @@ NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase4.csv", "n
 ```
 
 ```{r include=FALSE}
-csv_files<-list.files("vignettes", pattern = ".csv")
+if (grepl("vigntettes", getwd())) {rootdir<-"."} else {rootdir<-"vignettes"}
+csv_files<-list.files(rootdir, pattern = ".csv")
 if (length(csv_files)>0) unlink(csv_files)
 ```
 
