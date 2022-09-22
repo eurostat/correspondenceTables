@@ -85,6 +85,33 @@
 <div class="page-header"><h1 id="correspondencetables">correspondenceTables<a class="anchor" aria-label="anchor" href="#correspondencetables"></a>
 </h1></div>
 <p>Functions for creating or updating correspondence tables between two statistical classifications</p>
+<div class="section level2">
+<h2 id="installation">installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>‘correspondenceTables’ can be installed from source from GitHub</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"eurostat/correspondenceTables"</span><span class="op">)</span></span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"eurostat/correspondenceTables"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="background">background<a class="anchor" aria-label="anchor" href="#background"></a>
+</h2>
+<p>This package is a tool to help you in the creation and updates of correspondence table between 2 classification like NACE, CPA, CN, etc.</p>
+</div>
+<div class="section level2">
+<h2 id="content">content<a class="anchor" aria-label="anchor" href="#content"></a>
+</h2>
+<p>The package contains 2 functions: 1. <code>newCorrespondenceTable</code> to create a candidate correspondence table between two classifications when there are correspondence tables leading from the first classification to the second one via intermediate ‘pivot’ classifications. 2. <code>updateCorrespondenceTable</code> to update the correspondence table between two statistical classifications when one of the classifications gets updated to a new version.</p>
+</div>
+<div class="section level2">
+<h2 id="examples">examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<p>For the examples see the vignettes.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"correspondenceTables"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 
   </div>
