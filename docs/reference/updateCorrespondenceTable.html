@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">correspondenceTables</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3</span>
       </span>
     </div>
 
@@ -234,20 +234,38 @@ library. All sample datasets may be found there.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span> <span class="co">## Application of function updateCorrespondenceTable() with CN 2021 being the</span></span></span>
-<span class="r-in"><span> <span class="co">## original classification A, CPA 2.1 being the target classification B, CN 2022</span></span></span>
-<span class="r-in"><span> <span class="co">## being the updated version A*, CN 2021:CPA 2.1 being the previous correspondence</span></span></span>
-<span class="r-in"><span> <span class="co">## table A:B, and CN 2021:CN 2022 being the A:A* concordance table. The desired</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="co">## Application of function updateCorrespondenceTable() with NAICS 2017 being the</span></span></span>
+<span class="r-in"><span> <span class="co">## original classification A, NACE being the target classification B, NAICS 2022</span></span></span>
+<span class="r-in"><span> <span class="co">## being the updated version A*, NAICS 2017:NACE being the previous correspondence</span></span></span>
+<span class="r-in"><span> <span class="co">## table A:B, and NAICS 2017:NAICS 2022 being the A:A* concordance table. The desired</span></span></span>
 <span class="r-in"><span> <span class="co">## name for the csv file that will contain the updated correspondence table is</span></span></span>
-<span class="r-in"><span> <span class="co">## "updateCorrespondenceTable.csv", the reference classification is B, and the</span></span></span>
+<span class="r-in"><span> <span class="co">## "updateCorrespondenceTable.csv", there is no reference classification, and the</span></span></span>
 <span class="r-in"><span> <span class="co">## maximum acceptable proportions of unmatched codes between the original</span></span></span>
 <span class="r-in"><span> <span class="co">## classification A and the target classification B, and between the original</span></span></span>
-<span class="r-in"><span> <span class="co">## classification A and the updated classification A* are 0.4 and 0.4, respectively.</span></span></span>
+<span class="r-in"><span> <span class="co">## classification A and the updated classification A* are 0.5 and 0.3, respectively.</span></span></span>
 <span class="r-in"><span>    </span></span>
-<span class="r-in"><span> <span class="va">UPC</span> <span class="op">&lt;-</span> <span class="fu">updateCorrespondenceTable</span><span class="op">(</span><span class="st">"CN2021.csv"</span>, <span class="st">"CPA21.csv"</span>, <span class="st">"CN2022.csv"</span>,</span></span>
-<span class="r-in"><span>                                  <span class="st">"CN2021_CPA21.csv"</span>, <span class="st">"CN2021_CN2022.csv"</span>, </span></span>
-<span class="r-in"><span>                                  <span class="st">"updateCorrespondenceTable.csv"</span>, <span class="st">"B"</span>, <span class="fl">0.4</span>, <span class="fl">0.4</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">AStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">AB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017_NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">AAStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017_NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="va">UPC</span> <span class="op">&lt;-</span> <span class="fu">updateCorrespondenceTable</span><span class="op">(</span><span class="va">A</span>,</span></span>
+<span class="r-in"><span>                                  <span class="va">B</span>,</span></span>
+<span class="r-in"><span>                                  <span class="va">AStar</span>, </span></span>
+<span class="r-in"><span>                                  <span class="va">AB</span>, </span></span>
+<span class="r-in"><span>                                  <span class="va">AAStar</span>, </span></span>
+<span class="r-in"><span>                                  <span class="st">"updateCorrespondenceTable.csv"</span>, </span></span>
+<span class="r-in"><span>                                  <span class="st">"none"</span>, </span></span>
+<span class="r-in"><span>                                  <span class="fl">0.5</span>, </span></span>
+<span class="r-in"><span>                                  <span class="fl">0.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">UPC</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">UPC</span><span class="op">$</span><span class="va">updateCorrespondenceTable</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">UPC</span><span class="op">$</span><span class="va">classificationNames</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"updateCorrespondenceTable.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"classificationNames_updateCorrespondenceTable.csv"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">}</span></span></span>
 </code></pre></div>
     </div>
