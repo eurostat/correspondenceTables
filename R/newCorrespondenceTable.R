@@ -125,15 +125,32 @@
 #' }
 #' 
 #' @examples 
-#' \dontrun{
-#'      ## Application of function newCorrespondenceTable() with "names.csv" being the
-#'      ## file that contains the names of classifications and intermediate tables in a
-#'      ## sparse square matrix. The desired name for the csv file that will contain
-#'      ## the candidate correspondence table is "newCorrespondenceTable.csv", the
-#'      ## reference classification is A and the maximum acceptable proportion of
-#'      ## unmatched codes between A and B is 0.5.
+#' \donttest{
+#'    ## Application of function newCorrespondenceTable() with "example.csv" being the file
+#'    ## that contains the names of classifications (from ISIC v4 to CPA v2.1 through CPC v2.1)
+#'    ## and the intermediate tables in a sparse square matrix. The desired name for the csv file
+#'    ## that will contain the candidate correspondence table is "newCorrespondenceTable.csv",
+#'    ## the reference classification is ISIC v4 ("A") and the maximum acceptable proportion of 
+#'    ## unmatched codes between ISIC v4 and CPC v2.1 is 0.5.
+#'      
+#'      A <- read.csv(system.file("extdata", "names1.csv", package = "correspondenceTables"), 
+#'                    header = FALSE, 
+#'                    sep = ",")
+#'      for (i in 1:nrow(A)) {
+#'        for (j in 1:ncol(A)) {
+#'          if (A[i,j]!="") {
+#'            A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+#'        }}}
+#'      write.table(x = A, file = "example.csv", row.names = FALSE, col.names = FALSE, sep = ",")
 #'         
-#'      newCorrespondenceTable("names.csv", "newCorrespondenceTable.csv", "A", 0.5)
+#'      NCT<-newCorrespondenceTable("example.csv", "newCorrespondenceTable.csv", "A", 0.5)
+#'      
+#'      summary(NCT)
+#'      head(NCT$newCorrespondenceTable)
+#'      NCT$classificationNames
+#'      unlink("example.csv")
+#'      unlink("newCorrespondenceTable.csv")
+#'      unlink("classificationNames_newCorrespondenceTable.csv")
 #'     }
 
 
@@ -355,14 +372,14 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
         # C1 in C1 appears in A:C1
         if (sum(!is.na(match(RRR[[2]][, 1], R[[1]][, 2]))) == 0) {
-            cat(paste("WARNING: there is no code of ", colnames(RRR[[2]])[1], " that appears in both ",
+            message(paste("WARNING: there is no code of ", colnames(RRR[[2]])[1], " that appears in both ",
                 inputs[2], " and ", inputs[1 + nrow(x)], ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                 sep = ""))
         }
 
         # C1 in C1 appears in B:C1
         if (sum(!is.na(match(RRR[[2]][, 1], R[[2]][, 2]))) == 0) {
-            cat(paste("WARNING: there is no code of ", colnames(RRR[[2]])[1], " that appears in both ",
+            message(paste("WARNING: there is no code of ", colnames(RRR[[2]])[1], " that appears in both ",
                 inputs[2], " and ", inputs[2 + nrow(x)], ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                 sep = ""))
         }
@@ -376,7 +393,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
             # C1 in C1 appears in A:C1 C2 in C2 appears in C1:C2 C3 in C3
             # appears in C2:C3
             if (sum(!is.na(match(RRR[[i]][, 1], R[[i - 1]][, 2]))) == 0) {
-                cat(paste("WARNING: there is no code of ", colnames(RRR[[i]])[1],
+                message(paste("WARNING: there is no code of ", colnames(RRR[[i]])[1],
                   " that appears in both ", inputs[i], " and ", inputs[i - 1 + nrow(x)],
                   ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                   sep = ""))
@@ -385,7 +402,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
             # C1 in C1 appears in C1:C2 C2 in C2 appears in C2:C3 C3 in C3
             # appears in C3:C4
             if (sum(!is.na(match(RRR[[i]][, 1], R[[i]][, 1]))) == 0) {
-                cat(paste("WARNING: there is no code of ", colnames(RRR[[i]])[1],
+                message(paste("WARNING: there is no code of ", colnames(RRR[[i]])[1],
                   " that appears in both ", inputs[i], " and ", inputs[i + nrow(x)],
                   ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                   sep = ""))
@@ -394,7 +411,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
         # Ck in Ck appears in C(k-1):Ck
         if (sum(!is.na(match(RRR[[k + 1]][, 1], R[[k]][, 2]))) == 0) {
-            cat(paste("WARNING: there is no code of ", colnames(RRR[[k + 1]])[1],
+            message(paste("WARNING: there is no code of ", colnames(RRR[[k + 1]])[1],
                 " that appears in both ", inputs[k + 1], " and ", inputs[k + nrow(x)],
                 ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                 sep = ""))
@@ -402,7 +419,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
         # Ck in Ck appears in B:Ck
         if (sum(!is.na(match(RRR[[k + 1]][, 1], R[[k + 1]][, 2]))) == 0) {
-            cat(paste("WARNING: there is no code of ", colnames(RRR[[k + 1]])[1],
+            message(paste("WARNING: there is no code of ", colnames(RRR[[k + 1]])[1],
                 " that appears in both ", inputs[k + 1], " and ", inputs[k + 1 +
                   nrow(x)], ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                 sep = ""))
@@ -420,7 +437,10 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         # correspondence tables A:C1 and B:C1.
         counter <- 0
         if (length(R) == 2) {
-
+            #creating a progress bar
+            message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+            pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=") 
+            
             # The following for loop creates the desirable correspondence
             # table.  The operations are conducted for each unique element of
             # classification A of the correspondence table A:C1.
@@ -428,9 +448,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
                 # Print the percentage of codes that have been processed.
                 counter <- counter + 1
-                cat("\r", "Percentage of codes of", colnames(RRR[[1]][1]), "processed:",
-                  paste(round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0),
-                    "%", sep = ""), sep = " ")
+                setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
                 # Matrix TT contains the rows of correspondence table A:C1 for
                 # a specific element of classification A.  Matrix T contains
                 # the rows of correspondence table B:C1 that match with the
@@ -504,16 +522,18 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         # The following if statement is used when we have only the
         # correspondence tables A:C1, C1:C2 and B:C2.
         if (length(R) == 3) {
-
+            #creating a progress bar
+            message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+            pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=") 
+            
+            
             # The following for loop creates the desirable correspondence
             # table.  The operations are conducted for each unique element of
             # classification A of the correspondence table A:C1.
             for (i in unique(R[[1]][, 1])) {
                 counter <- counter + 1
-                cat("\r", "Percentage of codes of", colnames(RRR[[1]][1]), "processed:",
-                  paste(round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0),
-                    "%", sep = ""), sep = " ")
-
+                setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+                
                 # Matrix T contains the rows of correspondence table C1:C2 that
                 # match with the specific element of classification A based on
                 # classification C1.
@@ -634,16 +654,18 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         # (k-1) Ci and B:Ck.
         M <- list()
         if (length(R) >= 4) {
-
+            message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+            pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=") 
+            
+            
             # The following for loop creates the desirable correspondence
             # table.  The operations are conducted for each unique element of
             # classification A of the correspondence table A:C1.
             for (i in unique(R[[1]][, 1])) {
 
                 counter <- counter + 1
-                cat("\r", "Percentage of codes of", colnames(RRR[[1]][1]), "processed:",
-                  paste(round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0),
-                    "%", sep = ""), sep = " ")
+                setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+               
 
                 for (j in 1:(length(R) - 2)) {
                   # The same operations as in the case that we have only the
@@ -944,15 +966,16 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         F_BtoA <- list()
 
         counter <- 0
-        cat("\n")
+        message("\n")
         if (length(R) == 2) {
 
+            message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+            pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=") 
+            
             for (i in unique(R[[1]][, 1])) {
 
                 counter <- counter + 1
-                cat("\r", "Percentage of codes of", colnames(RRR_BtoA[[1]][1]), "processed:",
-                  paste(round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0),
-                    "%", sep = ""), sep = " ")
+                setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
 
                 x1 <- R[[1]][which(R[[1]][, 1] == i), 2]
                 TT <- matrix(R[[1]][which(R[[1]][, 1] == i), 1:2], ncol = 2)
@@ -1005,13 +1028,12 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
         if (length(R) == 3) {
-
+            message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+            pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=") 
             for (i in unique(R[[1]][, 1])) {
 
                 counter <- counter + 1
-                cat("\r", "Percentage of codes of", colnames(RRR_BtoA[[1]][1]), "processed:",
-                  paste(round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0),
-                    "%", sep = ""), sep = " ")
+                setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
 
                 x1 <- R[[1]][which(R[[1]][, 1] == i), 2]
                 T <- matrix(R[[2]][!is.na(match(R[[2]][, 1], x1)), 1:2], ncol = 2)
@@ -1105,13 +1127,12 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
         M <- list()
         if (length(R) >= 4) {
-
+            message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+            pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=") 
             for (i in unique(R[[1]][, 1])) {
-
+                
                 counter <- counter + 1
-                cat("\r", "Percentage of codes of", colnames(RRR_BtoA[[1]][1]), "processed:",
-                  paste(round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0),
-                    "%", sep = ""), sep = " ")
+                setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
 
                 for (j in 1:(length(R) - 2)) {
                   if (j == 1) {
@@ -1706,7 +1727,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         stop(simpleError("An error has occurred and execution needs to stop. Please check the input data."))
     })
 
-    cat("\n")
+    # message("\n")
 
     # Check the number of the unmatched codes.
     if (length(which(as.vector(correspondenceAB$Unmatched) == 1))/nrow(correspondenceAB) <

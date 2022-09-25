@@ -174,7 +174,7 @@ fullPath("names1.csv", "names.csv")
 Execute the following code to apply function newCorrespondenceTable() on these data.
 
 ```{r, results = "hide"}
-NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase1.csv", "A", 0.5)
+system.time(NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase1.csv", "A", 0.5))
 ```
 
 ```{r}
@@ -191,7 +191,7 @@ fullPath("names2.csv", "names.csv")
 Execute the following code to apply function newCorrespondenceTable() on these data.
 
 ```{r, results = "hide"}
-NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase2.csv", "B", 0.5)
+system.time(NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase2.csv", "B", 0.5))
 ```
 
 Case 3
@@ -203,7 +203,7 @@ fullPath("names3.csv", "names.csv")
 Execute the following code to apply function newCorrespondenceTable() on these data.
 
 ```{r, results = "hide"}
-NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase3.csv", "B", 0.5)
+system.time(NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase3.csv", "B", 0.5))
 ```
 
 Case 4
@@ -215,7 +215,7 @@ fullPath("names4.csv", "names.csv")
 Execute the following code to apply function newCorrespondenceTable() on these data.
 
 ```{r, results = "hide"}
-NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase4.csv", "none", 0.96)
+system.time(NCT <- newCorrespondenceTable("names.csv", "newCorrespondenceTableCase4.csv", "none", 0.96))
 ```
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
