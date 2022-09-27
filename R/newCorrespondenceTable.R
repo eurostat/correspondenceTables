@@ -125,15 +125,18 @@
 #' }
 #' 
 #' @examples 
-#' \donttest{
+#' {
 #'    ## Application of function newCorrespondenceTable() with "example.csv" being the file
-#'    ## that contains the names of classifications (from ISIC v4 to CPA v2.1 through CPC v2.1)
-#'    ## and the intermediate tables in a sparse square matrix. The desired name for the csv file
-#'    ## that will contain the candidate correspondence table is "newCorrespondenceTable.csv",
-#'    ## the reference classification is ISIC v4 ("A") and the maximum acceptable proportion of 
-#'    ## unmatched codes between ISIC v4 and CPC v2.1 is 0.5.
+#'    ## that includes the names the files  and the intermediate tables in a sparse square 
+#'    ## matrix containing the 100 rows of the classifications (from ISIC v4 to CPA v2.1 through 
+#'    ## CPC v2.1). The desired name for the csv file that will contain the candidate
+#'    ## correspondence table is "newCorrespondenceTable.csv", the reference classification is 
+#'    ## ISIC v4 ("A") and the maximum acceptable proportion of unmatched codes between
+#'    ## ISIC v4 and CPC v2.1 is 0.56 (this is the minimum mismatch tolerance for the first 100 row 
+#'    ## as 55.5% of the code of ISIC v4 is unmatched).
 #'      
-#'      A <- read.csv(system.file("extdata", "names1.csv", package = "correspondenceTables"), 
+#'      tmp_dir<-tempdir()
+#'      A <- read.csv(system.file("extdata", "example.csv", package = "correspondenceTables"), 
 #'                    header = FALSE, 
 #'                    sep = ",")
 #'      for (i in 1:nrow(A)) {
@@ -141,16 +144,22 @@
 #'          if (A[i,j]!="") {
 #'            A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
 #'        }}}
-#'      write.table(x = A, file = "example.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+#'      write.table(x = A, 
+#'                  file = file.path(tmp_dir,"example.csv"), 
+#'                  row.names = FALSE, 
+#'                  col.names = FALSE, 
+#'                  sep = ",")
 #'         
-#'      NCT<-newCorrespondenceTable("example.csv", "newCorrespondenceTable.csv", "A", 0.5)
+#'      NCT<-newCorrespondenceTable(file.path(tmp_dir,"example.csv"), 
+#'                                  file.path(tmp_dir,"newCorrespondenceTable.csv"), 
+#'                                  "A", 
+#'                                  0.56)
 #'      
 #'      summary(NCT)
 #'      head(NCT$newCorrespondenceTable)
 #'      NCT$classificationNames
-#'      unlink("example.csv")
-#'      unlink("newCorrespondenceTable.csv")
-#'      unlink("classificationNames_newCorrespondenceTable.csv")
+#'      csv_files<-list.files(tmp_dir, pattern = ".csv")
+#'      unlink(csv_files)
 #'     }
 
 
@@ -162,8 +171,10 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     if (!file.exists(Tables)) {
         stop(simpleError(paste("There is no file with name", Tables, "in your working directory.")))
     } else {
-        x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
-            encoding = "UTF-8"))
+        # x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
+        #                                 encoding = "UTF-8"))
+        x <- as.matrix(data.table::fread(Tables, sep = ",", header = FALSE, colClasses = c("character"),
+                                         encoding = "UTF-8"))
         mat.list <- apply(x, 2, function(x) {
             as.character(which(x != ""))
         })
@@ -240,7 +251,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # as data frames.
     RRR <- lapply(inputs[1:length(inputs)], function(x) {
         utils::read.csv(x, sep = ",", check.names = FALSE, colClasses = c("character"),
-            encoding = "UTF-8")
+        encoding = "UTF-8")
+        # data.table::fread(x, sep = ",", check.names = FALSE, colClasses = c("character"),
+        # encoding = "UTF-8")
     })
 
     removeBOM <- function(headers) {
@@ -295,7 +308,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # correspondence tables. Stop with error
     if (k == 1) {
         # A in A appears in A:C1
-        if (sum(!is.na(match(RRR[[1]][, 1], R[[1]][, 1]))) == 0) {
+        if (sum(!is.na(match(unlist(RRR[[1]][, 1]), R[[1]][, 1]))) == 0) {
             stop(simpleError(paste("There is no code of ", colnames(RRR[[1]])[1],
                 " that appears in both ", inputs[1], " and ", inputs[1 + nrow(x)],
                 ". This is an error. The files should have at least one code of ",
@@ -313,7 +326,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
         # B in B:C1 appears in B
-        if (sum(!is.na(match(R[[length(R)]][, 1], RRR[[nrow(x)]][, 1]))) == 0) {
+        if (sum(!is.na(match(R[[length(R)]][, 1], unlist(RRR[[nrow(x)]][, 1])))) == 0) {
             stop(simpleError(paste("There is no code of ", colnames(RRR[[length(R) +
                 nrow(x)]])[1], " that appears in both ", inputs[nrow(x)], " and ",
                 inputs[length(R) + nrow(x)], ". This is an error. The files should have at least one code of ",
@@ -326,7 +339,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     if (k >= 2) {
 
         # A in A appears in A:C1
-        if (sum(!is.na(match(RRR[[1]][, 1], R[[1]][, 1]))) == 0) {
+        if (sum(!is.na(match(unlist(RRR[[1]][, 1]), R[[1]][, 1]))) == 0) {
             stop(simpleError(paste("There is no code of ", colnames(RRR[[1]])[1],
                 " that appears in both ", inputs[1], " and ", inputs[1 + nrow(x)],
                 ". This is an error. The files should have at least one code of ",
@@ -357,7 +370,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
         # B in B:Ck appears in B
-        if (sum(!is.na(match(R[[length(R)]][, 1], RRR[[nrow(x)]][, 1]))) == 0) {
+        if (sum(!is.na(match(R[[length(R)]][, 1], unlist(RRR[[nrow(x)]][, 1])))) == 0) {
             stop(simpleError(paste("There is no code of ", colnames(RRR[[length(R) +
                 nrow(x)]])[1], " that appears in both ", inputs[nrow(x)], " and ",
                 inputs[length(R) + nrow(x)], ". This is an error. The files should have at least one code of ",
@@ -371,14 +384,14 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     if (k == 1) {
 
         # C1 in C1 appears in A:C1
-        if (sum(!is.na(match(RRR[[2]][, 1], R[[1]][, 2]))) == 0) {
+        if (sum(!is.na(match(unlist(RRR[[2]][, 1]), R[[1]][, 2]))) == 0) {
             message(paste("WARNING: there is no code of ", colnames(RRR[[2]])[1], " that appears in both ",
                 inputs[2], " and ", inputs[1 + nrow(x)], ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                 sep = ""))
         }
 
         # C1 in C1 appears in B:C1
-        if (sum(!is.na(match(RRR[[2]][, 1], R[[2]][, 2]))) == 0) {
+        if (sum(!is.na(match(unlist(RRR[[2]][, 1]), R[[2]][, 2]))) == 0) {
             message(paste("WARNING: there is no code of ", colnames(RRR[[2]])[1], " that appears in both ",
                 inputs[2], " and ", inputs[2 + nrow(x)], ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
                 sep = ""))
@@ -392,7 +405,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
             # C1 in C1 appears in A:C1 C2 in C2 appears in C1:C2 C3 in C3
             # appears in C2:C3
-            if (sum(!is.na(match(RRR[[i]][, 1], R[[i - 1]][, 2]))) == 0) {
+            if (sum(!is.na(match(unlist(RRR[[i]][, 1]), R[[i - 1]][, 2]))) == 0) {
                 message(paste("WARNING: there is no code of ", colnames(RRR[[i]])[1],
                   " that appears in both ", inputs[i], " and ", inputs[i - 1 + nrow(x)],
                   ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
@@ -401,7 +414,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
             # C1 in C1 appears in C1:C2 C2 in C2 appears in C2:C3 C3 in C3
             # appears in C3:C4
-            if (sum(!is.na(match(RRR[[i]][, 1], R[[i]][, 1]))) == 0) {
+            if (sum(!is.na(match(unlist(RRR[[i]][, 1]), R[[i]][, 1]))) == 0) {
                 message(paste("WARNING: there is no code of ", colnames(RRR[[i]])[1],
                   " that appears in both ", inputs[i], " and ", inputs[i + nrow(x)],
                   ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
@@ -410,7 +423,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
         # Ck in Ck appears in C(k-1):Ck
-        if (sum(!is.na(match(RRR[[k + 1]][, 1], R[[k]][, 2]))) == 0) {
+        if (sum(!is.na(match(unlist(RRR[[k + 1]][, 1]), R[[k]][, 2]))) == 0) {
             message(paste("WARNING: there is no code of ", colnames(RRR[[k + 1]])[1],
                 " that appears in both ", inputs[k + 1], " and ", inputs[k + nrow(x)],
                 ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
@@ -418,7 +431,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
         # Ck in Ck appears in B:Ck
-        if (sum(!is.na(match(RRR[[k + 1]][, 1], R[[k + 1]][, 2]))) == 0) {
+        if (sum(!is.na(match(unlist(RRR[[k + 1]][, 1]), R[[k + 1]][, 2]))) == 0) {
             message(paste("WARNING: there is no code of ", colnames(RRR[[k + 1]])[1],
                 " that appears in both ", inputs[k + 1], " and ", inputs[k + 1 +
                   nrow(x)], ". When the execution of the function is over, please check the files to ensure that this is not the result of a mistake in their preparation or declaration.\n",
@@ -1664,7 +1677,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         NoMatchFromB <- rep("", nrow(correspondenceAB))
         correspondenceAB <- cbind(correspondenceAB, NoMatchFromA, NoMatchFromB)
 
-        inA <- which(is.na(match(RRR[[1]][, 1], correspondenceAB[, 1])) == TRUE)
+        inA <- which(is.na(match(unlist(RRR[[1]][, 1]), correspondenceAB[, 1])) == TRUE)
         if (length(inA) >= 1) {
             InA <- cbind(matrix(RRR[[1]][inA, 1], length(inA), 1), matrix("", length(inA),
                 idx - 1))
@@ -1674,7 +1687,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
             correspondenceAB <- rbind(correspondenceAB, InA)
         }
 
-        inB <- which(is.na(match(RRR[[nrow(x)]][, 1], correspondenceAB[, k + 2])) ==
+        inB <- which(is.na(match(unlist(RRR[[nrow(x)]][, 1]), correspondenceAB[, k + 2])) ==
             TRUE)
         if (length(inB) >= 1) {
             InB <- cbind(matrix("", length(inB), k + 1), matrix(RRR[[nrow(x)]][inB,
@@ -1685,21 +1698,21 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
             correspondenceAB <- rbind(correspondenceAB, InB)
         }
 
-        yesA <- which(!is.na(match(correspondenceAB[, 1], RRR[[1]][, 1])) == TRUE)
-        yesAC1 <- which(!is.na(match(correspondenceAB[, 1], RRR[[nrow(x) + 1]][,
-            1])) == TRUE)
-        noAC1 <- which(is.na(match(correspondenceAB[, 1], RRR[[nrow(x) + 1]][, 1])) ==
+        yesA <- which(!is.na(match(correspondenceAB[, 1], unlist(RRR[[1]][, 1]))) == TRUE)
+        yesAC1 <- which(!is.na(match(correspondenceAB[, 1], unlist(RRR[[nrow(x) + 1]][,
+            1]))) == TRUE)
+        noAC1 <- which(is.na(match(correspondenceAB[, 1], unlist(RRR[[nrow(x) + 1]][, 1]))) ==
             TRUE)
 
         correspondenceAB$NoMatchFromA[intersect(yesA, yesAC1)] <- 0
         correspondenceAB$NoMatchFromA[intersect(yesA, noAC1)] <- 1
 
-        yesB <- which(!is.na(match(correspondenceAB[, k + 2], RRR[[nrow(x)]][, 1])) ==
+        yesB <- which(!is.na(match(correspondenceAB[, k + 2], unlist(RRR[[nrow(x)]][, 1]))) ==
             TRUE)
-        yesBCk <- which(!is.na(match(correspondenceAB[, k + 2], RRR[[length(RRR)]][,
-            1])) == TRUE)
-        noBCk <- which(is.na(match(correspondenceAB[, k + 2], RRR[[length(RRR)]][,
-            1])) == TRUE)
+        yesBCk <- which(!is.na(match(correspondenceAB[, k + 2], unlist(RRR[[length(RRR)]][,
+            1]))) == TRUE)
+        noBCk <- which(is.na(match(correspondenceAB[, k + 2], unlist(RRR[[length(RRR)]][,
+            1]))) == TRUE)
 
         correspondenceAB$NoMatchFromB[intersect(yesB, yesBCk)] <- 0
         correspondenceAB$NoMatchFromB[intersect(yesB, noBCk)] <- 1
@@ -1724,10 +1737,10 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
             1, paste, collapse = " ") %in% apply(f1, 1, paste, collapse = " "))] <- 1
 
     }, error = function(e) {
-        stop(simpleError("An error has occurred and execution needs to stop. Please check the input data."))
+        stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Details line 1734:\n",e)))
     })
 
-    # message("\n")
+    message("\n")
 
     # Check the number of the unmatched codes.
     if (length(which(as.vector(correspondenceAB$Unmatched) == 1))/nrow(correspondenceAB) <
@@ -1831,13 +1844,14 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                 correspondenceAB <- cbind(correspondenceAB, A1)
             }
         }, error = function(e) {
-            stop(simpleError("An error has occurred and execution needs to stop. Please check the input data."))
+            stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Details line 1841: \n",e)))
         })
 
     } else {
         # Error message in case the percentage of unmatched codes between A and
         # B is larger than the desired threshold.
-        stop("Too many codes in either of classifications A and B cannot be mapped to any code in the other one.")
+        stop("Too many codes in either of classifications A and B cannot be mapped to any code in the other one.\n",
+             round(length(which(as.vector(correspondenceAB$Unmatched) == 1))/nrow(correspondenceAB)*100,2),"% is unmatched which exceeds the mismatch tolerance of ", MismatchTolerance)
     }
 
     tryCatch({
@@ -1885,7 +1899,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
     }, error = function(e) {
-        stop(simpleError("An error has occurred and execution needs to stop. Please check the input data."))
+        stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Deatils line 1895:\n",e)))
     })
 
     # Check so as to write (or not) the final correspondence table (final
@@ -1894,8 +1908,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     tryCatch({
 
         if (!is.null(CSVout)) {
-            readr::write_excel_csv(data.frame(Final, check.names = FALSE), file = CSVout,
-                col_names = TRUE)
+            data.table::fwrite(data.frame(Final, check.names = FALSE), file = CSVout, quote = TRUE)
             utils::write.csv(CsvNames, file = paste0(Name1, "classificationNames_", Name2),
                 row.names = FALSE)
         }
@@ -1923,7 +1936,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
         return(FinalResults)
     }, error = function(e) {
-        stop(simpleError("An error has occurred and execution needs to stop. Please check the input data."))
+        stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Details line 1932:\n",e)))
     })
 
 }

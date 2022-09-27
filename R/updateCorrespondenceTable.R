@@ -150,7 +150,8 @@
 #'  ## maximum acceptable proportions of unmatched codes between the original
 #'  ## classification A and the target classification B, and between the original
 #'  ## classification A and the updated classification A* are 0.5 and 0.3, respectively.
-#'     
+#'   
+#'  tmp_dir<-tempdir()   
 #'  A <- system.file("extdata", "NAICS2017.csv", package = "correspondenceTables")
 #'  AStar <- system.file("extdata", "NAICS2022.csv", package = "correspondenceTables")
 #'  B <- system.file("extdata", "NACE.csv", package = "correspondenceTables")
@@ -162,7 +163,7 @@
 #'                                   AStar, 
 #'                                   AB, 
 #'                                   AAStar, 
-#'                                   "updateCorrespondenceTable.csv", 
+#'                                   file.path(tmp_dir,"updateCorrespondenceTable.csv"), 
 #'                                   "none", 
 #'                                   0.5, 
 #'                                   0.3)
@@ -170,8 +171,8 @@
 #'  summary(UPC)
 #'  head(UPC$updateCorrespondenceTable)
 #'  UPC$classificationNames
-#'  unlink("updateCorrespondenceTable.csv")
-#'  unlink("classificationNames_updateCorrespondenceTable.csv")
+#'  csv_files<-list.files(tmp_dir, pattern = ".csv")
+#'  if (length(csv_files)>0) unlink(csv_files)
 #'     }
 
 
@@ -801,8 +802,7 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
     tryCatch({
 
         if (!is.null(CSVout)) {
-            readr::write_excel_csv(data.frame(Final, check.names = FALSE), file = CSVout,
-                col_names = TRUE)
+            data.table::fwrite(data.frame(Final, check.names = FALSE), file = CSVout, quote = TRUE)
             utils::write.csv(CsvNames, file = paste0(Name1, "classificationNames_", Name2),
                 row.names = FALSE)
         }

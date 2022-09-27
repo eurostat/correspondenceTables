@@ -2,7 +2,8 @@
 
 export(newCorrespondenceTable)
 export(updateCorrespondenceTable)
-importFrom(readr,write_excel_csv)
+importFrom(data.table,fread)
+importFrom(data.table,fwrite)
 importFrom(stats,aggregate)
 importFrom(utils,menu)
 importFrom(utils,read.csv)

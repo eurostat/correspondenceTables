@@ -1,4 +1,4 @@
-#' @importFrom readr write_excel_csv
+#' @importFrom data.table fread fwrite
 #' @importFrom stats aggregate
 #' @importFrom utils menu read.csv tail write.csv txtProgressBar setTxtProgressBar
  

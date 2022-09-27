@@ -147,15 +147,18 @@ library. All sample datasets may be found there.
 }
 
 \examples{
-\donttest{
+{
    ## Application of function newCorrespondenceTable() with "example.csv" being the file
-   ## that contains the names of classifications (from ISIC v4 to CPA v2.1 through CPC v2.1)
-   ## and the intermediate tables in a sparse square matrix. The desired name for the csv file
-   ## that will contain the candidate correspondence table is "newCorrespondenceTable.csv",
-   ## the reference classification is ISIC v4 ("A") and the maximum acceptable proportion of 
-   ## unmatched codes between ISIC v4 and CPC v2.1 is 0.5.
+   ## that includes the names the files  and the intermediate tables in a sparse square 
+   ## matrix containing the 100 rows of the classifications (from ISIC v4 to CPA v2.1 through 
+   ## CPC v2.1). The desired name for the csv file that will contain the candidate
+   ## correspondence table is "newCorrespondenceTable.csv", the reference classification is 
+   ## ISIC v4 ("A") and the maximum acceptable proportion of unmatched codes between
+   ## ISIC v4 and CPC v2.1 is 0.56 (this is the minimum mismatch tolerance for the first 100 row 
+   ## as 55.5\% of the code of ISIC v4 is unmatched).
      
-     A <- read.csv(system.file("extdata", "names1.csv", package = "correspondenceTables"), 
+     tmp_dir<-tempdir()
+     A <- read.csv(system.file("extdata", "example.csv", package = "correspondenceTables"), 
                    header = FALSE, 
                    sep = ",")
      for (i in 1:nrow(A)) {
@@ -163,15 +166,21 @@ library. All sample datasets may be found there.
          if (A[i,j]!="") {
            A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
        }}}
-     write.table(x = A, file = "example.csv", row.names = FALSE, col.names = FALSE, sep = ",")
+     write.table(x = A, 
+                 file = file.path(tmp_dir,"example.csv"), 
+                 row.names = FALSE, 
+                 col.names = FALSE, 
+                 sep = ",")
         
-     NCT<-newCorrespondenceTable("example.csv", "newCorrespondenceTable.csv", "A", 0.5)
+     NCT<-newCorrespondenceTable(file.path(tmp_dir,"example.csv"), 
+                                 file.path(tmp_dir,"newCorrespondenceTable.csv"), 
+                                 "A", 
+                                 0.56)
      
      summary(NCT)
      head(NCT$newCorrespondenceTable)
      NCT$classificationNames
-     unlink("example.csv")
-     unlink("newCorrespondenceTable.csv")
-     unlink("classificationNames_newCorrespondenceTable.csv")
+     csv_files<-list.files(tmp_dir, pattern = ".csv")
+     unlink(csv_files)
     }
 }
