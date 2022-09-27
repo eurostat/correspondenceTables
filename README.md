@@ -12,10 +12,8 @@ status](https://github.com/eurostat/correspondenceTables/workflows/R-CMD-check/b
 <!-- badges: end -->
 
 # correspondenceTables
+
 Creating or updating correspondence tables between two statistical classifications
-
-## installation
-
 
 ## installation
 
@@ -30,7 +28,6 @@ or use the development version from GitHub
 ```R
 devtools::install_github("eurostat/correspondenceTables")
 ```
-
 
 ## background
 
