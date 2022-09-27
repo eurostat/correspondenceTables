@@ -4,7 +4,8 @@
 - replacing `readr::write_excel_csv()` with `data.table::fwrite()`
 - removing absolute paths from vignettes and examples
 - the example of `newCorrespondenceTable()` using only the 100 hundred rows of the classifications
-- more details in the error messages 
+- more details in the error messages
+- CRAN release
 
 # correspondenceTables 0.7.3
 

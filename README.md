@@ -2,7 +2,13 @@
 [![last commit](https://img.shields.io/github/last-commit/eurostat/correspondenceTables?style=flat)](https://github.com/eurostat/correspondenceTables/commits/)
 [![R build
 status](https://github.com/eurostat/correspondenceTables/workflows/R-CMD-check/badge.svg)](https://github.com/eurostat/correspondenceTables/actions)
+[![dependencies](https://tinyverse.netlify.com/badge/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
+[![CRAN version](https://www.r-pkg.org/badges/version/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
+[![CRAN status](https://cranchecks.info/badges/flavor/release/correspondenceTables)](https://cran.r-project.org/web/checks/check_results_correspondenceTables.html)
 [![license](https://img.shields.io/badge/license-EUPL-success)](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
+[![weekly downloads](https://cranlogs.r-pkg.org/badges/last-week/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
+[![monthly downloads](https://cranlogs.r-pkg.org/badges/correspondenceTables)]https://CRAN.R-project.org/package=correspondenceTables)
+[![all downloads](https://cranlogs.r-pkg.org/badges/grand-total/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 <!-- badges: end -->
 
 # correspondenceTables
@@ -10,20 +16,25 @@ Creating or updating correspondence tables between two statistical classificatio
 
 ## installation
 
-'correspondenceTables' can be installed from source from GitHub
+
+## installation
+
+'correspondenceTables' can be installed from [CRAN](https://CRAN.R-project.org/package=correspondenceTables) by 
+
+```R
+install.packages("correspondenceTables")
+```
+
+or use the development version from GitHub
+
 ```R
 devtools::install_github("eurostat/correspondenceTables")
 ```
 
-or
-
-```R
-remotes::install_github("eurostat/correspondenceTables")
-```
 
 ## background
 
-This package is a tool to help you in the creation and updates of correspondence table between 2 classification like NACE, CPA, CN, etc.
+This package is a tool to help you in the creation and updates of a correspondence table between 2 classification like NACE, CPA, CN, etc.
 
 ## content
 
