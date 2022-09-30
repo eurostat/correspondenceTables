@@ -1,3 +1,7 @@
+# correspondenceTables 0.7.5
+
+- updating the vignette showing the initializing code part
+
 # correspondenceTables 0.7.4
 
 - aligning to the second round of comments from CRAN 
