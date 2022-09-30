@@ -8,17 +8,20 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, collapse=TRUE}
-library(correspondenceTables)
+```{r include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-tmp_dir<-tempdir()
-csv_files<-list.files(tmp_dir, pattern = ".csv")
-if (length(csv_files)>0) unlink(csv_files)
 ```
 
 This vignette provides information about applying the correspondenceTables package on the sample datasets included in it.
 
-ATTENTION: please set as working directory a folder different than the folder in which the package has been installed.
+ATTENTION: please set as working directory a folder different than the folder in which the package has been installed, for instance as follows:
+
+```{r}
+library(correspondenceTables)
+tmp_dir<-tempdir()
+csv_files<-list.files(tmp_dir, pattern = ".csv")
+if (length(csv_files)>0) unlink(csv_files)
+```
 
 LOCAL COPIES OF THE SAMPLE DATA
 
