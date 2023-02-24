@@ -1,0 +1,8 @@
+﻿NACE2code,NACE21code,CPAcode,CodeChange,Review,Redundancy,Redundancy_keep,NoMatchToAStar,NoMatchToB,NoMatchFromAStar,NoMatchFromB,LabelChange,"List[, (idx.thres + 4):ncol(List)]"
+11,11,110,0,0,0,0,0,0,0,0,0,Pears
+10,12,101,1,0,0,0,0,0,0,0,0,Apples
+10,12,102,1,0,0,0,0,0,0,0,0,Apples
+20,20,200,1,0,0,0,0,0,0,0,0,Oranges
+21,20,210,1,0,0,0,0,0,0,0,0,Oranges
+30,30,300,0,0,0,0,0,0,0,0,0,Peaches
+31,31,310,0,0,0,0,0,0,0,0,0,Nectarines

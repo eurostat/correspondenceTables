@@ -49,11 +49,11 @@ AB <- system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables
 AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
 ```
 
-Execute the following code line to apply function updateCorrespondenceTable() on these data.
+Execute the following code line to apply function updateCorrespondenceTable() on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
 ```{r}
 UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase1.csv"),
-                                 "B", 0.4, 0.4)
+                                 "B", 0.4, 0.4, TRUE)
 print(UPC[[1]][1:10, 1:7])
 print(UPC[[2]])
 ```
@@ -70,15 +70,15 @@ AB <- system.file("extdata", "CN2021_PRODCOM2021.csv", package = "correspondence
 AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
 ```
 
-Execute the following code line to apply function updateCorrespondenceTable() on these data.
+Execute the following code line to apply function updateCorrespondenceTable() on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
 ```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase2.csv"), "A", 0.4, 0.3)
+UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase2.csv"), "A", 0.4, 0.3, TRUE)
 ```
 
 Case 3
 
-Execute the following code in order to get the path of the required input files.
+Execute the following code in order to get the path of the required input files. 
 
 ```{r}
 A <- system.file("extdata", "NAICS2017.csv", package = "correspondenceTables")
@@ -88,10 +88,10 @@ AB <- system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTabl
 AAStar <- system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables")
 ```
 
-Execute the following code line to apply function updateCorrespondenceTable() on these data.
+Execute the following code line to apply function updateCorrespondenceTable() on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
 ```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase3.csv"), "none", 0.5, 0.3)
+UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase3.csv"), "none", 0.5, 0.3, TRUE)
 ```
 
 Case 4
@@ -106,15 +106,15 @@ AB <- system.file("extdata", "CN2021_NST2007.csv", package = "correspondenceTabl
 AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
 ```
 
-Execute the following code line to apply function updateCorrespondenceTable() on these data.
+Execute the following code line to apply function updateCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
 ```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase4.csv"), "B", 0.4, 0.3)
+UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase4.csv"), "B", 0.4, 0.3, TRUE)
 ```
 
 Case 5
 
-Execute the following code in order to get the path of the required input files.
+Execute the following code in order to get the path of the required input files. 
 
 ```{r}
 A <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
@@ -124,10 +124,10 @@ AB <- system.file("extdata", "CN2021_SITC4.csv", package = "correspondenceTables
 AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
 ```
 
-Execute the following code line to apply function updateCorrespondenceTable() on these data.
+Execute the following code line to apply function updateCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
 ```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase5.csv"), "B", 0.3, 0.7)
+UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase5.csv"), "B", 0.3, 0.7, TRUE)
 ```
 
 Case 6
@@ -142,10 +142,10 @@ AB <- system.file("extdata", "CN2021_BEC4.csv", package = "correspondenceTables"
 AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
 ```
 
-Execute the following code line to apply function updateCorrespondenceTable() on these data.
+Execute the following code line to apply function updateCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
 ```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase6.csv"), "B", 0.3, 0.6)
+UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase6.csv"), "B", 0.3, 0.6, FALSE)
 ```
 
 
@@ -174,10 +174,10 @@ Case 1
 fullPath("names1.csv", "names.csv")
 ```
 
-Execute the following code to apply function newCorrespondenceTable() on these data.
+Execute the following code to apply function newCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
 ```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase1.csv"), "A", 0.5))
+system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase1.csv"), "A", 0.5, FALSE))
 ```
 
 ```{r}
@@ -191,10 +191,10 @@ Case 2
 fullPath("names2.csv", "names.csv")
 ```
 
-Execute the following code to apply function newCorrespondenceTable() on these data.
+Execute the following code to apply function newCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
 ```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase2.csv"), "B", 0.5))
+system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase2.csv"), "B", 0.5, FALSE))
 ```
 
 Case 3
@@ -203,10 +203,10 @@ Case 3
 fullPath("names3.csv", "names.csv")
 ```
 
-Execute the following code to apply function newCorrespondenceTable() on these data.
+Execute the following code to apply function newCorrespondenceTable() on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
 ```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase3.csv"), "B", 0.5))
+system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase3.csv"), "B", 0.5, TRUE))
 ```
 
 Case 4
@@ -215,20 +215,16 @@ Case 4
 fullPath("names4.csv", "names.csv")
 ```
 
-Execute the following code to apply function newCorrespondenceTable() on these data.
+Execute the following code to apply function newCorrespondenceTable() on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
 ```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase4.csv"), "none", 0.96))
+system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase4.csv"), "none", 0.96, TRUE))
 ```
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
 csv_files<-list.files(tmp_dir, pattern = ".csv")
 if (length(csv_files)>0) unlink(csv_files)
 ```
-
-
-
-
 
 
 

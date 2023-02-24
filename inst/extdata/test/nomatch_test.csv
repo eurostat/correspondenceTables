@@ -1,0 +1,38 @@
+OldCode (A),NewCode (Astar),OtherCode (B),NoMatchToAStar,NoMatchToB,NoMatchFromAStar,NoMatchFromB,Case no,OldCode_OldLabel,NewCode_NewLabel,OtherCode_OtherLabel,OldCode - NewCode_ConcordanceComment,OldCode - OtherCode_CorrespondenceComment
+A13-0,,,1,1,,,12,,,,Only A13-0,Only A13-0
+A13-1,,,1,1,,,12,Activity A13-1,,,Only A13-1,Only A13-1
+A7-1,,,1,1,,,12,Activity A7-1,,,,Only A7-1
+A7-0,,,1,1,,,12,,,,,Only A7-0
+A10-1,,,1,1,,,12,Activity A10-1,,,Only A10-1,
+A10-0,,,1,1,,,12,,,,Only A10-0,
+A14-0,,B14-0,1,0,,,11,,,,Only A14-0,From A14-0 to B14-0
+A14-1,,B14-1,1,0,,,11,Activity A14-1,,,Only A14-1,From A14-1 to B14-1
+A15-0,,B15-0,1,0,,0,10,,,Product B15-0,Only A15-0,From A15-0 to B15-0
+A15-1,,B15-1,1,0,,0,10,Activity A15-1,,Product B15-1,Only A15-1,From A15-1 to B15-1
+A8-0,,B8-0,1,0,,,11,,,,,From A8-0 to B8-0
+A8-1,,B8-1,1,0,,,11,Activity A8-1,,,,From A8-1 to B8-1
+A9-0,,B9-0,1,0,,0,10,,,Product B9-0,,From A9-0 to B9-0
+A9-1,,B9-1,1,0,,0,10,Activity A9-1,,Product B9-1,,From A9-1 to B9-1
+A11-0,A*11-0,,0,1,,,8,,,,From A11-0 to A*11-0,
+A11-1,A*11-1,,0,1,,,8,Activity A11-1,,,From A11-1 to A*11-1,
+A12-0,A*12-0,,0,1,0,,3,,Activity A*12-0,,From A12-0 to A*12-0,
+A12-1,A*12-1,,0,1,0,,3,Activity A12-1,Activity A*12-1,,From A12-1 to A*12-1,
+A16-0,A*16-0,,0,1,,,8,,,,From A16-0 to A*16-0,Only A16-0
+A16-1,A*16-1,,0,1,,,8,Activity A16-1,,,From A16-1 to A*16-1,Only A16-1
+A17-0,A*17-0,B17-0,0,0,,,7,,,,From A17-0 to A*17-0,From A17-0 to B17-0
+A17-1,A*17-1,B17-1,0,0,,,7,Activity A17-1,,,From A17-1 to A*17-1,From A17-1 to B17-1
+A18-0,A*18-0,B18-0,0,0,,0,6,,,Product B18-0,From A18-0 to A*18-0,From A18-0 to B18-0
+A18-1,A*18-1,B18-1,0,0,,0,6,Activity A18-1,,Product B18-1,From A18-1 to A*18-1,From A18-1 to B18-1
+A19-0,A*19-0,,0,1,0,,3,,Activity A*19-0,,From A19-0 to A*19-0,Only A19-0
+A19-1,A*19-1,,0,1,0,,3,Activity A19-1,Activity A*19-1,,From A19-1 to A*19-1,Only A19-1
+A20-0,A*20-0,B20-0,0,0,0,,2,,Activity A*20-0,,From A20-0 to A*20-0,From A20-0 to B20-0
+A20-1,A*20-1,B20-1,0,0,0,,2,Activity A20-1,Activity A*20-1,,From A20-1 to A*20-1,From A20-1 to B20-1
+A21-0,A*21-0,B21-0,0,0,0,0,1,,Activity A*21-0,Product B21-0,From A21-0 to A*21-0,From A21-0 to B21-0
+A21-1,A*21-1,B21-1,0,0,0,0,1,Activity A21-1,Activity A*21-1,Product B21-1,From A21-1 to A*21-1,From A21-1 to B21-1
+A22-1,,,1,1,,,12,Activity A22-1,,,,
+,A*5-0,,,1,1,,5,,Activity A*5-0,,,
+,A*6-0,,,1,0,,4,,Activity A*6-0,,Only A*6-0,
+,A*4-0,,,1,,,9,,,,Only A*4-0,
+,,B2-0,1,,,1,15,,,Product B2-0,,
+,,B3-0,1,,,0,13,,,Product B3-0,,Only B3-0
+,,B1-0,1,,,,14,,,,,Only B1-0

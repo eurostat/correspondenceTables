@@ -6,7 +6,9 @@ Version: 0.7.5
 Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
       person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
       person("Martin", "Karlberg", role = "aut"),
-      person("Mátyás", "Mészáros", email = "matyas.meszaros@ec.europa.eu", role = "cre"))
+      person("Mátyás", "Mészáros", email = "matyas.meszaros@ec.europa.eu", role = "cre"),
+      person("Martina", "Patone", role = "aut"),
+      person("Erkand", "Muraku", role = "aut"))
 Description: 
     A candidate correspondence table between two classifications can be created when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications. 
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
@@ -15,10 +17,10 @@ Encoding: UTF-8
 Imports: data.table
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown, tinytest
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/eurostat/correspondenceTables
 BugReports: https://github.com/eurostat/correspondenceTables/issues
 Maintainer: Mátyás Mészáros <matyas.meszaros@ec.europa.eu>
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
