@@ -94,8 +94,6 @@
 #'     \item For each row of the candidate correspondence table, the value of "Redundancy" is equal to \code{1} if the row
 #'     contains a combination of codes of A and B that also appears in at least one other row of the candidate
 #'     correspondence table.
-#'     \item When "Redundancy_Trim" is equal to \code{FALSE} the "Redundancy_keep" flag is created to identify with value \code{1}
-#'     the records that will be kept if trimming is performed.
 #'     \item For each row of the candidate correspondence table, the value of "Unmatched" is equal to \code{1} if the row
 #'     contains a code of A but no code of B or if it contains a code of B but no code of A. The value of the flag is
 #'     \code{0} if the row contains codes for both A and B.

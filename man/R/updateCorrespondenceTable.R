@@ -106,8 +106,6 @@
 #'     \item For each row of the updated correspondence table, the value of "Redundancy" is equal to \code{1} if the row contains
 #'     a combination of codes of A* and B that also appears in at least one other row of the updated correspondence table. The
 #'     value of the flag is empty if both the code of A* and the code of B are missing.
-#'     \item When "Redundancy_Trim" is equal to \code{FALSE} the "Redundancy_keep" flag is created to identify with value \code{1}
-#'     the records that will be kept if trimming is performed.
 #'     \item For each row of the updated correspondence table, the value of "NoMatchToAStar" is equal to \code{1} if there is a
 #'     code for A,  for B, or for both, but no code for A*. The value of the flag is \code{0} if there are codes for both A and
 #'     A* (regardless of whether there is a code for B or not). Finally, the value of "NoMatchToAStar" is empty if neither A nor B

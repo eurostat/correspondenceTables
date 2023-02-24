@@ -15,10 +15,10 @@ Encoding: UTF-8
 Imports: data.table
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown, tinytest
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/eurostat/correspondenceTables
 BugReports: https://github.com/eurostat/correspondenceTables/issues
 Maintainer: Mátyás Mészáros <matyas.meszaros@ec.europa.eu>
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
