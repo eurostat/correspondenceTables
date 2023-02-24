@@ -128,6 +128,7 @@ ABC_Trim = utils::read.csv(ABC_Trim, sep = ",", header = TRUE, check.names = FAL
 expect_equal(TEST[[1]][1:5], ABC)
 expect_equal(TEST_trim[[1]][1:4], ABC_Trim)
 
+file.remove(file.path(dir,"names.csv"))
 
 ##new 2
 fullPath("names2.csv", "names.csv")
@@ -151,3 +152,5 @@ test = test[order(as.numeric(test$sort)),]
 TEST2_T = TEST2_T[order(as.numeric(TEST2_T$sort)),]
 
 expect_equal(test[,15], TEST2_T[,13])
+
+file.remove(file.path(dir,"names.csv"))
