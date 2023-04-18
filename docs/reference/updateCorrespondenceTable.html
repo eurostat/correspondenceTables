@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">correspondenceTables</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -72,7 +72,8 @@
 <span>  CSVout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Reference <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  MismatchToleranceB <span class="op">=</span> <span class="fl">0.2</span>,</span>
-<span>  MismatchToleranceAStar <span class="op">=</span> <span class="fl">0.2</span></span>
+<span>  MismatchToleranceAStar <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  Redundancy_trim <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -95,140 +96,153 @@
 
 
 <dt>AAStar</dt>
-<dd><p>A string of the type character containing the name of a csv file that contains the <em>concordance table</em> A:A*, 
+<dd><p>A string of the type character containing the name of a csv file that contains the <em>concordance table</em> A:A*,
 which contains the mapping between the codes of the two versions of the classification.</p></dd>
 
 
 <dt>CSVout</dt>
-<dd><p>The preferred name for the <em>output csv files</em> that will contain the updated correspondence table and 
-information about the classifications involved. The valid values are <code>NULL</code> or strings of type <code>character</code>. If 
-the selected value is <code>NULL</code>, the default, no output file is produced. If the value is a string, then the output is 
+<dd><p>The preferred name for the <em>output csv files</em> that will contain the updated correspondence table and
+information about the classifications involved. The valid values are <code>NULL</code> or strings of type <code>character</code>. If
+the selected value is <code>NULL</code>, the default, no output file is produced. If the value is a string, then the output is
 exported into two csv files whose names contain the provided name (see "Value" below).</p></dd>
 
 
 <dt>Reference</dt>
-<dd><p>The reference classification among A and B. If a classification is the reference to the other, and 
-hence <em>hierarchically superior</em> to it, each code of the other classification is expected to be mapped to at most one 
-code of the reference classification. The valid values are <code>"none"</code>, <code>"A"</code>, and <code>"B"</code>. If the selected 
+<dd><p>The reference classification among A and B. If a classification is the reference to the other, and
+hence <em>hierarchically superior</em> to it, each code of the other classification is expected to be mapped to at most one
+code of the reference classification. The valid values are <code>"none"</code>, <code>"A"</code>, and <code>"B"</code>. If the selected
 value is <code>"A"</code> or <code>"B"</code>, a "Review" flag column is included in the output (see "Explanation of the flags" below).</p></dd>
 
 
 <dt>MismatchToleranceB</dt>
-<dd><p>The maximum acceptable proportion of rows in the updated correspondence table which contain no 
-code of the target classification B, among those which contain a code of A, of A*, or of both. The default value 
+<dd><p>The maximum acceptable proportion of rows in the updated correspondence table which contain no
+code of the target classification B, among those which contain a code of A, of A*, or of both. The default value
 is <code>0.2</code>. The valid values are real numbers in the interval [0, 1].</p></dd>
 
 
 <dt>MismatchToleranceAStar</dt>
-<dd><p>The maximum acceptable proportion of rows in the updated correspondence table which contain 
-no code of the updated classification A*, among those which contain a code of A, of B, or of both. The default value 
+<dd><p>The maximum acceptable proportion of rows in the updated correspondence table which contain
+no code of the updated classification A*, among those which contain a code of A, of B, or of both. The default value
 is <code>0.2</code>. The valid values are real numbers in the interval [0, 1].</p></dd>
+
+
+<dt>Redundancy_trim</dt>
+<dd><p>An argument used to facilitate the trimming of the redundant records. The valid logical values are <code>TRUE</code> or  <code>FALSE</code>.
+The default value is <code>TRUE</code>, which removes all redundant records, replacing the values of Acode Alabel and Asupp with the value ‘Multiple’ (to indicate that multiple A records are involved). If the multiple A records are the same, their value will not be replaced. 
+The other values is <code>FALSE</code>, which shows redundant records together with the redundancy flag.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p><code>updateCorrespondenceTable()</code> returns a list with two elements, both of which are data frames.</p><ul><li><p>The first element is the updated correspondence table A*:B augmented with flags "CodeChange", "Review" (if 
-    applicable), "Redundancy", "NoMatchToAStar", "NoMatchToB", "NoMatchFromAStar", "NoMatchFromB", "LabelChange", and 
+<p><code>updateCorrespondenceTable()</code> returns a list with two elements, both of which are data frames.</p><ul><li><p>The first element is the updated correspondence table A*:B augmented with flags "CodeChange", "Review" (if
+    applicable), "Redundancy", "NoMatchToAStar", "NoMatchToB", "NoMatchFromAStar", "NoMatchFromB", "LabelChange", and
     with all the additional columns of the <code>A</code>,  <code>B</code>, <code>AStar</code>, <code>AB</code> and <code>AAStar</code> files.</p></li>
-<li><p>The second element contains the names of the original classification A, the target classification B, and the 
+<li><p>The second element contains the names of the original classification A, the target classification B, and the
     updated version A*, as read from the top left-hand side cell of the respective input files.</p></li>
-<li><p>If the value of argument <code>CSVout</code> is a string of type <code>character</code>, the elements of the list are 
-    exported into files of csv format. The name of the file for the first element is the value of argument <code>CSVout</code> 
-    and the name of the file for the second element is classificationNames_<code>CSVout</code>. For example, if 
-    <code>CSVout</code> = "updateCorrespondenceTable.csv", the elements of the list are exported into 
+<li><p>If the value of argument <code>CSVout</code> is a string of type <code>character</code>, the elements of the list are
+    exported into files of csv format. The name of the file for the first element is the value of argument <code>CSVout</code>
+    and the name of the file for the second element is classificationNames_<code>CSVout</code>. For example, if
+    <code>CSVout</code> = "updateCorrespondenceTable.csv", the elements of the list are exported into
     "updateCorrespondenceTable.csv" and "classificationNames_updateCorrespondenceTable.csv", respectively.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>File and file name requirements:</p><ul><li><p>The files that correspond to arguments <code>A</code>,  <code>B</code>, <code>AStar</code>, <code>AB</code>, <code>AAStar</code> must be 
-        in <em>csv format with comma as delimiter</em>. If full paths are not provided, then these files must be available 
+    <p>File and file name requirements:</p><ul><li><p>The files that correspond to arguments <code>A</code>,  <code>B</code>, <code>AStar</code>, <code>AB</code>, <code>AAStar</code> must be
+        in <em>csv format with comma as delimiter</em>. If full paths are not provided, then these files must be available
         in the working directory. No two filenames provided must be identical.</p></li>
-<li><p>If any of the two files where the output will be stored is read protected (for instance because it is open 
+<li><p>If any of the two files where the output will be stored is read protected (for instance because it is open
         elsewhere) an error message will be reported and execution will be halted.</p></li>
-</ul><p>Classification table requirements:</p><ul><li><p>The files that correspond to arguments <code>A</code>,  <code>B</code> and <code>AStar</code> must contain at least one column 
-        and at least two rows. The first column contains the codes of the respective classification. The first row contains 
+</ul><p>Classification table requirements:</p><ul><li><p>The files that correspond to arguments <code>A</code>,  <code>B</code> and <code>AStar</code> must contain at least one column
+        and at least two rows. The first column contains the codes of the respective classification. The first row contains
         column headers. The name of the first column is the name of the respective classification (e.g., "CN 2021").</p></li>
-<li><p>The classification codes contained in a classification file (expected in its first column as mentioned above) 
+<li><p>The classification codes contained in a classification file (expected in its first column as mentioned above)
         must be unique. No two identical codes are allowed in the column.</p></li>
-<li><p>If any of the files that correspond to arguments <code>A</code>,  <code>B</code> and <code>AStar</code> has additional columns 
+<li><p>If any of the files that correspond to arguments <code>A</code>,  <code>B</code> and <code>AStar</code> has additional columns
         the first one of them is considered as containing the labels of the respective classification codes.</p></li>
-</ul><p>Correspondence and concordance table requirements:</p><ul><li><p>The files that correspond to arguments <code>AB</code> and <code>AAStar</code> must contain at least two columns and at least 
-        two rows. The first column of the file that corresponds to <code>AB</code> contains the codes of classification A. The second 
-        column contains the codes of classification B. Similar requirements apply to the file that corresponds to <code>AAStar</code>. 
-        The first row of each of these files contains column headers. The names of the first two columns are the names of the 
+</ul><p>Correspondence and concordance table requirements:</p><ul><li><p>The files that correspond to arguments <code>AB</code> and <code>AAStar</code> must contain at least two columns and at least
+        two rows. The first column of the file that corresponds to <code>AB</code> contains the codes of classification A. The second
+        column contains the codes of classification B. Similar requirements apply to the file that corresponds to <code>AAStar</code>.
+        The first row of each of these files contains column headers. The names of the first two columns are the names of the
         respective classifications.</p></li>
-<li><p>The pairs of classification codes contained in the concordance and the correspondence table files (expected in 
-        their first two columns as mentioned above) must be unique. No two identical pairs of codes are allowed in the first 
+<li><p>The pairs of classification codes contained in the concordance and the correspondence table files (expected in
+        their first two columns as mentioned above) must be unique. No two identical pairs of codes are allowed in the first
         two columns.</p></li>
-</ul><p>Interdependency requirements:</p><ul><li><p>At least one code of classification A must appear in both the file of concordance table A:A* and the file of 
+</ul><p>Interdependency requirements:</p><ul><li><p>At least one code of classification A must appear in both the file of concordance table A:A* and the file of
         correspondence table A:B.</p></li>
-<li><p>At least one code of classification A* must appear in both the file of 
-        classification A* and the file of 
+<li><p>At least one code of classification A* must appear in both the file of
+        classification A* and the file of
         concordance table A:A*.</p></li>
-<li><p>At least one code of classification B must appear in both the file of classification B and the file of 
+<li><p>At least one code of classification B must appear in both the file of classification B and the file of
         correspondence table A:B.</p></li>
-</ul><p>Mismatch tolerance:</p><ul><li><p>The ratio that is compared with <code>MismatchToleranceB</code> has as numerator the number of rows of the updated 
-        correspondence table which contain a code for A, for A*, or for both, but no code for B and as denominator the number of 
-        rows which contain a code for A, for A*, or for both (regardless of whether there is a code for B or not). If the ratio 
+</ul><p>Mismatch tolerance:</p><ul><li><p>The ratio that is compared with <code>MismatchToleranceB</code> has as numerator the number of rows of the updated
+        correspondence table which contain a code for A, for A*, or for both, but no code for B and as denominator the number of
+        rows which contain a code for A, for A*, or for both (regardless of whether there is a code for B or not). If the ratio
         exceeds <code>MismatchToleranceB</code> the execution of the function is halted.</p></li>
-<li><p>The ratio that is compared with <code>MismatchToleranceAStar</code> has as numerator the number of rows of the updated 
-        correspondence table which contain a code for A, for B, or for both, but no code for A* and as denominator the number of 
-        rows which contain a code for A, for B*, or for both (regardless of whether there is a code 
+<li><p>The ratio that is compared with <code>MismatchToleranceAStar</code> has as numerator the number of rows of the updated
+        correspondence table which contain a code for A, for B, or for both, but no code for A* and as denominator the number of
+        rows which contain a code for A, for B*, or for both (regardless of whether there is a code
         for A* or not). If the ratio exceeds <code>MismatchToleranceAStar</code> the execution of the function is halted.</p></li>
-</ul><p>If any of the conditions required from the arguments is violated an error message is produced and execution is stopped.</p>
-    </div>
+</ul></div>
     <div id="explanation-of-the-flags">
     <h2>Explanation of the flags</h2>
     
 
 
-<ul><li><p>For each row of the updated correspondence table, the value of "CodeChange" is equal to <code>1</code> if the code of 
-    A contained in this row maps -in this or any other row of the table- to a different code of A*, and <code>0</code> otherwise. 
-    The value of "CodeChange" is empty if either the code of A, or the code of A*, or both are missing.</p></li>
-<li><p>The "Review" flag is produced only if argument <code>Reference</code> has been set equal to "<code>A</code>" or "<code>B</code>". 
-    For each row of the updated correspondence table, if <code>Reference</code> = "<code>A</code>" the value of "Review" is equal to 
-    <code>1</code> if the code of B maps to more than one code of A*, and <code>0</code> otherwise. If <code>Reference</code> = "<code>B</code>" the 
-    value of "Review" is equal to <code>1</code> if the code of A* maps to more than one code of B, and <code>0</code> otherwise. The value 
+<ul><li><p>For each row of the updated correspondence table, the value of "CodeChange" is equal to <code>1</code> if the code of A (or A*)
+     contained in this row maps -in this or any other row of the table- to a different code of A* (or A), otherwise the 
+     "CodeChange" is equal to <code>0</code>. The value of "CodeChange" is empty if either the code of A, or the code of A*, or both are missing.</p></li>
+<li><p>The "Review" flag is produced only if argument <code>Reference</code> has been set equal to "<code>A</code>" or "<code>B</code>".
+    For each row of the updated correspondence table, if <code>Reference</code> = "<code>A</code>" the value of "Review" is equal to
+    <code>1</code> if the code of B maps to more than one code of A*, and <code>0</code> otherwise. If <code>Reference</code> = "<code>B</code>" the
+    value of "Review" is equal to <code>1</code> if the code of A* maps to more than one code of B, and <code>0</code> otherwise. The value
     of the flag is empty if either the code of A*, or the code of B, or both are missing.</p></li>
-<li><p>For each row of the updated correspondence table, the value of "Redundancy" is equal to <code>1</code> if the row contains 
-    a combination of codes of A* and B that also appears in at least one other row of the updated correspondence table. The 
+<li><p>For each row of the updated correspondence table, the value of "Redundancy" is equal to <code>1</code> if the row contains
+    a combination of codes of A* and B that also appears in at least one other row of the updated correspondence table. The
     value of the flag is empty if both the code of A* and the code of B are missing.</p></li>
-<li><p>For each row of the updated correspondence table, the value of "NoMatchToAStar" is equal to <code>1</code> if there is a 
-    code for A,  for B, or for both, but no code for A*. The value of the flag is <code>0</code> if there are codes for both A and 
-    A* (regardless of whether there is a code for B or not). Finally, the value of "NoMatchToAStar" is empty if neither A nor B 
+<li><p>When "Redundancy_Trim" is equal to <code>FALSE</code> the "Redundancy_keep" flag is created to identify with value <code>1</code>
+    the records that will be kept if trimming is performed.</p></li>
+<li><p>For each row of the updated correspondence table, the value of "NoMatchToAStar" is equal to <code>1</code> if there is a
+    code for A,  for B, or for both, but no code for A*. The value of the flag is <code>0</code> if there are codes for both A and
+    A* (regardless of whether there is a code for B or not). Finally, the value of "NoMatchToAStar" is empty if neither A nor B
     have a code in this row.</p></li>
-<li><p>For each row of the updated correspondence table, the value of "NoMatchToB" is equal to <code>1</code> if there is a code 
-    for A,  for A*, or for both, but no code for B. The value of the flag is <code>0</code> if there are codes for both A and B 
-    (regardless of whether there is a code for A* or not). Finally, the value of "NoMatchToB" is empty if neither A nor 
+<li><p>For each row of the updated correspondence table, the value of "NoMatchToB" is equal to <code>1</code> if there is a code
+    for A,  for A*, or for both, but no code for B. The value of the flag is <code>0</code> if there are codes for both A and B
+    (regardless of whether there is a code for A* or not). Finally, the value of "NoMatchToB" is empty if neither A nor
     A* have a code in this row.</p></li>
-<li><p>For each row of the updated correspondence table, the value of "NoMatchFromAStar" is equal to <code>1</code> if the row 
-    contains a code of A* that appears in the table of classification A* but not in the concordance table A:A*. The value of 
-    the flag is <code>0</code> if the row contains a code of A* that appears in both the table of classification 
-    A* and the concordance table A:A*. Finally, the value of the flag is empty if the row contains no code of A* or if it 
+<li><p>For each row of the updated correspondence table, the value of "NoMatchFromAStar" is equal to <code>1</code> if the row
+    contains a code of A* that appears in the table of classification A* but not in the concordance table A:A*. The value of
+    the flag is <code>0</code> if the row contains a code of A* that appears in both the table of classification
+    A* and the concordance table A:A*. Finally, the value of the flag is empty if the row contains no code of A* or if it
     contains a code of A* that appears in the concordance table A:A* but not in the table of classification A*.</p></li>
-<li><p>For each row of the updated correspondence table, the value of "NoMatchFromB" is equal to <code>1</code> if the row 
-    contains a code of B that appears in the table of classification B but not in the correspondence table A:B. The value of 
-    the flag is <code>0</code> if the row contains a code of B that appears in both the table of classification B and the 
-    correspondence table A:B. Finally, the value of the flag is empty if the row contains no code of B or if it contains a code 
+<li><p>For each row of the updated correspondence table, the value of "NoMatchFromB" is equal to <code>1</code> if the row
+    contains a code of B that appears in the table of classification B but not in the correspondence table A:B. The value of
+    the flag is <code>0</code> if the row contains a code of B that appears in both the table of classification B and the
+    correspondence table A:B. Finally, the value of the flag is empty if the row contains no code of B or if it contains a code
     of B that appears in the correspondence table A:B but not in the table of classification B.</p></li>
-<li><p>For each row of the updated correspondence table, the value of "LabelChange" is equal to <code>1</code> if the labels of 
-    the codes of A and A* are different, and <code>0</code> if they are the same. Finally, the value of "LabelChange" is empty if 
-    either of the labels, or both labels, are missing. Lower and upper case are considered the same, and punctuation characters 
+<li><p>For each row of the updated correspondence table, the value of "LabelChange" is equal to <code>1</code> if the labels of
+    the codes of A and A* are different, and <code>0</code> if they are the same. Finally, the value of "LabelChange" is empty if
+    either of the labels, or both labels, are missing. Lower and upper case are considered the same, and punctuation characters
     are ignored when comparing code labels.</p></li>
+<li><p>The argument "Redundancy_trim" is used to delete all the redundancies which are mapping correctly. If the analysis 
+   concludes that the A*code / Bcode mapping is correct for all cases involving redundancies, then an action is needed to remove 
+   the redundancies. If the selected value is <code>TRUE</code>, all redundant records are removed and kept only one record for each unique 
+   combination. For this record retained, the Acodes, the Alabel and the Asupp information is replaced with ‘multiple’. If the multiple 
+   A records are the same, their value will not be replaced. If the selected value is <code>FALSE</code>, no trimming is executed so redundant 
+   records are shown, together with the redundancy flag.</p></li>
 </ul></div>
     <div id="sample-datasets-included-in-the-package">
     <h2>Sample datasets included in the package</h2>
     
 
 
-<p>Running <code>browseVignettes("correspondenceTables")</code> in the console opens an html page in the user's default browser. 
-    Selecting HTML from the menu, users can read information about the use of the sample datasets that are included in the 
+<p>Running <code>browseVignettes("correspondenceTables")</code> in the console opens an html page in the user's default browser.
+    Selecting HTML from the menu, users can read information about the use of the sample datasets that are included in the
     package.
-If they wish to access the csv files with the sample data, users have two options:</p><ul><li><p>Option 1: Unpack into any folder of their choice the tar.gz file into which the package has arrived. All sample datasets 
+If they wish to access the csv files with the sample data, users have two options:</p><ul><li><p>Option 1: Unpack into any folder of their choice the tar.gz file into which the package has arrived. All sample datasets
 may be found in the "inst/extdata" subfolder of this folder.</p></li>
-<li><p>Option 2: Go to the "extdata" subfolder of the folder in which the package has been installed in their PC's <code>R</code> 
+<li><p>Option 2: Go to the "extdata" subfolder of the folder in which the package has been installed in their PC's <code>R</code>
 library. All sample datasets may be found there.</p></li>
 </ul></div>
 
@@ -244,24 +258,25 @@ library. All sample datasets may be found there.</p></li>
 <span class="r-in"><span> <span class="co">## maximum acceptable proportions of unmatched codes between the original</span></span></span>
 <span class="r-in"><span> <span class="co">## classification A and the target classification B, and between the original</span></span></span>
 <span class="r-in"><span> <span class="co">## classification A and the updated classification A* are 0.5 and 0.3, respectively.</span></span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span> <span class="va">tmp_dir</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>   </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">tmp_dir</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="va">AStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="va">AB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017_NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="va">AAStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017_NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="va">UPC</span> <span class="op">&lt;-</span> <span class="fu">updateCorrespondenceTable</span><span class="op">(</span><span class="va">A</span>,</span></span>
 <span class="r-in"><span>                                  <span class="va">B</span>,</span></span>
-<span class="r-in"><span>                                  <span class="va">AStar</span>, </span></span>
-<span class="r-in"><span>                                  <span class="va">AB</span>, </span></span>
-<span class="r-in"><span>                                  <span class="va">AAStar</span>, </span></span>
-<span class="r-in"><span>                                  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_dir</span>,<span class="st">"updateCorrespondenceTable.csv"</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>                                  <span class="st">"none"</span>, </span></span>
-<span class="r-in"><span>                                  <span class="fl">0.5</span>, </span></span>
-<span class="r-in"><span>                                  <span class="fl">0.3</span><span class="op">)</span></span></span>
-<span class="r-in"><span> </span></span>
+<span class="r-in"><span>                                  <span class="va">AStar</span>,</span></span>
+<span class="r-in"><span>                                  <span class="va">AB</span>,</span></span>
+<span class="r-in"><span>                                  <span class="va">AAStar</span>,</span></span>
+<span class="r-in"><span>                                  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_dir</span>,<span class="st">"updateCorrespondenceTable.csv"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                  <span class="st">"none"</span>,</span></span>
+<span class="r-in"><span>                                  <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>                                  <span class="fl">0.3</span>,</span></span>
+<span class="r-in"><span>                                  <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">UPC</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">UPC</span><span class="op">$</span><span class="va">updateCorrespondenceTable</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="va">UPC</span><span class="op">$</span><span class="va">classificationNames</span></span></span>
@@ -278,11 +293,11 @@ library. All sample datasets may be found there.</p></li>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Vasilis Chasiotis, Photis Stavropoulos, Martin Karlberg, Mátyás Mészáros.</p>
+  <p></p><p>Developed by Vasilis Chasiotis, Photis Stavropoulos, Martin Karlberg, Mátyás Mészáros, Martina Patone, Erkand Muraku.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
