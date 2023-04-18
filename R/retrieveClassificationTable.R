@@ -1,5 +1,3 @@
-library(httr)
-
 retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en") {
   
   ## Define source from class --- classification

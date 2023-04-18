@@ -1,6 +1,3 @@
-library(httr)
-
-
 structureData = function(prefix, conceptScheme, endpoint, language) {
   
   ### Define endpoint

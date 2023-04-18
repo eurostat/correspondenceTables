@@ -1,6 +1,3 @@
-library(httr)
-
-
 ## To retrieve a list of classification tables in CELLAR/FAO or both.
 classEndpoint = function(endpoint) {
 
