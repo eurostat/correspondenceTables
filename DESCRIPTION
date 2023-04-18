@@ -17,7 +17,7 @@ Encoding: UTF-8
 Imports: data.table
 Suggests: 
     knitr,
-    rmarkdown, tinytest
+    rmarkdown, tinytest, httr
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/eurostat/correspondenceTables
