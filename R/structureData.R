@@ -5,7 +5,6 @@
 #' @param endpoint
 #' @param language By default set to "en". Optional 
 #' @export
-#' @details
 #' @return
 #' \code{structureData()} returns the structure of a classification table from CELLAR/FAO or both.
 

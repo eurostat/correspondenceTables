@@ -2,7 +2,6 @@
 #' @description  Create a list of prefixes
 #' @param endpoint 
 #' @export
-#' @details
 #' @return
 #' \code{prefixList()} returns a list of prefixes
 

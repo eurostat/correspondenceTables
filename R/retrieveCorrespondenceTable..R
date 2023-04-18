@@ -5,7 +5,6 @@
 #' @param ID_table 
 #' @param language By default set to "en". Optional 
 #' @export
-#' @details
 #' @return
 #' \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR/FAO or both.
 

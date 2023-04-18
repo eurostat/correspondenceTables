@@ -2,7 +2,6 @@
 #' @description Retrieve a list of classification tables in CELLAR/FAO or both.
 #' @param endpoint 
 #' @export
-#' @details
 #' @return
 #' \code{classEndpoint()} returns a table with information needed to retreive the classification table:
 #' \itemize{

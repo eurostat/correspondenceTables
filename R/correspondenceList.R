@@ -2,7 +2,6 @@
 #' @description Retrieve a list of correspondence tables in CELLAR/FAO or both.
 #' @param endpoint 
 #' @export
-#' @details
 #' @return
 #' \code{correspondenceList()} returns a list of the correspondence tables available with their ID and prefix name
 

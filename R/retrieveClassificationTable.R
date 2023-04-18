@@ -6,7 +6,6 @@
 #' @param level. By default set to "ALL". Optional
 #' @param language By default set to "en". Optional 
 #' @export
-#' @details
 #' @return
 #' \code{retrieveClassificationTable()} returns a classification tables from CELLAR/FAO or both.
 
