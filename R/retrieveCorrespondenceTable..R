@@ -1,7 +1,15 @@
-library(httr)
+#' @title Retrieve a correspondence tables from CELLAR/FAO or both.
+#' @description Retrieve a correspondence tables from CELLAR/FAO or both.
+#' @param prefix 
+#' @param endpoint 
+#' @param ID_table 
+#' @param language By default set to "en". Optional 
+#' @export
+#' @details
+#' @return
+#' \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR/FAO or both.
 
 
-##i update the function and add 2 new parameters in order to modify our query more easily
 retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "en") {
   
   ## Define source from class --- classification
@@ -58,7 +66,7 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
   
   SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
   
-  response = POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
   data = data.frame(content(response))
 
   #remove duplicates when only code name is different 

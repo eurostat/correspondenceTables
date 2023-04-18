@@ -1,3 +1,14 @@
+#' @title Obtain the structure of the classification tables from CELLAR/FAO or both.
+#' @description Obtain the structure of the classification tables from CELLAR/FAO or both.
+#' @param prefix 
+#' @param conceptScheme 
+#' @param endpoint
+#' @param language By default set to "en". Optional 
+#' @export
+#' @details
+#' @return
+#' \code{structureData()} returns the structure of a classification table from CELLAR/FAO or both.
+
 structureData = function(prefix, conceptScheme, endpoint, language) {
   
   ### Define endpoint
@@ -55,7 +66,7 @@ structureData = function(prefix, conceptScheme, endpoint, language) {
   ")
           
   
-  response = POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
   table = read.csv(text=content(response, "text"), sep= ",")  
   table = table[order(table[,3],decreasing=FALSE),]
 

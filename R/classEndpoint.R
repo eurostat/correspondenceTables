@@ -1,4 +1,18 @@
-## To retrieve a list of classification tables in CELLAR/FAO or both.
+#' @title Retrieve a list of classification tables in CELLAR/FAO or both.
+#' @description Retrieve a list of classification tables in CELLAR/FAO or both.
+#' @param endpoint 
+#' @export
+#' @details
+#' @return
+#' \code{classEndpoint()} returns a table with information needed to retreive the classification table:
+#' \itemize{
+#'     \item Prefix name
+#'     \item Conceptscheme
+#'     \item URI
+#'     \item Name
+#' }
+
+
 classEndpoint = function(endpoint) {
 
   ### Datasets in CELLAR
@@ -42,7 +56,7 @@ classEndpoint = function(endpoint) {
     ORDER BY ?label
   ")
   
-  response = POST(url = endpoint_fao, accept("text/csv"), body = list(query = SPARQL.query_fao), encode = "form")
+  response = httr::POST(url = endpoint_fao, accept("text/csv"), body = list(query = SPARQL.query_fao), encode = "form")
   data_fao = read.csv(text=content(response, "text"), sep= ",")                                 
   
   ## add prefix name

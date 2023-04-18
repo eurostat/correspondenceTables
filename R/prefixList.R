@@ -1,4 +1,11 @@
-## Create Prefixes list 
+#' @title Create a list of prefixes for both CELLAR and FAO
+#' @description  Create a list of prefixes
+#' @param endpoint 
+#' @export
+#' @details
+#' @return
+#' \code{prefixList()} returns a list of prefixes
+
 
 prefixList = function(endpoint) {
   

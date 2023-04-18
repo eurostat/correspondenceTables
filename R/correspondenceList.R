@@ -1,5 +1,11 @@
+#' @title Retrieve a list of correspondence tables in CELLAR/FAO or both.
+#' @description Retrieve a list of correspondence tables in CELLAR/FAO or both.
+#' @param endpoint 
+#' @export
+#' @details
+#' @return
+#' \code{correspondenceList()} returns a list of the correspondence tables available with their ID and prefix name
 
-## To retrieve a list of classification tables in CELLAR/FAO or both.
 correspondenceList = function(endpoint) {
   
   if (endpoint == "ALL") {
@@ -59,7 +65,7 @@ correspondenceList = function(endpoint) {
         }
       ")
     
-    response = POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+    response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
     data_t[[i]] = data.frame(content(response))
     
     if (nrow(data_t[[i]]) == 0){

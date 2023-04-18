@@ -1,3 +1,15 @@
+#' @title Retrieve a classification tables from CELLAR/FAO or both.
+#' @description Retrieve a classification tables from CELLAR/FAO or both.
+#' @param prefix 
+#' @param endpoint 
+#' @param conceptScheme 
+#' @param level. By default set to "ALL". Optional
+#' @param language By default set to "en". Optional 
+#' @export
+#' @details
+#' @return
+#' \code{retrieveClassificationTable()} returns a classification tables from CELLAR/FAO or both.
+
 retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en") {
   
   ## Define source from class --- classification
@@ -64,7 +76,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
       }
   }
 
-  response = POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
   data = data.frame(content(response))
   
   #keep only plainLiteral if more than one datatype // 

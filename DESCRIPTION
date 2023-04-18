@@ -14,10 +14,10 @@ Description:
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
 License: EUPL
 Encoding: UTF-8
-Imports: data.table
+Imports: data.table, httr
 Suggests: 
     knitr,
-    rmarkdown, tinytest, httr
+    rmarkdown, tinytest
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/eurostat/correspondenceTables
