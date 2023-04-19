@@ -377,28 +377,27 @@ CELLAR and FAO in form a table with the following colums:<br />
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## CELLAR</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>data_CELLAR <span class="ot">=</span> <span class="fu">list</span>()</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Get info to retrieve structure using classEndpoint()</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(<span class="st">&quot;ALL&quot;</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#loop over all classification in CELLAR</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>CELLAR)){</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">1</span>] </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">2</span>] </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#language by default is English</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  data_CELLAR[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint, language)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_CELLAR) <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[,<span class="dv">1</span>] </span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="do">## FAO </span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>data_FAO <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>FAO)){</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">1</span>]</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">2</span>] </span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  data_FAO[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint, language)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_FAO) <span class="ot">=</span>  list_data<span class="sc">$</span>FAO[,<span class="dv">1</span>]</span></code></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Get info to retrieve structure using classEndpoint()</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(<span class="st">&quot;ALL&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#loop over all classification in CELLAR</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>CELLAR)){</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">1</span>] </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">2</span>] </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#language by default is English</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  data_CELLAR[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_CELLAR) <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[,<span class="dv">1</span>] </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="do">## FAO </span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>data_FAO <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>FAO)){</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">1</span>]</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">2</span>] </span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  data_FAO[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_FAO) <span class="ot">=</span>  list_data<span class="sc">$</span>FAO[,<span class="dv">1</span>]</span></code></pre></div>
 <hr />
 <p>Application of function retrieveClassificationTable().</p>
 <p>The function returns a classification tables from CELLAR and FAO. The
