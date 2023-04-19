@@ -373,7 +373,7 @@ retrieved.</li>
 <p>The values of the prefix, conceptScheme and level can be found using
 the classEndpoint() and structureData() functions (see below). The
 arguments level and language are optional and set as default as
-level=”ALL” and language=”en”.</p>
+level=“ALL” and language=“en”.</p>
 <p>The namespace prefix needed to execute the SPARQL query are
 automatically generated using the prefixList() function (see below).</p>
 <p><strong>Application of function
@@ -431,31 +431,31 @@ function.</p>
 </p>
 <p>The following code produce a list including the structure of each
 classification available in CELLAR and FAO.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Obtain the structure of all classifications </span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## CELLAR</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>data_CELLAR <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Get info to retrieve structure using classEndpoint()</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(<span class="st">&quot;ALL&quot;</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#loop over all classification in CELLAR</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>CELLAR)){</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">1</span>] </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">2</span>] </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#language by default is English</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  data_CELLAR[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_CELLAR) <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[,<span class="dv">1</span>] </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="do">## FAO </span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>data_FAO <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>FAO)){</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">1</span>]</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">2</span>] </span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  data_FAO[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_FAO) <span class="ot">=</span>  list_data<span class="sc">$</span>FAO[,<span class="dv">1</span>]</span></code></pre></div>
+<pre class="results"><code>## Obtain the structure of all classifications 
+## CELLAR
+data_CELLAR = list()
+endpoint = &quot;CELLAR&quot;
+#Get info to retrieve structure using classEndpoint()
+list_data = classEndpoint(&quot;ALL&quot;)
+
+#loop over all classification in CELLAR
+for (i in 1:nrow(list_data$CELLAR)){
+  prefix = list_data$CELLAR[i,1] 
+  conceptScheme = list_data$CELLAR[i,2] 
+  #language by default is English
+  data_CELLAR[[i]] = structureData(prefix, conceptScheme, endpoint)
+}
+names(data_CELLAR) = list_data$CELLAR[,1] 
+
+## FAO 
+data_FAO = list()
+endpoint = &quot;FAO&quot;
+for (i in 1:nrow(list_data$FAO)){
+  prefix = list_data$FAO[i,1]
+  conceptScheme = list_data$FAO[i,2] 
+  data_FAO[[i]] = structureData(prefix, conceptScheme, endpoint)
+}
+names(data_FAO) =  list_data$FAO[,1]</code></pre>
 </div>
 </div>
 <div id="extract-correspondence-tables" class="section level2">
@@ -467,14 +467,14 @@ updateCorrespondenceTable functions. This function has four
 arguments:</p>
 <ul>
 <li>prefix - the SPARQL instruction for a declaration of a namespace
-prefix.</li>
-<li>endpoint - the SPARQL Endpoint: CELLAR or FAO.</li>
-<li>ID_table. - the ID of the correspondence table.</li>
-<li>language - language of the table.</li>
+prefix</li>
+<li>endpoint - the SPARQL Endpoint: CELLAR or FAO</li>
+<li>ID_table - the ID of the correspondence table</li>
+<li>language - language of the table</li>
 </ul>
 <p>The values of the prefix and ID_table can be found using the
 correspondenceList() function (see below). The argument language is
-optional and set as default as language=”en”.</p>
+optional and set as default as language=“en”.</p>
 <p>The namespace prefix needed to execute the SPARQL query are
 automatically generated using the prefixList() function (see above).</p>
 <p><strong>Application of function
