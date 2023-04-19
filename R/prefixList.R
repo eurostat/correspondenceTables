@@ -1,14 +1,21 @@
 #' @title Create a list of prefixes for both CELLAR and FAO
-#' @description  Create a list of prefixes
-#' @param endpoint 
+#' @description  Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
+#' @param endpoint. A string of type character containing the endpoint where the table is stored. 
+#' The valid values are \code{"CELLAR"} and \code{"FAO"}.
 #' @export
 #' @return
-#' \code{prefixList()} returns a list of prefixes
-
+#' \code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.
+#' @examples
+#' {
+#'     endpoint = "CELLAR"
+#'     prefix_lst = prefixList(endpoint)
+#'     }
 
 prefixList = function(endpoint) {
-  
-    prefix_init = as.matrix(rbind( 
+  if (endpoint == "ALL"){
+      stop("Specify the endpoint: CELLAR or FAO.")
+    }
+       prefix_init = as.matrix(rbind( 
       "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
       "PREFIX dct: <http://purl.org/dc/terms/>",
       "PREFIX cb: <http://cbasewrap.ontologycentral.com/vocab#>",
@@ -28,11 +35,11 @@ prefixList = function(endpoint) {
 
     
   ### Define List
-    uri  = classEndpoint(endpoint)[[1]][,3]
-    prefix = classEndpoint(endpoint)[[1]][,1]
-    prefix = gsub("\\.", "", prefix)
-    prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
-    prefix_all = rbind(prefix_init, prefix_all)
+        uri  = classEndpoint(endpoint)[[1]][,3]
+        prefix = classEndpoint(endpoint)[[1]][,1]
+        prefix = gsub("\\.", "", prefix)
+        prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
+        prefix_all = rbind(prefix_init, prefix_all)
     
   return(prefix_all)
 }

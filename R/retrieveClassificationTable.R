@@ -1,17 +1,32 @@
-#' @title Retrieve a classification tables from CELLAR/FAO or both.
-#' @description Retrieve a classification tables from CELLAR/FAO or both.
-#' @param prefix 
-#' @param endpoint 
-#' @param conceptScheme 
-#' @param level. By default set to "ALL". Optional
-#' @param language By default set to "en". Optional 
+#' @title Retrieve a classification tables from CELLAR and FAO
+#' @description Retrieve a classification tables from CELLAR and FAO
+#' @param prefix. the  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function. 
+#' @param endpoint. the SPARQL Endpoint  
+#' @param conceptScheme. taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function. 
+#' @param level.the levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
+#' By default is set to \code{"ALL"}. This is an optional argument.  
+#' @param language. language of the table. By default is set to \code{"en"}. This is an optional argument.
 #' @export
 #' @return
-#' \code{retrieveClassificationTable()} returns a classification tables from CELLAR/FAO or both.
+#' \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
+#'  \itemize{
+#'     \item Classification name (e.g. nace2): the code of each object
+#'     \item NAME: the corresponding name of each object 
+#'     \item Include: details on each object
+#'     \item Include_Also: details on each object
+#'     \item Exclude: details on each object
+#'     \item URL: the URL from which the SPARQL query was retrieved
+#' }
+#' @examples
+#' {
+#'     prefix = "nace2"
+#'     conceptScheme = "nace2"
+#'     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+#'     # By default retrived all levels and only english
+#'     View(dt)
+#'     }
 
 retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en") {
-  
-  ## Define source from class --- classification
 
   ### Define endpoint
     if (endpoint == "CELLAR") {

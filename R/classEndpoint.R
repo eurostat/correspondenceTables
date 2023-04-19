@@ -1,16 +1,21 @@
-#' @title Retrieve a list of classification tables in CELLAR/FAO or both.
-#' @description Retrieve a list of classification tables in CELLAR/FAO or both.
-#' @param endpoint 
+#' @title Retrieve a list of classification tables in CELLAR, FAO or both.
+#' @description Retrieve a list of classification tables in CELLAR, FAO or both.
+#' @param endpoint. A string of type character containing the endpoint where the table is stored. 
+#' The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints. 
 #' @export
 #' @return
-#' \code{classEndpoint()} returns a table with information needed to retreive the classification table:
+#' \code{classEndpoint()} returns a table with information needed to retrieve the classification table:
 #' \itemize{
-#'     \item Prefix name
-#'     \item Conceptscheme
-#'     \item URI
-#'     \item Name
+#'     \item Prefix name: the  SPARQL instruction for a declaration of a namespace prefix
+#'     \item Conceptscheme: taxonomy of the SKOS object to be retrieved
+#'     \item URI: the URL from which the SPARQL query was retrieved
+#'     \item Name: the name of the table retrieved
 #' }
-
+#' @examples
+#' {
+#'     endpoint = "ALL"
+#'     list_data = classEndpoint(endpoint)
+#'     }
 
 classEndpoint = function(endpoint) {
 

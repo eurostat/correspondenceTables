@@ -1,14 +1,28 @@
-#' @title Obtain the structure of the classification tables from CELLAR/FAO or both.
-#' @description Obtain the structure of the classification tables from CELLAR/FAO or both.
-#' @param prefix 
-#' @param conceptScheme 
-#' @param endpoint
-#' @param language By default set to "en". Optional 
+#' @title Obtain the structure of the classification tables from CELLAR and FAO.
+#' @description Obtain the structure of the classification tables from CELLAR and FAO.
+#' @param prefix. the  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.
+#' @param conceptScheme. taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.
+#' @param endpoint. the SPARQL Endpoint  
+#' @param language. language of the table. By default is set to \code{"en"}. This is an optional argument.  
 #' @export
 #' @return
-#' \code{structureData()} returns the structure of a classification table from CELLAR/FAO or both.
+#' \code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
+#'  \itemize{
+#'     \item Concept_Scheme: taxonomy of the SKOS object to be retrieved
+#'     \item Level: the levels of the objects in the collection 
+#'     \item Depth: identify the hierarchy of each level
+#'     \item Count: the number of objects retrieved in each level
+#' }
+#' @examples
+#' {
+#'     endpoint = "CELLAR"
+#'     prefix = "nace2"
+#'     conceptScheme = "nace2"
+#'     language = "en"
+#'     structure_dt = structureData(prefix, conceptScheme, endpoint, language)
+#'     }
 
-structureData = function(prefix, conceptScheme, endpoint, language) {
+structureData = function(prefix, conceptScheme, endpoint, language = "en") {
   
   ### Define endpoint
   if (endpoint == "CELLAR") {
