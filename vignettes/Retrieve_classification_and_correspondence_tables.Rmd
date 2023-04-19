@@ -32,7 +32,7 @@ The function retrieveClassificationTable() retrieves the classification table fr
 * language - language of the table.
 
 The values of the prefix, conceptScheme and level can be found using the classEndpoint() and structureData() functions (see below).
-The arguments level and language are optional and set as default as level=”ALL” and language=”en”.
+The arguments level and language are optional and set as default as level="ALL" and language="en".
 
 The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see below).
 
@@ -103,7 +103,7 @@ The function returns a table with the following columns:
 }
 
 The following code produce a list including the structure of each classification available in CELLAR and FAO. 
-```{r, results = "hide"}
+```{results = "hide"}
 ## Obtain the structure of all classifications 
 ## CELLAR
 data_CELLAR = list()
@@ -134,13 +134,13 @@ names(data_FAO) =  list_data$FAO[,1]
 ## Extract Correspondence Tables
 The function retrieveCorrespondenceTable() retrieves the correspondences table from the CELLAR and FAO repository, which can be used as an input to the newCorrespondenceTable and updateCorrespondenceTable functions. This function has four arguments: 
 
-* prefix - the SPARQL instruction for a declaration of a namespace prefix.
-* endpoint - the SPARQL Endpoint: CELLAR or FAO.
-* ID_table. - the ID of the correspondence table.
-* language - language of the table.
+* prefix - the SPARQL instruction for a declaration of a namespace prefix
+* endpoint - the SPARQL Endpoint: CELLAR or FAO
+* ID_table - the ID of the correspondence table
+* language - language of the table
 
 The values of the prefix and ID_table can be found using the correspondenceList() function (see below).
-The argument language is optional and set as default as language=”en”.
+The argument language is optional and set as default as language="en".
 
 The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see above).
 
