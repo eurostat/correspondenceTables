@@ -2,16 +2,22 @@
 % Please edit documentation in R/correspondenceList.R
 \name{correspondenceList}
 \alias{correspondenceList}
-\title{Retrieve a list of correspondence tables in CELLAR/FAO or both.}
+\title{provides an overview of all the available correspondence classification from CELLAR and FAO repository.}
 \usage{
 correspondenceList(endpoint)
 }
 \arguments{
-\item{endpoint}{}
+\item{endpoint.}{the SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.}
 }
 \value{
-\code{correspondenceList()} returns a list of the correspondence tables available with their ID and prefix name
+\code{correspondenceList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
+Target classification, Table name and URI.
 }
 \description{
-Retrieve a list of correspondence tables in CELLAR/FAO or both.
+provides an overview of all the available correspondence classification from CELLAR and FAO repository.
+}
+\examples{
+{
+    corr_list = correspondenceList("ALL")
+    }
 }

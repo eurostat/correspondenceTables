@@ -2,22 +2,40 @@
 % Please edit documentation in R/retrieveCorrespondenceTable..R
 \name{retrieveCorrespondenceTable}
 \alias{retrieveCorrespondenceTable}
-\title{Retrieve a correspondence tables from CELLAR/FAO or both.}
+\title{Retrieve a correspondence tables from CELLAR and FAO.}
 \usage{
 retrieveCorrespondenceTable(prefix, endpoint, ID_table, language = "en")
 }
 \arguments{
-\item{prefix}{}
+\item{language}{language of the table. By default is set to "en". This is an optional argument.}
 
-\item{endpoint}{}
+\item{prefix.}{the SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
 
-\item{ID_table}{}
+\item{endpoint.}{the SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
-\item{language}{By default set to "en". Optional}
+\item{ID_table.}{the ID of the correspondence table which can be found using the correspondenceList() function.}
 }
 \value{
-\code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR/FAO or both.
+\code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
+ \itemize{
+    \item Source Classification name (e.g. cn2019): the code of each object in the source classification
+    \item Source Classification label: the corresponding label of each object 
+    \item Target Classification name (e.g. cn2019): the code of each object in the target classification
+    \item Target Classification label: the corresponding label of each object 
+    \item Comment: details on each object, if available 
+    \item URL: the URL from which the SPARQL query was retrieved
+}
 }
 \description{
-Retrieve a correspondence tables from CELLAR/FAO or both.
+Retrieve a correspondence tables from CELLAR and FAO.
+}
+\examples{
+{
+    endpoint = "CELLAR"
+    prefix = "nace2"
+    ID_table = "NACE2_PRODCOM2021"
+    language = "fr"
+    dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
+    View(dt)
+    }
 }

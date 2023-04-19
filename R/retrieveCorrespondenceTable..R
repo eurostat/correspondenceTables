@@ -1,12 +1,29 @@
-#' @title Retrieve a correspondence tables from CELLAR/FAO or both.
-#' @description Retrieve a correspondence tables from CELLAR/FAO or both.
-#' @param prefix 
-#' @param endpoint 
-#' @param ID_table 
-#' @param language By default set to "en". Optional 
+#' @title Retrieve a correspondence tables from CELLAR and FAO.
+#' @description Retrieve a correspondence tables from CELLAR and FAO.
+#' @param prefix. the SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.
+#' @param endpoint. the SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}. 
+#' @param ID_table. the ID of the correspondence table which can be found using the correspondenceList() function.
+#' @param language language of the table. By default is set to "en". This is an optional argument.
 #' @export
 #' @return
-#' \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR/FAO or both.
+#' \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
+#'  \itemize{
+#'     \item Source Classification name (e.g. cn2019): the code of each object in the source classification
+#'     \item Source Classification label: the corresponding label of each object 
+#'     \item Target Classification name (e.g. cn2019): the code of each object in the target classification
+#'     \item Target Classification label: the corresponding label of each object 
+#'     \item Comment: details on each object, if available 
+#'     \item URL: the URL from which the SPARQL query was retrieved
+#' }
+#' @examples
+#' {
+#'     endpoint = "CELLAR"
+#'     prefix = "nace2"
+#'     ID_table = "NACE2_PRODCOM2021"
+#'     language = "fr"
+#'     dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
+#'     View(dt)
+#'     }
 
 
 retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "en") {

@@ -1,10 +1,14 @@
-#' @title Retrieve a list of correspondence tables in CELLAR/FAO or both.
-#' @description Retrieve a list of correspondence tables in CELLAR/FAO or both.
-#' @param endpoint 
+#' @title provides an overview of all the available correspondence classification from CELLAR and FAO repository.
+#' @description provides an overview of all the available correspondence classification from CELLAR and FAO repository.
+#' @param endpoint. the SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
 #' @export
 #' @return
-#' \code{correspondenceList()} returns a list of the correspondence tables available with their ID and prefix name
-
+#' \code{correspondenceList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
+#' Target classification, Table name and URI.
+#' @examples
+#' {
+#'     corr_list = correspondenceList("ALL")
+#'     }
 correspondenceList = function(endpoint) {
   
   if (endpoint == "ALL") {
@@ -26,14 +30,14 @@ correspondenceList = function(endpoint) {
     if (e == "CELLAR") {
       source = "http://publications.europa.eu/webapi/rdf/sparql"
       sep = "_"
-      rm  = 1:14
+      rm  = 1:16
     }
     if (e == "FAO") {
       source = "https://stats.fao.org/caliper/sparql/AllVocs"
       sep = "-"
-      rm  = 1:7
+      rm  = 1:16
     }
-    
+  
     ## Create Prefixes list 
     prefixlist = prefixList(e)
     prefixlist = as.character(paste(prefixlist, collapse = "\n"))

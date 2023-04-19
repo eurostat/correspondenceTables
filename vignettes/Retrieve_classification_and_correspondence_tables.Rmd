@@ -12,26 +12,68 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-This vignette provides information about applying the correspondenceTables package to retrieve classification and correspondence tables from CELLAR and FAO.
+This vignette provides information about the functions included in the correspondenceTables package used to extract classification and correspondence tables from CELLAR and FAO endpoints.
 
 ```{r}
 library(correspondenceTables)
 library(httr)
 ```
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Application of function prefixList().
+The main two functions used to exact tables are retrieveClassificationTable() and retrieveCorrespondenceTable(), for classification and correspondence tables respectively. Other functions (prefixList(), classEndpoint(), structureData() and correspondenceList()) are used to understand the structure of each classification and retrieve information needed as input of the two main functions.
 
-OBTAIN A LIST OF PREFIXES FROM CELLAR AND FAO 
-The list obtained will be used in the SPARQL query to retrieve tables.
+## Extract Classification Tables
 
-```{r}
+The function retrieveClassificationTable() retrieves the classification table from the CELLAR and FAO repository, which can be used as an input to the newCorrespondenceTable and updateCorrespondenceTable functions. This function has five arguments: 
+
+* prefix - the SPARQL instruction for a declaration of a namespace prefix.
+* endpoint - the SPARQL Endpoint: CELLAR or FAO.
+* conceptScheme - taxonomy of the SKOS object to be retrieved.
+* level - levels of the objects in the collection to be retrieved.
+* language - language of the table.
+
+The values of the prefix, conceptScheme and level can be found using the classEndpoint() and structureData() functions (see below).
+The arguments level and language are optional and set as default as level=”ALL” and language=”en”.
+
+The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see below).
+
+
+**Application of function retrieveClassificationTable()**
+
+To following code is used to retrieve the NACE2 classification from CELLAR:
+
+```{r, results = "hide"}
+endpoint = "CELLAR"
+# obtain prefix and conceptscheme using classEndpoint()
+classEndpoint(endpoint)[[1]][,1:4]
+prefix = "nace2"
+conceptScheme = "nace2"
+language = "en"
+
+# identify lower level using structureData()
+level_dt = structureData(prefix, conceptScheme, endpoint, language)
+level = level_dt[nrow(level_dt),2] 
+level_dt; level
+
+dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level)
+View(dt)
+```
+
+
+### Other functions used to extract Classification Tables
+
+Following, the other functions used to extract the required information for the retrieveClassificationTable() function.
+
+
+**Application of function prefixList()**
+
+This function is created to automatically obtain a list the prefixes from CELLAR and FAO used in the retrieveClassificationTable() and retrieveCorrespondenceTable() functions to retrieve the required tables. The list will be updated automatically each time a new classification or correspondence classification is introduced in CELLAR or FAO repository.
+
+```{r, results = "hide"}
 endpoint = "CELLAR"
 prefixList(endpoint)
 ```
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Application of function classEndpoint().
+**Application of function classEndpoint()**
 
 The function returns a table with information needed to retrieve the classification table:
 \itemize{
@@ -41,16 +83,18 @@ The function returns a table with information needed to retrieve the classificat
     \item Name: the name of the table retrieved
 }
 
-```{r}
+```{r, results = "hide"}
  endpoint = "ALL"
  list_data = classEndpoint(endpoint)
  list_data
 ```
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Application of function structureData().
 
-The function returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
+**Application of function structureData()**
+
+Each classification has a different level based on their structure. The function structureData() retrieve information about the level names, their hierarchy and the numbers of records for all the classification available in the repositories (CELLAR and FAO). The level informations needed as an optional arguments of the retrieveClassificationTable() function. 
+
+The function returns a table with the following columns:        
 \itemize{
      \item Concept_Scheme: taxonomy of the SKOS object to be retrieved
      \item Level: the levels of the objects in the collection 
@@ -58,7 +102,8 @@ The function returns the structure of a classification table from CELLAR and FAO
      \item Count: the number of objects retrieved in each level
 }
 
-```{r}
+The following code produce a list including the structure of each classification available in CELLAR and FAO. 
+```{r, results = "hide"}
 ## Obtain the structure of all classifications 
 ## CELLAR
 data_CELLAR = list()
@@ -85,25 +130,56 @@ for (i in 1:nrow(list_data$FAO)){
 }
 names(data_FAO) =  list_data$FAO[,1]
 ```
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Application of function retrieveClassificationTable().
 
-The function returns a classification tables from CELLAR and FAO. The table includes the following variables:
+## Extract Correspondence Tables
+The function retrieveCorrespondenceTable() retrieves the correspondences table from the CELLAR and FAO repository, which can be used as an input to the newCorrespondenceTable and updateCorrespondenceTable functions. This function has four arguments: 
 
-```{r}
+* prefix - the SPARQL instruction for a declaration of a namespace prefix.
+* endpoint - the SPARQL Endpoint: CELLAR or FAO.
+* ID_table. - the ID of the correspondence table.
+* language - language of the table.
+
+The values of the prefix and ID_table can be found using the correspondenceList() function (see below).
+The argument language is optional and set as default as language=”en”.
+
+The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see above).
+
+**Application of function retrieveCorrespondenceTable()**
+
+To following code is used to retrieve the correspondence table between NACE2 and PRODCOM2021 from CELLAR:
+```{r, results = "hide"}
 endpoint = "CELLAR"
-# obtain information needed to retrieve the table
-classEndpoint(endpoint)[[1]][,1:4]
-
 prefix = "nace2"
-conceptScheme = "nace2"
+ID_table = "NACE2_PRODCOM2021"
 language = "en"
-
-level_dt = structureData(prefix, conceptScheme, endpoint, language)
-# identify lower level
-level = level_dt[nrow(level_dt),2] 
-level_dt; level
-
-dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level)
+dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
 View(dt)
+```
+
+To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
+```{r, results = "hide"}
+endpoint = "FAO"
+prefix = "CPCv21"
+ID_table = "CPC21-ISIC4"
+language = "en"
+dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
+View(dt)
+```
+
+### Other functions used to extract Correspondence Tables
+Following, the function used to extract the required information for the retrieveCorrespondenceTable() function.
+
+
+**Application of function correspondenceList()**
+
+The correspondenceList() provides an overview of all the available correspondence classification from CELLAR and FAO repository. 
+
+```{r, message=FALSE, warning=FALSE, results = "hide"}
+corr_list = correspondenceList("ALL")
+
+#provides a table with all the correspondence tables for NACE2 in CELLAR
+corr_list$CELLAR$`nace2:`
+
+#provides a table with all the correspondence tables for CPC v21 in FAO
+corr_list$FAO$`CPCv21:`
 ```
