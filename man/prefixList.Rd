@@ -7,11 +7,18 @@
 prefixList(endpoint)
 }
 \arguments{
-\item{endpoint}{}
+\item{endpoint.}{A string of type character containing the endpoint where the table is stored. 
+The valid values are \code{"CELLAR"} and \code{"FAO"}.}
 }
 \value{
-\code{prefixList()} returns a list of prefixes
+\code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.
 }
 \description{
-Create a list of prefixes
+Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
+}
+\examples{
+{
+    endpoint = "CELLAR"
+    prefix_lst = prefixList(endpoint)
+    }
 }

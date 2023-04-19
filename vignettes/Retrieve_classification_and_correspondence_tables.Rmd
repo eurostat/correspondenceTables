@@ -1,0 +1,110 @@
+---
+title: "Retrieve classification and correspondence tables with the correspondenceTables package"
+output: rmarkdown::html_vignette
+
+vignette: >
+  %\VignetteIndexEntry{Retrieve classification and correspondence tables with the correspondenceTables package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+This vignette provides information about applying the correspondenceTables package to retrieve classification and correspondence tables from CELLAR and FAO.
+
+```{r}
+library(correspondenceTables)
+library(httr)
+```
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Application of function prefixList().
+
+OBTAIN A LIST OF PREFIXES FROM CELLAR AND FAO 
+The list obtained will be used in the SPARQL query to retrieve tables.
+
+```{r}
+endpoint = "CELLAR"
+prefixList(endpoint)
+```
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Application of function classEndpoint().
+
+The function returns a table with information needed to retrieve the classification table:
+\itemize{
+    \item Prefix name: the  SPARQL instruction for a declaration of a namespace prefix
+    \item Conceptscheme: taxonomy of the SKOS objects
+    \item URI: the URL from which the SPARQL query was retrieved
+    \item Name: the name of the table retrieved
+}
+
+```{r}
+ endpoint = "ALL"
+ list_data = classEndpoint(endpoint)
+ list_data
+```
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Application of function structureData().
+
+The function returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
+\itemize{
+     \item Concept_Scheme: taxonomy of the SKOS object to be retrieved
+     \item Level: the levels of the objects in the collection 
+     \item Depth: identify the hierarchy of each level
+     \item Count: the number of objects retrieved in each level
+}
+
+```{r}
+## Obtain the structure of all classifications 
+## CELLAR
+data_CELLAR = list()
+endpoint = "CELLAR"
+language = "en"
+#Get info to retrieve structure using classEndpoint()
+list_data = classEndpoint("ALL")
+
+#loop over all classification in CELLAR
+for (i in 1:nrow(list_data$CELLAR)){
+  prefix = list_data$CELLAR[i,1] 
+  conceptScheme = list_data$CELLAR[i,2] 
+  #language by default is English
+  data_CELLAR[[i]] = structureData(prefix, conceptScheme, endpoint, language)
+}
+names(data_CELLAR) = list_data$CELLAR[,1] 
+
+## FAO 
+data_FAO = list()
+endpoint = "FAO"
+for (i in 1:nrow(list_data$FAO)){
+  prefix = list_data$FAO[i,1]
+  conceptScheme = list_data$FAO[i,2] 
+  data_FAO[[i]] = structureData(prefix, conceptScheme, endpoint, language)
+}
+names(data_FAO) =  list_data$FAO[,1]
+```
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Application of function retrieveClassificationTable().
+
+The function returns a classification tables from CELLAR and FAO. The table includes the following variables:
+
+```{r}
+endpoint = "CELLAR"
+# obtain information needed to retrieve the table
+classEndpoint(endpoint)[[1]][,1:4]
+
+prefix = "nace2"
+conceptScheme = "nace2"
+language = "en"
+
+level_dt = structureData(prefix, conceptScheme, endpoint, language)
+# identify lower level
+level = level_dt[nrow(level_dt),2] 
+level_dt; level
+
+dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level)
+View(dt)
+```

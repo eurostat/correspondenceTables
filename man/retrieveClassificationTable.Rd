@@ -2,7 +2,7 @@
 % Please edit documentation in R/retrieveClassificationTable.R
 \name{retrieveClassificationTable}
 \alias{retrieveClassificationTable}
-\title{Retrieve a classification tables from CELLAR/FAO or both.}
+\title{Retrieve a classification tables from CELLAR and FAO}
 \usage{
 retrieveClassificationTable(
   prefix,
@@ -13,19 +13,37 @@ retrieveClassificationTable(
 )
 }
 \arguments{
-\item{prefix}{}
+\item{prefix.}{the  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
 
-\item{endpoint}{}
+\item{endpoint.}{the SPARQL Endpoint}
 
-\item{conceptScheme}{}
+\item{conceptScheme.}{taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.}
 
-\item{language}{By default set to "en". Optional}
+\item{level.the}{levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
+By default is set to \code{"ALL"}. This is an optional argument.}
 
-\item{level.}{By default set to "ALL". Optional}
+\item{language.}{language of the table. By default is set to \code{"en"}. This is an optional argument.}
 }
 \value{
-\code{retrieveClassificationTable()} returns a classification tables from CELLAR/FAO or both.
+\code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
+ \itemize{
+    \item Classification name (e.g. nace2): the code of each object
+    \item NAME: the corresponding name of each object 
+    \item Include: details on each object
+    \item Include_Also: details on each object
+    \item Exclude: details on each object
+    \item URL: the URL from which the SPARQL query was retrieved
+}
 }
 \description{
-Retrieve a classification tables from CELLAR/FAO or both.
+Retrieve a classification tables from CELLAR and FAO
+}
+\examples{
+{
+    prefix = "nace2"
+    conceptScheme = "nace2"
+    dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+    # By default retrived all levels and only english
+    View(dt)
+    }
 }

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Retrieve classification and correspondence tables with the correspondenceTables package</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Retrieve classification and correspondence
+tables with the correspondenceTables package</h1>
+
+
+
+<p>This vignette provides information about applying the
+correspondenceTables package to retrieve classification and
+correspondence tables from CELLAR and FAO.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;httr&#39; was built under R version 4.2.3</span></span></code></pre></div>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Application of function prefixList().</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Application of function classEndpoint().</td>
+</tr>
+<tr class="even">
+<td align="left">The function returns a table with information needed to
+retrieve the classification table: </td>
+</tr>
+<tr class="odd">
+<td align="left"><code>r endpoint = &quot;ALL&quot; list_data = classEndpoint(endpoint) list_data #&gt; $CELLAR #&gt;    Prefix        ConceptScheme #&gt; 1  &quot;cepa2000&quot;    &quot;cepa2000&quot; #&gt; 2  &quot;cn2019&quot;      &quot;cn2019&quot; #&gt; 3  &quot;cn2022&quot;      &quot;cn2022&quot; #&gt; 4  &quot;cn2020&quot;      &quot;cn2020&quot; #&gt; 5  &quot;cn2021&quot;      &quot;cn2021&quot; #&gt; 6  &quot;cn2018&quot;      &quot;cn2018&quot; #&gt; 7  &quot;cn2023&quot;      &quot;cn2023&quot; #&gt; 8  &quot;cn2017&quot;      &quot;cn2017&quot; #&gt; 9  &quot;directory&quot;   &quot;ESTAT&quot; #&gt; 10 &quot;ecoicop&quot;     &quot;ecoicop&quot; #&gt; 11 &quot;ecoicop&quot;     &quot;ecoicop-hicp&quot; #&gt; 12 &quot;geonom2021&quot;  &quot;geonom2021&quot; #&gt; 13 &quot;geonom2022&quot;  &quot;geonom2022&quot; #&gt; 14 &quot;geonom2023&quot;  &quot;geonom2023&quot; #&gt; 15 &quot;lucas2022&quot;   &quot;lucas&quot; #&gt; 16 &quot;lucas2022&quot;   &quot;lucas_ft&quot; #&gt; 17 &quot;lucas2022&quot;   &quot;lucas_lc&quot; #&gt; 18 &quot;lucas2022&quot;   &quot;lucas_lu&quot; #&gt; 19 &quot;lucas2022&quot;   &quot;lucas_lf&quot; #&gt; 20 &quot;lucas2022&quot;   &quot;lucas_wf&quot; #&gt; 21 &quot;prodcom2019&quot; &quot;prodcom2019&quot; #&gt; 22 &quot;prodcom2021&quot; &quot;prodcom2021&quot; #&gt; 23 &quot;prodcom2022&quot; &quot;prodcom2022&quot; #&gt; 24 &quot;nst2007&quot;     &quot;nst2007&quot; #&gt; 25 &quot;nace2&quot;       &quot;nace2&quot; #&gt; 26 &quot;nace21&quot;      &quot;nace2.1&quot; #&gt; 27 &quot;cpa21&quot;       &quot;cpa21&quot; #&gt;    URI #&gt; 1  &quot;http://data.europa.eu/o5i/cepa2000&quot; #&gt; 2  &quot;http://data.europa.eu/xsp/cn2019&quot; #&gt; 3  &quot;http://data.europa.eu/xsp/cn2022&quot; #&gt; 4  &quot;http://data.europa.eu/xsp/cn2020&quot; #&gt; 5  &quot;http://data.europa.eu/xsp/cn2021&quot; #&gt; 6  &quot;http://data.europa.eu/xsp/cn2018&quot; #&gt; 7  &quot;http://data.europa.eu/xsp/cn2023&quot; #&gt; 8  &quot;http://data.europa.eu/xsp/cn2017&quot; #&gt; 9  &quot;http://publications.europa.eu/resource/directory&quot; #&gt; 10 &quot;http://data.europa.eu/ed1/ecoicop&quot; #&gt; 11 &quot;http://data.europa.eu/ed1/ecoicop&quot; #&gt; 12 &quot;http://data.europa.eu/4j8/geonom2021&quot; #&gt; 13 &quot;http://data.europa.eu/4j8/geonom2022&quot; #&gt; 14 &quot;http://data.europa.eu/4j8/geonom2023&quot; #&gt; 15 &quot;http://data.europa.eu/oxm/lucas2022&quot; #&gt; 16 &quot;http://data.europa.eu/oxm/lucas2022&quot; #&gt; 17 &quot;http://data.europa.eu/oxm/lucas2022&quot; #&gt; 18 &quot;http://data.europa.eu/oxm/lucas2022&quot; #&gt; 19 &quot;http://data.europa.eu/oxm/lucas2022&quot; #&gt; 20 &quot;http://data.europa.eu/oxm/lucas2022&quot; #&gt; 21 &quot;http://data.europa.eu/qw1/prodcom2019&quot; #&gt; 22 &quot;http://data.europa.eu/qw1/prodcom2021&quot; #&gt; 23 &quot;http://data.europa.eu/qw1/prodcom2022&quot; #&gt; 24 &quot;http://data.europa.eu/1j7/nst2007&quot; #&gt; 25 &quot;http://data.europa.eu/ux2/nace2&quot; #&gt; 26 &quot;http://data.europa.eu/ux2/nace2.1&quot; #&gt; 27 &quot;http://data.europa.eu/ehl/cpa21&quot; #&gt;    Title #&gt; 1  &quot;Classification of Environmental Protection Activities and Expenditure, 2000 (CEPA 2000)&quot; #&gt; 2  &quot;Combined Nomenclature, 2019 (CN 2019)&quot; #&gt; 3  &quot;Combined Nomenclature, 2022 (CN 2022)&quot; #&gt; 4  &quot;Combined Nomenclature, 2020 (CN 2020)&quot; #&gt; 5  &quot;Combined Nomenclature, 2021 (CN 2021)&quot; #&gt; 6  &quot;Combined Nomenclature, 2018 (CN 2018)&quot; #&gt; 7  &quot;Combined Nomenclature, 2023 (CN 2023)&quot; #&gt; 8  &quot;Combined Nomenclature, 2017 (CN 2017)&quot; #&gt; 9  &quot;EU Whoiswho dataset ENG&quot; #&gt; 10 &quot;European Classification of Individual Consumption according to Purpose (ECOICOP)&quot; #&gt; 11 &quot;European classification of individual consumption according to purpose adapted to the needs of the Harmonised Indices of Consumer Prices (ECOICOP-HICP)&quot; #&gt; 12 &quot;GEONOM 2021&quot; #&gt; 13 &quot;GEONOM 2022&quot; #&gt; 14 &quot;GEONOM 2023&quot; #&gt; 15 &quot;LUCAS Classification 2022 (LUCAS SU LC + LU + FT)&quot; #&gt; 16 &quot;LUCAS Survey Forest types (LUCAS SU FT)&quot; #&gt; 17 &quot;LUCAS Survey Land Cover Classification (LUCAS SU LC)&quot; #&gt; 18 &quot;LUCAS Survey Land Use Classification (LUCAS SU LU)&quot; #&gt; 19 &quot;LUCAS Survey Linear Features (LUCAS SU LF)&quot; #&gt; 20 &quot;LUCAS Survey Water Features (LUCA SU WF)&quot; #&gt; 21 &quot;PRODCOM List 2019-2020&quot; #&gt; 22 &quot;PRODCOM List 2021&quot; #&gt; 23 &quot;PRODCOM List 2022&quot; #&gt; 24 &quot;Standard goods classification for transport statistics (NST 2007)&quot; #&gt; 25 &quot;Statistical Classification of Economic Activities in the European Community, Rev. 2 (NACE Rev. 2)&quot; #&gt; 26 &quot;Statistical Classification of Economic Activities in the European Community, Rev. 2.1 (NACE Rev. 2.1)&quot; #&gt; 27 &quot;Statistical classification of products by activity, 2.1 (CPA 2.1)&quot; #&gt; #&gt; $FAO #&gt;   Prefix      ConceptScheme URI #&gt; 1 &quot;FPCDv2016&quot; &quot;scheme&quot;      &quot;https://stats.fao.org/classifications/FPCD/v2016&quot; #&gt; 2 &quot;FPCDv2022&quot; &quot;scheme&quot;      &quot;https://stats.fao.org/classifications/FPCD/v2022&quot; #&gt; 3 &quot;CPCv20&quot;    &quot;scheme&quot;      &quot;https://unstats.un.org/classifications/CPC/v2.0&quot; #&gt; 4 &quot;CPCv21&quot;    &quot;core&quot;        &quot;https://unstats.un.org/classifications/CPC/v2.1&quot; #&gt; 5 &quot;CPCv21&quot;    &quot;ag&quot;          &quot;https://unstats.un.org/classifications/CPC/v2.1&quot; #&gt; 6 &quot;ICCv10&quot;    &quot;scheme&quot;      &quot;https://stats.fao.org/classifications/ICC/v1.0&quot; #&gt; 7 &quot;ICCv11&quot;    &quot;scheme&quot;      &quot;https://stats.fao.org/classifications/ICC/v1.1&quot; #&gt; 8 &quot;ISICrev4&quot;  &quot;scheme&quot;      &quot;https://unstats.un.org/classifications/ISIC/rev4&quot; #&gt;   Title #&gt; 1 &quot;Forest Products Classification and Definitions (FPC&amp;D) draft 2016&quot; #&gt; 2 &quot;Forest Products Classification and Definitions (FPC&amp;D) v2022&quot; #&gt; 3 &quot;The Central Product Classification (CPC) v2.0&quot; #&gt; 4 &quot;The Central Product Classification (CPC) v2.1&quot; #&gt; 5 &quot;The Central Product Classification (CPC) v2.1. Expansion for agriculture and rural statistics&quot; #&gt; 6 &quot;The Indicative Crop Classification for the Agricultural Census (ICC) v1.0&quot; #&gt; 7 &quot;The Indicative Crop Classification for the Agricultural Census (ICC) v1.1&quot; #&gt; 8 &quot;The International Standard Industrial Classification (ISIC) Rev4 &quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p>Application of function structureData().</p>
+<p>The function returns the structure of a classification table from
+CELLAR and FAO in form a table with the following colums:<br />
+</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Obtain the structure of all classifications </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## CELLAR</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>data_CELLAR <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Get info to retrieve structure using classEndpoint()</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(<span class="st">&quot;ALL&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#loop over all classification in CELLAR</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>CELLAR)){</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">1</span>] </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">2</span>] </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#language by default is English</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  data_CELLAR[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint, language)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_CELLAR) <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[,<span class="dv">1</span>] </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="do">## FAO </span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>data_FAO <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>FAO)){</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">1</span>]</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">2</span>] </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  data_FAO[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint, language)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_FAO) <span class="ot">=</span>  list_data<span class="sc">$</span>FAO[,<span class="dv">1</span>]</span></code></pre></div>
+<hr />
+<p>Application of function retrieveClassificationTable().</p>
+<p>The function returns a classification tables from CELLAR and FAO. The
+table includes the following variables:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain information needed to retrieve the table</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">classEndpoint</span>(endpoint)[[<span class="dv">1</span>]][,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Prefix        ConceptScheme </span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  &quot;cepa2000&quot;    &quot;cepa2000&quot;    </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  &quot;cn2019&quot;      &quot;cn2019&quot;      </span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  &quot;cn2022&quot;      &quot;cn2022&quot;      </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  &quot;cn2020&quot;      &quot;cn2020&quot;      </span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  &quot;cn2021&quot;      &quot;cn2021&quot;      </span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  &quot;cn2018&quot;      &quot;cn2018&quot;      </span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7  &quot;cn2023&quot;      &quot;cn2023&quot;      </span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  &quot;cn2017&quot;      &quot;cn2017&quot;      </span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  &quot;directory&quot;   &quot;ESTAT&quot;       </span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 &quot;ecoicop&quot;     &quot;ecoicop&quot;     </span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 &quot;ecoicop&quot;     &quot;ecoicop-hicp&quot;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 &quot;geonom2021&quot;  &quot;geonom2021&quot;  </span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 &quot;geonom2022&quot;  &quot;geonom2022&quot;  </span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 &quot;geonom2023&quot;  &quot;geonom2023&quot;  </span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 &quot;lucas2022&quot;   &quot;lucas&quot;       </span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 &quot;lucas2022&quot;   &quot;lucas_ft&quot;    </span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 &quot;lucas2022&quot;   &quot;lucas_lc&quot;    </span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18 &quot;lucas2022&quot;   &quot;lucas_lu&quot;    </span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19 &quot;lucas2022&quot;   &quot;lucas_lf&quot;    </span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 &quot;lucas2022&quot;   &quot;lucas_wf&quot;    </span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21 &quot;prodcom2019&quot; &quot;prodcom2019&quot; </span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22 &quot;prodcom2021&quot; &quot;prodcom2021&quot; </span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 23 &quot;prodcom2022&quot; &quot;prodcom2022&quot; </span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 24 &quot;nst2007&quot;     &quot;nst2007&quot;     </span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 25 &quot;nace2&quot;       &quot;nace2&quot;       </span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 26 &quot;nace21&quot;      &quot;nace2.1&quot;     </span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 27 &quot;cpa21&quot;       &quot;cpa21&quot;       </span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    URI                                               </span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  &quot;http://data.europa.eu/o5i/cepa2000&quot;              </span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  &quot;http://data.europa.eu/xsp/cn2019&quot;                </span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  &quot;http://data.europa.eu/xsp/cn2022&quot;                </span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  &quot;http://data.europa.eu/xsp/cn2020&quot;                </span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  &quot;http://data.europa.eu/xsp/cn2021&quot;                </span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  &quot;http://data.europa.eu/xsp/cn2018&quot;                </span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7  &quot;http://data.europa.eu/xsp/cn2023&quot;                </span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  &quot;http://data.europa.eu/xsp/cn2017&quot;                </span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  &quot;http://publications.europa.eu/resource/directory&quot;</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 &quot;http://data.europa.eu/ed1/ecoicop&quot;               </span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 &quot;http://data.europa.eu/ed1/ecoicop&quot;               </span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 &quot;http://data.europa.eu/4j8/geonom2021&quot;            </span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 &quot;http://data.europa.eu/4j8/geonom2022&quot;            </span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 &quot;http://data.europa.eu/4j8/geonom2023&quot;            </span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 &quot;http://data.europa.eu/oxm/lucas2022&quot;             </span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 &quot;http://data.europa.eu/oxm/lucas2022&quot;             </span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 &quot;http://data.europa.eu/oxm/lucas2022&quot;             </span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18 &quot;http://data.europa.eu/oxm/lucas2022&quot;             </span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19 &quot;http://data.europa.eu/oxm/lucas2022&quot;             </span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 &quot;http://data.europa.eu/oxm/lucas2022&quot;             </span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21 &quot;http://data.europa.eu/qw1/prodcom2019&quot;           </span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22 &quot;http://data.europa.eu/qw1/prodcom2021&quot;           </span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 23 &quot;http://data.europa.eu/qw1/prodcom2022&quot;           </span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 24 &quot;http://data.europa.eu/1j7/nst2007&quot;               </span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 25 &quot;http://data.europa.eu/ux2/nace2&quot;                 </span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 26 &quot;http://data.europa.eu/ux2/nace2.1&quot;               </span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 27 &quot;http://data.europa.eu/ehl/cpa21&quot;                 </span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Title                                                                                                                                                    </span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  &quot;Classification of Environmental Protection Activities and Expenditure, 2000 (CEPA 2000)&quot;                                                                </span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  &quot;Combined Nomenclature, 2019 (CN 2019)&quot;                                                                                                                  </span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  &quot;Combined Nomenclature, 2022 (CN 2022)&quot;                                                                                                                  </span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  &quot;Combined Nomenclature, 2020 (CN 2020)&quot;                                                                                                                  </span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  &quot;Combined Nomenclature, 2021 (CN 2021)&quot;                                                                                                                  </span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  &quot;Combined Nomenclature, 2018 (CN 2018)&quot;                                                                                                                  </span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7  &quot;Combined Nomenclature, 2023 (CN 2023)&quot;                                                                                                                  </span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  &quot;Combined Nomenclature, 2017 (CN 2017)&quot;                                                                                                                  </span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  &quot;EU Whoiswho dataset ENG&quot;                                                                                                                                </span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 &quot;European Classification of Individual Consumption according to Purpose (ECOICOP)&quot;                                                                       </span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 &quot;European classification of individual consumption according to purpose adapted to the needs of the Harmonised Indices of Consumer Prices (ECOICOP-HICP)&quot;</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 &quot;GEONOM 2021&quot;                                                                                                                                            </span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 &quot;GEONOM 2022&quot;                                                                                                                                            </span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 &quot;GEONOM 2023&quot;                                                                                                                                            </span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 &quot;LUCAS Classification 2022 (LUCAS SU LC + LU + FT)&quot;                                                                                                      </span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 &quot;LUCAS Survey Forest types (LUCAS SU FT)&quot;                                                                                                                </span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 &quot;LUCAS Survey Land Cover Classification (LUCAS SU LC)&quot;                                                                                                   </span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18 &quot;LUCAS Survey Land Use Classification (LUCAS SU LU)&quot;                                                                                                     </span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19 &quot;LUCAS Survey Linear Features (LUCAS SU LF)&quot;                                                                                                             </span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 &quot;LUCAS Survey Water Features (LUCA SU WF)&quot;                                                                                                               </span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21 &quot;PRODCOM List 2019-2020&quot;                                                                                                                                 </span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22 &quot;PRODCOM List 2021&quot;                                                                                                                                      </span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 23 &quot;PRODCOM List 2022&quot;                                                                                                                                      </span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 24 &quot;Standard goods classification for transport statistics (NST 2007)&quot;                                                                                      </span></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 25 &quot;Statistical Classification of Economic Activities in the European Community, Rev. 2 (NACE Rev. 2)&quot;                                                      </span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 26 &quot;Statistical Classification of Economic Activities in the European Community, Rev. 2.1 (NACE Rev. 2.1)&quot;                                                  </span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 27 &quot;Statistical classification of products by activity, 2.1 (CPA 2.1)&quot;</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>conceptScheme <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>level_dt <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint, language)</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co"># identify lower level</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>level <span class="ot">=</span> level_dt[<span class="fu">nrow</span>(level_dt),<span class="dv">2</span>] </span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>level_dt; level</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Concept_Scheme     Level Depth Count</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          nace2  sections     1    21</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2          nace2 divisions     2    88</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3          nace2    groups     3   272</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1          nace2   classes     4   615</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;classes&quot;</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> <span class="fu">retrieveClassificationTable</span>(prefix, endpoint, conceptScheme, <span class="at">level =</span> level)</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 1230 Columns: 7</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ── Column specification ────────────────────────────────────────────────────────</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Delimiter: &quot;,&quot;</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; chr (7): nace2, NAME, Include, Include_Also, Exclude, URL, datatype</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(dt)</span></code></pre></div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
