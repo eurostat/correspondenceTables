@@ -55,7 +55,6 @@ level = level_dt[nrow(level_dt),2]
 level_dt; level
 
 dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level)
-View(dt)
 ```
 
 
@@ -66,7 +65,7 @@ Following, the other functions used to extract the required information for the 
 
 **Application of function prefixList()**
 
-This function is created to automatically obtain a list the prefixes from CELLAR and FAO used in the retrieveClassificationTable() and retrieveCorrespondenceTable() functions to retrieve the required tables. The list will be updated automatically each time a new classification or correspondence classification is introduced in CELLAR or FAO repository.
+This function automatically obtains a list the prefixes from CELLAR and FAO used in the retrieveClassificationTable() and retrieveCorrespondenceTable() functions to retrieve the required tables. The list will be updated automatically each time a new classification or correspondence classification is introduced in CELLAR or FAO repository.
 
 ```{r, results = "hide"}
 endpoint = "CELLAR"
@@ -86,13 +85,12 @@ The function returns a table with information needed to retrieve the classificat
 ```{r, results = "hide"}
  endpoint = "ALL"
  list_data = classEndpoint(endpoint)
- list_data
 ```
 
 
 **Application of function structureData()**
 
-Each classification has a different level based on their structure. The function structureData() retrieve information about the level names, their hierarchy and the numbers of records for all the classification available in the repositories (CELLAR and FAO). The level informations needed as an optional arguments of the retrieveClassificationTable() function. 
+Each classification has a different level based on their structure. The function structureData() retrieves information about the level names, their hierarchy and the numbers of records for all the classification available in the repositories (CELLAR and FAO). The level informations needed as an optional arguments of the retrieveClassificationTable() function. 
 
 The function returns a table with the following columns:        
 \itemize{
@@ -153,7 +151,6 @@ prefix = "nace2"
 ID_table = "NACE2_PRODCOM2021"
 language = "en"
 dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
-View(dt)
 ```
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
@@ -163,7 +160,6 @@ prefix = "CPCv21"
 ID_table = "CPC21-ISIC4"
 language = "en"
 dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
-View(dt)
 ```
 
 ### Other functions used to extract Correspondence Tables

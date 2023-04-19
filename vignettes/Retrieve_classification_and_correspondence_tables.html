@@ -399,15 +399,14 @@ CELLAR:</p>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; chr (7): nace2, NAME, Include, Include_Also, Exclude, URL, datatype</span></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(dt)</span></code></pre></div>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre></div>
 <div id="other-functions-used-to-extract-classification-tables" class="section level3">
 <h3>Other functions used to extract Classification Tables</h3>
 <p>Following, the other functions used to extract the required
 information for the retrieveClassificationTable() function.</p>
 <p><strong>Application of function prefixList()</strong></p>
-<p>This function is created to automatically obtain a list the prefixes
-from CELLAR and FAO used in the retrieveClassificationTable() and
+<p>This function automatically obtains a list the prefixes from CELLAR
+and FAO used in the retrieveClassificationTable() and
 retrieveCorrespondenceTable() functions to retrieve the required tables.
 The list will be updated automatically each time a new classification or
 correspondence classification is introduced in CELLAR or FAO
@@ -418,15 +417,14 @@ repository.</p>
 <p>The function returns a table with information needed to retrieve the
 classification table: </p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a> endpoint <span class="ot">=</span> <span class="st">&quot;ALL&quot;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(endpoint)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a> list_data</span></code></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(endpoint)</span></code></pre></div>
 <p><strong>Application of function structureData()</strong></p>
 <p>Each classification has a different level based on their structure.
-The function structureData() retrieve information about the level names,
-their hierarchy and the numbers of records for all the classification
-available in the repositories (CELLAR and FAO). The level informations
-needed as an optional arguments of the retrieveClassificationTable()
-function.</p>
+The function structureData() retrieves information about the level
+names, their hierarchy and the numbers of records for all the
+classification available in the repositories (CELLAR and FAO). The level
+informations needed as an optional arguments of the
+retrieveClassificationTable() function.</p>
 <p>The function returns a table with the following columns:<br />
 </p>
 <p>The following code produce a list including the structure of each
@@ -493,8 +491,7 @@ between NACE2 and PRODCOM2021 from CELLAR:</p>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lgl (1): Comment</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(dt)</span></code></pre></div>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre></div>
 <p>To following code is used to retrieve a specific correspondence table
 between CPCv21 and ISIC4 from FAO:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
@@ -509,8 +506,7 @@ between CPCv21 and ISIC4 from FAO:</p>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lgl (1): Comment</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(dt)</span></code></pre></div>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre></div>
 <div id="other-functions-used-to-extract-correspondence-tables" class="section level3">
 <h3>Other functions used to extract Correspondence Tables</h3>
 <p>Following, the function used to extract the required information for
