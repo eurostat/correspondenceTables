@@ -63,7 +63,6 @@ The function returns the structure of a classification table from CELLAR and FAO
 ## CELLAR
 data_CELLAR = list()
 endpoint = "CELLAR"
-language = "en"
 #Get info to retrieve structure using classEndpoint()
 list_data = classEndpoint("ALL")
 
@@ -72,7 +71,7 @@ for (i in 1:nrow(list_data$CELLAR)){
   prefix = list_data$CELLAR[i,1] 
   conceptScheme = list_data$CELLAR[i,2] 
   #language by default is English
-  data_CELLAR[[i]] = structureData(prefix, conceptScheme, endpoint, language)
+  data_CELLAR[[i]] = structureData(prefix, conceptScheme, endpoint)
 }
 names(data_CELLAR) = list_data$CELLAR[,1] 
 
@@ -82,7 +81,7 @@ endpoint = "FAO"
 for (i in 1:nrow(list_data$FAO)){
   prefix = list_data$FAO[i,1]
   conceptScheme = list_data$FAO[i,2] 
-  data_FAO[[i]] = structureData(prefix, conceptScheme, endpoint, language)
+  data_FAO[[i]] = structureData(prefix, conceptScheme, endpoint)
 }
 names(data_FAO) =  list_data$FAO[,1]
 ```
