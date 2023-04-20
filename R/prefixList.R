@@ -2,6 +2,7 @@
 #' @description  Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
 #' @param endpoint A string of type character containing the endpoint where the table is stored. 
 #' The valid values are \code{"CELLAR"} and \code{"FAO"}.
+#' @import httr
 #' @export
 #' @return
 #' \code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.

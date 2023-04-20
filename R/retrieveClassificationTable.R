@@ -8,6 +8,7 @@
 #' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.
 #' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 #' If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced. 
+#' @import httr
 #' @export
 #' @return
 #' \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 

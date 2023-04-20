@@ -2,6 +2,7 @@
 #' @description Retrieve a list of classification tables in CELLAR, FAO or both.
 #' @param endpoint A string of type character containing the endpoint where the table is stored. 
 #' The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints. 
+#' @import httr
 #' @export
 #' @return
 #' \code{classEndpoint()} returns a table with information needed to retrieve the classification table:

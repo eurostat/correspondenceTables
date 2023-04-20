@@ -4,6 +4,7 @@
 #' @param conceptScheme Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.
 #' @param endpoint The SPARQL Endpoint  
 #' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.  
+#' @import httr
 #' @export
 #' @return
 #' \code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
