@@ -1,6 +1,6 @@
 #' @title Create a list of prefixes for both CELLAR and FAO
 #' @description  Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
-#' @param endpoint. A string of type character containing the endpoint where the table is stored. 
+#' @param endpoint A string of type character containing the endpoint where the table is stored. 
 #' The valid values are \code{"CELLAR"} and \code{"FAO"}.
 #' @export
 #' @return
@@ -12,7 +12,7 @@
 #'     }
 
 prefixList = function(endpoint) {
-  if (endpoint == "ALL"){
+  if (endpoint != "CELLAR" & endpoint != "FAO"){
       stop("Specify the endpoint: CELLAR or FAO.")
     }
        prefix_init = as.matrix(rbind( 

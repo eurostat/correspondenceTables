@@ -7,7 +7,7 @@
 correspondenceList(endpoint)
 }
 \arguments{
-\item{endpoint.}{the SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.}
+\item{endpoint}{The SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.}
 }
 \value{
 \code{correspondenceList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 

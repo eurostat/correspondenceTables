@@ -7,13 +7,13 @@
 structureData(prefix, conceptScheme, endpoint, language = "en")
 }
 \arguments{
-\item{prefix.}{the  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
+\item{prefix}{The  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
 
-\item{conceptScheme.}{taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.}
+\item{conceptScheme}{Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.}
 
-\item{endpoint.}{the SPARQL Endpoint}
+\item{endpoint}{The SPARQL Endpoint}
 
-\item{language.}{language of the table. By default is set to \code{"en"}. This is an optional argument.}
+\item{language}{Language of the table. By default is set to \code{"en"}. This is an optional argument.}
 }
 \value{
 \code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        

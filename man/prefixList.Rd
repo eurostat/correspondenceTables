@@ -7,7 +7,7 @@
 prefixList(endpoint)
 }
 \arguments{
-\item{endpoint.}{A string of type character containing the endpoint where the table is stored. 
+\item{endpoint}{A string of type character containing the endpoint where the table is stored. 
 The valid values are \code{"CELLAR"} and \code{"FAO"}.}
 }
 \value{

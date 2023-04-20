@@ -1,6 +1,6 @@
 #' @title provides an overview of all the available correspondence classification from CELLAR and FAO repository.
 #' @description provides an overview of all the available correspondence classification from CELLAR and FAO repository.
-#' @param endpoint. the SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
+#' @param endpoint The SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
 #' @export
 #' @return
 #' \code{correspondenceList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 

@@ -9,20 +9,24 @@ retrieveClassificationTable(
   endpoint,
   conceptScheme,
   level = "ALL",
-  language = "en"
+  language = "en",
+  CSVout = FALSE
 )
 }
 \arguments{
-\item{prefix.}{the  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
+\item{prefix}{The  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
 
-\item{endpoint.}{the SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.}
+\item{endpoint}{The SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
-\item{conceptScheme.}{taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.}
+\item{conceptScheme}{Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.}
 
-\item{level.}{the levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
+\item{level}{The levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
 By default is set to \code{"ALL"}. This is an optional argument.}
 
-\item{language.}{language of the table. By default is set to \code{"en"}. This is an optional argument.}
+\item{language}{Language of the table. By default is set to \code{"en"}. This is an optional argument.}
+
+\item{CSVout}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
+If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced.}
 }
 \value{
 \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 

@@ -1,9 +1,9 @@
 #' @title Obtain the structure of the classification tables from CELLAR and FAO.
 #' @description Obtain the structure of the classification tables from CELLAR and FAO.
-#' @param prefix. the  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.
-#' @param conceptScheme. taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.
-#' @param endpoint. the SPARQL Endpoint  
-#' @param language. language of the table. By default is set to \code{"en"}. This is an optional argument.  
+#' @param prefix The  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.
+#' @param conceptScheme Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.
+#' @param endpoint The SPARQL Endpoint  
+#' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.  
 #' @export
 #' @return
 #' \code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        

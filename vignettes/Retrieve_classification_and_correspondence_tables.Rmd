@@ -30,9 +30,10 @@ The function retrieveClassificationTable() retrieves the classification table fr
 * conceptScheme - taxonomy of the SKOS object to be retrieved.
 * level - levels of the objects in the collection to be retrieved.
 * language - language of the table.
+* CSVout - preferred choice of output.
 
 The values of the prefix, conceptScheme and level can be found using the classEndpoint() and structureData() functions (see below).
-The arguments level and language are optional and set as default as level="ALL" and language="en".
+The arguments level and language are optional and set as default as level="ALL", language="en" and CSVout = "FALSE".
 
 The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see below).
 
@@ -48,13 +49,14 @@ classEndpoint(endpoint)[[1]][,1:4]
 prefix = "nace2"
 conceptScheme = "nace2"
 language = "en"
+CSVout = FALSE
 
 # identify lower level using structureData()
 level_dt = structureData(prefix, conceptScheme, endpoint, language)
 level = level_dt[nrow(level_dt),2] 
 level_dt; level
 
-dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level)
+dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level, CSVout)
 ```
 
 
@@ -136,9 +138,10 @@ The function retrieveCorrespondenceTable() retrieves the correspondences table f
 * endpoint - the SPARQL Endpoint: CELLAR or FAO
 * ID_table - the ID of the correspondence table
 * language - language of the table
+* CSVout - preferred choice of output
 
 The values of the prefix and ID_table can be found using the correspondenceList() function (see below).
-The argument language is optional and set as default as language="en".
+The argument language is optional and set as default as language="en" and CSVout = "FALSE".
 
 The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see above).
 
@@ -150,7 +153,8 @@ endpoint = "CELLAR"
 prefix = "nace2"
 ID_table = "NACE2_PRODCOM2021"
 language = "en"
-dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
+CSVout = FALSE
+dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout)
 ```
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
@@ -159,7 +163,8 @@ endpoint = "FAO"
 prefix = "CPCv21"
 ID_table = "CPC21-ISIC4"
 language = "en"
-dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
+CSVout = FALSE
+dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout)
 ```
 
 ### Other functions used to extract Correspondence Tables

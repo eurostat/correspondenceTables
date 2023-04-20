@@ -1,16 +1,18 @@
 #' @title Retrieve a correspondence tables from CELLAR and FAO.
 #' @description Retrieve a correspondence tables from CELLAR and FAO.
-#' @param prefix. the SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.
-#' @param endpoint. the SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}. 
-#' @param ID_table. the ID of the correspondence table which can be found using the correspondenceList() function.
-#' @param language language of the table. By default is set to "en". This is an optional argument.
+#' @param prefix The SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.
+#' @param endpoint The SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}. 
+#' @param ID_table The ID of the correspondence table which can be found using the correspondenceList() function.
+#' @param language Language of the table. By default is set to "en". This is an optional argument.
+#' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
+#' If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced. 
 #' @export
 #' @return
 #' \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
 #'  \itemize{
 #'     \item Source Classification name (e.g. cn2019): the code of each object in the source classification
 #'     \item Source Classification label: the corresponding label of each object 
-#'     \item Target Classification name (e.g. cn2019): the code of each object in the target classification
+#'     \item Target Classification name (e.g. cn2021): the code of each object in the target classification
 #'     \item Target Classification label: the corresponding label of each object 
 #'     \item Comment: details on each object, if available 
 #'     \item URL: the URL from which the SPARQL query was retrieved
@@ -26,7 +28,7 @@
 #'     }
 
 
-retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "en") {
+retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "en", CSVout =  FALSE) {
   
   ## Define source from class --- classification
 
@@ -85,6 +87,14 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
   response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
   data = data.frame(content(response))
 
+  # Save results as CSV and show where it was stored
+  if (CSVout == TRUE) {
+    name_csv = paste0(ID_table, "_table.csv")
+    write.csv(data, file= name_csv, row.names=FALSE)
+    message(paste0("The correspondence table was saved in ", getwd(), name_csv))
+  } 
+  
+  
   #remove duplicates when only code name is different 
   #data = data[which(duplicated(data[,-c(1,3)]) == FALSE), ]
   #View(data)

@@ -1,11 +1,13 @@
 #' @title Retrieve a classification tables from CELLAR and FAO
 #' @description Retrieve a classification tables from CELLAR and FAO
-#' @param prefix. the  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function. 
-#' @param endpoint. the SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.
-#' @param conceptScheme. taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function. 
-#' @param level. the levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
+#' @param prefix The  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function. 
+#' @param endpoint The SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.
+#' @param conceptScheme Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function. 
+#' @param level The levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
 #' By default is set to \code{"ALL"}. This is an optional argument.  
-#' @param language. language of the table. By default is set to \code{"en"}. This is an optional argument.
+#' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.
+#' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
+#' If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced. 
 #' @export
 #' @return
 #' \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
@@ -26,7 +28,9 @@
 #'     View(dt)
 #'     }
 
-retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en") {
+
+
+retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en", CSVout = FALSE) {
 
   ### Define endpoint
     if (endpoint == "CELLAR") {
@@ -115,6 +119,12 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
     warning("There are duplicates codes in the classification table.") 
   }
   
-  #result = list(data, status)
+  # Save results as CSV and show where it was stored
+  if (CSVout == TRUE) {
+    name_csv = paste0(prefix, "_table.csv")
+    write.csv(data, file= name_csv, row.names=FALSE)
+    message(paste0("The table was saved in ", getwd(), name_csv))
+  } 
+
   return(data)
 }

@@ -7,7 +7,7 @@
 classEndpoint(endpoint)
 }
 \arguments{
-\item{endpoint.}{A string of type character containing the endpoint where the table is stored. 
+\item{endpoint}{A string of type character containing the endpoint where the table is stored. 
 The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints.}
 }
 \value{
