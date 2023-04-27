@@ -19,5 +19,5 @@ provides an overview of all the available correspondence classification from CEL
 \examples{
 {
     corr_list = correspondenceList("ALL")
-    }
+}
 }

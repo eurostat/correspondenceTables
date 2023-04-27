@@ -1,8 +1,8 @@
 Package: correspondenceTables
 Type: Package
 Title: Creating Correspondence Tables Between Two Statistical Classifications
-Date: 2022-09-30
-Version: 0.8.0
+Date: 2023-04-27
+Version: 0.8.1
 Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
       person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
       person("Martin", "Karlberg", role = "aut"),
@@ -17,7 +17,8 @@ Encoding: UTF-8
 Imports: data.table, httr
 Suggests: 
     knitr,
-    rmarkdown, tinytest
+    rmarkdown,
+    tinytest
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/eurostat/correspondenceTables

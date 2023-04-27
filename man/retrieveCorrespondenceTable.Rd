@@ -45,6 +45,6 @@ Retrieve a correspondence tables from CELLAR and FAO.
     ID_table = "NACE2_PRODCOM2021"
     language = "fr"
     dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
-    View(dt)
+    head(dt)
     }
 }

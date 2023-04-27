@@ -2,7 +2,6 @@
 #' @description Retrieve a list of classification tables in CELLAR, FAO or both.
 #' @param endpoint A string of type character containing the endpoint where the table is stored. 
 #' The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints. 
-#' @import httr
 #' @export
 #' @return
 #' \code{classEndpoint()} returns a table with information needed to retrieve the classification table:
@@ -32,8 +31,8 @@ classEndpoint = function(endpoint) {
   ORDER BY ?Title
   ")
 
-  response = POST(url = endpoint_cellar, accept("text/csv"), body = list(query = SPARQL.query_cellar), encode = "form")
-  data_cellar = read.csv(text=content(response, "text"), sep= ",")  
+  response = httr::POST(url = endpoint_cellar, config = httr::accept("text/csv"), body = list(query = SPARQL.query_cellar), encode = "form")
+  data_cellar = read.csv(text=httr::content(response, "text"), sep= ",")  
 
   ## add prefix name
   str_dt = t(sapply(data_cellar[,1], function(x) unlist(strsplit(as.character(x), "/+"))))
@@ -61,8 +60,8 @@ classEndpoint = function(endpoint) {
     ORDER BY ?label
   ")
   
-  response = httr::POST(url = endpoint_fao, accept("text/csv"), body = list(query = SPARQL.query_fao), encode = "form")
-  data_fao = read.csv(text=content(response, "text"), sep= ",")                                 
+  response = httr::POST(url = endpoint_fao, config = httr::accept("text/csv"), body = list(query = SPARQL.query_fao), encode = "form")
+  data_fao = read.csv(text=httr::content(response, "text"), sep= ",")                                 
   
   ## add prefix name
   str_dt = t(sapply(data_fao[,1], function(x) unlist(strsplit(as.character(x), "/+"))))

@@ -45,9 +45,10 @@ Retrieve a classification tables from CELLAR and FAO
 \examples{
 {
     prefix = "nace2"
+    endpoint = "CELLAR"
     conceptScheme = "nace2"
     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
-    # By default retrived all levels and only english
-    View(dt)
+    # By default retrieved all levels and only English
+    head(dt)
     }
 }

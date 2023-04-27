@@ -1,7 +1,6 @@
 #' @title provides an overview of all the available correspondence classification from CELLAR and FAO repository.
 #' @description provides an overview of all the available correspondence classification from CELLAR and FAO repository.
 #' @param endpoint The SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
-#' @import httr
 #' @export
 #' @return
 #' \code{correspondenceList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
@@ -9,7 +8,7 @@
 #' @examples
 #' {
 #'     corr_list = correspondenceList("ALL")
-#'     }
+#' }
 correspondenceList = function(endpoint) {
   
   if (endpoint == "ALL") {
@@ -69,8 +68,8 @@ correspondenceList = function(endpoint) {
         }
       ")
     
-    response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-    data_t[[i]] = data.frame(content(response))
+    response = httr::POST(url = source, config = httr::accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+    data_t[[i]] = read.csv(text=httr::content(response, "text"), sep= ",") #data.frame(httr::content(response))
     
     if (nrow(data_t[[i]]) == 0){
       data_t[[i]] = cbind(prefix = character(), data_t[[i]])

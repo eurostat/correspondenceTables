@@ -8,7 +8,6 @@
 #' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.
 #' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 #' If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced. 
-#' @import httr
 #' @export
 #' @return
 #' \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
@@ -23,10 +22,11 @@
 #' @examples
 #' {
 #'     prefix = "nace2"
+#'     endpoint = "CELLAR"
 #'     conceptScheme = "nace2"
 #'     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
-#'     # By default retrived all levels and only english
-#'     View(dt)
+#'     # By default retrieved all levels and only English
+#'     head(dt)
 #'     }
 
 
@@ -95,8 +95,8 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
       }
   }
 
-  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-  data = data.frame(content(response))
+  response = httr::POST(url = source, config = httr::accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+  data = read.csv(text=httr::content(response, "text"), sep= ",") # data.frame(httr::content(response))
   
   #keep only plainLiteral if more than one datatype // 
   #FAO - "http://www.w3.org/2001/XMLSchema#string"

@@ -6,7 +6,6 @@
 #' @param language Language of the table. By default is set to "en". This is an optional argument.
 #' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 #' If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced. 
-#' @import httr
 #' @export
 #' @return
 #' \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
@@ -25,7 +24,7 @@
 #'     ID_table = "NACE2_PRODCOM2021"
 #'     language = "fr"
 #'     dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
-#'     View(dt)
+#'     head(dt)
 #'     }
 
 
@@ -85,8 +84,8 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
   
   SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
   
-  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-  data = data.frame(content(response))
+  response = httr::POST(url = source, config = httr::accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+  data = read.csv(text=httr::content(response, "text"), sep= ",") # data.frame(httr::content(response))
 
   # Save results as CSV and show where it was stored
   if (CSVout == TRUE) {

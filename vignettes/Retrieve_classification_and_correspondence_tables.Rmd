@@ -41,7 +41,7 @@ The namespace prefix needed to execute the SPARQL query are automatically genera
 
 To following code is used to retrieve the NACE2 classification from CELLAR:
 
-```{r, results = "hide"}
+```{r eval=FALSE}
 endpoint = "CELLAR"
 # obtain prefix and conceptscheme using classEndpoint()
 classEndpoint(endpoint)[[1]][,1:4]
@@ -55,7 +55,7 @@ level_dt = structureData(prefix, conceptScheme, endpoint, language)
 level = level_dt[nrow(level_dt),2] 
 level_dt; level
 
-dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level, CSVout)
+dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level, language, CSVout)
 ```
 
 
@@ -68,7 +68,7 @@ Following, the other functions used to extract the required information for the 
 
 This function automatically obtains a list the prefixes from CELLAR and FAO used in the retrieveClassificationTable() and retrieveCorrespondenceTable() functions to retrieve the required tables. The list will be updated automatically each time a new classification or correspondence classification is introduced in CELLAR or FAO repository.
 
-```{r, results = "hide"}
+```{r results = "hide"}
 endpoint = "CELLAR"
 prefixList(endpoint)
 ```
@@ -83,7 +83,7 @@ The function returns a table with information needed to retrieve the classificat
     \item Name: the name of the table retrieved
 }
 
-```{r, results = "hide"}
+```{r results = "hide"}
  endpoint = "ALL"
  list_data = classEndpoint(endpoint)
 ```
@@ -102,7 +102,7 @@ The function returns a table with the following columns:
 }
 
 The following code produce a list including the structure of each classification available in CELLAR and FAO. 
-```{results = "hide"}
+```{r eval=FALSE, include=TRUE}
 ## Obtain the structure of all classifications 
 ## CELLAR
 data_CELLAR = list()
@@ -147,7 +147,7 @@ The namespace prefix needed to execute the SPARQL query are automatically genera
 **Application of function retrieveCorrespondenceTable()**
 
 To following code is used to retrieve the correspondence table between NACE2 and PRODCOM2021 from CELLAR:
-```{r, results = "hide"}
+```{r results = "hide"}
 endpoint = "CELLAR"
 prefix = "nace2"
 ID_table = "NACE2_PRODCOM2021"
@@ -157,7 +157,7 @@ dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout)
 ```
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
-```{r, results = "hide"}
+```{r results = "hide"}
 endpoint = "FAO"
 prefix = "CPCv21"
 ID_table = "CPC21-ISIC4"
@@ -174,7 +174,7 @@ Following, the function used to extract the required information for the retriev
 
 The correspondenceList() provides an overview of all the available correspondence classification from CELLAR and FAO repository. 
 
-```{r, message=FALSE, warning=FALSE, results = "hide"}
+```{r message=FALSE, warning=FALSE, results = "hide"}
 corr_list = correspondenceList("ALL")
 
 #provides a table with all the correspondence tables for NACE2 in CELLAR

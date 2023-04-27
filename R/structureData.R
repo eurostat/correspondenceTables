@@ -4,7 +4,6 @@
 #' @param conceptScheme Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.
 #' @param endpoint The SPARQL Endpoint  
 #' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.  
-#' @import httr
 #' @export
 #' @return
 #' \code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
@@ -80,8 +79,8 @@ structureData = function(prefix, conceptScheme, endpoint, language = "en") {
   ")
           
   
-  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-  table = read.csv(text=content(response, "text"), sep= ",")  
+  response = httr::POST(url = source, config = httr::accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+  table = read.csv(text=httr::content(response, "text"), sep= ",")  
   table = table[order(table[,3],decreasing=FALSE),]
 
   return(table)

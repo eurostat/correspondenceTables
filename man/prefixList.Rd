@@ -19,6 +19,6 @@ Create a list of prefixes to be used when defying the SPARQL query to retrieve t
 \examples{
 {
     endpoint = "CELLAR"
-    prefix_lst = prefixList(endpoint)
+    prefix_list = prefixList(endpoint)
     }
 }
