@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">correspondenceTables</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1</span>
       </span>
     </div>
 
@@ -146,14 +146,7 @@ CELLAR:</p>
 <span><span class="va">level</span> <span class="op">=</span> <span class="va">level_dt</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">level_dt</span><span class="op">)</span>,<span class="fl">2</span><span class="op">]</span> </span>
 <span><span class="va">level_dt</span>; <span class="va">level</span></span>
 <span></span>
-<span><span class="va">dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">endpoint</span>, <span class="va">conceptScheme</span>, level <span class="op">=</span> <span class="va">level</span>, <span class="va">CSVout</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">0</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> ","</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">chr</span> (7): nace2, NAME, Include, Include_Also, Exclude, URL, datatype</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre></div>
+<span><span class="va">dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">endpoint</span>, <span class="va">conceptScheme</span>, <span class="va">level</span>, <span class="va">language</span>, <span class="va">CSVout</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="other-functions-used-to-extract-classification-tables">Other functions used to extract Classification Tables<a class="anchor" aria-label="anchor" href="#other-functions-used-to-extract-classification-tables"></a>
 </h3>
@@ -185,7 +178,8 @@ retrieveClassificationTable() function.</p>
 <p>The function returns a table with the following columns:<br></p>
 <p>The following code produce a list including the structure of each
 classification available in CELLAR and FAO.</p>
-<pre class="results"><code><span><span class="co">## Obtain the structure of all classifications </span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Obtain the structure of all classifications </span></span>
 <span><span class="co">## CELLAR</span></span>
 <span><span class="va">data_CELLAR</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">endpoint</span> <span class="op">=</span> <span class="st">"CELLAR"</span></span>
@@ -209,7 +203,7 @@ classification available in CELLAR and FAO.</p>
 <span>  <span class="va">conceptScheme</span> <span class="op">=</span> <span class="va">list_data</span><span class="op">$</span><span class="va">FAO</span><span class="op">[</span><span class="va">i</span>,<span class="fl">2</span><span class="op">]</span> </span>
 <span>  <span class="va">data_FAO</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="../reference/structureData.html">structureData</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">conceptScheme</span>, <span class="va">endpoint</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data_FAO</span><span class="op">)</span> <span class="op">=</span>  <span class="va">list_data</span><span class="op">$</span><span class="va">FAO</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></code></pre>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data_FAO</span><span class="op">)</span> <span class="op">=</span>  <span class="va">list_data</span><span class="op">$</span><span class="va">FAO</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -243,15 +237,7 @@ between NACE2 and PRODCOM2021 from CELLAR:</p>
 <span><span class="va">ID_table</span> <span class="op">=</span> <span class="st">"NACE2_PRODCOM2021"</span></span>
 <span><span class="va">language</span> <span class="op">=</span> <span class="st">"en"</span></span>
 <span><span class="va">CSVout</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="va">dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">endpoint</span>, <span class="va">ID_table</span>, <span class="va">language</span>, <span class="va">CSVout</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">5575</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> ","</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">chr</span> (5): NACE2, Label_NACE2, PRODCOM2021, Label_PRODCOM2021, URL</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">lgl</span> (1): Comment</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre></div>
+<span><span class="va">dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">endpoint</span>, <span class="va">ID_table</span>, <span class="va">language</span>, <span class="va">CSVout</span><span class="op">)</span></span></code></pre></div>
 <p>To following code is used to retrieve a specific correspondence table
 between CPCv21 and ISIC4 from FAO:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -260,15 +246,7 @@ between CPCv21 and ISIC4 from FAO:</p>
 <span><span class="va">ID_table</span> <span class="op">=</span> <span class="st">"CPC21-ISIC4"</span></span>
 <span><span class="va">language</span> <span class="op">=</span> <span class="st">"en"</span></span>
 <span><span class="va">CSVout</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="va">dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">endpoint</span>, <span class="va">ID_table</span>, <span class="va">language</span>, <span class="va">CSVout</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">2663</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> ","</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">chr</span> (5): CPC21, Label_CPC21, ISIC4, Label_ISIC4, URL</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">lgl</span> (1): Comment</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre></div>
+<span><span class="va">dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">endpoint</span>, <span class="va">ID_table</span>, <span class="va">language</span>, <span class="va">CSVout</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="other-functions-used-to-extract-correspondence-tables">Other functions used to extract Correspondence Tables<a class="anchor" aria-label="anchor" href="#other-functions-used-to-extract-correspondence-tables"></a>
 </h3>
