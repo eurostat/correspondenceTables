@@ -4,7 +4,7 @@
 status](https://github.com/eurostat/correspondenceTables/workflows/R-CMD-check/badge.svg)](https://github.com/eurostat/correspondenceTables/actions)
 [![dependencies](https://tinyverse.netlify.com/badge/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![CRAN version](https://www.r-pkg.org/badges/version/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
-[![CRAN status](https://badges.cranchecks.info/summary/correspondenceTables.svg)](https://cran.r-project.org/web/checks/check_results_correspondenceTables.html)
+[![CRAN status](https://badges.cranchecks.info/flavor/r-release-linux-x86_64/correspondenceTables.svg)](https://cran.r-project.org/web/checks/check_results_correspondenceTables.html)
 [![license](https://img.shields.io/badge/license-EUPL-success)](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
 [![weekly downloads](https://cranlogs.r-pkg.org/badges/last-week/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![monthly downloads](https://cranlogs.r-pkg.org/badges/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
