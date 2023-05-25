@@ -1,9 +1,17 @@
-#' @title Obtain the structure of the classification tables from CELLAR and FAO.
-#' @description Obtain the structure of the classification tables from CELLAR and FAO.
-#' @param prefix The  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.
-#' @param conceptScheme Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.
-#' @param endpoint The SPARQL Endpoint  
-#' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.  
+#' @title Retrieve information about the structure of each classification tables from CELLAR and FAO repositories.
+#' @description Retrieve information, for all the classification available in the repositories (CELLAR and FAO),
+#' about the level names their hierarchy and the numbers of records the function "structureData()" can be used. 
+#' @param prefix Prefixes are typically defined at the beginning of a SPARQL query 
+#' and are used throughout the query to make it more concise and easier to read. 
+#' Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
+#' The function 'classificationEndpoint()' can be used to generate the prefixes for the selected classification table. 
+#' @param conceptScheme Refers to a unique identifier associated to specific classification table. 
+#' The conceptScheme can be obtained by utilizing the "classificationEndpoint()" function.
+#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
+#' making it easier to retrieve specific information or perform complex queries on linked data.
+#' The valid values are \code{"CELLAR"} or \code{"FAO"}. 
+#' @param language Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
+#' By default is set to "en". This is an optional argument. 
 #' @import httr
 #' @export
 #' @return
@@ -20,10 +28,36 @@
 #'     prefix = "nace2"
 #'     conceptScheme = "nace2"
 #'     language = "en"
-#'     structure_dt = structureData(prefix, conceptScheme, endpoint, language)
-#'     }
+#'     structure_dt = dataStructure(prefix, conceptScheme, endpoint, language)
+#'     
+#'    ## The following code produce a list including the structure of each classification available in CELLAR and FAO. 
+#'    ## CELLAR
+#'    data_CELLAR = list()
+#'    endpoint = "CELLAR"
+#'    #Get info to retrieve structure using classificationEndpoint()
+#'    list_data = classificationEndpoint("ALL")
+#'    
+#'    for (i in 1:nrow(list_data$CELLAR)){
+#'        prefix = list_data$CELLAR[i,1] 
+#'        conceptScheme = list_data$CELLAR[i,2] 
+#'       #language by default is English
+#'       data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+#'    }
+#'    names(data_CELLAR) = list_data$CELLAR[,1] 
 
-structureData = function(prefix, conceptScheme, endpoint, language = "en") {
+#'    ## FAO 
+#'    data_FAO = list()
+#'    endpoint = "FAO"
+#'    for (i in 1:nrow(list_data$FAO)){
+#'        prefix = list_data$FAO[i,1]
+#'        conceptScheme = list_data$FAO[i,2] 
+#'        data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+#'    }
+#'    names(data_FAO) =  list_data$FAO[,1]
+#'     }
+  
+
+dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
   
   ### Define endpoint
   if (endpoint == "CELLAR") {

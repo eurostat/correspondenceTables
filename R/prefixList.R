@@ -1,6 +1,7 @@
-#' @title Create a list of prefixes for both CELLAR and FAO
+#' @title Create a list of prefixes for both CELLAR and FAO repositories. 
 #' @description  Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
-#' @param endpoint A string of type character containing the endpoint where the table is stored. 
+#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
+#' making it easier to retrieve specific information or perform complex queries on linked data.  
 #' The valid values are \code{"CELLAR"} and \code{"FAO"}.
 #' @import httr
 #' @export
@@ -36,10 +37,12 @@ prefixList = function(endpoint) {
 
     
   ### Define List
-        uri  = classEndpoint(endpoint)[[1]][,3]
-        prefix = classEndpoint(endpoint)[[1]][,1]
+        uri  = classificationEndpoint(endpoint)[[1]][,3]
+        prefix = classificationEndpoint(endpoint)[[1]][,1]
         prefix = gsub("\\.", "", prefix)
         prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
+        #remove duplicates 
+        prefix_all = prefix_all[!duplicated(prefix_all)]
         prefix_all = rbind(prefix_init, prefix_all)
     
   return(prefix_all)

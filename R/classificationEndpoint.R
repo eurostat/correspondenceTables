@@ -1,11 +1,14 @@
-#' @title Retrieve a list of classification tables in CELLAR, FAO or both.
-#' @description Retrieve a list of classification tables in CELLAR, FAO or both.
-#' @param endpoint A string of type character containing the endpoint where the table is stored. 
+#' @title Retrieve a list of classification tables from CELLAR and FAO repositories or both.
+#' @description The purpose of this function is to provide a comprehensive summary 
+#' of the data structure for each classification in CELLAR and FAO endpoint. 
+#' The summary includes information such as the prefix name, URI, key, concept scheme, and title associated with each classification.
+#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
+#' making it easier to retrieve specific information or perform complex queries on linked data. 
 #' The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints. 
 #' @import httr
 #' @export
 #' @return
-#' \code{classEndpoint()} returns a table with information needed to retrieve the classification table:
+#' \code{classificationEndpoint()} returns a table with information needed to retrieve the classification table:
 #' \itemize{
 #'     \item Prefix name: the  SPARQL instruction for a declaration of a namespace prefix
 #'     \item Conceptscheme: taxonomy of the SKOS object to be retrieved
@@ -15,10 +18,10 @@
 #' @examples
 #' {
 #'     endpoint = "ALL"
-#'     list_data = classEndpoint(endpoint)
+#'     list_data = classificationEndpoint(endpoint)
 #'     }
 
-classEndpoint = function(endpoint) {
+classificationEndpoint = function(endpoint) {
 
   ### Datasets in CELLAR
   endpoint_cellar = "http://publications.europa.eu/webapi/rdf/sparql"

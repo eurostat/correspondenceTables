@@ -1,6 +1,8 @@
-#' @title provides an overview of all the available correspondence classification from CELLAR and FAO repository.
-#' @description provides an overview of all the available correspondence classification from CELLAR and FAO repository.
-#' @param endpoint The SPARQL Endpoint. The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
+#' @title Overview of all the available correspondence classification from CELLAR and FAO repository.
+#' @description Provides an overview of all the available correspondence classification from CELLAR and FAO repository.
+#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
+#' making it easier to retrieve specific information or perform complex queries on linked data. 
+#' The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
 #' @import httr
 #' @export
 #' @return
@@ -10,6 +12,9 @@
 #' {
 #'     corr_list = correspondenceList("ALL")
 #'     }
+
+
+    
 correspondenceList = function(endpoint) {
   
   if (endpoint == "ALL") {

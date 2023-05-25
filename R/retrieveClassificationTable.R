@@ -1,13 +1,23 @@
-#' @title Retrieve a classification tables from CELLAR and FAO
-#' @description Retrieve a classification tables from CELLAR and FAO
-#' @param prefix The  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function. 
-#' @param endpoint The SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.
-#' @param conceptScheme Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function. 
-#' @param level The levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
+#' @title Retrieve classification tables from CELLAR and FAO repositories.
+#' @description To facilitate the utilization of European classifications as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions, 
+#' "retrieveClassificationTable()" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
+#' @param prefix Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read. 
+#' Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
+#' The function 'classificationEndpoint()' can be used to generate the prefixes for the selected classification table. 
+#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
+#' making it easier to retrieve specific information or perform complex queries on linked data.
+#' The valid values are \code{"CELLAR"} or \code{"FAO"}. 
+#' @param conceptScheme Refers to a unique identifier associated to specific classification table. 
+#' The conceptScheme can be obtained by utilizing the "classificationEndpoint()" function.
+#' @param level Refers  to the hierarchical levels of the selected classification table. 
+#' The detailed level information can be obtained by utilizing the "structureData() " function. 
 #' By default is set to \code{"ALL"}. This is an optional argument.  
-#' @param language Language of the table. By default is set to \code{"en"}. This is an optional argument.
-#' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
+#' @param language Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
+#' By default is set to "en". This is an optional argument.
+#' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
 #' If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced. 
+#' @param showQuery The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
+#' If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.
 #' @import httr
 #' @export
 #' @return
@@ -24,34 +34,36 @@
 #' {
 #'     prefix = "nace2"
 #'     conceptScheme = "nace2"
-#'     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+#'     CSVout=FALSE
+#'     showQuery=TRUE
+#'     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, CSVout =  FALSE, showQuery=TRUE)
 #'     # By default retrived all levels and only english
 #'     View(dt)
 #'     }
 
 
 
-retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en", CSVout = FALSE) {
-
-  ### Define endpoint
+retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en", CSVout = FALSE, showQuery=TRUE) {
+    
+    ### Define endpoint
     if (endpoint == "CELLAR") {
-      source = "http://publications.europa.eu/webapi/rdf/sparql"
+        source = "http://publications.europa.eu/webapi/rdf/sparql"
     }
     if (endpoint == "FAO") {
-      source = "https://stats.fao.org/caliper/sparql/AllVocs"
+        source = "https://stats.fao.org/caliper/sparql/AllVocs"
     }
-  
-  ### Load prefixes using prefixList function
-  prefixlist = prefixList(endpoint)
-  prefixlist = as.character(paste(prefixlist, collapse = "\n"))
-  
-  ## Define key to get code as the last letter of the prefix name
-  #str = unlist(strsplit(prefix, ""))
-  #key = paste0(str[(length(str))-1],str[length(str)])
-  
-  ### CLASSIFICATION TABLE SPARQL QUERIES
-  ### Define SPARQL query -- BASE: all levels
-  SPARQL.query_0 = paste0(prefixlist, "
+    
+    ### Load prefixes using prefixList function
+    prefixlist = prefixList(endpoint)
+    prefixlist = as.character(paste(prefixlist, collapse = "\n"))
+    
+    ## Define key to get code as the last letter of the prefix name
+    #str = unlist(strsplit(prefix, ""))
+    #key = paste0(str[(length(str))-1],str[length(str)])
+    
+    ### CLASSIFICATION TABLE SPARQL QUERIES
+    ### Define SPARQL query -- BASE: all levels
+    SPARQL.query_0 = paste0(prefixlist, "
         SELECT DISTINCT ?", prefix, " ?NAME ?Include ?Include_Also ?Exclude ?URL ?datatype
 
         WHERE {
@@ -76,56 +88,66 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
                 OPTIONAL {?s xkos:additionalContentNote ?Include_Also . FILTER (LANG(?Include_Also) = '", language, "').}
               
               ")
-
-  ### Define SPARQL query -- FILTER LEVEL
-  SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", level, ")")
-  
-  ### End SPARQL query ", prefix 
-  SPARQL.query_end = paste0("}
+    
+    ### Define SPARQL query -- FILTER LEVEL
+    SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", level, ")")
+    
+    ### End SPARQL query ", prefix 
+    SPARQL.query_end = paste0("}
           ORDER BY ?", prefix
-          )
-  
-  if (length(level) == 0 ){
-    stop("Classification has no levels. Set level = ALL to retrieve the table.") 
-  } else {  
-      if (level == "ALL") {
-        SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
-      } else {
-        SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_level, SPARQL.query_end)
-      }
-  }
+    )
+    
+    if (length(level) == 0 ){
+        stop("Classification has no levels. Set level = ALL to retrieve the table.") 
+    } else {  
+        if (level == "ALL") {
+            SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
+        } else {
+            SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_level, SPARQL.query_end)
+        }
+    }
+    
+    
+    response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+    data = data.frame(content(response))
+    
+    #keep only plainLiteral if more than one datatype // 
+    #FAO - "http://www.w3.org/2001/XMLSchema#string"
+    #CELLAR - "http://www.w3.org/2001/XMLSchema#string" - "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"
+    type = unique(data$datatype)
+    if (length(type) > 1){
+        data = data[which(data$datatype == "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"), ]
+    }
+    
+    #remove datatype col
+    data = data[, 1:(ncol(data)-1)]
 
-  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-  data = data.frame(content(response))
-  
-  #keep only plainLiteral if more than one datatype // 
-  #FAO - "http://www.w3.org/2001/XMLSchema#string"
-  #CELLAR - "http://www.w3.org/2001/XMLSchema#string" - "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"
-  type = unique(data$datatype)
-  if (length(type) > 1){
-    data = data[which(data$datatype == "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"), ]
-  }
-
-  #remove datatype col
-  data = data[, 1:(ncol(data)-1)]
-  
-  #remove duplicates when only code name is different 
-  #data = data[which(duplicated(data[,-1]) == FALSE), ]
-  
-  #are there other duplicates? URL is the same and the other changes
-  xcol = which(colnames(data) == "URL")
-  dup = length(which(duplicated(data[,-xcol]) == TRUE))
-  
-  if (dup > 0) {
-    warning("There are duplicates codes in the classification table.") 
-  }
-  
-  # Save results as CSV and show where it was stored
-  if (CSVout == TRUE) {
-    name_csv = paste0(prefix, "_table.csv")
-    write.csv(data, file= name_csv, row.names=FALSE)
-    message(paste0("The table was saved in ", getwd(), name_csv))
-  } 
-
-  return(data)
+    #are there other duplicates? URL is the same and the other changes
+    xcol = which(colnames(data) == "URL")
+    dup = length(which(duplicated(data[,-xcol]) == TRUE))
+    
+    if (dup > 0) {
+        warning("There are duplicates codes in the classification table.") 
+    }
+    
+    # Save results as CSV and show where it was stored
+    if (CSVout == TRUE) {
+        name_csv = paste0(prefix, "_table.csv")
+        write.csv(data, file= name_csv, row.names=FALSE)
+        message(paste0("The table was saved in ", getwd(), name_csv))
+    } 
+    
+    if (showQuery) {
+        result=list()
+        result[[1]]=SPARQL.query
+        result[[2]]=data
+        
+        names(result)=c("SPARQL.query", "ClassificationTable")
+    }
+    
+    if (showQuery==FALSE){
+        result=data
+    }
+    
+    return(result)
 }

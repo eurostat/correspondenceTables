@@ -18,51 +18,55 @@ This vignette provides information about the functions included in the correspon
 library(correspondenceTables)
 ```
 
-The main two functions used to exact tables are retrieveClassificationTable() and retrieveCorrespondenceTable(), for classification and correspondence tables respectively. Other functions (prefixList(), classEndpoint(), structureData() and correspondenceList()) are used to understand the structure of each classification and retrieve information needed as input of the two main functions.
+The main two functions used to exract tables are retrieveClassificationTable() and retrieveCorrespondenceTable(), for classification and correspondence tables respectively. Other functions (prefixList(), classificationEndpoint(), dataStructure() and correspondenceList()) are used to understand the structure of each classification or correspondence table and retrieve information needed as input of the two main functions.
 
 ## Extract Classification Tables
 
 The function retrieveClassificationTable() retrieves the classification table from the CELLAR and FAO repository, which can be used as an input to the newCorrespondenceTable and updateCorrespondenceTable functions. This function has five arguments: 
 
-* prefix - the SPARQL instruction for a declaration of a namespace prefix.
-* endpoint - the SPARQL Endpoint: CELLAR or FAO.
-* conceptScheme - taxonomy of the SKOS object to be retrieved.
-* level - levels of the objects in the collection to be retrieved.
-* language - language of the table.
-* CSVout - preferred choice of output.
+* prefix - the SPARQL instruction for a declaration of a namespace prefix
+* endpoint - the SPARQL Endpoint: CELLAR or FAO
+* conceptScheme - a unique identifier associated to specific classification table
+* level - levels of the objects in the collection to be retrieved
+* language - language of the table
+* CSVout - preferred choice of output
+* showQuery - the SPARQL query generated
 
-The values of the prefix, conceptScheme and level can be found using the classEndpoint() and structureData() functions (see below).
-The arguments level and language are optional and set as default as level="ALL", language="en" and CSVout = "FALSE".
+The values of the prefix, conceptScheme and level can be found using the classificationEndpoint() and dataStructure() functions (see below).
+The arguments level, language, CSVout and showQuery are optional and set as default as level="ALL", language="en", CSVout="FALSE" and showQuery="FALSE".
 
 The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see below).
 
-
 **Application of function retrieveClassificationTable()**
 
-To following code is used to retrieve the NACE2 classification from CELLAR:
+The following code is used to retrieve the NACE2 classification from CELLAR:
 
 ```{r, results = "hide"}
 endpoint = "CELLAR"
-# obtain prefix and conceptscheme using classEndpoint()
-classEndpoint(endpoint)[[1]][,1:4]
+# obtain prefix and conceptscheme using classificationEndpoint()
+classificationEndpoint(endpoint)[[1]][,1:4]
 prefix = "nace2"
 conceptScheme = "nace2"
 language = "en"
 CSVout = FALSE
+showQuery=TRUE
 
-# identify lower level using structureData()
-level_dt = structureData(prefix, conceptScheme, endpoint, language)
+# identify lower level using dataStructure()
+level_dt = dataStructure(prefix, conceptScheme, endpoint, language)
 level = level_dt[nrow(level_dt),2] 
 level_dt; level
 
-dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level, CSVout)
+result = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level, CSVout, showQuery) 
+result
+
+# identify the SPARQL query used
+result[[1]]
 ```
 
 
 ### Other functions used to extract Classification Tables
 
 Following, the other functions used to extract the required information for the retrieveClassificationTable() function.
-
 
 **Application of function prefixList()**
 
@@ -73,30 +77,30 @@ endpoint = "CELLAR"
 prefixList(endpoint)
 ```
 
-**Application of function classEndpoint()**
+**Application of function classificationEndpoint()**
 
 The function returns a table with information needed to retrieve the classification table:
 \itemize{
     \item Prefix name: the  SPARQL instruction for a declaration of a namespace prefix
-    \item Conceptscheme: taxonomy of the SKOS objects
+    \item Conceptscheme: a unique identifier associated to specific classification table
     \item URI: the URL from which the SPARQL query was retrieved
     \item Name: the name of the table retrieved
 }
 
 ```{r, results = "hide"}
  endpoint = "ALL"
- list_data = classEndpoint(endpoint)
+ list_data = classificationEndpoint(endpoint)
 ```
 
 
-**Application of function structureData()**
+**Application of function dataStructure()**
 
-Each classification has a different level based on their structure. The function structureData() retrieves information about the level names, their hierarchy and the numbers of records for all the classification available in the repositories (CELLAR and FAO). The level informations needed as an optional arguments of the retrieveClassificationTable() function. 
+Each classification has a different level based on their structure. The function dataStructure() retrieves information about the level names, their hierarchy and the numbers of records for all the classification available in the repositories (CELLAR and FAO). The level information needed as an optional arguments of the retrieveClassificationTable() function. 
 
 The function returns a table with the following columns:        
 \itemize{
-     \item Concept_Scheme: taxonomy of the SKOS object to be retrieved
-     \item Level: the levels of the objects in the collection 
+     \item Concept_Scheme: a unique identifier associated to specific classification table
+     \item Level: the levels of the objects in the collection
      \item Depth: identify the hierarchy of each level
      \item Count: the number of objects retrieved in each level
 }
@@ -107,15 +111,15 @@ The following code produce a list including the structure of each classification
 ## CELLAR
 data_CELLAR = list()
 endpoint = "CELLAR"
-#Get info to retrieve structure using classEndpoint()
-list_data = classEndpoint("ALL")
+#Get info to retrieve structure using classificationEndpoint()
+list_data = classificationEndpoint("ALL")
 
 #loop over all classification in CELLAR
 for (i in 1:nrow(list_data$CELLAR)){
   prefix = list_data$CELLAR[i,1] 
   conceptScheme = list_data$CELLAR[i,2] 
   #language by default is English
-  data_CELLAR[[i]] = structureData(prefix, conceptScheme, endpoint)
+  data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
 }
 names(data_CELLAR) = list_data$CELLAR[,1] 
 
@@ -125,7 +129,7 @@ endpoint = "FAO"
 for (i in 1:nrow(list_data$FAO)){
   prefix = list_data$FAO[i,1]
   conceptScheme = list_data$FAO[i,2] 
-  data_FAO[[i]] = structureData(prefix, conceptScheme, endpoint)
+  data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
 }
 names(data_FAO) =  list_data$FAO[,1]
 ```
@@ -138,9 +142,10 @@ The function retrieveCorrespondenceTable() retrieves the correspondences table f
 * ID_table - the ID of the correspondence table
 * language - language of the table
 * CSVout - preferred choice of output
+* showQuery - the SPARQL query generated
 
 The values of the prefix and ID_table can be found using the correspondenceList() function (see below).
-The argument language is optional and set as default as language="en" and CSVout = "FALSE".
+The argument language, CSVout and showQuery are optional and set as default as language="en", CSVout="FALSE" and showQuery="TRUE".
 
 The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see above).
 
@@ -153,7 +158,12 @@ prefix = "nace2"
 ID_table = "NACE2_PRODCOM2021"
 language = "en"
 CSVout = FALSE
-dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout)
+showQuery= TRUE
+
+result = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+result
+# identify the SPARQL query used
+result[[1]]
 ```
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
@@ -163,7 +173,12 @@ prefix = "CPCv21"
 ID_table = "CPC21-ISIC4"
 language = "en"
 CSVout = FALSE
-dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout)
+showQuery= TRUE
+
+result = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+result
+# identify the SPARQL query used
+result[[1]]
 ```
 
 ### Other functions used to extract Correspondence Tables
@@ -183,3 +198,4 @@ corr_list$CELLAR$`nace2:`
 #provides a table with all the correspondence tables for CPC v21 in FAO
 corr_list$FAO$`CPCv21:`
 ```
+
