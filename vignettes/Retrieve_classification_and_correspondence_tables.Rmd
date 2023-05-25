@@ -18,7 +18,7 @@ This vignette provides information about the functions included in the correspon
 library(correspondenceTables)
 ```
 
-The main two functions used to exract tables are retrieveClassificationTable() and retrieveCorrespondenceTable(), for classification and correspondence tables respectively. Other functions (prefixList(), classificationEndpoint(), dataStructure() and correspondenceList()) are used to understand the structure of each classification or correspondence table and retrieve information needed as input of the two main functions.
+The main two functions used to extract tables are retrieveClassificationTable() and retrieveCorrespondenceTable(), for classification and correspondence tables respectively. Other functions (prefixList(), classificationEndpoint(), dataStructure() and correspondenceList()) are used to understand the structure of each classification or correspondence table and retrieve information needed as input of the two main functions.
 
 ## Extract Classification Tables
 
