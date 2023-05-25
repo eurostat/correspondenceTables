@@ -21,7 +21,7 @@
 #'     list_data = classificationEndpoint(endpoint)
 #'     }
 
-classificationEndpoint = function(endpoint) {
+classificationEndpoint = function(endpoint == "ALL") {
 
   ### Datasets in CELLAR
   endpoint_cellar = "http://publications.europa.eu/webapi/rdf/sparql"
