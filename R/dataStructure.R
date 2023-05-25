@@ -110,5 +110,9 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
   table = read.csv(text=content(response, "text"), sep= ",")  
   table = table[order(table[,3],decreasing=FALSE),]
 
+  if (nrow(table) == 0){
+     message("This classification has no level. Please use level = 'ALL' when retrieving it using the retrieveClassificationTable")
+  }
+  
   return(table)
 }

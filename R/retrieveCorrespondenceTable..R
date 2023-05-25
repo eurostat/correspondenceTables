@@ -73,7 +73,7 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     ### CLASSIFICATION TABLE SPARQL QUERIES
     ### Define SPARQL query -- BASE
     SPARQL.query_0 = paste0(prefixlist, "
-    SELECT ?", A ," ?", B ," ?Label_", A ," ?Include_", A ," ?Exclude_", A ," ?Label_", B ," ?Include_", B ," ?Exclude_", B ," ?Comment ?URL 
+    SELECT ?", A ," ?", B ," ?Label_", A ," ?Include_", A ," ?Exclude_", A ," ?Label_", B ," ?Include_", B ," ?Exclude_", B ," ?Comment ?URL  ?Sourcedatatype ?Targetdatatype 
 
     WHERE {
      ", prefix, ":", ID_table, " xkos:madeOf ?Associations .
@@ -84,12 +84,14 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
      ?Source   skos:notation ?SourceNotation .
      ?Target   skos:notation ?TargetNotation .
 
-     FILTER ( datatype(?SourceNotation) = rdf:PlainLiteral)
-     FILTER ( datatype(?TargetNotation) = xsd:string)
+     #FILTER ( datatype(?SourceNotation) = rdf:PlainLiteral)
+     #FILTER ( datatype(?TargetNotation) = rdf:PlainLiteral)
      
      BIND (STR(?Associations ) AS ?URL)
      BIND (STR(?SourceNotation) as ?", A ,") 
      BIND (STR(?TargetNotation) as ?", B ,")
+     BIND (datatype(?SourceNotation) AS ?Sourcedatatype)
+     BIND (datatype(?TargetNotation) AS ?Targetdatatype)
 
      OPTIONAL { ?Source skos:prefLabel ?Label_", A ,"  FILTER (LANG(?Label_", A ,") = '", language, "') .}
      OPTIONAL { ?Target skos:prefLabel ?Label_", B ,"  FILTER (LANG(?Label_", B ,") = '", language, "') .}
@@ -109,6 +111,19 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
     data = data.frame(content(response, show_col_types = FALSE))
+    
+    #keep only plainLiteral if more than one datatype // 
+    #FAO - "http://www.w3.org/2001/XMLSchema#string"
+    #CELLAR - "http://www.w3.org/2001/XMLSchema#string" - "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"
+    Source_type = unique(data$Sourcedatatype)
+    Target_type = unique(data$Targetdatatype)
+    if (length(Source_type) > 1 | length(Target_type) > 1){
+        data = data[which(data$Sourcedatatype == "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"), ]
+        data = data[which(data$Targetdatatype == "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"), ]
+    }
+    
+    #remove datatype col
+    data = data[, 1:(ncol(data)-2)]
     
     # Save results as CSV and show where it was stored
     if (CSVout == TRUE) {

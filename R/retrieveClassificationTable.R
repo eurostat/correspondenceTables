@@ -61,9 +61,14 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
     prefixlist = prefixList(endpoint)
     prefixlist = as.character(paste(prefixlist, collapse = "\n"))
     
-    ## Define key to get code as the last letter of the prefix name
-    #str = unlist(strsplit(prefix, ""))
-    #key = paste0(str[(length(str))-1],str[length(str)])
+    
+    # Check if classification has level, if not, set level = "ALL" 
+    dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language)) 
+    
+    if (nrow(dt_level) == 0 & level != "ALL") {
+        level = "ALL"
+        message("Classification has no levels, so level = ALL was set to retrieve the table.") 
+    }
     
     ### CLASSIFICATION TABLE SPARQL QUERIES
     ### Define SPARQL query -- BASE: all levels
@@ -101,8 +106,9 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
           ORDER BY ?", prefix
     )
     
+
     if (length(level) == 0 ){
-        stop("Classification has no levels. Set level = ALL to retrieve the table.") 
+        stop("Classification level was not specified.") 
     } else {  
         if (level == "ALL") {
             SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
@@ -110,7 +116,6 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
             SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_level, SPARQL.query_end)
         }
     }
-    
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
     data = data.frame(content(response, show_col_types = FALSE))
