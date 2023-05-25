@@ -37,8 +37,14 @@
 #'     endpoint = "CELLAR"
 #'     prefix = "cn2022"
 #'     ID_table = "CN2022_NST2007"
-#'     dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table)
-#'     View(dt)
+#'     
+#'     results_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table)
+#'     
+#'     # View SPARQL Query
+#'     cat(results_ls[[1]])
+#'     
+#'     #View Clasiffication Table
+#'     View(results_ls[[2]])
 #'     }
 
 
@@ -102,7 +108,7 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-    data = data.frame(content(response))
+    data = data.frame(content(response, show_col_types = FALSE))
     
     # Save results as CSV and show where it was stored
     if (CSVout == TRUE) {

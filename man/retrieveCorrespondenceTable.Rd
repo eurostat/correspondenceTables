@@ -59,7 +59,13 @@ To facilitate the utilization of correspondence tables as inputs for the newCorr
     endpoint = "CELLAR"
     prefix = "cn2022"
     ID_table = "CN2022_NST2007"
-    dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table)
-    View(dt)
+    
+    results_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table)
+    
+    # View SPARQL Query
+    cat(results_ls[[1]])
+    
+    #View Clasiffication Table
+    View(results_ls[[2]])
     }
 }

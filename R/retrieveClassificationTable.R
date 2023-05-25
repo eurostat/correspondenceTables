@@ -36,9 +36,13 @@
 #'     prefix = "nace2"
 #'     conceptScheme = "nace2"
 #'     
-#'     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+#'     results_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme)
 #'     
-#'     View(dt)
+#'     # View SPARQL Query
+#'     cat(results_ls[[1]])
+#'     
+#'     #View Clasiffication Table
+#'     View(results_ls[[2]])
 #'     }
 
 
@@ -109,7 +113,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
     
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-    data = data.frame(content(response))
+    data = data.frame(content(response, show_col_types = FALSE))
     
     #keep only plainLiteral if more than one datatype // 
     #FAO - "http://www.w3.org/2001/XMLSchema#string"

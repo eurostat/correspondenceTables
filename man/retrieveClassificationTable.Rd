@@ -60,8 +60,12 @@ To facilitate the utilization of European classifications as inputs for the newC
     prefix = "nace2"
     conceptScheme = "nace2"
     
-    dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+    results_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme)
     
-    View(dt)
+    # View SPARQL Query
+    cat(results_ls[[1]])
+    
+    #View Clasiffication Table
+    View(results_ls[[2]])
     }
 }

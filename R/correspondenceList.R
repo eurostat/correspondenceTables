@@ -75,7 +75,7 @@ correspondenceList = function(endpoint) {
       ")
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-    data_t[[i]] = data.frame(content(response))
+    data_t[[i]] = data.frame(content(response, show_col_types = FALSE))
     
     if (nrow(data_t[[i]]) == 0){
       data_t[[i]] = cbind(prefix = character(), data_t[[i]])
