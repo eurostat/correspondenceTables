@@ -65,7 +65,7 @@ To facilitate the utilization of European classifications as inputs for the newC
     # View SPARQL Query
     cat(results_ls[[1]])
     
-    #View Clasiffication Table
+    #View Classification Table
     View(results_ls[[2]])
     }
 }
