@@ -4,11 +4,12 @@
 \alias{classificationEndpoint}
 \title{Retrieve a list of classification tables from CELLAR and FAO repositories or both.}
 \usage{
-classificationEndpoint(endpoint)
+classificationEndpoint(endpoint = "ALL")
 }
 \arguments{
 \item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data. 
+making it easier to retrieve specific information or perform complex queries on linked data. This is an optional
+parameter, which by default is set to \code{"ALL"}.
 The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints.}
 }
 \value{
