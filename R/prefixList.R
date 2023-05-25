@@ -41,9 +41,9 @@ prefixList = function(endpoint) {
         prefix = classificationEndpoint(endpoint)[[1]][,1]
         prefix = gsub("\\.", "", prefix)
         prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
+        prefix_all = rbind(prefix_init, prefix_all)
         #remove duplicates 
         prefix_all = prefix_all[!duplicated(prefix_all)]
-        prefix_all = rbind(prefix_init, prefix_all)
-    
+        
   return(prefix_all)
 }

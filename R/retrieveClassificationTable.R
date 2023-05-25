@@ -32,12 +32,12 @@
 #' }
 #' @examples
 #' {
+#'     endpoint = "CELLAR"
 #'     prefix = "nace2"
 #'     conceptScheme = "nace2"
-#'     CSVout=FALSE
-#'     showQuery=TRUE
-#'     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, CSVout =  FALSE, showQuery=TRUE)
-#'     # By default retrived all levels and only english
+#'     
+#'     dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+#'     
 #'     View(dt)
 #'     }
 

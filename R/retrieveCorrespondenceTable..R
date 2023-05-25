@@ -17,7 +17,7 @@
 #' @param showQuery The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 #' If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.
 #' @import httr
-#' #' @export
+#' @export
 #' @return
 #' \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
 #'  \itemize{
@@ -37,10 +37,7 @@
 #'     endpoint = "CELLAR"
 #'     prefix = "cn2022"
 #'     ID_table = "CN2022_NST2007"
-#'     language = "en"
-#'     CSVout=FALSE
-#'     showQuery=TRUE
-#'     dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout =  FALSE, showQuery=TRUE)
+#'     dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table)
 #'     View(dt)
 #'     }
 

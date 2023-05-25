@@ -56,11 +56,14 @@ level_dt = dataStructure(prefix, conceptScheme, endpoint, language)
 level = level_dt[nrow(level_dt),2] 
 level_dt; level
 
-result = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level, CSVout, showQuery) 
-result
+result_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level, CSVout, showQuery) 
 
 # identify the SPARQL query used
-result[[1]]
+SPARQLquery = result_ls[[1]]
+
+# obtained the table
+table = result_ls[[2]]
+
 ```
 
 
@@ -160,10 +163,13 @@ language = "en"
 CSVout = FALSE
 showQuery= TRUE
 
-result = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
-result
+result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+
 # identify the SPARQL query used
-result[[1]]
+SPARQLquery = result_ls[[1]]
+
+# obtained the table
+table = result_ls[[2]]
 ```
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
@@ -175,10 +181,13 @@ language = "en"
 CSVout = FALSE
 showQuery= TRUE
 
-result = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
-result
+result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+
 # identify the SPARQL query used
-result[[1]]
+SPARQLquery = result_ls[[1]]
+
+# obtained the table
+table = result_ls[[2]]
 ```
 
 ### Other functions used to extract Correspondence Tables

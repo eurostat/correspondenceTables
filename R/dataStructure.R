@@ -24,23 +24,15 @@
 #' }
 #' @examples
 #' {
-#'     endpoint = "CELLAR"
-#'     prefix = "nace2"
-#'     conceptScheme = "nace2"
-#'     language = "en"
-#'     structure_dt = dataStructure(prefix, conceptScheme, endpoint, language)
-#'     
-#'    ## The following code produce a list including the structure of each classification available in CELLAR and FAO. 
+#'    ## Obtain a list including the structure of each classification available 
 #'    ## CELLAR
 #'    data_CELLAR = list()
 #'    endpoint = "CELLAR"
-#'    #Get info to retrieve structure using classificationEndpoint()
 #'    list_data = classificationEndpoint("ALL")
 #'    
 #'    for (i in 1:nrow(list_data$CELLAR)){
 #'        prefix = list_data$CELLAR[i,1] 
 #'        conceptScheme = list_data$CELLAR[i,2] 
-#'       #language by default is English
 #'       data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
 #'    }
 #'    names(data_CELLAR) = list_data$CELLAR[,1] 
