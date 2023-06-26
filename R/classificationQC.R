@@ -1,6 +1,116 @@
+#' @title ClassificationQC performs a quality check control checks on a given statistical classifications
+#' @description The purpose of this function perform quality control checks on statistical classifications.
+#' It checks the compliance of classifications with structural rules and provides informative error messages 
+#' for violations. The function requires input files containing code and label information for each 
+#' classification position. It verifies the formatting requirements, uniqueness of codes, fullness of hierarchy, 
+#' uniqueness of labels, hierarchical label dependencies, single child code compliance, and sequencing of codes.
+#' The function generates a QC output data frame with the classification data, hierarchical level, code segments, 
+#' and test outcomes.Additionally, it allows exporting the output to a CSV file. Overall, the classificationQC 
+#' function ensures the integrity and accuracy of statistical classifications.
+#' @param classification Refers to a classification in csv file or an R dataframe structured with two columns, consisting 
+#' of codes and labels, respectively. If the classification is provided as a csv file, it should be stored in the working directory (as 
+#' defined using \code{getwd}). This is a mandatory argument. 
+#' @param lengthsfile Refers to a CSV file or a R dataframe (one record per hierarchical level) containing the initial and 
+#' last position of the segment of the code specific to that level. The number of lines of this CSV file or the R dataframe will 
+#' also implicitly define the number of hierarchical levels of the classification. This is a mandatory argument. 
+#' @param fullHierarchy It is used to test the fullness of hierarchy. If the parameter \code{fullHierarchy} is set to \code{FALSE}, 
+#' the function will check that every position at a lower level than 1 should have parents all the way up to level 1.
+#' If it is set to \code{TRUE}, in addition to the previous, it will be checked that any position at a higher level 
+#' than k should have children all the way down to level k.
+#' @param labelUniqueness It is used to test the that positions at the same hierarchical level have unique labels. If set to \code{TRUE}, 
+#' the compliance is checked and positions with duplicate labels are marked as 1 in the "duplicateLabel" column, 
+#' while positions with unique labels are marked as 0.
+#' @param labelHierarchy It is used to ensure that hierarchical structure of labels is respected. 
+#' When set to \code{TRUE}, the function will check that single child have a label identical to the label of its parent and that 
+#' has if a position has a label identical to the label of one of its children, then that position should only have a single child.
+#' @param singleChildCode It refers to CSV file with specific formatting to define valid codes for each level. If this parameter is not \code{NULL} 
+#' then it checks compliance with coding rules for single children and non-single children, as provided in the CSV file.
+#' @param sequencing It refers to a CSV file to define the admissible codes for multiple children at each level. If this parameter 
+#' is not \code{NULL}, the function checks the sequencing of multiple children codes within each level, as provided in the CSV file. 
+#' @param XLSXout The valid values are \code{FALSE} or \code{TRUE}. In both cases the output will be returned as an R list. 
+#' If output should be saved as a xlsx file, the argument should be set as \code{TRUE}. By default, no xlsx file is produced. 
+#' @import tidyverse writexl
+#' @export
+#' @return
+#'  \code{classificationQC() returns a list of dataframes identifying possible the cases violating the formatting requirements. The 
+#'  databases returned depend on the rules checked. The databases produced are:
+#'  \itemize{
+#'      \item{QC_output} The dataset includes all the original records in the classification. Colum "Level" refers  to the hierarchical levels 
+#'      of each position. Each code will be parsed into segment_k (column "Segmentk") and code_k (column "Codek"), corresponding to the code 
+#'      and segment and hierarchical level k respectively. Additional columns are included to flag the corrected behaviour in each position. 
+#'      These are 
+#'      \itemize{
+#'      \item Orphan: if fullHierarchy is set to FALSE, an "orphan" is a position at a hierarchical level (j) greater than 1 that lacks a parent at the hierarchical level (j-1) immediately above it.
+#'                     Orphan positions are marked with a value of 1 in the "QC output" column, indicating their orphan status. Otherwise, they are assigned a value of 0.
+#'      \item Childless: if fullHierarchy is set to TRUE, a "childless" position is one at a hierarchical level (j) less than k that lacks a child 
+#'                        at the hierarchical level (j+1) immediately below it. Childless positions are marked with a value of 1 
+#'                        indicating their childless status. Otherwise, they are assigned a value of 0.
+#'      \item DuplicateLabel: new column in the output that flags positions involved in duplicate label situations (where multiple positions share the same label at the same hierarchical level)
+#'                             by assigning them a value of 1, while positions with unique labels are assigned a value of 0.
+#'      \item SingleChildMismatch: column in the output provides information about label hierarchy consistency in a hierarchical classification system. It indicates:c
+#'                                  Value 1: Mismatched labels between a parent and its single child.
+#'                                  Value 9: Parent-child pairs with matching labels, but the parent has multiple children.
+#                                   Value 0: Compliance with the label hierarchy rule, indicating no mismatches or violations.
+#'      \item SingleCodeError: column serves as a flag indicating whether a position is a single child and whether the corresponding "singleCode" contains the level j segment.
+#'                              A value of 1 signifies a mismatch, while a value of 0 indicates compliance with the coding rules 
+#'      \item MultipleCodeError: column serves as a flag indicating whether a position is not a single child and whether the corresponding "multipleCodej" contains the level j segment.
+#'                               A value of 1 signifies a mismatch, while a value of 0 indicates compliance with the coding rules 
+#'      \item GapBefore: takes the value 0 or 1 if there is a missing child in the 123456789 series.
+#'      \item LastSibling: takes the value 1 when it is the last child in the series 123456789 otherwise the value 0 
+#'      }
+#'  
+#'      \item{QC_noLevels}  A subset of the QC_output dataframe including only records for which levels is not defined. In general if this dataframe
+#'      is not empty, it suggest that either the classification or the length file is not correctily specified. 
+#'      \item{QC_orphan} A subset of the QC_output dataframe including only records that have no parents at the higher hierarchical level.
+#'      \item{QC_childless} A subset of the QC_output dataframe including only records that have no children at the lower hierarchical level.
+#'      \item{QC_duplicatesLabel} A subset of the QC_output dataframe including only records that have duplicated label in the same hierarchical level.
+#'      \item{QC_duplicatesCode} A subset of the QC_output dataframe including only records that have the same codes.
+#'      \item{QC_singleChildMismatch} A subset of the QC_output dataframe including only records that are single child and have different labels from 
+#'           their parents or that are multiple children and have same labels to their parents.
+#'      \item{QC_singleCodeError} A subset of the QC_output dataframe including only records that are single children and have been wrongly coded (not following 
+#'      the rule provided in the 'SingleChildMismatch' CSV file).
+#'      \item{QC_multipleCodeError} A subset of the QC_output dataframe including only records that are multiple children and have been wrongly coded (not following 
+#'      the rule provided in the 'SingleChildMismatch' CSV file).
+#'      \item{QC_gapBefore} A subset of the QC_output dataframe including only records that are multiple children and have gap before in the sequencing provided in the
+#'      'sequencing' CSV file. 
+#'      \item{QC_lastSibling} A subset of the QC_output dataframe including only records that are multiple and last children following the sequencing provided in the
+#'      'sequencing' CSV file.
+#'  }
+#'      
+#'}
+#' @examples
+#' {
+#'  classification = "classification.csv"
+#'  lengthsFile = "lengthsFile.csv"
+#'  Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) {
+#'  View(Output$QC_output)
+#'  View(Output$QC_noLevels)
+#'  View(Output$QC_orphan)
+#'  View(Output$QC_childless)
+#'  View(Output$QC_duplicatesLabel)
+#'  View(Output$QC_duplicatesCode)
+#'  View(Output$QC_singleChildMismatch)
+#'  View(Output$QC_singleCodeError)
+#'  View(Output$QC_multipleCodeError)
+#'  View(Output$QC_gapBefore)
+#'  View(Output$QC_lastSibling)
+#'  }
 
-classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) {
 
+classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, XLSXout = FALSE) {
+ 
+    if ((length(grep("csv", classification)) == 0) & !(is.data.frame(classification))){
+        stop("The classification should be provided as either a csv file or a R dataframe.")
+    }
+    
+    if (is.data.frame(classification)){
+        classification = classification
+    }
+    
+    if (length(grep("csv", classification)) > 0){
+        classification = read.csv(file.path(paste0(getwd(), "/", classification))) 
+    }
+  
     #check that classification has only two columns
     if(ncol(classification) != 2){
         stop("The classification must have only two colums corresponding to code and label.")
@@ -9,8 +119,18 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     colnames(classification)[1:2] = c("Code", "Label")
 
     ## Length table 
-    lengths = lengthsTable
+    if ((length(grep("csv", lengthsFile)) == 0) & !(is.data.frame(lengthsFile))){
+        stop("The lengthsFile should be provided as either a csv file or a R dataframe.")
+    }   
     
+    if (is.data.frame(lengthsFile)){
+        lengthsFile = lengthsFile
+    }
+    
+    if (length(grep("csv", lengthsFile)) > 0){
+        lengthsFile = read.csv(file.path(paste0(getwd(), "/", lengthsFile))) 
+    }
+
     ### RULE 1 - Correctness of formatting requirements (lengths file)
     
     #check that char file has at least one row
@@ -338,31 +458,34 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     
     ## RESULTS
     if (!(fullHierarchy)) {
-        QC_childless = NULL
+        QC_childless = data.frame()
     }
     
     if (!(labelUniqueness)) {
-        QC_duplicatesLabel = NULL
+        QC_duplicatesLabel = data.frame()
     }
     
     if (!(labelHierarchy)) {
-        QC_singleChildMismatch = NULL
+        QC_singleChildMismatch = data.frame()
     }
 
     if (missing(singleChildCode)) {
-        QC_singleCodeError = NULL
-        QC_multipleCodeError = NULL
+        QC_singleCodeError = data.frame()
+        QC_multipleCodeError = data.frame()
     }
     
     if (missing(sequencing)) {
-        QC_lastSibling = NULL 
+        QC_lastSibling = data.frame()
     }
     
-
     return_ls = list("QC_output" = QC_output, "QC_noLevels" = QC_noLevels, "QC_duplicatesCode" = QC_duplicatesCode, "QC_orphan" = QC_orphan, 
                      "QC_childless" = QC_childless, "QC_duplicatesLabel" = QC_duplicatesLabel, "QC_singleChildMismatch" = QC_singleChildMismatch, 
                      "QC_singleCodeError" = QC_singleCodeError, "QC_multipleCodeError" = QC_multipleCodeError, "QC_gapBefore" = QC_gapBefore, 
                      "QC_lastSibling" = QC_lastSibling) 
+    
+    if (XLSXout == TRUE){
+        write_xlsx(return_ls, file.path(paste0(getwd(), "/QC_output.csv")))
+    }
     
     return(return_ls)
 }
