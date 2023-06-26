@@ -103,17 +103,17 @@
 
 classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, XLSXout = FALSE) {
  
-    if ((length(grep("csv", classification)) == 0) & !(is.data.frame(classification))){
-        stop("The classification should be provided as either a csv file or a R dataframe.")
-    }
+    #if ((length(grep("csv", classification)) == 0) & !(is.data.frame(classification))){
+    #    stop("The classification should be provided as either a csv file or a R dataframe.")
+    #}
     
     if (is.data.frame(classification)){
         classification = classification
     }
     
-    if (length(grep("csv", classification)) > 0){
-        classification = read.csv(file.path(paste0(getwd(), "/", classification))) 
-    }
+    #if (length(grep("csv", classification)) > 0){
+    #    classification = read.csv(file.path(paste0(getwd(), "/", classification))) 
+    #}
   
     #check that classification has only two columns
     if(ncol(classification) != 2){
@@ -123,17 +123,17 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     colnames(classification)[1:2] = c("Code", "Label")
 
     ## Length table 
-    if ((length(grep("csv", lengthsFile)) == 0) & !(is.data.frame(lengthsFile))){
-        stop("The lengthsFile should be provided as either a csv file or a R dataframe.")
-    }   
+    #if ((length(grep("csv", lengthsFile)) == 0) & !(is.data.frame(lengthsFile))){
+    #    stop("The lengthsFile should be provided as either a csv file or a R dataframe.")
+    #}   
     
     if (is.data.frame(lengthsFile)){
         lengthsFile = lengthsFile
     }
     
-    if (length(grep("csv", lengthsFile)) > 0){
-        lengthsFile = read.csv(file.path(paste0(getwd(), "/", lengthsFile))) 
-    }
+    #if (length(grep("csv", lengthsFile)) > 0){
+    #    lengthsFile = read.csv(file.path(paste0(getwd(), "/", lengthsFile))) 
+    #}
 
     ### RULE 1 - Correctness of formatting requirements (lengths file)
     
