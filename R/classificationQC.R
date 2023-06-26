@@ -32,7 +32,7 @@
 #' @import tidyverse writexl
 #' @export
 #' @return
-#'  \code{classificationQC() returns a list of dataframes identifying possible the cases violating the formatting requirements. The 
+#'  \code{classificationQC()} returns a list of dataframes identifying possible the cases violating the formatting requirements. The 
 #'  databases returned depend on the rules checked. The databases produced are:
 #'  \itemize{
 #'      \item{QC_output} The dataset includes all the original records in the classification. Colum "Level" refers  to the hierarchical levels 
@@ -76,13 +76,17 @@
 #'      \item{QC_lastSibling} A subset of the QC_output dataframe including only records that are multiple and last children following the sequencing provided in the
 #'      'sequencing' CSV file.
 #'  }
-#'      
-#'}
+#' 
 #' @examples
 #' {
-#'  classification = "classification.csv"
-#'  lengthsFile = "lengthsFile.csv"
-#'  Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) {
+#'  prefix = "nace2"
+#'  conceptScheme = "nace2"
+#'  endpoint = "CELLAR"
+#'  lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
+#'  classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
+#'  classification = classification[,c(1,2)]
+#'  classification = correctionClassification(classification)
+#'  Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
 #'  View(Output$QC_output)
 #'  View(Output$QC_noLevels)
 #'  View(Output$QC_orphan)

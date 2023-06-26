@@ -1,23 +1,22 @@
 #' @title Retrieve classification table from CELLAR and FAO repositories. 
 #' @description The aim of this function is to provide a table showing the different codes and labels for each classification 
 #' @param classification it returns a dataframe with two columns corrected according to the classification of CELLAR & FAO.
-#' @import httr
 #' @export
 #' @return
-#'  \code{correctionClassification() 'returns a table with information needed to retrieve the classification table:
+#'  \code{correctionClassification()} returns a table with information needed to retrieve the classification table:
 #'  \itemize{
 #'    \item Classification Code name (e.g. nace2): the code of each object
-#'    \item Classification Label :  corresponding name of each object
+#'    \item Classification Label:  corresponding name of each object
 #'  }
 #' @examples
-#'{
+#' {
 #' prefix = "nace2"
 #' conceptScheme = "nace2"
 #' endpoint = "CELLAR"
 #' classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
 #' correct_classification = correctionClassification(classification)
 #' View(correct_classification)
-#'}
+#' }
 
 
 correctionClassification = function(classification){

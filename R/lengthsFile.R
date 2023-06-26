@@ -11,7 +11,6 @@
 #' The conceptScheme can be obtained by utilizing the "classEndpoint()" function.
 #' @param correction  The valid values are \code{FALSE} or \code{TRUE}. In both cases the lengths table as an R object.
 #' If the output wants to have a correction for hierarchy levels \code{TRUE}. By default is set to "TRUE". 
-#' @import httr
 #' @export
 #' @return
 #' \code{lenghtsFile()} returns a table containing the lengths for each hierarchical level of the classification.
