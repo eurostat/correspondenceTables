@@ -129,14 +129,3 @@ lengthsFile = function(endpoint, prefix, conceptScheme, correction = TRUE) {
 }
 
 
-
-## Retrieve Classification 
-#prefix = "nace2" 
-#conceptScheme = "nace2"
-#endpoint = "CELLAR"
-
-#lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
-#lengthsTable
-
-#lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = FALSE)
-#lengthsTable

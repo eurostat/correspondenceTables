@@ -10,7 +10,7 @@ Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of
       person("Martina", "Patone", role = "aut"),
       person("Erkand", "Muraku", role = "aut"), 
       person("Clement", "Thomas", role = "aut"), 
-      person("Loic", "Bienvenue", role = "aut"))
+      person("Loic", "Bienvenu", role = "aut"))
 Description: 
     A candidate correspondence table between two classifications can be created when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications. 
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
