@@ -26,9 +26,6 @@
 #' 
 #' lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
 #' 
-#' #View lengthsTable
-#' View(lengthsTable)
-#' 
 #' } 
 
 

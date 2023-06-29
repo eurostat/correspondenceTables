@@ -66,6 +66,6 @@ To facilitate the utilization of correspondence tables as inputs for the newCorr
     cat(results_ls[[1]])
     
     #View Classification Table
-    View(results_ls[[2]])
+    #View(results_ls[[2]])
     }
 }

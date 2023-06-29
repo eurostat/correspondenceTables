@@ -66,6 +66,6 @@ To facilitate the utilization of European classifications as inputs for the newC
     cat(results_ls[[1]])
     
     #View Classification Table
-    View(results_ls[[2]])
+    #View(results_ls[[2]])
     }
 }

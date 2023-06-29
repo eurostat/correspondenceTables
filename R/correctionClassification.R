@@ -10,12 +10,12 @@
 #'  }
 #' @examples
 #' {
-#' prefix = "nace2"
-#' conceptScheme = "nace2"
-#' endpoint = "CELLAR"
-#' classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
-#' correct_classification = correctionClassification(classification)
-#' View(correct_classification)
+#' #prefix = "nace2"
+#' #conceptScheme = "nace2"
+#' #endpoint = "CELLAR"
+#' #classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
+#' #correct_classification = correctionClassification(classification)
+#' #View(correct_classification)
 #' }
 
 

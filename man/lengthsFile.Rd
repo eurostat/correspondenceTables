@@ -40,8 +40,5 @@ conceptScheme = "nace2"
 
 lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
 
-#View lengthsTable
-View(lengthsTable)
-
 } 
 }

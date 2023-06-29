@@ -29,7 +29,9 @@
 #' is not \code{NULL}, the function checks the sequencing of multiple children codes within each level, as provided in the CSV file. 
 #' @param XLSXout The valid values are \code{FALSE} or \code{TRUE}. In both cases the output will be returned as an R list. 
 #' If output should be saved as a xlsx file, the argument should be set as \code{TRUE}. By default, no xlsx file is produced. 
-#' @import tidyverse writexl
+#' @importFrom  stringr str_squish 
+#'
+#' @import writexl
 #' @export
 #' @return
 #'  \code{classificationQC()} returns a list of dataframes identifying possible the cases violating the formatting requirements. The 
@@ -55,8 +57,12 @@
 #'                              A value of 1 signifies a mismatch, while a value of 0 indicates compliance with the coding rules 
 #'      \item MultipleCodeError: column serves as a flag indicating whether a position is not a single child and whether the corresponding "multipleCodej" contains the level j segment.
 #'                               A value of 1 signifies a mismatch, while a value of 0 indicates compliance with the coding rules 
-#'      \item GapBefore: takes the value 0 or 1 if there is a missing child in the 123456789 series.
-#'      \item LastSibling: takes the value 1 when it is the last child in the series 123456789 otherwise the value 0 
+#'      \item GapBefore: The column is a flag that indicates whether there is a gap before a specific code within its level in the hierarchy.
+#'                       A gap refers to the absence of a sibling code that should logically precede the given code. In other words,
+#'                       it checks if there is a missing code in the sequence before a particular code.
+#'      \item LastSibling: The "lastSibling" column is a flag that identifies whether a code is the last sibling code at its level in the hierarchy.
+#'                         It is only relevant for codes with multiple children, meaning there are other codes at the same level with the same parent.
+#'       
 #'      }
 #'  
 #'      \item{QC_noLevels}  A subset of the QC_output dataframe including only records for which levels is not defined. In general if this dataframe
@@ -76,44 +82,42 @@
 #'      \item{QC_lastSibling} A subset of the QC_output dataframe including only records that are multiple and last children following the sequencing provided in the
 #'      'sequencing' CSV file.
 #'  }
-#' 
-#' @examples
-#' {
-#'  prefix = "nace2"
-#'  conceptScheme = "nace2"
-#'  endpoint = "CELLAR"
-#'  lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
-#'  classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
-#'  classification = classification[,c(1,2)]
-#'  classification = correctionClassification(classification)
-#'  Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
-#'  View(Output$QC_output)
-#'  View(Output$QC_noLevels)
-#'  View(Output$QC_orphan)
-#'  View(Output$QC_childless)
-#'  View(Output$QC_duplicatesLabel)
-#'  View(Output$QC_duplicatesCode)
-#'  View(Output$QC_singleChildMismatch)
-#'  View(Output$QC_singleCodeError)
-#'  View(Output$QC_multipleCodeError)
-#'  View(Output$QC_gapBefore)
-#'  View(Output$QC_lastSibling)
-#'  }
+#'
+#'@examples 
+#'  {
+#'  #classification_path = system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+#'  #classification = read.csv(classification_path)
+#'  #lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
+#'  #lengthsFile = read.csv(lengthsFile_path)
+#'  
+#'  #Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
+#'  #View(Output$QC_output)
+#'  #View(Output$QC_noLevels)
+#'  #View(Output$QC_orphan)
+#'  #View(Output$QC_childless)
+#'  #View(Output$QC_duplicatesLabel)
+#'  #View(Output$QC_duplicatesCode)
+#'  #View(Output$QC_singleChildMismatch)
+#'  #View(Output$QC_singleCodeError)
+#'  #View(Output$QC_multipleCodeError)
+#'  #View(Output$QC_gapBefore)
+#'  #View(Output$QC_lastSibling)
+#'} 
 
 
 classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, XLSXout = FALSE) {
  
-    #if ((length(grep("csv", classification)) == 0) & !(is.data.frame(classification))){
-    #    stop("The classification should be provided as either a csv file or a R dataframe.")
-    #}
+    if ((length(grep("csv", classification)) == 0) & !(is.data.frame(classification))){
+        stop("The classification should be provided as either a csv file or a R dataframe.")
+    }
     
     if (is.data.frame(classification)){
         classification = classification
     }
     
-    #if (length(grep("csv", classification)) > 0){
-    #    classification = read.csv(file.path(paste0(getwd(), "/", classification))) 
-    #}
+     if (length(grep("csv", classification)) > 0){
+         classification = read.csv(file.path(paste0(getwd(), "/", classification))) 
+     }
   
     #check that classification has only two columns
     if(ncol(classification) != 2){
@@ -123,17 +127,17 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     colnames(classification)[1:2] = c("Code", "Label")
 
     ## Length table 
-    #if ((length(grep("csv", lengthsFile)) == 0) & !(is.data.frame(lengthsFile))){
-    #    stop("The lengthsFile should be provided as either a csv file or a R dataframe.")
-    #}   
+    if ((length(grep("csv", lengthsFile)) == 0) & !(is.data.frame(lengthsFile))){
+        stop("The lengthsFile should be provided as either a csv file or a R dataframe.")
+    }   
     
     if (is.data.frame(lengthsFile)){
-        lengthsFile = lengthsFile
+        lengths = lengthsFile
     }
     
-    #if (length(grep("csv", lengthsFile)) > 0){
-    #    lengthsFile = read.csv(file.path(paste0(getwd(), "/", lengthsFile))) 
-    #}
+    if (length(grep("csv", lengthsFile)) > 0){
+        lengths = read.csv(file.path(paste0(getwd(), "/", lengthsFile))) 
+    }
 
     ### RULE 1 - Correctness of formatting requirements (lengths file)
     

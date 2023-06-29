@@ -69,8 +69,12 @@ also implicitly define the number of hierarchical levels of the classification. 
                              A value of 1 signifies a mismatch, while a value of 0 indicates compliance with the coding rules 
      \item MultipleCodeError: column serves as a flag indicating whether a position is not a single child and whether the corresponding "multipleCodej" contains the level j segment.
                               A value of 1 signifies a mismatch, while a value of 0 indicates compliance with the coding rules 
-     \item GapBefore: takes the value 0 or 1 if there is a missing child in the 123456789 series.
-     \item LastSibling: takes the value 1 when it is the last child in the series 123456789 otherwise the value 0 
+     \item GapBefore: The column is a flag that indicates whether there is a gap before a specific code within its level in the hierarchy.
+                      A gap refers to the absence of a sibling code that should logically precede the given code. In other words,
+                      it checks if there is a missing code in the sequence before a particular code.
+     \item LastSibling: The "lastSibling" column is a flag that identifies whether a code is the last sibling code at its level in the hierarchy.
+                        It is only relevant for codes with multiple children, meaning there are other codes at the same level with the same parent.
+      
      }
  
      \item{QC_noLevels}  A subset of the QC_output dataframe including only records for which levels is not defined. In general if this dataframe
@@ -102,25 +106,23 @@ and test outcomes.Additionally, it allows exporting the output to a CSV file. Ov
 function ensures the integrity and accuracy of statistical classifications.
 }
 \examples{
-{
- prefix = "nace2"
- conceptScheme = "nace2"
- endpoint = "CELLAR"
- lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
- classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
- classification = classification[,c(1,2)]
- classification = correctionClassification(classification)
- Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
- View(Output$QC_output)
- View(Output$QC_noLevels)
- View(Output$QC_orphan)
- View(Output$QC_childless)
- View(Output$QC_duplicatesLabel)
- View(Output$QC_duplicatesCode)
- View(Output$QC_singleChildMismatch)
- View(Output$QC_singleCodeError)
- View(Output$QC_multipleCodeError)
- View(Output$QC_gapBefore)
- View(Output$QC_lastSibling)
- }
+ {
+ #classification_path = system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+ #classification = read.csv(classification_path)
+ #lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
+ #lengthsFile = read.csv(lengthsFile_path)
+ 
+ #Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
+ #View(Output$QC_output)
+ #View(Output$QC_noLevels)
+ #View(Output$QC_orphan)
+ #View(Output$QC_childless)
+ #View(Output$QC_duplicatesLabel)
+ #View(Output$QC_duplicatesCode)
+ #View(Output$QC_singleChildMismatch)
+ #View(Output$QC_singleCodeError)
+ #View(Output$QC_multipleCodeError)
+ #View(Output$QC_gapBefore)
+ #View(Output$QC_lastSibling)
+} 
 }
