@@ -40,7 +40,7 @@ classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, le
 classification = classification[,c(1,2)]
 colnames(classification)[1:2] = c("Code", "Label")
 correct_classification = correctionClassification(classification)
-View(correct_classification)
+correct_classification
 ```
 
 These different code show the different correction for each classification.
@@ -173,10 +173,11 @@ conceptScheme = "nace2"
 correction = TRUE
 lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
  
- View(lengthsTable)
 ```
 
 
+
+In the provided code , the following lines are responsible for retrieving the classification table structure and the first level of the classification table:
 
 ```{r}
  level_dt = dataStructure(prefix, conceptScheme, endpoint)
@@ -184,10 +185,6 @@ lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
  level = level_dt[,2]
  dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level[1])$ClassificationTable
 ```
-
-
-
-
 
 
 
