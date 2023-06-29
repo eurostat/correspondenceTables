@@ -21,13 +21,13 @@ The aim of this function is to provide a table showing the different codes and l
 }
 \examples{
 {
-#prefix = "nace2"
-#conceptScheme = "nace2"
-#endpoint = "CELLAR"
-#classification = classification[,c(1,2)]
-#colnames(classification)[1:2] = c("Code", "Label")
-#classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
-#correct_classification = correctionClassification(classification)
+prefix = "nace2"
+conceptScheme = "nace2"
+endpoint = "CELLAR"
+classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
+classification = classification[,c(1,2)]
+colnames(classification)[1:2] = c("Code", "Label")
+correct_classification = correctionClassification(classification)
 #View(correct_classification)
 }
 }

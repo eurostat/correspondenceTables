@@ -107,10 +107,10 @@ function ensures the integrity and accuracy of statistical classifications.
 }
 \examples{
  {
- #classification_path = system.file("extdata", "Nace2.csv", package = "correspondenceTables")
- #classification = read.csv(classification_path)
- #lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
- #lengthsFile = read.csv(lengthsFile_path)
+ classification_path = system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+ classification = read.csv(classification_path)
+ lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
+ lengthsFile = read.csv(lengthsFile_path)
  
  #Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
  #View(Output$QC_output)
