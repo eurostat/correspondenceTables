@@ -1,0 +1,119 @@
+---
+title: "Classification Quality Control"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Classification Quality Control}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The classificationQC function is a key component of the correspondenceTables package, which is designed for extracting classification and correspondence tables from CELLAR and FAO endpoints. This vignette provides a comprehensive overview of the classificationQC function and its usage.
+
+Before using the **classificationQC** function, load the correspondenceTables package using the library function:
+```{r}
+library(correspondenceTables)
+
+```
+
+
+The classificationQC function performs quality control checks on a classification table extracted from CELLAR or FAO endpoints. It helps identify potential issues and inconsistencies in the classification data, ensuring data accuracy and reliability.
+
+
+
+Before running the **ClassificationQC**
+We use the function **retrieveClassificationTable()** retrieves the classification table from CELLAR and FAO repository,which can be used as an input on this example we used the classification Nace2 from CELLAR.
+
+We used the function correctionClassification 
+
+**Application of function correctionClassification()**
+```{r}
+prefix = "nace2"
+conceptScheme = "nace2"
+endpoint = "CELLAR"
+classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
+classification = classification[,c(1,2)]
+colnames(classification)[1:2] = c("Code", "Label")
+classification = correctionClassification(classification)
+
+```
+
+**Application of function lengthsFile()**
+To following code is used to retrieves the correspondence tables' length information for each level of hierarchy in a classification
+```{r}
+lengthsTable = lengthsFile(endpoint, prefix, conceptScheme, correction = TRUE)
+
+lengthsFile = lengthsTable
+```
+
+
+**Parameters:** 
+
+classification -  The classification table to be evaluated. This should be a data frame or a tibble.
+
+lengthsFile - The path to a file containing the lengths of the codes (i.e., the number of digits for each code) used in the classification table.
+
+fullHierarchy - A logical value indicating whether to check if the classification table represents the full hierarchy. By default, it is set to TRUE.
+
+labelUniqueness -  A logical value indicating whether to check if the labels in the classification table are unique. By default, it is set to TRUE.
+
+labelHierarchy -  A logical value indicating whether to check if the labels in the classification table follow the hierarchical structure. By default, it is set to TRUE.
+singleChildCode - An optional vector of codes for which single child categories should be checked. By default, it is set to NULL.
+
+sequencing -  An optional vector indicating the desired sequencing of codes. By default, it is set to NULL.
+
+XLSXout - A logical value indicating whether the output should be saved to an Excel file. By default, it is set to FALSE.
+
+```{r, results = "hide"}
+Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL)
+
+  Output$QC_output
+  Output$QC_noLevels
+  Output$QC_orphan
+  Output$QC_childless
+  Output$QC_duplicatesLabel
+  Output$QC_duplicatesCode
+  Output$QC_singleChildMismatch
+  Output$QC_singleCodeError
+  Output$QC_multipleCodeError
+  Output$QC_gapBefore
+  Output$QC_lastSibling
+
+```
+
+
+**2nd Example**
+
+The user here use his own CSV file but for this example we used NACE2 again as a CSV File inside we used **correctionClassification** and **lengthsFile** in the way to get a CSV file corrected and the different level of hierarchy
+
+
+**Application of function ClassificationQC()**
+```{r, results = "hide"}
+  classification_path = system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+  classification = read.csv(classification_path)
+  lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
+  lengthsFile = read.csv(lengthsFile_path)
+  
+  Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL)
+   
+  Output$QC_output
+  Output$QC_noLevels
+  Output$QC_orphan
+  Output$QC_childless
+  Output$QC_duplicatesLabel
+  Output$QC_duplicatesCode
+  Output$QC_singleChildMismatch
+  Output$QC_singleCodeError
+  Output$QC_multipleCodeError
+  Output$QC_gapBefore
+  Output$QC_lastSibling
+
+```
+

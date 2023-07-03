@@ -2,7 +2,7 @@
 title: "CorrectionClassification & LengthsFile"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{CorrectionClassification & LengthsFile}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
