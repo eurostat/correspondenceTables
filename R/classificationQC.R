@@ -312,8 +312,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     ## RULE 7 -	Single child code compliance 
     if (!missing(singleChildCode)){
         
-        # singleChildCode = read.csv(file.path(paste0(getwd(), "/", singleChildCode))) 
-        
+
         QC_output$singleCodeError = 0
         QC_output$multipleCodeError = 0
         
@@ -401,7 +400,6 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     ## RULE 8 - Sequencing of codes
     if (!missing(sequencing)){
         
-        # sequencing = read.csv(file.path(paste0(getwd(), "/", sequencing))) 
 
         QC_output$gapBefore = 0
         QC_output$lastSibling = 0
