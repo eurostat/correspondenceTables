@@ -111,12 +111,6 @@ function ensures the integrity and accuracy of statistical classifications.
  classification = read.csv(classification_path)
  lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
  lengthsFile = read.csv(lengthsFile_path)
- fullHierarchy = TRUE
- labelUniqueness  = TRUE
- labelHierarchy = TRUE
- singleChildCode = NULL
- sequencing = NULL
- XLSXout = FALSE
  Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
  print(Output$QC_output)
  print(Output$QC_noLevels)
