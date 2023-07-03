@@ -111,18 +111,23 @@ function ensures the integrity and accuracy of statistical classifications.
  classification = read.csv(classification_path)
  lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
  lengthsFile = read.csv(lengthsFile_path)
- 
- #Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
- #View(Output$QC_output)
- #View(Output$QC_noLevels)
- #View(Output$QC_orphan)
- #View(Output$QC_childless)
- #View(Output$QC_duplicatesLabel)
- #View(Output$QC_duplicatesCode)
- #View(Output$QC_singleChildMismatch)
- #View(Output$QC_singleCodeError)
- #View(Output$QC_multipleCodeError)
- #View(Output$QC_gapBefore)
- #View(Output$QC_lastSibling)
+ fullHierarchy = TRUE
+ labelUniqueness  = TRUE
+ labelHierarchy = TRUE
+ singleChildCode = NULL
+ sequencing = NULL
+ XLSXout = FALSE
+ Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
+ print(Output$QC_output)
+ print(Output$QC_noLevels)
+ print(Output$QC_orphan)
+ print(Output$QC_childless)
+ print(Output$QC_duplicatesLabel)
+ print(Output$QC_duplicatesCode)
+ print(Output$QC_singleChildMismatch)
+ print(Output$QC_singleCodeError)
+ print(Output$QC_multipleCodeError)
+ print(Output$QC_gapBefore)
+ print(Output$QC_lastSibling)
 } 
 }

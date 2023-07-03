@@ -126,7 +126,7 @@ If the prefix is "prodcom2019" and the code values in the classification$Code co
 
 **remove section for CN**
 
-If the prefix is one of "cn2017", "cn2018", "cn2019", "cn2020", "cn2021", "cn2021", "cn2022", or "cn2023", sections are identified based on the presence of alphabetic characters in the classification$Code column using the gsub function. Rows containing sections are then removed from the classification data frame.s
+If the prefix is one of "cn2017", "cn2018", "cn2019", "cn2020", "cn2021", "cn2021", "cn2022", or "cn2023", sections are identified based on the presence of alphabetic characters in the classification Code column n. Rows containing sections are then removed from the classification data frame.s
 ```{r}
   if (prefix %in% c("cn2017", "cn2018", "cn2019", "cn2020", "cn2021", "cn2021", "cn2022", "cn2023")) {
         level1_code = which(gsub("[^a-zA-Z]", "", classification$Code)!= "")
@@ -138,7 +138,7 @@ If the prefix is one of "cn2017", "cn2018", "cn2019", "cn2020", "cn2021", "cn202
 
 **remove "." in the end of the code for CBF**
 
-If the prefix is "cbf10", the last character (".") is removed from the code values in the classification$Code column.
+If the prefix is "cbf10", the last character (".") is removed from the code values in the classification Code column.
 ```{r}
 if (prefix %in% c("cbf10")) {
         classification[,1] = substr(classification[,1], 1, nchar(classification[,1])-1)
@@ -191,14 +191,13 @@ In the provided code , the following lines are responsible for retrieving the cl
 In this section of code, different corrections and modifications are applied based on the specific classification being used. Here's an explanation of each part:
 
 Order correction for prodcom:
+If the prefix is one of "prodcom2019", "prodcom2021", or "prodcom2022", the order of levels in the level_dt data frame is rearranged by selecting columns 2, 1, and 3 
 
-If the prefix is one of "prodcom2019", "prodcom2021", or "prodcom2022", the order of levels in the level_dt data frame is rearranged by selecting columns 2, 1, and 3 (level_dt[c(2,1,3),]).
 Remove first level correction for CN:
+If the prefix is one of "cn2017", "cn2018", "cn2019", "cn2020", "cn2021", "cn2021", "cn2022", or "cn2023", the first level is removed from the level_dt data frame.
 
-If the prefix is one of "cn2017", "cn2018", "cn2019", "cn2020", "cn2021", "cn2021", "cn2022", or "cn2023", the first level is removed from the level_dt data frame (level_dt[-1,]).
 Order correction for CPA:
-
-If the prefix is "cpa21", the order of levels in the level_dt data frame is rearranged by selecting columns 1, 2, 3, 6, 4, and 5 (level_dt[c(1,2,3,6,4,5),]).
+If the prefix is "cpa21", the order of levels in the level_dt data frame is rearranged by selected column
 ```{r}
 
     if (isTRUE(correction)) {
@@ -221,10 +220,9 @@ If the prefix is "cpa21", the order of levels in the level_dt data frame is rear
 
 Remove ".0" for ecoicop:
 
-If the prefix is "ecoicop" and the code values in the dt data frame are "10.0", "11.0", or "12.0", they are replaced with "10", "11", and "12", respectively (dt[,1][which(dt[,1] %in% c("10.0", "11.0", "12.0"))] = c("10", "11", "12")).
-Remove weird codes for prodcom:
+If the prefix is "ecoicop" and the code values in the dt data frame are "10.0", "11.0", or "12.0", they are replaced without the dote and the zero
 
-If the prefix is one of "prodcom2019", "prodcom2021", or "prodcom2022", the rows in the dt data frame with codes "00.99.t" or "00.99.z" are removed (dt = dt[-which(dt[,1] %in% c("00.99.t", "00.99.z")),]).
+If the prefix is one of "prodcom2019", "prodcom2021", or "prodcom2022", the rows in the dt data frame with codes "00.99.t" or "00.99.z" are removed 
 ```{r}
     if (isTRUE(correction)) {
         ## remove .0 for 10, 11 and 12 division (ecoicop)
@@ -239,13 +237,12 @@ If the prefix is one of "prodcom2019", "prodcom2021", or "prodcom2022", the rows
 ```
 
 
-
 Add letter to code for NACE, NACE 2.1, CPA, and ISIC:
 
-If the prefix is one of "nace2", "nace21", "cpa21", or "ISICrev4", the letter "A" is added to the code values in the dt data frame (dt[,1] = paste0("A", dt[,1])).
+If the prefix is one of "nace2", "nace21", "cpa21", or "ISICrev4", the letter "A" is added to the code values in the dt data frame 
 Add leading zero for ICC_v11:
 
-If the prefix is "ICC_v11" and the length of l is 2, the code values in the dt data frame are formatted with a leading zero using sprintf function (dt[,1] = sprintf("%.2f", dt[,1])).
+If the prefix is "ICC_v11" and the length of l is 2, the code values in the dt data frame are formatted with a leading zero 
 ```{r}
     if (isTRUE(correction)) {
             ## add letter to code (for NACE, NACE 2.1, CPA and ISIC)

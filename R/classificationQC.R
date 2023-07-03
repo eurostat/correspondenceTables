@@ -30,7 +30,7 @@
 #' @param XLSXout The valid values are \code{FALSE} or \code{TRUE}. In both cases the output will be returned as an R list. 
 #' If output should be saved as a xlsx file, the argument should be set as \code{TRUE}. By default, no xlsx file is produced. 
 #' @importFrom  stringr str_squish 
-#'
+#' @importFrom  stringr str_sub
 #' @import writexl
 #' @export
 #' @return
@@ -89,19 +89,24 @@
 #'  classification = read.csv(classification_path)
 #'  lengthsFile_path = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
 #'  lengthsFile = read.csv(lengthsFile_path)
-#'  
-#'  #Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
-#'  #View(Output$QC_output)
-#'  #View(Output$QC_noLevels)
-#'  #View(Output$QC_orphan)
-#'  #View(Output$QC_childless)
-#'  #View(Output$QC_duplicatesLabel)
-#'  #View(Output$QC_duplicatesCode)
-#'  #View(Output$QC_singleChildMismatch)
-#'  #View(Output$QC_singleCodeError)
-#'  #View(Output$QC_multipleCodeError)
-#'  #View(Output$QC_gapBefore)
-#'  #View(Output$QC_lastSibling)
+#'  fullHierarchy = TRUE
+#'  labelUniqueness  = TRUE
+#'  labelHierarchy = TRUE
+#'  singleChildCode = NULL
+#'  sequencing = NULL
+#'  XLSXout = FALSE
+#'  Output = classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL) 
+#'  print(Output$QC_output)
+#'  print(Output$QC_noLevels)
+#'  print(Output$QC_orphan)
+#'  print(Output$QC_childless)
+#'  print(Output$QC_duplicatesLabel)
+#'  print(Output$QC_duplicatesCode)
+#'  print(Output$QC_singleChildMismatch)
+#'  print(Output$QC_singleCodeError)
+#'  print(Output$QC_multipleCodeError)
+#'  print(Output$QC_gapBefore)
+#'  print(Output$QC_lastSibling)
 #'} 
 
 
@@ -313,7 +318,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     ## RULE 7 -	Single child code compliance 
     if (!missing(singleChildCode)){
         
-        singleChildCode = read.csv(file.path(paste0(getwd(), "/", singleChildCode))) 
+        # singleChildCode = read.csv(file.path(paste0(getwd(), "/", singleChildCode))) 
         
         QC_output$singleCodeError = 0
         QC_output$multipleCodeError = 0
@@ -339,7 +344,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
                 ##singleCode take all the code end by a "0"
                 single = singleChildCode[which(singleChildCode[,1] == level),2]
                 ## MultipleCode take all the code end as in the csv file #COULD BE LETTER AS WELL
-                multi = strsplit(as.character(singleChildCode[which(singleChildCode[,1] == level),3]),"")[[1]]
+                multi = as.character(singleChildCode[which(singleChildCode[,1] == level),3])
                 
                 #Determine the observed code end for single and multi children
                 single_code = str_sub(code_singlechild[,2], nchar(code_singlechild[,2]), nchar(code_singlechild[,2]))
@@ -402,7 +407,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     ## RULE 8 - Sequencing of codes
     if (!missing(sequencing)){
         
-        sequencing = read.csv(file.path(paste0(getwd(), "/", sequencing))) 
+        # sequencing = read.csv(file.path(paste0(getwd(), "/", sequencing))) 
 
         QC_output$gapBefore = 0
         QC_output$lastSibling = 0
@@ -426,7 +431,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
                 level = sequencing[k, 1]
                 
                 ## MultipleCode take all the code end as in the csv file #COULD BE LETTER AS WELL
-                multi = strsplit(as.character(sequencing[which(sequencing[,1] == level),2]),"")[[1]]
+                multi = as.character(sequencing[which(sequencing[,1] == level),2])
                     
                 #Determine the observed code end for single and multi children
                 multi_code = str_sub(code_multichild[,2], nchar(code_multichild[,2]), nchar(code_multichild[,2]))
