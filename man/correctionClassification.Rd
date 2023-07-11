@@ -2,7 +2,7 @@
 % Please edit documentation in R/correctionClassification.R
 \name{correctionClassification}
 \alias{correctionClassification}
-\title{Retrieve classification table from CELLAR and FAO repositories.}
+\title{retrieve a corrected classification table from the CELLAR and FAO repositories for quality control purposes.}
 \usage{
 correctionClassification(classification)
 }
@@ -17,7 +17,7 @@ correctionClassification(classification)
  }
 }
 \description{
-The aim of this function is to provide a table showing the different codes and labels for each classification
+The main objective of this function is to prepare the classification table for quality control by ensuring the accuracy and consistency of the codes and labels. It performs various corrections based on specific classification requirements
 }
 \examples{
 {

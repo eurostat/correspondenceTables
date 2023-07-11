@@ -1,5 +1,5 @@
-#' @title Retrieve classification table from CELLAR and FAO repositories. 
-#' @description The aim of this function is to provide a table showing the different codes and labels for each classification 
+#' @title retrieve a corrected classification table from the CELLAR and FAO repositories for quality control purposes. 
+#' @description The main objective of this function is to prepare the classification table for quality control by ensuring the accuracy and consistency of the codes and labels. It performs various corrections based on specific classification requirements
 #' @param classification it returns a dataframe with two columns corrected according to the classification of CELLAR & FAO.
 #' @export
 #' @return
