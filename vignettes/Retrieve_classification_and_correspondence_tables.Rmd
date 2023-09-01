@@ -127,14 +127,14 @@ for (i in 1:nrow(list_data$CELLAR)){
 names(data_CELLAR) = list_data$CELLAR[,1] 
 
 ## FAO 
-data_FAO = list()
-endpoint = "FAO"
-for (i in 1:nrow(list_data$FAO)){
-  prefix = list_data$FAO[i,1]
-  conceptScheme = list_data$FAO[i,2] 
-  data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
-}
-names(data_FAO) =  list_data$FAO[,1]
+# data_FAO = list()
+# endpoint = "FAO"
+# for (i in 1:nrow(list_data$FAO)){
+#   prefix = list_data$FAO[i,1]
+#   conceptScheme = list_data$FAO[i,2] 
+#   data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+# }
+# names(data_FAO) =  list_data$FAO[,1]
 ```
 
 ## Extract Correspondence Tables
@@ -174,20 +174,20 @@ table = result_ls[[2]]
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
 ```{r, results = "hide"}
-endpoint = "FAO"
-prefix = "CPCv21"
-ID_table = "CPC21-ISIC4"
-language = "en"
-CSVout = FALSE
-showQuery= TRUE
-
-result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
-
-# identify the SPARQL query used
-SPARQLquery = result_ls[[1]]
-
-# obtained the table
-table = result_ls[[2]]
+# endpoint = "FAO"
+# prefix = "CPCv21"
+# ID_table = "CPC21-ISIC4"
+# language = "en"
+# CSVout = FALSE
+# showQuery= TRUE
+# 
+# result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+# 
+# # identify the SPARQL query used
+# SPARQLquery = result_ls[[1]]
+# 
+# # obtained the table
+# table = result_ls[[2]]
 ```
 
 ### Other functions used to extract Correspondence Tables
