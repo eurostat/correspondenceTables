@@ -74,8 +74,11 @@ correctionClassification = function(classification){
         classification$Code[T_code] = paste0("T", classification$Code[T_code])
         U_code = which(substr(classification$Code, 1, 2) %in% c("99"))
         classification$Code[U_code] = paste0("U", classification$Code[U_code])
+        
     }
-    
+    if (prefix %in% c("nace2")) {
+      classification$Code = ifelse(nchar(classification$Code) == 2, gsub("^(.)(.)$", "\\10\\2", classification$Code), classification$Code)
+    }
     #remove .0 for 10, 11 and 12 division (for ecoicop) --- THIS WAS CHANGED (but not for hicp)
     if (prefix %in% c("ecoicop")) {
         level1_code = which(classification$Code %in% c("10.0", "11.0", "12.0"))
@@ -101,3 +104,4 @@ correctionClassification = function(classification){
     
     return(classification)
 }
+

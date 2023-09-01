@@ -16,7 +16,7 @@ Description:
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
 License: EUPL
 Encoding: UTF-8
-Imports: data.table, httr, tidyverse, writexl, stringr
+Imports: data.table, httr, tidyverse, writexl, stringr, igraph
 Suggests: 
     knitr,
     rmarkdown, tinytest

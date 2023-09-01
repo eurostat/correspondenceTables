@@ -49,14 +49,5 @@ about the level names their hierarchy and the numbers of records the function "s
       data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
    }
    names(data_CELLAR) = list_data$CELLAR[,1] 
-   ## FAO 
-   data_FAO = list()
-   endpoint = "FAO"
-   for (i in 1:nrow(list_data$FAO)){
-       prefix = list_data$FAO[i,1]
-       conceptScheme = list_data$FAO[i,2] 
-       data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
-   }
-   names(data_FAO) =  list_data$FAO[,1]
-    }
+}
 }

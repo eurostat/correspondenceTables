@@ -37,16 +37,7 @@
 #'    }
 #'    names(data_CELLAR) = list_data$CELLAR[,1] 
 
-#'    ## FAO 
-#'    data_FAO = list()
-#'    endpoint = "FAO"
-#'    for (i in 1:nrow(list_data$FAO)){
-#'        prefix = list_data$FAO[i,1]
-#'        conceptScheme = list_data$FAO[i,2] 
-#'        data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
-#'    }
-#'    names(data_FAO) =  list_data$FAO[,1]
-#'     }
+#'}
   
 
 dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
@@ -70,7 +61,7 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
   
   ### SPARQL query
   SPARQL.query = paste0(prefix_ls, "
-  SELECT  DISTINCT ?Concept_Scheme ?Level ?Depth (COUNT (distinct ?s) AS ?Count) 
+  SELECT  DISTINCT ?Concept_Scheme  ?Depth (COUNT (distinct ?s) AS ?Count) 
 
         WHERE {
           ?s skos:prefLabel ?Label ;
@@ -81,7 +72,7 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
           skos:notation ?notation .
           
           ?Member a xkos:ClassificationLevel .
-          OPTIONAL {?member xkos:levels ?levels_temp . }
+          #OPTIONAL {?member xkos:levels ?levels_temp . }
           OPTIONAL {?member xkos:depth ?Depth . }
         
           FILTER (?Scheme = ", prefix, ":", conceptScheme, ")

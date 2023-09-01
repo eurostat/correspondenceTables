@@ -109,7 +109,7 @@ The function returns a table with the following columns:
 }
 
 The following code produce a list including the structure of each classification available in CELLAR and FAO. 
-```{results = "hide"}
+```{r,results = "hide"}
 ## Obtain the structure of all classifications 
 ## CELLAR
 data_CELLAR = list()
