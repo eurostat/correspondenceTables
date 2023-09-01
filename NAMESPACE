@@ -3,7 +3,6 @@
 export(analyseCorrespondenceTable)
 export(classificationEndpoint)
 export(classificationQC)
-export(correctionClassification)
 export(correspondenceList)
 export(dataStructure)
 export(newCorrespondenceTable)
