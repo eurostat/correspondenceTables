@@ -205,6 +205,6 @@ corr_list = correspondenceList("ALL")
 corr_list$CELLAR$`nace2:`
 
 #provides a table with all the correspondence tables for CPC v21 in FAO
-corr_list$FAO$`CPCv21:`
+# corr_list$FAO$`CPCv21:`
 ```
 
