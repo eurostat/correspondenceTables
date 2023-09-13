@@ -11,8 +11,8 @@
 #' @import igraph
 #'
 #' @return A list containing two data frames: Annexe_A and Annexe_B.
-#' The `Annexe_A` contains statistics related to components, correspondence types, and source/target positions.
-#' The `Annexe_B` contains statistics for each class in the correspondence table.
+#' The `CSVcorrespondenceInventory` contains statistics related to components, correspondence types, and source/target positions.
+#' The `CSVcorrespondenceAnalysis` contains statistics for each class in the correspondence table.
 #'
 #' @export
 #' @examples 
