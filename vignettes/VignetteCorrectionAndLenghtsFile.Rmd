@@ -36,11 +36,9 @@ To following code is used to corrects the classification table by adding necessa
 prefix = "nace2"
 conceptScheme = "nace2"
 endpoint = "CELLAR"
-classification = retrieveClassificationTable(prefix, endpoint, conceptScheme, level="ALL")$ClassificationTable
+classification = retrieveClassificationTable(prefix, endpoint, conceptScheme,level="ALL")$ClassificationTable
 classification = classification[,c(1,2)]
 colnames(classification)[1:2] = c("Code", "Label")
-correct_classification = correctionClassification(classification)
-correct_classification
 ```
 
 These different code show the different correction for each classification.

@@ -27,8 +27,8 @@ analyseCorrespondenceTable(
 }
 \value{
 A list containing two data frames: Annexe_A and Annexe_B.
-The `Annexe_A` contains statistics related to components, correspondence types, and source/target positions.
-The `Annexe_B` contains statistics for each class in the correspondence table.
+The `CSVcorrespondenceInventory` contains statistics related to components, correspondence types, and source/target positions.
+The `CSVcorrespondenceAnalysis` contains statistics for each class in the correspondence table.
 }
 \description{
 The `analyseCorrespondenceTable` function takes input correspondence tables (AB) and related data (A and B) to perform analysis and generate various statistics.
