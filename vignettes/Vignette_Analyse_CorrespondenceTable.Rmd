@@ -37,7 +37,7 @@ print(result$Annexe_B)
 For this example we don't create  any output because **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are null but we can see these with the both print on this function.
 
 
-But if the user want an output  of it work he had to change these variable in *TRUE* 
+But if the user want an output  of it work he had to change these variable in **TRUE** 
 
 
 
