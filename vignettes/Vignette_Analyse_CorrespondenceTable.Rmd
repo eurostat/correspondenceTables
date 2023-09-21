@@ -1,0 +1,58 @@
+---
+title: "analyseCorrespondenceTable"
+author: "Clément Thomas"
+date: "2023-09-21"
+output: html_document
+description: "This vignette explains how to use the analyseCorrespondenceTable function."
+---
+
+## Description
+
+This vignette explains how to use the `analyseCorrespondenceTable` function to perform analysis on correspondence tables.
+
+### Package Installation
+
+To use the `analyseCorrespondenceTable` function, you first need to install and load the `correspondenceTables` package. You can do so using the following command:
+
+```{r}
+# Install the package from CRAN
+library(correspondenceTables)
+```
+
+```{r}
+# Load correspondence table data
+AB_path <- system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
+AB <- read.csv(AB_path)
+
+# Perform analysis
+result <- analyseCorrespondenceTable(AB, A = NULL, formatA = NULL, B = NULL, formatB = NULL,
+                                     CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL)
+
+# Print the results
+print(result$Annexe_A)
+print(result$Annexe_B)
+
+```
+
+For this example we don't create  any output because **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are null but we can see these with the both print on this function.
+
+
+## Example with an output as CSV : 
+
+```{r}
+AB_path <- system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
+AB <- read.csv(AB_path)
+
+# Perform analysis
+result <- analyseCorrespondenceTable(AB, A = NULL, formatA = NULL, B = NULL, formatB = NULL,
+                                     CSVcorrespondenceInventory = TRUE, CSVcorrespondenceAnalysis = NULL)
+
+# Print the results
+print(result$Annexe_A)
+print(result$Annexe_B)
+```
+
+For this example the user use **CSVcorrespondenceInventory** as TRUE so he will create a csv with correspondence Inventory as a result. 
+
+
+
