@@ -37,22 +37,7 @@ print(result$Annexe_B)
 For this example we don't create  any output because **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are null but we can see these with the both print on this function.
 
 
-## Example with an output as CSV : 
-
-```{r}
-AB_path <- system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
-AB <- read.csv(AB_path)
-
-# Perform analysis
-result <- analyseCorrespondenceTable(AB, A = NULL, formatA = NULL, B = NULL, formatB = NULL,
-                                     CSVcorrespondenceInventory = TRUE, CSVcorrespondenceAnalysis = NULL)
-
-# Print the results
-print(result$Annexe_A)
-print(result$Annexe_B)
-```
-
-For this example the user use **CSVcorrespondenceInventory** as TRUE so he will create a csv with correspondence Inventory as a result. 
+But if the user want an output  of it work he had to change these variable in *TRUE* 
 
 
 
