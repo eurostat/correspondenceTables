@@ -201,7 +201,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = NULL, l
   QC_duplicatesCode = QC_output[which(QC_output$duplicateCode == 1), ]
   
   ## RULE 4 -	Fullness of hierarchy
-  if (!is.null(fullHierarchy)){    
+  if (!is.null(fullHierarchy) && fullHierarchy != FALSE){
   QC_output$orphan = rep(NA, nrow(QC_output))
   
   for (k in nrow(lengths):2) {
@@ -243,7 +243,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = NULL, l
     cat("FullHierarchy is NULL so no treatment")
   }
   ###  RULE 5 - Uniqueness of labels 
-  if (!is.null(labelUniqueness)){
+ if (!is.null(labelUniqueness) && labelUniqueness != FALSE){
     QC_output$duplicateLabel = 0
     
     # Check for duplicate labels at each hierarchical level
@@ -270,9 +270,9 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = NULL, l
   }
   
   
-  ## RULE 6 - Hierarchical label dependencies 
-  if (!is.null(labelHierarchy)){
-    QC_output$singleChildMismatch = 0
+  ## RULE 6 - Hierarchical label dependencies
+  if (!is.null(labelHierarchy) && labelHierarchy != FALSE){
+      QC_output$singleChildMismatch = 0
     
     for (k in 1:(nrow(lengths)-1)) {
       
@@ -410,12 +410,6 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = NULL, l
     # Read the CSV file
     sequencing <- read.csv(sequencing)  # Replace with the actual read function and file parsing logic
 
-
-  
-
-  
-    
-    
     QC_output$gapBefore = 0
     QC_output$lastSibling = 0
     
