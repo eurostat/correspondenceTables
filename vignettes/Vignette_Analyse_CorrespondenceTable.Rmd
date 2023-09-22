@@ -1,5 +1,5 @@
 ---
-title: "analyseCorrespondenceTable"
+title: "AnalyseCorrespondenceTable"
 description: "This vignette explains how to use the analyseCorrespondenceTable function."
 vignette: >
   %\VignetteIndexEntry{Analyse classification   correspondence tables with the correspondenceTables package}
