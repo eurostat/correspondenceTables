@@ -512,11 +512,10 @@ if (!is.null(sequencing)) {
 }
 
   
-if (!is.null(CSVout)) {
-  if (CSVout == FALSE) {
-    write.csv(return_ls, file.path(paste0(getwd(), "/QC_output.csv")))
-  }
+if (!is.null(CSVout) && CSVout == TRUE) {
+  write.csv(return_ls, file.path(paste0(getwd(), "/QC_output.csv")))
 }
+
 
 
   
