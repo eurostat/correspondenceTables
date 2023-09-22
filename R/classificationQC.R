@@ -474,39 +474,39 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = NULL, l
 
 return_ls <- list("QC_output" = QC_output)
 
-# Intégrer les résultats directement dans QC_output
+# Add the result in QC_output
 
-# Ajouter les dataframes correspondants aux résultats si les paramètres ne sont pas nuls
+# Add the dataframe from swhat the user use as parameters
 if (!is.null(fullHierarchy)) {
   if (!fullHierarchy) {
-    # Intégrer les codes sans enfant dans le dataframe principal
+    # Add  codes chidless
     QC_output$childless <- QC_childless
   }
 }
 
 if (!is.null(labelUniqueness)) {
   if (!labelUniqueness) {
-    # Intégrer les codes avec des labels en double dans le dataframe principal
+    # Add duplicate label
     QC_output$duplicateLabel <- QC_duplicatesLabel
   }
 }
 
 if (!is.null(labelHierarchy)) {
   if (!labelHierarchy) {
-    # Intégrer les codes avec des incohérences hiérarchiques de labels dans le dataframe principal
+    # add singleChildMismatch
     QC_output$singleChildMismatch <- QC_singleChildMismatch
   }
 }
 
 if (!is.null(singleChildCode)) {
-  # Intégrer les erreurs de codes uniques et multiples dans le dataframe principal
+  # Add Single & multiple code error 
   QC_output$singleCodeError <- QC_singleCodeError
   QC_output$multipleCodeError <- QC_multipleCodeError
 }
 
 if (!is.null(sequencing)) {
   if (!missing(sequencing)) {
-    # Intégrer les derniers frères et les codes avec des écarts avant dans le dataframe principal
+    # Add  sequencing 
     QC_output$lastSibling <- QC_lastSibling
   }
 }
