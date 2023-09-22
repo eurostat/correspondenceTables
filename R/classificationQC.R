@@ -64,7 +64,7 @@
 #'   classification <- read.csv(classification_path)
 #'   lengthsFile_path <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
 #'   lengthsFile <- read.csv(lengthsFile_path)
-#'   Output <- classificationQC(classification, lengthsFile, fullHierarchy = NULL, labelUniqueness  = NULL, labelHierarchy = NULL, singleChildCode = NULL, sequencing = NULL, CSVout = TRUE) 
+#'   Output <- classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = TRUE) 
 #'   print(Output$QC_output)
 #'   print(Output$QC_noLevels)
 #'   print(Output$QC_orphan)
@@ -80,7 +80,7 @@
 
 
 
-classificationQC = function(classification, lengthsFile, fullHierarchy = NULL, labelUniqueness  = NULL, labelHierarchy = NULL, singleChildCode = NULL, sequencing = NULL, CSVout = FALSE) {
+classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = NULL) {
   
   
   if ((length(grep("csv", classification)) == 0) & !(is.data.frame(classification))){
@@ -512,9 +512,13 @@ if (!is.null(sequencing)) {
 }
 
   
-  if (CSVout == TRUE){
+if (!is.null(CSVout)) {
+  if (CSVout == FALSE) {
     write.csv(return_ls, file.path(paste0(getwd(), "/QC_output.csv")))
   }
+}
+
+
   
    return(return_ls)
 }
