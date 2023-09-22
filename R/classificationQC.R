@@ -92,8 +92,12 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   }
   
   if (length(grep("csv", classification)) > 0){
-    classification = read.csv(getwd(), "/", classification)
+    classification = read.csv(classification, header = TRUE)
   }
+  
+  
+ 
+  
   
   #check that classification has only two columns
   if(ncol(classification) != 2){
@@ -112,7 +116,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   }
   
   if (length(grep("csv", lengthsFile)) > 0){
-    lengths = read.csv(file.path(paste0(getwd(), "/", lengthsFile))) 
+    lengths = read.csv(lengthsFile, header = TRUE) 
   }
   
   ### RULE 1 - Correctness of formatting requirements (lengths file)

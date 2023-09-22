@@ -7,12 +7,12 @@
 classificationQC(
   classification,
   lengthsFile,
-  fullHierarchy = NULL,
-  labelUniqueness = NULL,
-  labelHierarchy = NULL,
+  fullHierarchy = TRUE,
+  labelUniqueness = TRUE,
+  labelHierarchy = TRUE,
   singleChildCode = NULL,
   sequencing = NULL,
-  CSVout = FALSE
+  CSVout = NULL
 )
 }
 \arguments{
@@ -85,7 +85,7 @@ The `classificationQC()` function generates a QC output data frame with the clas
   classification <- read.csv(classification_path)
   lengthsFile_path <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
   lengthsFile <- read.csv(lengthsFile_path)
-  Output <- classificationQC(classification, lengthsFile, fullHierarchy = NULL, labelUniqueness  = NULL, labelHierarchy = NULL, singleChildCode = NULL, sequencing = NULL, CSVout = TRUE) 
+  Output <- classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = TRUE) 
   print(Output$QC_output)
   print(Output$QC_noLevels)
   print(Output$QC_orphan)
