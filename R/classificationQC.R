@@ -94,10 +94,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   if (length(grep("csv", classification)) > 0){
     classification = read.csv(classification, header = TRUE)
   }
-  
-  
- 
-  
+
   
   #check that classification has only two columns
   if(ncol(classification) != 2){
