@@ -94,7 +94,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   if (length(grep("csv", classification)) > 0){
     classification = read.csv(classification, header = TRUE)
   }
-
+ 
   
   #check that classification has only two columns
   if(ncol(classification) != 2){
@@ -153,12 +153,13 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   ## Create QC_output
   QC_output = classification
   
-  #add hierarchical level column
+  # Add hierarchical level column
   QC_output$level = sapply(classification$Code, function(x) which(nchar(x) == lengths$chare))
   
+  # Initialize the superior column
+  QC_output$superior = NA
   
-  
-  #add Code and segment columns
+  # Add Code and segment columns
   for (i in 1:nrow(lengths)) {
     charb = lengths$charb[i]
     chare = lengths$chare[i]
@@ -183,6 +184,16 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     QC_output[, code_col_name] = codes
   }
   
+  # Add the 'superior' column based on the current level
+  for (i in 1:nrow(QC_output)) {
+    if (QC_output$level[i] > 1) {
+      superior_col_name = paste0("Code", (QC_output$level[i] - 1))
+      QC_output$superior[i] = QC_output[i, superior_col_name]
+    } else {
+      QC_output$superior[i] = NA
+    }
+  }
+
   ## RULE 2 - Compliance with formatting requirements (lengths file)
   na_level = which(is.na(QC_output$level))
   if (length(na_level) > 0) {
@@ -513,15 +524,20 @@ if (!is.null(sequencing)) {
 }
 
   
-if (!is.null(CSVout) && CSVout == TRUE) {
-  write.csv(return_ls, file.path(paste0(getwd(), "/QC_output.csv")))
+if (!is.null(CSVout)) {
+  if (is.logical(CSVout) && CSVout == TRUE) {
+    name <- names(return_ls)[1]
+    date <- format(Sys.time(), "%Y%m%d%H%M%S")
+    file_name <- paste0("QC_output_", "_", date, ".csv")
+    path_file <- file.path(getwd(), file_name)
+    write.csv(return_ls, path_file, row.names = FALSE)
+  } else if (is.character(CSVout)) {
+    write.csv(return_ls, CSVout, row.names = FALSE)
+  }
 }
 
 
-
-  
    return(return_ls)
 }
-
 
 
