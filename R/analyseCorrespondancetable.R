@@ -283,7 +283,7 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
       chemin_analyse <- CSVcorrespondenceAnalysis
     } else {
       # Generate a file name based on the name of the first column, "correspondence", and the date
-      chemin_analyse <- paste0("Correspondence_analysis_", Acode, "_", Bcode, date, ".csv")
+      chemin_analyse <- paste0("Correspondence_analysis_",date, ".csv")
     }
     write.csv(annex_B_df, chemin_analyse, row.names = FALSE)
   }
