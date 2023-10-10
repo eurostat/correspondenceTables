@@ -264,15 +264,15 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
     base_file_name <- paste0("correspondence_analysis_", format(Sys.time(), "%Y%m%d%H%M%S"))
   }
   date <- format(Sys.time(), "%Y%m%d%H%M%S")
-  # Acode <- colnames(AB[1])
-  # Bcode <- colnames(AB[2])
+   Acode <- colnames(AB[1])
+   Bcode <- colnames(AB[2])
   
   if (!is.null(CSVcorrespondenceInventory)) {
     if (is.character(CSVcorrespondenceInventory)) {
       chemin_inventaire <- CSVcorrespondenceInventory
     } else {
       # Generate a file name based on the name of the first column, "correspondence", and the date
-      chemin_inventaire <- paste0("Correspondence_inventory_", date, ".csv")
+      chemin_inventaire <- paste0("Correspondence_inventory_",Acode, "_", Bcode, date, ".csv")
     }
     write.csv(annex_A_df, chemin_inventaire, row.names = FALSE)
   }
@@ -283,7 +283,7 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
       chemin_analyse <- CSVcorrespondenceAnalysis
     } else {
       # Generate a file name based on the name of the first column, "correspondence", and the date
-      chemin_analyse <- paste0("Correspondence_analysis_",date, ".csv")
+      chemin_analyse <- paste0("Correspondence_analysis_", Acode, "_", Bcode, date, ".csv")
     }
     write.csv(annex_B_df, chemin_analyse, row.names = FALSE)
   }
@@ -296,6 +296,5 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
 }
 
 
-analyseCorrespondenceTable(AB,CSVcorrespondenceAnalysis = 'C:/Users/clement.thomas/Desktop/Rproject/CorrespondanceTable/Task6/test1.csv',CSVcorrespondenceInventory = T)
 
 
