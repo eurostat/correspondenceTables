@@ -49,7 +49,7 @@ It checks the validity of the input data, identifies components, calculates corr
 
 
 # Perform analysis
-result <- analyseCorrespondenceTable(AB =read.csv(system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")),A = NULL, formatA = NULL, B = NULL, formatB = NULL, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
+result <- analyseCorrespondenceTable(AB =(system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),A = NULL, formatA = NULL, B = NULL, formatB = NULL, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
 print(result$Annexe_A)
 print(result$Annexe_B)
 }
