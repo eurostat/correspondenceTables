@@ -78,7 +78,7 @@
 #'   print(Output$QC_lastSibling)
 #' }
 
-
+  
 
 classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = NULL) {
   
