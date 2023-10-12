@@ -15,15 +15,19 @@ analyseCorrespondenceTable(
 )
 }
 \arguments{
-\item{AB}{A data frame containing the correspondence table data with columns "Acode" and "Bcode".}
+\item{AB}{a mandatory argument containing a CSV file provide by the user contains the correspondence table data with columns "Acode" and "Bcode".}
 
-\item{A}{A data frame or a path to a CSV file containing source classification data with "Acode" column.}
+\item{A}{a path to a CSV file containing source classification data with "Acode" column.}
 
 \item{formatA}{A regular expression pattern to filter source classification data based on "Acode".}
 
-\item{B}{A data frame or a path to a CSV file containing target classification data with "Bcode" column.}
+\item{B}{a path to a CSV file containing target classification data with "Bcode" column.}
 
 \item{formatB}{A regular expression pattern to filter target classification data based on "Bcode".}
+
+\item{CSVcorrespondenceInventory}{The valid values are not NULL if the user put a path with a empty csv file it will return it with the correspondeceInventory or just a path with a csv file . By default no CSV is produce}
+
+\item{CSVcorrespondenceAnalysis}{Provide an output containing the correpondenceAnalysis. the user put a path a empty file it will return with correpondenceAnalysis. by default no CSV is produce}
 }
 \value{
 A list containing two data frames: Annexe_A and Annexe_B.
@@ -35,17 +39,17 @@ The `analyseCorrespondenceTable` function takes input correspondence tables (AB)
 It checks the validity of the input data, identifies components, calculates correspondence types, and creates summary tables.
 }
 \examples{
-# Load correspondence table data
+# Use data from the folder extdata
 
-  AB_path   <- system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
-  AB <- read.csv(AB_path)
+
+  
 
 
 
 
 
 # Perform analysis
-result <- analyseCorrespondenceTable(AB ,A = NULL, formatA = NULL, B = NULL, formatB = NULL, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
+result <- analyseCorrespondenceTable(AB =read.csv(system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")),A = NULL, formatA = NULL, B = NULL, formatB = NULL, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
 print(result$Annexe_A)
 print(result$Annexe_B)
 }

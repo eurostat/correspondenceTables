@@ -24,12 +24,8 @@ library(correspondenceTables)
 ```
 
 ```{r}
-# Load correspondence table data
-AB_path <- system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
-AB <- read.csv(AB_path)
-
 # Perform analysis
-result <- analyseCorrespondenceTable(AB =read.csv(system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"))
+result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
                                      , A = NULL, formatA = NULL, B = NULL, formatB = NULL,
                                      CSVcorrespondenceInventory =system.file("extdata", "CorrespondenceInventoryExample.csv", package = "correspondenceTables")
                                      , CSVcorrespondenceAnalysis = system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables"))
@@ -40,7 +36,8 @@ print(result$Annexe_B)
 
 ```
 
-For this example we use output  **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are not null Indeed we put our output in these csv files and we can see these with the both print on this function.
+For this example we use output  **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are not NULL 
+Indeed we put our output in these csv files and we can see these with the both print on this function.
 
 
 

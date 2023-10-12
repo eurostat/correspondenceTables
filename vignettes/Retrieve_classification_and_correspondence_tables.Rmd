@@ -117,14 +117,14 @@ endpoint = "CELLAR"
 #Get info to retrieve structure using classificationEndpoint()
 list_data = classificationEndpoint("ALL")
 
-#loop over all classification in CELLAR
-for (i in 1:nrow(list_data$CELLAR)){
-  prefix = list_data$CELLAR[i,1] 
-  conceptScheme = list_data$CELLAR[i,2] 
-  #language by default is English
-  data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
-}
-names(data_CELLAR) = list_data$CELLAR[,1] 
+# #loop over all classification in CELLAR
+# for (i in 1:nrow(list_data$CELLAR)){
+#   prefix = list_data$CELLAR[i,1] 
+#   conceptScheme = list_data$CELLAR[i,2] 
+#   #language by default is English
+#   data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+# }
+# names(data_CELLAR) = list_data$CELLAR[,1] 
 
 ## FAO 
 # data_FAO = list()
@@ -163,13 +163,13 @@ language = "en"
 CSVout = FALSE
 showQuery= TRUE
 
-result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
-
-# identify the SPARQL query used
-SPARQLquery = result_ls[[1]]
-
-# obtained the table
-table = result_ls[[2]]
+# result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+# 
+# # identify the SPARQL query used
+# SPARQLquery = result_ls[[1]]
+# 
+# # obtained the table
+# table = result_ls[[2]]
 ```
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:

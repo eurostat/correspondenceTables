@@ -250,7 +250,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     QC_childless = QC_output[childless, ]  
   }else{
     cat("FullHierarchy is NULL so no treatment")
-  }as 
+  }
   ###  RULE 5 - Uniqueness of labels 
  if (!is.null(labelUniqueness) && labelUniqueness != FALSE){
     QC_output$duplicateLabel = 0

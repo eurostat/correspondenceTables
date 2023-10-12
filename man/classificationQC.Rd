@@ -16,7 +16,7 @@ classificationQC(
 )
 }
 \arguments{
-\item{classification}{Refers to a classification in a CSV file or an R dataframe structured with two columns: "codes" and "labels." If the classification is provided as a CSV file, it should be stored in the working directory (as defined using \code{getwd}). This argument is mandatory.}
+\item{classification}{Refers to a classification in a CSV file structured with two columns: "codes" and "labels." If the classification is provided as a CSV file. This argument is mandatory.}
 
 \item{fullHierarchy}{It is used to test the fullness of hierarchy. If the parameter \code{fullHierarchy} is set to \code{FALSE}, the function will check that every position at a lower level than 1 should have parents all the way up to level 1. If set to \code{TRUE}, it will additionally check that any position at a higher level than k should have children all the way down to level k.}
 
@@ -28,9 +28,9 @@ classificationQC(
 
 \item{sequencing}{It refers to a CSV file to define the admissible codes for multiple children at each level. If this parameter is not \code{NULL}, the function checks the sequencing of multiple children codes within each level, as provided in the CSV file.}
 
-\item{CSVout}{The valid values are \code{FALSE} or \code{TRUE}. In both cases, the output will be returned as an R list. If the output should be saved as an XLSX file, the argument should be set to \code{TRUE}. By default, no XLSX file is produced.}
+\item{CSVout}{The valid values are \code{NULL} means that the user don't need to write the parameters  \code{TRUE}. In both cases, the output will be returned as an R list. If the output should be saved as an CSV file, the argument should be set to \code{TRUE}. By default, no CSV file is produced.}
 
-\item{lengthsfile}{Refers to a CSV file or an R dataframe (one record per hierarchical level) containing the initial and last positions of the segment of the code specific to that level. The number of lines in this CSV file or the R dataframe implicitly defines the number of hierarchical levels of the classification. This argument is mandatory.}
+\item{lengthsfile}{Refers to a CSV file (one record per hierarchical level) containing the initial and last positions of the segment of the code specific to that level. The number of lines in this CSV file implicitly defines the number of hierarchical levels of the classification. This argument is mandatory.}
 }
 \value{
 \code{classificationQC()} returns a list of data frames identifying possible cases violating the formatting requirements. The databases returned depend on the rules checked. The databases produced are:
