@@ -25,6 +25,9 @@ library(correspondenceTables)
 
 ```{r results='hide'}
 # Perform analysis
+system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
+system.file("extdata", "CorrespondenceInventoryExample.csv",package = "correspondenceTables")
+ system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables")
 result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
                                      , A = NULL, formatA = NULL, B = NULL, formatB = NULL,
                                      CSVcorrespondenceInventory =system.file("extdata", "CorrespondenceInventoryExample.csv", package = "correspondenceTables")
