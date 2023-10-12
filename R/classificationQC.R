@@ -10,14 +10,14 @@
 #'
 #' The `classificationQC()` function generates a QC output data frame with the classification data, hierarchical levels, code segments, and test outcomes. Additionally, it allows exporting the output to a CSV file.
 #'
-#' @param classification Refers to a classification in a CSV file or an R dataframe structured with two columns: "codes" and "labels." If the classification is provided as a CSV file, it should be stored in the working directory (as defined using \code{getwd}). This argument is mandatory.
-#' @param lengthsfile Refers to a CSV file or an R dataframe (one record per hierarchical level) containing the initial and last positions of the segment of the code specific to that level. The number of lines in this CSV file or the R dataframe implicitly defines the number of hierarchical levels of the classification. This argument is mandatory.
+#' @param classification Refers to a classification in a CSV file structured with two columns: "codes" and "labels." If the classification is provided as a CSV file. This argument is mandatory.
+#' @param lengthsfile Refers to a CSV file (one record per hierarchical level) containing the initial and last positions of the segment of the code specific to that level. The number of lines in this CSV file implicitly defines the number of hierarchical levels of the classification. This argument is mandatory.
 #' @param fullHierarchy It is used to test the fullness of hierarchy. If the parameter \code{fullHierarchy} is set to \code{FALSE}, the function will check that every position at a lower level than 1 should have parents all the way up to level 1. If set to \code{TRUE}, it will additionally check that any position at a higher level than k should have children all the way down to level k.
 #' @param labelUniqueness It is used to test that positions at the same hierarchical level have unique labels. If set to \code{TRUE}, the compliance is checked, and positions with duplicate labels are marked as 1 in the "duplicateLabel" column, while positions with unique labels are marked as 0.
 #' @param labelHierarchy It is used to ensure that the hierarchical structure of labels is respected. When set to \code{TRUE}, the function will check that single children have a label identical to the label of their parent and that if a position has a label identical to the label of one of its children, then that position should only have a single child.
 #' @param singleChildCode It refers to a CSV file with specific formatting to define valid codes for each level. If this parameter is not \code{NULL}, then it checks compliance with coding rules for single children and non-single children, as provided in the CSV file.
 #' @param sequencing It refers to a CSV file to define the admissible codes for multiple children at each level. If this parameter is not \code{NULL}, the function checks the sequencing of multiple children codes within each level, as provided in the CSV file.
-#' @param CSVout The valid values are \code{FALSE} or \code{TRUE}. In both cases, the output will be returned as an R list. If the output should be saved as an XLSX file, the argument should be set to \code{TRUE}. By default, no XLSX file is produced.
+#' @param CSVout The valid values are \code{NULL} means that the user don't need to write the parameters  \code{TRUE}. In both cases, the output will be returned as an R list. If the output should be saved as an CSV file, the argument should be set to \code{TRUE}. By default, no CSV file is produced.
 #' @importFrom  stringr str_squish 
 #' @importFrom  stringr str_sub
 #' @import writexl
@@ -85,19 +85,14 @@
 classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = NULL) {
   
   
-  if ((length(grep("csv", classification)) == 0) & !(is.data.frame(classification))){
-    stop("The classification should be provided as either a csv file or a R dataframe.")
-  }
-  
-  if (is.data.frame(classification)){
-    classification = classification
+  if ((length(grep("csv", classification)) == 0) ){
+    stop("The classification should be provided as a csv file")
   }
   
   if (length(grep("csv", classification)) > 0){
     classification = read.csv(classification, header = TRUE)
   }
  
-  
   #check that classification has only two columns
   if(ncol(classification) != 2){
     stop("The classification must have only two colums corresponding to code and label.")
@@ -106,8 +101,8 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   colnames(classification)[1:2] = c("Code", "Label")
   
   ## Length table 
-  if ((length(grep("csv", lengthsFile)) == 0) & !(is.data.frame(lengthsFile))){
-    stop("The lengthsFile should be provided as either a csv file or a R dataframe.")
+  if ((length(grep("csv", lengthsFile))) == 0) {
+    stop("The lengthsFile should be provided as a csv file")
   }   
   
   if (is.data.frame(lengthsFile)){
@@ -255,7 +250,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     QC_childless = QC_output[childless, ]  
   }else{
     cat("FullHierarchy is NULL so no treatment")
-  }
+  }as 
   ###  RULE 5 - Uniqueness of labels 
  if (!is.null(labelUniqueness) && labelUniqueness != FALSE){
     QC_output$duplicateLabel = 0
