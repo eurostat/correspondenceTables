@@ -2,7 +2,7 @@
 title: "AnalyseCorrespondenceTable"
 description: "This vignette explains how to use the analyseCorrespondenceTable function."
 vignette: >
-  %\VignetteIndexEntry{Analyse classification   correspondence tables with the correspondenceTables package}
+  %\VignetteIndexEntry{Analyse classification correspondence tables with the correspondenceTables package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
