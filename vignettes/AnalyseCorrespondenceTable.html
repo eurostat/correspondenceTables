@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0128)file:///C:/Users/clement.thomas/AppData/Local/Temp/Rtmp4yOWUs/preview-5948728d610d.dir/Vignette_Analyse_CorrespondenceTable.html -->
+<!-- saved from url=(0128)file:///C:/Users/clement.thomas/AppData/Local/Temp/RtmpWUmiGJ/preview-45a45ff05611.dir/Vignette_Analyse_CorrespondenceTable.html -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 
@@ -455,127 +455,22 @@ correspondence tables.</p>
 <h3>Package Installation</h3>
 <p>To use the <code>analyseCorrespondenceTable</code> function, you
 first need to install and load the <code>correspondenceTables</code>
-package. You can do so using the following command:</p>
+package. You can use the following command:</p>
 <pre class="r"><code class="hljs"><span class="hljs-keyword">library</span>(correspondenceTables)</code></pre>
-<pre class="r"><code class="hljs"><span class="hljs-comment"># Load correspondence table data</span>
-AB_path &lt;- system.file(<span class="hljs-string">"extdata"</span>, <span class="hljs-string">"ExempleAnnexe.csv"</span>, package = <span class="hljs-string">"correspondenceTables"</span>)
-AB &lt;- read.csv(AB_path)
-
-<span class="hljs-comment"># Perform analysis</span>
-result &lt;- analyseCorrespondenceTable(AB, A = <span class="hljs-literal">NULL</span>, formatA = <span class="hljs-literal">NULL</span>, B = <span class="hljs-literal">NULL</span>, formatB = <span class="hljs-literal">NULL</span>,
-                                     CSVcorrespondenceInventory = <span class="hljs-literal">NULL</span>, CSVcorrespondenceAnalysis = <span class="hljs-literal">NULL</span>)
+<pre class="r"><code class="hljs"><span class="hljs-comment"># Perform analysis</span>
+result &lt;- analyseCorrespondenceTable(AB =system.file(<span class="hljs-string">"extdata"</span>, <span class="hljs-string">"ExempleAnnexe.csv"</span>, package = <span class="hljs-string">"correspondenceTables"</span>)
+                                     , A = <span class="hljs-literal">NULL</span>, formatA = <span class="hljs-literal">NULL</span>, B = <span class="hljs-literal">NULL</span>, formatB = <span class="hljs-literal">NULL</span>,
+                                     CSVcorrespondenceInventory =system.file(<span class="hljs-string">"extdata"</span>, <span class="hljs-string">"CorrespondenceInventoryExample.csv"</span>, package = <span class="hljs-string">"correspondenceTables"</span>)
+                                     , CSVcorrespondenceAnalysis = system.file(<span class="hljs-string">"extdata"</span>, <span class="hljs-string">"CorrespondenceAnalysisExample.csv"</span>, package = <span class="hljs-string">"correspondenceTables"</span>))
 
 <span class="hljs-comment"># Print the results</span>
 print(result$Annexe_A)
-<span class="hljs-comment">#&gt;     Component CorrespondenceType                   SourcePositions</span>
-<span class="hljs-comment">#&gt; 1 Component 1                M:M           C01, C06, C12, C21, C24</span>
-<span class="hljs-comment">#&gt; 2 Component 2                M:M C02, C09, C11, C17, C18, C22, C25</span>
-<span class="hljs-comment">#&gt; 3 Component 3                M:M                C03, C05, C08, C15</span>
-<span class="hljs-comment">#&gt; 4 Component 4                M:M                     C04, C16, C20</span>
-<span class="hljs-comment">#&gt; 5 Component 5                M:M                     C07, C14, C23</span>
-<span class="hljs-comment">#&gt; 6 Component 6                1:M                               C10</span>
-<span class="hljs-comment">#&gt; 7 Component 7                1:1                               C13</span>
-<span class="hljs-comment">#&gt; 8 Component 8                M:1                          C19, C26</span>
-<span class="hljs-comment">#&gt;           TargetPositions nSourcePositions nTargetPositions</span>
-<span class="hljs-comment">#&gt; 1 D04, D21, D13, D20, D11                5                5</span>
-<span class="hljs-comment">#&gt; 2           D22, D03, D12                7                3</span>
-<span class="hljs-comment">#&gt; 3 D07, D08, D05, D02, D17                4                5</span>
-<span class="hljs-comment">#&gt; 4           D24, D19, D10                3                3</span>
-<span class="hljs-comment">#&gt; 5                D16, D06                3                2</span>
-<span class="hljs-comment">#&gt; 6           D01, D18, D09                1                3</span>
-<span class="hljs-comment">#&gt; 7                     D15                1                1</span>
-<span class="hljs-comment">#&gt; 8                     D14                2                1</span>
-print(result$Annexe_B)
-<span class="hljs-comment">#&gt;    ClassC ClassD nTargetClasses   SourceToTargetMapping nSourceClasses</span>
-<span class="hljs-comment">#&gt; 1     C01    D04              5 D04, D21, D13, D20, D11              1</span>
-<span class="hljs-comment">#&gt; 2     C01    D21              5 D04, D21, D13, D20, D11              5</span>
-<span class="hljs-comment">#&gt; 3     C01    D13              5 D04, D21, D13, D20, D11              1</span>
-<span class="hljs-comment">#&gt; 4     C01    D20              5 D04, D21, D13, D20, D11              1</span>
-<span class="hljs-comment">#&gt; 5     C01    D11              5 D04, D21, D13, D20, D11              1</span>
-<span class="hljs-comment">#&gt; 6     C02    D22              2                D22, D03              3</span>
-<span class="hljs-comment">#&gt; 7     C02    D03              2                D22, D03              3</span>
-<span class="hljs-comment">#&gt; 8     C03    D07              2                D07, D08              2</span>
-<span class="hljs-comment">#&gt; 9     C03    D08              2                D07, D08              2</span>
-<span class="hljs-comment">#&gt; 10    C04    D24              2                D24, D19              2</span>
-<span class="hljs-comment">#&gt; 11    C04    D19              2                D24, D19              2</span>
-<span class="hljs-comment">#&gt; 12    C05    D05              2                D05, D07              1</span>
-<span class="hljs-comment">#&gt; 13    C05    D07              2                D05, D07              2</span>
-<span class="hljs-comment">#&gt; 14    C06    D21              1                     D21              5</span>
-<span class="hljs-comment">#&gt; 15    C07    D16              1                     D16              2</span>
-<span class="hljs-comment">#&gt; 16    C08    D02              2                D02, D08              2</span>
-<span class="hljs-comment">#&gt; 17    C08    D08              2                D02, D08              2</span>
-<span class="hljs-comment">#&gt; 18    C09    D12              1                     D12              3</span>
-<span class="hljs-comment">#&gt; 19    C10    D01              3           D01, D18, D09              1</span>
-<span class="hljs-comment">#&gt; 20    C10    D18              3           D01, D18, D09              1</span>
-<span class="hljs-comment">#&gt; 21    C10    D09              3           D01, D18, D09              1</span>
-<span class="hljs-comment">#&gt; 22    C11    D03              1                     D03              3</span>
-<span class="hljs-comment">#&gt; 23    C12    D21              1                     D21              5</span>
-<span class="hljs-comment">#&gt; 24    C13    D15              1                     D15              1</span>
-<span class="hljs-comment">#&gt; 25    C14    D06              2                D06, D16              2</span>
-<span class="hljs-comment">#&gt; 26    C14    D16              2                D06, D16              2</span>
-<span class="hljs-comment">#&gt; 27    C15    D02              2                D02, D17              2</span>
-<span class="hljs-comment">#&gt; 28    C15    D17              2                D02, D17              1</span>
-<span class="hljs-comment">#&gt; 29    C16    D24              1                     D24              2</span>
-<span class="hljs-comment">#&gt; 30    C17    D12              1                     D12              3</span>
-<span class="hljs-comment">#&gt; 31    C18    D03              1                     D03              3</span>
-<span class="hljs-comment">#&gt; 32    C19    D14              1                     D14              2</span>
-<span class="hljs-comment">#&gt; 33    C26    D14              1                     D14              2</span>
-<span class="hljs-comment">#&gt; 34    C20    D19              2                D19, D10              2</span>
-<span class="hljs-comment">#&gt; 35    C20    D10              2                D19, D10              1</span>
-<span class="hljs-comment">#&gt; 36    C21    D21              1                     D21              5</span>
-<span class="hljs-comment">#&gt; 37    C22    D22              1                     D22              3</span>
-<span class="hljs-comment">#&gt; 38    C23    D06              1                     D06              2</span>
-<span class="hljs-comment">#&gt; 39    C24    D21              1                     D21              5</span>
-<span class="hljs-comment">#&gt; 40    C25    D22              2                D22, D12              3</span>
-<span class="hljs-comment">#&gt; 41    C25    D12              2                D22, D12              3</span>
-<span class="hljs-comment">#&gt;      TargetToSourceMapping</span>
-<span class="hljs-comment">#&gt; 1                      C01</span>
-<span class="hljs-comment">#&gt; 2  C01, C06, C12, C21, C24</span>
-<span class="hljs-comment">#&gt; 3                      C01</span>
-<span class="hljs-comment">#&gt; 4                      C01</span>
-<span class="hljs-comment">#&gt; 5                      C01</span>
-<span class="hljs-comment">#&gt; 6            C02, C22, C25</span>
-<span class="hljs-comment">#&gt; 7            C02, C11, C18</span>
-<span class="hljs-comment">#&gt; 8                 C03, C05</span>
-<span class="hljs-comment">#&gt; 9                 C03, C08</span>
-<span class="hljs-comment">#&gt; 10                C04, C16</span>
-<span class="hljs-comment">#&gt; 11                C04, C20</span>
-<span class="hljs-comment">#&gt; 12                     C05</span>
-<span class="hljs-comment">#&gt; 13                C03, C05</span>
-<span class="hljs-comment">#&gt; 14 C01, C06, C12, C21, C24</span>
-<span class="hljs-comment">#&gt; 15                C07, C14</span>
-<span class="hljs-comment">#&gt; 16                C08, C15</span>
-<span class="hljs-comment">#&gt; 17                C03, C08</span>
-<span class="hljs-comment">#&gt; 18           C09, C17, C25</span>
-<span class="hljs-comment">#&gt; 19                     C10</span>
-<span class="hljs-comment">#&gt; 20                     C10</span>
-<span class="hljs-comment">#&gt; 21                     C10</span>
-<span class="hljs-comment">#&gt; 22           C02, C11, C18</span>
-<span class="hljs-comment">#&gt; 23 C01, C06, C12, C21, C24</span>
-<span class="hljs-comment">#&gt; 24                     C13</span>
-<span class="hljs-comment">#&gt; 25                C14, C23</span>
-<span class="hljs-comment">#&gt; 26                C07, C14</span>
-<span class="hljs-comment">#&gt; 27                C08, C15</span>
-<span class="hljs-comment">#&gt; 28                     C15</span>
-<span class="hljs-comment">#&gt; 29                C04, C16</span>
-<span class="hljs-comment">#&gt; 30           C09, C17, C25</span>
-<span class="hljs-comment">#&gt; 31           C02, C11, C18</span>
-<span class="hljs-comment">#&gt; 32                C19, C26</span>
-<span class="hljs-comment">#&gt; 33                C19, C26</span>
-<span class="hljs-comment">#&gt; 34                C04, C20</span>
-<span class="hljs-comment">#&gt; 35                     C20</span>
-<span class="hljs-comment">#&gt; 36 C01, C06, C12, C21, C24</span>
-<span class="hljs-comment">#&gt; 37           C02, C22, C25</span>
-<span class="hljs-comment">#&gt; 38                C14, C23</span>
-<span class="hljs-comment">#&gt; 39 C01, C06, C12, C21, C24</span>
-<span class="hljs-comment">#&gt; 40           C02, C22, C25</span>
-<span class="hljs-comment">#&gt; 41           C09, C17, C25</span></code></pre>
-<p>For this example we don’t create any output because
+print(result$Annexe_B)</code></pre>
+<p>For this example we use output
 <strong>CSVcorrespondenceInventory</strong>
-<strong>CSVcorrespondenceAnalysis</strong> are null but we can see these
-with the both print on this function.</p>
-<p>But if the user want an output of it work he had to change these
-variable in <strong>TRUE</strong></p>
+<strong>CSVcorrespondenceAnalysis</strong> are not NULL. Indeed we put
+our output in these csv files and we can see these with the both print
+on this function.</p>
 </div>
 </div>
 

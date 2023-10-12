@@ -13,7 +13,7 @@ This vignette explains how to use the `analyseCorrespondenceTable` function to p
 
 ### Package Installation
 
-To use the `analyseCorrespondenceTable` function, you first need to install and load the `correspondenceTables` package. You can do so using the following command:
+To use the `analyseCorrespondenceTable` function, you first need to install and load the `correspondenceTables` package. You can use the following command:
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
@@ -23,7 +23,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(correspondenceTables)
 ```
 
-```{r}
+```{r results='hide'}
 # Perform analysis
 result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
                                      , A = NULL, formatA = NULL, B = NULL, formatB = NULL,
@@ -36,7 +36,7 @@ print(result$Annexe_B)
 
 ```
 
-For this example we use output  **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are not NULL 
+For this example we use output  **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are not NULL. 
 Indeed we put our output in these csv files and we can see these with the both print on this function.
 
 
