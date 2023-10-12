@@ -30,8 +30,7 @@ system.file("extdata", "CorrespondenceInventoryExample.csv",package = "correspon
  system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables")
 result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
                                      , A = NULL, formatA = NULL, B = NULL, formatB = NULL,
-                                     CSVcorrespondenceInventory =system.file("extdata", "CorrespondenceInventoryExample.csv", package = "correspondenceTables")
-                                     , CSVcorrespondenceAnalysis = system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables"))
+                                     CSVcorrespondenceInventory =system.file("extdata", "CorrespondenceInventoryExample.csv", package = "correspondenceTables"), CSVcorrespondenceAnalysis = system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables"))
 
 # Print the results
 print(result$Annexe_A)
