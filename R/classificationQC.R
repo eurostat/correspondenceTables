@@ -60,11 +60,12 @@
 #'
 #' @examples 
 #' {
+#' For this example system.file create a path like the user insert his own path for parameters as an example
 #'   classification_path <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
-#'   classification <- read.csv(classification_path)
+#'   
 #'   lengthsFile_path <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
-#'   lengthsFile <- read.csv(lengthsFile_path)
-#'   Output <- classificationQC(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = TRUE) 
+#'   
+#'   Output <- classificationQC(classification = system.file("extdata", "Nace2.csv", package = "correspondenceTables") , lengthsFile = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables"), fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = system.file("extdata", "QC_Output.csv", package = "correspondenceTables")) 
 #'   print(Output$QC_output)
 #'   print(Output$QC_noLevels)
 #'   print(Output$QC_orphan)
@@ -104,10 +105,6 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   if ((length(grep("csv", lengthsFile))) == 0) {
     stop("The lengthsFile should be provided as a csv file")
   }   
-  
-  if (is.data.frame(lengthsFile)){
-    lengths = lengthsFile
-  }
   
   if (length(grep("csv", lengthsFile)) > 0){
     lengths = read.csv(lengthsFile, header = TRUE) 
