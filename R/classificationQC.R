@@ -60,7 +60,7 @@
 #'
 #' @examples 
 #' {
-#' 
+#' For this example system.file create a path like the user insert his own path for parameters as an example
 #'   classification_path <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
 #'   
 #'   lengthsFile_path <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
@@ -81,7 +81,7 @@
 #'   print(Output$QC_lastSibling)
 #' }
 
-  
+
 
 classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = NULL) {
   
@@ -93,7 +93,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   if (length(grep("csv", classification)) > 0){
     classification = read.csv(classification, header = TRUE)
   }
- 
+  
   #check that classification has only two columns
   if(ncol(classification) != 2){
     stop("The classification must have only two colums corresponding to code and label.")
@@ -101,15 +101,33 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   
   colnames(classification)[1:2] = c("Code", "Label")
   
-  ## Length table 
-  if ((length(grep("csv", lengthsFile))) == 0) {
-    stop("The lengthsFile should be provided as a csv file")
-  }   
-  
-  if (length(grep("csv", lengthsFile)) > 0){
-    lengths = read.csv(lengthsFile, header = TRUE) 
+  if (length(grep("csv", lengthsFile)) > 0) {
+    # Read the first line of the CSV file
+    first_line <- readLines(lengthsFile, n = 1)
+    
+    # Check for expected headers
+    expected_headers <- c("charb", "chare")  # Liste des en-têtes attendues
+    
+    # Split the first line using ","
+    header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
+    
+    if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
+      # Les en-têtes correspondent, lire le fichier avec header = TRUE
+      lengths <- read.csv(lengthsFile, header = TRUE)
+    } else {
+      warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+      
+      # Lire le fichier avec header = FALSE
+      lengths <- read.csv(lengthsFile, header = FALSE)
+      
+      # Renommer les colonnes pour correspondre aux en-têtes attendues
+      colnames(lengths) <- expected_headers
+    }
+    
+    if (length(header_columns) > length(expected_headers)) {
+      warning("There are more columns than needed. Using the first columns.")
+    }
   }
-  
   ### RULE 1 - Correctness of formatting requirements (lengths file)
   
   #check that char file has at least one row
@@ -137,12 +155,12 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   }    
   
   #check that char file has valid character ranges -- NEEDED?!
-  if(!all(sapply(lengths$charb, function(x) grepl("[A-Za-z0-9]", x)) &
-          sapply(lengths$chare, function(x) grepl("[A-Za-z0-9]", x)) &
-          lengths$charb <= lengths$chare)){
-    stop("Char file must contain only numbers")
-  }
-  
+  # if(!all(sapply(lengths$charb, function(x) grepl("[A-Za-z0-9]", x)) &
+  #         sapply(lengths$chare, function(x) grepl("[A-Za-z0-9]", x)) &
+  #         lengths$charb <= lengths$chare)){
+  #   stop("Char file must contain only numbers")
+  # }
+  # 
   
   ## Create QC_output
   QC_output = classification
@@ -187,7 +205,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
       QC_output$superior[i] = NA
     }
   }
-
+  
   ## RULE 2 - Compliance with formatting requirements (lengths file)
   na_level = which(is.na(QC_output$level))
   if (length(na_level) > 0) {
@@ -208,28 +226,28 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   
   ## RULE 4 -	Fullness of hierarchy
   if (!is.null(fullHierarchy) && fullHierarchy != FALSE){
-  QC_output$orphan = rep(NA, nrow(QC_output))
-  
-  for (k in nrow(lengths):2) {
-    QC_output$exp_parents = rep(NA, nrow(QC_output))
-    QC_output$exp_parents[which(QC_output$level == k)] = substr(QC_output[which(QC_output$level == k), paste0("Code", k)], 1, lengths[k-1,2])
-    o_code = which(QC_output$exp_parents %in% QC_output[which(QC_output$level == k-1), paste0("Code", k-1)])
-    QC_output$orphan[intersect(which(QC_output$level == k), o_code)] = 0
-    noo_code = which(!QC_output$exp_parents %in% QC_output[which(QC_output$level == k-1), paste0("Code", k-1)])
-    QC_output$orphan[intersect(which(QC_output$level == k), noo_code)] = 1
-    #QC_output$orphan[which(is.na(QC_output$exp_parents))] = NA
-  }
-  QC_output = QC_output[, -which(colnames(QC_output) == "exp_parents")]
-  
-  #identify orphans
-  orphan = which(QC_output$orphan == 1)
-  if (length(orphan) > 0) {
-    warning("Some codes at a lower level than 1 have no parents at higher levels ('see QC_orphan').")
-  }
-  
-  QC_orphan = QC_output[orphan, ]
-  
-  #childless - if (fullHierarchy == TRUE)
+    QC_output$orphan = rep(NA, nrow(QC_output))
+    
+    for (k in nrow(lengths):2) {
+      QC_output$exp_parents = rep(NA, nrow(QC_output))
+      QC_output$exp_parents[which(QC_output$level == k)] = substr(QC_output[which(QC_output$level == k), paste0("Code", k)], 1, lengths[k-1,2])
+      o_code = which(QC_output$exp_parents %in% QC_output[which(QC_output$level == k-1), paste0("Code", k-1)])
+      QC_output$orphan[intersect(which(QC_output$level == k), o_code)] = 0
+      noo_code = which(!QC_output$exp_parents %in% QC_output[which(QC_output$level == k-1), paste0("Code", k-1)])
+      QC_output$orphan[intersect(which(QC_output$level == k), noo_code)] = 1
+      #QC_output$orphan[which(is.na(QC_output$exp_parents))] = NA
+    }
+    QC_output = QC_output[, -which(colnames(QC_output) == "exp_parents")]
+    
+    #identify orphans
+    orphan = which(QC_output$orphan == 1)
+    if (length(orphan) > 0) {
+      warning("Some codes at a lower level than 1 have no parents at higher levels ('see QC_orphan').")
+    }
+    
+    QC_orphan = QC_output[orphan, ]
+    
+    #childless - if (fullHierarchy == TRUE)
     
     QC_output$childless = rep(NA, nrow(QC_output))
     
@@ -249,36 +267,36 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     cat("FullHierarchy is NULL so no treatment")
   }
   ###  RULE 5 - Uniqueness of labels 
- if (!is.null(labelUniqueness) && labelUniqueness != FALSE){
+  if (!is.null(labelUniqueness) && labelUniqueness != FALSE) {
     QC_output$duplicateLabel = 0
     
-    # Check for duplicate labels at each hierarchical level
-    for (le in unique(QC_output$level)) {
+    # Get unique levels
+    unique_levels <- unique(QC_output$level)
+    
+    # Iterate over each unique level
+    for (le in unique_levels) {
       level_data = QC_output[QC_output$level == le,]
-      level_data$Label = substr(level_data$Label, lengths[le,2] + 1, nchar(level_data$Label)) 
+      
       if (nrow(level_data) != length(unique(level_data$Label))) {
         # There are duplicates, mark them in the QC output column
         # The outcome of the test should be reported in a new ‘QC output’ column (duplicateLabel) assuming the value 1 for positions involved in duplicates (0 otherwise).
         duplicate_labels = level_data$Label[duplicated(level_data$Label)]
-        ##Here we add 1 if we have the same label.
+        ## Here we add 1 if we have the same label.
         QC_output$duplicateLabel[QC_output$level == le & QC_output$Label %in% duplicate_labels] = 1
       }
     }
     
-    #identify duplicates
+    # Identify duplicates
     duplicatesLabel = which(QC_output$duplicateLabel == 1)
     if (length(duplicatesLabel) > 0) {
       warning(paste("Some codes at the same hierarchical level have the same labels (see 'QC_duplicatesLabel')."))
     }
     QC_duplicatesLabel = QC_output[duplicatesLabel,]
-  }else{
-    cat("labelUniqueness is NULL so no treatment")
-  }
-  
+  } 
   
   ## RULE 6 - Hierarchical label dependencies
   if (!is.null(labelHierarchy) && labelHierarchy != FALSE){
-      QC_output$singleChildMismatch = 0
+    QC_output$singleChildMismatch = 0
     
     for (k in 1:(nrow(lengths)-1)) {
       
@@ -304,27 +322,57 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
           if (label_parent != label_child) {
             QC_output$singleChildMismatch[row_child] = 1
           }
+        
         }
       }
+    }
       #identify mismatches - 
       singleChildMismatch = which(QC_output$singleChildMismatch != 0)
       if (length(singleChildMismatch) > 0) {
-        warning(paste("Some single child have different labels from their parents or some multiple children have same labels to their parents (see 'QC_singleChildMismatch')."))
+        warning(paste("Some single child has a different label from their parent or some multiple child has the same label as their parent (see 'QC_singleChildMismatch')."))
       }
       QC_singleChildMismatch = QC_output[singleChildMismatch,]
-    }
+    
   }else{
     cat("labelHierarchy is NULL so no treatment")
   }
   
   ## RULE 7 -	Single child code compliance 
-  if (!is.null(singleChildCode) && file.exists(singleChildCode)){
- 
+  if (!is.null(singleChildCode)) {
     
-      singleChildCode <- read.csv(singleChildCode)
-  
-    
-    
+    if (file.exists(singleChildCode)) {
+     
+      if (tolower(file_ext(singleChildCode)) == "csv") {
+        # Read the first line of the CSV file
+        first_line <- readLines(singleChildCode, n = 1)
+        
+        # Check for expected headers
+        expected_headers <- c("level", "singleCode", "multipleCode") 
+        # Split the first line using ","
+        header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
+        
+        if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
+          singleChildCode <- read.csv(singleChildCode, header = TRUE)
+        } else {
+          warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+          
+         
+          singleChildCode <- read.csv(singleChildCode, header = FALSE)
+          
+          # Renamme the column
+          colnames(singleChildCode) <- expected_headers
+        }
+        
+        if (length(header_columns) > length(expected_headers)) {
+          warning("There are more columns than needed. Using the first columns.")
+        }
+      } else {
+        stop("The provided singleChildCode file is not a CSV file.")
+      }
+    } else {
+      stop("The provided singleChildCode file does not exist.")
+    }
+
     QC_output$singleCodeError = 0
     QC_output$multipleCodeError = 0
     
@@ -371,7 +419,6 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
           }
         }
         
-        
         #Check if they are correct (multi)
         if (nrow(code_multichild) != 0){
           for (m in 1:nrow(code_multichild)){
@@ -407,15 +454,44 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
       warning(paste("Some multiple children been wrongly coded (see 'QC_multipleCodeError'."))
     }
     QC_multipleCodeError = QC_output[multipleCodeError,] 
-  }     
+  } 
   
   ## RULE 8 - Sequencing of codes
-  if (!is.null(sequencing) && file.exists(sequencing)) {
-    cat("The sequencing file exists and is not NULL.\n")
+  if (!is.null(sequencing)) {
+    if (file.exists(sequencing)) {
+      # Vérifie si le fichier est un fichier CSV
+      if (tolower(file_ext(sequencing)) == "csv") {
+        # Read the first line of the CSV file
+        first_line <- readLines(sequencing, n = 1)
+        
+        # Check for expected headers
+        expected_headers <- c("level","multipleCode") 
+        # Split the first line using ","
+        header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
+        
+        if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
+          # Les en-têtes correspondent, lire le fichier avec header = TRUE
+          sequencing <- read.csv(sequencing, header = TRUE)
+        } else {
+          warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+          
+          # Lire le fichier avec header = FALSE
+          sequencing <- read.csv(sequencing, header = FALSE)
+          
+          # Renommer les colonnes pour correspondre aux en-têtes attendues
+          colnames(sequencing) <- expected_headers
+        }
+        
+        if (length(header_columns) > length(expected_headers)) {
+          warning("There are more columns than needed. Using the first columns.")
+        }
+      } else {
+        stop("The provided sequencing file is not a CSV file.")
+      }
+    } else {
+      stop("The provided sequencing file does not exist.")
+    }
     
-    # Read the CSV file
-    sequencing <- read.csv(sequencing)  # Replace with the actual read function and file parsing logic
-
     QC_output$gapBefore = 0
     QC_output$lastSibling = 0
     
@@ -475,63 +551,61 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
       
     }
   }
-
-## RESULTS
-
-return_ls <- list("QC_output" = QC_output)
-
-# Add the result in QC_output
-
-# Add the dataframe from swhat the user use as parameters
-if (!is.null(fullHierarchy)) {
-  if (!fullHierarchy) {
-    # Add  codes chidless
-    QC_output$childless <- QC_childless
-  }
-}
-
-if (!is.null(labelUniqueness)) {
-  if (!labelUniqueness) {
-    # Add duplicate label
-    QC_output$duplicateLabel <- QC_duplicatesLabel
-  }
-}
-
-if (!is.null(labelHierarchy)) {
-  if (!labelHierarchy) {
-    # add singleChildMismatch
-    QC_output$singleChildMismatch <- QC_singleChildMismatch
-  }
-}
-
-if (!is.null(singleChildCode)) {
-  # Add Single & multiple code error 
-  QC_output$singleCodeError <- QC_singleCodeError
-  QC_output$multipleCodeError <- QC_multipleCodeError
-}
-
-if (!is.null(sequencing)) {
-  if (!missing(sequencing)) {
-    # Add  sequencing 
-    QC_output$lastSibling <- QC_lastSibling
-  }
-}
-
   
-if (!is.null(CSVout)) {
-  if (is.logical(CSVout) && CSVout == TRUE) {
-    name <- names(return_ls)[1]
-    date <- format(Sys.time(), "%Y%m%d%H%M%S")
-    file_name <- paste0("QC_output_", "_", date, ".csv")
-    path_file <- file.path(getwd(), file_name)
-    write.csv(return_ls, path_file, row.names = FALSE)
-  } else if (is.character(CSVout)) {
-    write.csv(return_ls, CSVout, row.names = FALSE)
+  ## RESULTS
+  
+  return_ls <- list("QC_output" = QC_output)
+  
+  # Add the result in QC_output
+  
+  # Add the dataframe from swhat the user use as parameters
+  if (!is.null(fullHierarchy)) {
+    if (!fullHierarchy) {
+      # Add  codes chidless
+      QC_output$childless <- QC_childless
+    }
   }
+  
+  if (!is.null(labelUniqueness)) {
+    if (!labelUniqueness) {
+      # Add duplicate label
+      QC_output$duplicateLabel <- QC_duplicatesLabel
+    }
+  }
+  
+  if (!is.null(labelHierarchy)) {
+    if (!labelHierarchy) {
+      # add singleChildMismatch
+      QC_output$singleChildMismatch <- QC_singleChildMismatch
+    }
+  }
+  
+  if (!is.null(singleChildCode)) {
+    # Add Single & multiple code error 
+    QC_output$singleCodeError <- QC_singleCodeError
+    QC_output$multipleCodeError <- QC_multipleCodeError
+  }
+  
+  if (!is.null(sequencing)) {
+    if (!missing(sequencing)) {
+      # Add  sequencing 
+      QC_output$lastSibling <- QC_lastSibling
+    }
+  }
+  
+  
+  if (!is.null(CSVout)) {
+    if (is.logical(CSVout) && CSVout == TRUE) {
+      name <- names(return_ls)[1]
+      date <- format(Sys.time(), "%Y%m%d%H%M%S")
+      file_name <- paste0("QC_output_", "_", date, ".csv")
+      path_file <- file.path(getwd(), file_name)
+      write.csv(return_ls, path_file, row.names = FALSE)
+    } else if (is.character(CSVout)) {
+      write.csv(return_ls, CSVout, row.names = FALSE)
+    }
+  }
+  
+  
+  return(return_ls)
 }
-
-
-   return(return_ls)
-}
-
-
