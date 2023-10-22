@@ -60,8 +60,7 @@
 #'
 #' @examples 
 #' {
-#' For this example system.file create a path like the user insert his own path for parameters as an example
-#'   classification_path <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+#' #'   classification_path <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
 #'   
 #'   lengthsFile_path <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
 #'   
