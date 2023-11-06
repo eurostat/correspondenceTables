@@ -81,7 +81,7 @@ The `classificationQC()` function generates a QC output data frame with the clas
 }
 \examples{
 {
-#'   classification_path <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+# classification_path <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
   
   lengthsFile_path <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
   
