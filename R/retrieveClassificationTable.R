@@ -47,7 +47,7 @@
 
 
 
-retrieveClassificationTable = function(prefix, endpoint, conceptScheme,  language = "en", CSVout = FALSE, showQuery=TRUE) {
+retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL",  language = "en", CSVout = FALSE, showQuery=TRUE) {
   
   ### Define endpoint
   if (endpoint == "CELLAR") {
