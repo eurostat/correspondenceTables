@@ -47,116 +47,119 @@
 
 
 
-retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en", CSVout = FALSE, showQuery=TRUE) {
-    
-    ### Define endpoint
-    if (endpoint == "CELLAR") {
-        source = "http://publications.europa.eu/webapi/rdf/sparql"
-    }
-    if (endpoint == "FAO") {
-        source = "https://stats.fao.org/caliper/sparql/AllVocs"
-    }
-    
-    ### Load prefixes using prefixList function
-    prefixlist = prefixList(endpoint)
-    prefixlist = as.character(paste(prefixlist, collapse = "\n"))
-    
-    
-    # Check if classification has level, if not, set level = "ALL" 
-    dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language)) 
-    
-    if (nrow(dt_level) == 0 & level != "ALL") {
-        level = "ALL"
-        message("Classification has no levels, so level = ALL was set to retrieve the table.") 
-    }
-    
-    ### CLASSIFICATION TABLE SPARQL QUERIES
-    ### Define SPARQL query -- BASE: all levels
-    SPARQL.query_0 = paste0(prefixlist, "
-        SELECT DISTINCT ?", prefix, " ?NAME ?Include ?Include_Also ?Exclude ?URL ?datatype
+retrieveClassificationTable = function(prefix, endpoint, conceptScheme,  language = "en", CSVout = FALSE, showQuery=TRUE) {
+  
+  ### Define endpoint
+  if (endpoint == "CELLAR") {
+    source = "http://publications.europa.eu/webapi/rdf/sparql"
+  }
+  if (endpoint == "FAO") {
+    source = "https://stats.fao.org/caliper/sparql/AllVocs"
+  }
+  
+  ### Load prefixes using prefixList function
+  prefixlist = prefixList(endpoint)
+  prefixlist = as.character(paste(prefixlist, collapse = "\n"))
+  
+  
+  # Check if classification has level, if not, set level = "ALL"
+  dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language)) 
+  
+  if (nrow(dt_level) == 0 & level != "ALL") {
+    level = "ALL"
+    message("Classification has no levels, so level = ALL was set to retrieve the table.")
+  }
+  
+  ### Define SPARQL query -- BASE: all levels
+  SPARQL.query_0 = paste0(prefixlist, "
+        SELECT DISTINCT ?", prefix, " ?NAME ?Parent ?Include ?Include_Also ?Exclude ?URL
 
         WHERE {
             ?s skos:prefLabel ?Label ;
                 skos:inScheme ?Scheme ;
                 ^skos:member ?Member ;
+                skos:broader ?Broader;
                 skos:prefLabel ?Label ;
                 skos:notation ?notation .
-            
+            ?Broader skos:notation ?BT_Notation.
                 #FILTER (datatype(?notation) = xsd:string)
-                
+                 BIND (STR(?BT_Notation) as ?Parent)
                 FILTER (?Scheme = ", prefix, ":", conceptScheme, ")
                 FILTER (lang(?Label) = '", language, "')
                 
                 BIND (STR(?s) AS ?URL)
                 BIND (STR(?notation) as ?", prefix, " )
                 BIND (STR(?Label) as ?NAME)
-                BIND (datatype(?notation) AS ?datatype)
+               # BIND (datatype(?notation) AS ?datatype)
                 
                 OPTIONAL {?s skos:scopeNote ?Include . FILTER (LANG(?Include) = '", language, "') .}
                 OPTIONAL {?s xkos:exclusionNote ?Exclude . FILTER (LANG(?Exclude) = '", language, "').}
                 OPTIONAL {?s xkos:additionalContentNote ?Include_Also . FILTER (LANG(?Include_Also) = '", language, "').}
               
               ")
-    
-    ### Define SPARQL query -- FILTER LEVEL
-    SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", level, ")")
-    
-    ### End SPARQL query ", prefix 
-    SPARQL.query_end = paste0("}
+  
+  
+  
+  
+  ### Define SPARQL query -- FILTER LEVEL
+  SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", "division", ")")
+  
+  ### End SPARQL query ", prefix 
+  SPARQL.query_end = paste0("}
           ORDER BY ?", prefix
-    )
-    
-
-    if (length(level) == 0 ){
-        stop("Classification level was not specified.") 
-    } else {  
-        if (level == "ALL") {
-            SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
-        } else {
-            SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_level, SPARQL.query_end)
-        }
+  )
+  
+  
+  if (length(level) == 0 ){
+    stop("Classification level was not specified.") 
+  } else {  
+    if (level == "ALL") {
+      SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_end)
+    } else {
+      SPARQL.query = paste0(SPARQL.query_0, SPARQL.query_level, SPARQL.query_end)
     }
     
-    response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-    data = data.frame(content(response, show_col_types = FALSE))
+  }
+  response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+  data = data.frame(content(response, show_col_types = FALSE))
+  
+  #keep only plainLiteral if more than one datatype // 
+  #FAO - "http://www.w3.org/2001/XMLSchema#string"
+  #CELLAR - "http://www.w3.org/2001/XMLSchema#string" - "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"
+  type = unique(data$datatype)
+  if (length(type) > 1){
+    data = data[which(data$datatype == "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"), ]
+  }
+  
+  #remove datatype col
+  data = data[, 1:(ncol(data)-1)]
+  
+  #are there other duplicates? URL is the same and the other changes
+  xcol = which(colnames(data) == "URL")
+  dup = length(which(duplicated(data[,-xcol]) == TRUE))
+  
+  if (dup > 0) {
+    warning("There are duplicates codes in the classification table.") 
+  }
+  
+  # Save results as CSV and show where it was stored
+  if (CSVout == TRUE) {
+    name_csv = paste0(prefix, "_table.csv")
+    write.csv(data, file= name_csv, row.names=FALSE)
+    message(paste0("The table was saved in ", getwd(), name_csv))
+  } 
+  
+  if (showQuery) {
+    result=list()
+    result[[1]]=SPARQL.query
+    result[[2]]=data
     
-    #keep only plainLiteral if more than one datatype // 
-    #FAO - "http://www.w3.org/2001/XMLSchema#string"
-    #CELLAR - "http://www.w3.org/2001/XMLSchema#string" - "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"
-    type = unique(data$datatype)
-    if (length(type) > 1){
-        data = data[which(data$datatype == "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"), ]
-    }
-    
-    #remove datatype col
-    data = data[, 1:(ncol(data)-1)]
-
-    #are there other duplicates? URL is the same and the other changes
-    xcol = which(colnames(data) == "URL")
-    dup = length(which(duplicated(data[,-xcol]) == TRUE))
-    
-    if (dup > 0) {
-        warning("There are duplicates codes in the classification table.") 
-    }
-    
-    # Save results as CSV and show where it was stored
-    if (CSVout == TRUE) {
-        name_csv = paste0(prefix, "_table.csv")
-        write.csv(data, file= name_csv, row.names=FALSE)
-        message(paste0("The table was saved in ", getwd(), name_csv))
-    } 
-    
-    if (showQuery) {
-        result=list()
-        result[[1]]=SPARQL.query
-        result[[2]]=data
-        
-        names(result)=c("SPARQL.query", "ClassificationTable")
-    }
-    
-    if (showQuery==FALSE){
-        result=data
-    }
-    
-    return(result)
+    names(result)=c("SPARQL.query", "ClassificationTable")
+  }
+  
+  if (showQuery==FALSE){
+    result=data
+  }
+  
+  return(result)
 }
