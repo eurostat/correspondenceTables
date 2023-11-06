@@ -112,10 +112,10 @@ The following code produce a list including the structure of each classification
 ```{r,results = "hide"}
 ## Obtain the structure of all classifications 
 ## CELLAR
-data_CELLAR = list()
-endpoint = "CELLAR"
-#Get info to retrieve structure using classificationEndpoint()
-list_data = classificationEndpoint("ALL")
+# data_CELLAR = list()
+# endpoint = "CELLAR"
+# #Get info to retrieve structure using classificationEndpoint()
+# list_data = classificationEndpoint("ALL")
 
 # #loop over all classification in CELLAR
 # for (i in 1:nrow(list_data$CELLAR)){
