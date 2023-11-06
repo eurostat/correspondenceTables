@@ -50,13 +50,13 @@ conceptScheme = "nace2"
 language = "en"
 CSVout = FALSE
 showQuery = TRUE
-
+level = "ALL"
 # identify lower level using dataStructure()
 level_dt = dataStructure(prefix, conceptScheme, endpoint, language)
-level = level_dt[nrow(level_dt),2] 
-level_dt; level
+# level = level_dt[nrow(level_dt),2]
+# level_dt; level
 
-result_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme, level = level, language, CSVout, showQuery) 
+result_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme, level , language, CSVout, showQuery)
 
 # identify the SPARQL query used
 SPARQLquery = result_ls[[1]]
