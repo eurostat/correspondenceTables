@@ -73,7 +73,7 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     ### CLASSIFICATION TABLE SPARQL QUERIES
     ### Define SPARQL query -- BASE
     SPARQL.query_0 = paste0(prefixlist, "
-    SELECT ?", A ," ?", B ," ?Label_", A ," ?Include_", A ," ?Exclude_", A ," ?Label_", B ," ?Include_", B ," ?Exclude_", B ," ?Comment ?URL  ?Sourcedatatype ?Targetdatatype 
+    SELECT ?", A ," ?", B ," ?Label_", A ," ?Label_", B ," ?Include_", A ," ?Exclude_", A ," ?Include_", B ," ?Exclude_", B ," ?Comment ?URL  ?Sourcedatatype ?Targetdatatype 
 
     WHERE {
      ", prefix, ":", ID_table, " xkos:madeOf ?Associations .
@@ -93,8 +93,8 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
      BIND (datatype(?SourceNotation) AS ?Sourcedatatype)
      BIND (datatype(?TargetNotation) AS ?Targetdatatype)
 
-     OPTIONAL { ?Source skos:prefLabel ?Label_", A ,"  FILTER (LANG(?Label_", A ,") = '", language, "') .}
-     OPTIONAL { ?Target skos:prefLabel ?Label_", B ,"  FILTER (LANG(?Label_", B ,") = '", language, "') .}
+     OPTIONAL { ?Source skos:altLabel ?Label_", A ,"  FILTER (LANG(?Label_", A ,") = '", language, "') .}
+     OPTIONAL { ?Target skos:altLabel ?Label_", B ,"  FILTER (LANG(?Label_", B ,") = '", language, "') .}
      OPTIONAL {?Source skos:scopeNote ?Include_", A ,".     FILTER (LANG(?Include_", A ,") = '", language, "') .}
      OPTIONAL {?Source xkos:exclusionNote ?Exclude_", A ,".    FILTER (LANG(?Exclude_", A ,") = '", language, "') .}
      OPTIONAL {?Target skos:scopeNote ?Include_", B ,".     FILTER (LANG(?Include_", B ,") = '", language, "') .}
