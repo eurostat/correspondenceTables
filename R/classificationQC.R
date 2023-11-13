@@ -549,7 +549,6 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   ## RESULTS
   colnames(QC_output)[1:1] <- classificationName
   
-  
   # Add the result in QC_output
   
   if (!is.null(CSVout)) {
