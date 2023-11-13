@@ -52,7 +52,7 @@ CSVout = FALSE
 showQuery = TRUE
 level = "ALL"
 # identify lower level using dataStructure()
-level_dt = dataStructure(prefix, conceptScheme, endpoint, language)
+# level_dt = dataStructure(prefix, conceptScheme, endpoint, language)
 # level = level_dt[nrow(level_dt),2]
 # level_dt; level
 
@@ -60,7 +60,8 @@ result_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme, level ,
 
 # identify the SPARQL query used
 SPARQLquery = result_ls[[1]]
-
+### cat put the break line for the sparql query 
+cat(SPARQLquery, sep = "\n")
 # obtained the table
 table = result_ls[[2]]
 
@@ -156,20 +157,23 @@ The namespace prefix needed to execute the SPARQL query are automatically genera
 
 To following code is used to retrieve the correspondence table between NACE2 and PRODCOM2021 from CELLAR:
 ```{r, results = "hide"}
+
 endpoint = "CELLAR"
+### correspondenceList 
+correspondenceList(endpoint)
 prefix = "nace2"
-ID_table = "NACE2_PRODCOM2021"
+ID_table = "NACE2_CPA21"
 language = "en"
 CSVout = FALSE
 showQuery= TRUE
 
-# result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
-# 
-# # identify the SPARQL query used
-# SPARQLquery = result_ls[[1]]
-# 
-# # obtained the table
-# table = result_ls[[2]]
+result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+
+# identify the SPARQL query used
+SPARQLquery = result_ls[[1]]
+cat(SPARQLquery, sep = "\n")
+# obtained the table
+table = result_ls[[2]]
 ```
 
 To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
