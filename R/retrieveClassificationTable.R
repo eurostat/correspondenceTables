@@ -75,13 +75,14 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
         SELECT DISTINCT ?", prefix, " ?NAME ?Parent ?Include ?Include_Also ?Exclude ?URL
 
         WHERE {
-            ?s skos:prefLabel ?Label ;
+            ?s skos:altLabel ?Label ;
                 skos:inScheme ?Scheme ;
                 ^skos:member ?Member ;
-                skos:broader ?Broader;
-                skos:prefLabel ?Label ;
+                #skos:broader ?Broader;.
+                # skos:altLabel ?Label ;
                 skos:notation ?notation .
-            ?Broader skos:notation ?BT_Notation.
+                  OPTIONAL {?s skos:broader ?Broader. 
+            ?Broader skos:notation ?BT_Notation.}
                 #FILTER (datatype(?notation) = xsd:string)
                  BIND (STR(?BT_Notation) as ?Parent)
                 FILTER (?Scheme = ", prefix, ":", conceptScheme, ")
@@ -100,6 +101,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   
   
   
+
   
   ### Define SPARQL query -- FILTER LEVEL
   SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", "division", ")")
@@ -108,7 +110,6 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   SPARQL.query_end = paste0("}
           ORDER BY ?", prefix
   )
-  
   
   if (length(level) == 0 ){
     stop("Classification level was not specified.") 
@@ -152,6 +153,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   if (showQuery) {
     result=list()
     result[[1]]=SPARQL.query
+    cat(result$SPARQL.query, sep ="/n")
     result[[2]]=data
     
     names(result)=c("SPARQL.query", "ClassificationTable")
