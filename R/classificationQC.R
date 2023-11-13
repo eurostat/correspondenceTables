@@ -84,7 +84,6 @@
 
 classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = NULL) {
   
-  
   if ((length(grep("csv", classification)) == 0) ){
     stop("The classification should be provided as a csv file")
   }
@@ -92,23 +91,24 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   if (length(grep("csv", classification)) > 0){
     classification = read.csv(classification, header = TRUE)
   }
+  classificationName <- colnames(classification)[1:1]
   
-  #check that classification has only two columns
-  if(ncol(classification) != 2){
-    stop("The classification must have only two colums corresponding to code and label.")
-  }
-  
+  # #check that classification has only two columns
+  # if(ncol(classification) != 2){
+  #   stop("The classification must have only two colums corresponding to code and label.")
+  # }
+  # 
   colnames(classification)[1:2] = c("Code", "Label")
   
   if (length(grep("csv", lengthsFile)) > 0) {
     # Read the first line of the CSV file
-    first_line <- readLines(lengthsFile, n = 1)
-    
+    first_line <- gsub("\"", "", readLines(lengthsFile, n = 1))    
     # Check for expected headers
     expected_headers <- c("charb", "chare")  # Liste des en-têtes attendues
     
     # Split the first line using ","
     header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
+    header_columns <- gsub("\"", "", header_columns)  # Supprimer les guillemets
     
     if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
       # Les en-têtes correspondent, lire le fichier avec header = TRUE
@@ -126,6 +126,8 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     if (length(header_columns) > length(expected_headers)) {
       warning("There are more columns than needed. Using the first columns.")
     }
+  } else {
+    stop("The provided lengths file is not a CSV file.")
   }
   ### RULE 1 - Correctness of formatting requirements (lengths file)
   
@@ -199,9 +201,9 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   for (i in 1:nrow(QC_output)) {
     if (QC_output$level[i] > 1) {
       superior_col_name = paste0("Code", (QC_output$level[i] - 1))
-      QC_output$superior[i] = QC_output[i, superior_col_name]
+      QC_output$Parent[i] = QC_output[i, superior_col_name]
     } else {
-      QC_output$superior[i] = NA
+      QC_output$Parent[i] = NA
     }
   }
   
@@ -321,16 +323,16 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
           if (label_parent != label_child) {
             QC_output$singleChildMismatch[row_child] = 1
           }
-        
+          
         }
       }
     }
-      #identify mismatches - 
-      singleChildMismatch = which(QC_output$singleChildMismatch != 0)
-      if (length(singleChildMismatch) > 0) {
-        warning(paste("Some single child has a different label from their parent or some multiple child has the same label as their parent (see 'QC_singleChildMismatch')."))
-      }
-      QC_singleChildMismatch = QC_output[singleChildMismatch,]
+    #identify mismatches - 
+    singleChildMismatch = which(QC_output$singleChildMismatch != 0)
+    if (length(singleChildMismatch) > 0) {
+      warning(paste("Some single child has a different label from their parent or some multiple child has the same label as their parent (see 'QC_singleChildMismatch')."))
+    }
+    QC_singleChildMismatch = QC_output[singleChildMismatch,]
     
   }else{
     cat("labelHierarchy is NULL so no treatment")
@@ -339,39 +341,35 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   ## RULE 7 -	Single child code compliance 
   if (!is.null(singleChildCode)) {
     
-    if (file.exists(singleChildCode)) {
-     
-      if (tolower(file_ext(singleChildCode)) == "csv") {
-        # Read the first line of the CSV file
-        first_line <- readLines(singleChildCode, n = 1)
-        
-        # Check for expected headers
-        expected_headers <- c("level", "singleCode", "multipleCode") 
-        # Split the first line using ","
-        header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
-        
-        if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
-          singleChildCode <- read.csv(singleChildCode, header = TRUE)
-        } else {
-          warning("Variable names do not match the expected headers. Renaming and using the first columns.")
-          
-         
-          singleChildCode <- read.csv(singleChildCode, header = FALSE)
-          
-          # Renamme the column
-          colnames(singleChildCode) <- expected_headers
-        }
-        
-        if (length(header_columns) > length(expected_headers)) {
-          warning("There are more columns than needed. Using the first columns.")
-        }
+    if (file.exists(singleChildCode) && length(grep("csv", tolower(singleChildCode))) > 0) {
+      # Read the first line of the CSV file
+      first_line <- readLines(singleChildCode, n = 1)
+      
+      # Check for expected headers
+      expected_headers <- c("level", "singleCode", "multipleCode") 
+      # Split the first line using ","
+      header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
+      
+      if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
+        # Les en-têtes correspondent, lire le fichier avec header = TRUE
+        singleChildCode <- read.csv(singleChildCode, header = TRUE)
       } else {
-        stop("The provided singleChildCode file is not a CSV file.")
+        warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+        
+        # Lire le fichier avec header = FALSE
+        singleChildCode <- read.csv(singleChildCode, header = FALSE)
+        singleChildCode <- singleChildCode[-1,]
+        # Renommer les colonnes pour correspondre aux en-têtes attendues
+        colnames(singleChildCode) <- expected_headers
+      }
+      
+      if (length(header_columns) > length(expected_headers)) {
+        warning("There are more columns than needed. Using the first columns.")
       }
     } else {
-      stop("The provided singleChildCode file does not exist.")
+      stop("The provided sequencing file is not a CSV file or does not exist.")
     }
-
+    
     QC_output$singleCodeError = 0
     QC_output$multipleCodeError = 0
     
@@ -457,39 +455,36 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   
   ## RULE 8 - Sequencing of codes
   if (!is.null(sequencing)) {
-    if (file.exists(sequencing)) {
-      # Vérifie si le fichier est un fichier CSV
-      if (tolower(file_ext(sequencing)) == "csv") {
-        # Read the first line of the CSV file
-        first_line <- readLines(sequencing, n = 1)
-        
-        # Check for expected headers
-        expected_headers <- c("level","multipleCode") 
-        # Split the first line using ","
-        header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
-        
-        if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
-          # Les en-têtes correspondent, lire le fichier avec header = TRUE
-          sequencing <- read.csv(sequencing, header = TRUE)
-        } else {
-          warning("Variable names do not match the expected headers. Renaming and using the first columns.")
-          
-          # Lire le fichier avec header = FALSE
-          sequencing <- read.csv(sequencing, header = FALSE)
-          
-          # Renommer les colonnes pour correspondre aux en-têtes attendues
-          colnames(sequencing) <- expected_headers
-        }
-        
-        if (length(header_columns) > length(expected_headers)) {
-          warning("There are more columns than needed. Using the first columns.")
-        }
+    if (file.exists(sequencing) && length(grep("csv", tolower(sequencing))) > 0) {
+      # Read the first line of the CSV file
+      first_line <- readLines(sequencing, n = 1)
+      
+      # Check for expected headers
+      expected_headers <- c("level", "multipleCode")
+      # Split the first line using ","
+      header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
+      
+      if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
+        # Les en-têtes correspondent, lire le fichier avec header = TRUE
+        sequencing <- read.csv(sequencing, header = TRUE)
       } else {
-        stop("The provided sequencing file is not a CSV file.")
+        warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+        
+        # Lire le fichier avec header = FALSE
+        sequencing <- read.csv(sequencing, header = FALSE)
+        sequencing <- sequencing[-1,]
+        # Renommer les colonnes pour correspondre aux en-têtes attendues
+        colnames(sequencing) <- expected_headers
+      }
+      
+      if (length(header_columns) > length(expected_headers)) {
+        warning("There are more columns than needed. Using the first columns.")
       }
     } else {
-      stop("The provided sequencing file does not exist.")
+      stop("The provided sequencing file is not a CSV file or does not exist.")
     }
+    
+    
     
     QC_output$gapBefore = 0
     QC_output$lastSibling = 0
@@ -552,59 +547,23 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   }
   
   ## RESULTS
+  colnames(QC_output)[1:1] <- prefix
   
-  return_ls <- list("QC_output" = QC_output)
   
   # Add the result in QC_output
   
-  # Add the dataframe from swhat the user use as parameters
-  if (!is.null(fullHierarchy)) {
-    if (!fullHierarchy) {
-      # Add  codes chidless
-      QC_output$childless <- QC_childless
-    }
-  }
-  
-  if (!is.null(labelUniqueness)) {
-    if (!labelUniqueness) {
-      # Add duplicate label
-      QC_output$duplicateLabel <- QC_duplicatesLabel
-    }
-  }
-  
-  if (!is.null(labelHierarchy)) {
-    if (!labelHierarchy) {
-      # add singleChildMismatch
-      QC_output$singleChildMismatch <- QC_singleChildMismatch
-    }
-  }
-  
-  if (!is.null(singleChildCode)) {
-    # Add Single & multiple code error 
-    QC_output$singleCodeError <- QC_singleCodeError
-    QC_output$multipleCodeError <- QC_multipleCodeError
-  }
-  
-  if (!is.null(sequencing)) {
-    if (!missing(sequencing)) {
-      # Add  sequencing 
-      QC_output$lastSibling <- QC_lastSibling
-    }
-  }
-  
-  
   if (!is.null(CSVout)) {
     if (is.logical(CSVout) && CSVout == TRUE) {
-      name <- names(return_ls)[1]
-      date <- format(Sys.time(), "%Y%m%d%H%M%S")
-      file_name <- paste0("QC_output_", "_", date, ".csv")
+      name <- names(QC_output)[1]
+      file_name <- paste0("QC_output_", prefix,".csv")
       path_file <- file.path(getwd(), file_name)
-      write.csv(return_ls, path_file, row.names = FALSE)
+      write.csv(QC_output, path_file, row.names = FALSE)
+      message(paste0("The table was saved in ", getwd(), file_name))
     } else if (is.character(CSVout)) {
-      write.csv(return_ls, CSVout, row.names = FALSE)
+      write.csv(QC_output, CSVout, row.names = FALSE)
     }
   }
   
   
-  return(return_ls)
+  return(QC_output)
 }
