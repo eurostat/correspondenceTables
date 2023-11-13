@@ -39,15 +39,9 @@ about the level names their hierarchy and the numbers of records the function "s
 {
    ## Obtain a list including the structure of each classification available 
    ## CELLAR
-   data_CELLAR = list()
-   endpoint = "CELLAR"
-   list_data = classificationEndpoint("ALL")
-   
-   for (i in 1:nrow(list_data$CELLAR)){
-       prefix = list_data$CELLAR[i,1] 
-       conceptScheme = list_data$CELLAR[i,2] 
-      data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
-   }
-   names(data_CELLAR) = list_data$CELLAR[,1] 
+   #data_CELLAR = list()
+   #endpoint = "CELLAR"
+   #list_data = classificationEndpoint("ALL")
+  # 
 }
 }
