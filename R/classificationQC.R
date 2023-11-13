@@ -547,7 +547,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   }
   
   ## RESULTS
-  colnames(QC_output)[1:1] <- prefix
+  colnames(QC_output)[1:1] <- classificationName
   
   
   # Add the result in QC_output
@@ -555,7 +555,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   if (!is.null(CSVout)) {
     if (is.logical(CSVout) && CSVout == TRUE) {
       name <- names(QC_output)[1]
-      file_name <- paste0("QC_output_", prefix,".csv")
+      file_name <- paste0("QC_output_", classificationName,".csv")
       path_file <- file.path(getwd(), file_name)
       write.csv(QC_output, path_file, row.names = FALSE)
       message(paste0("The table was saved in ", getwd(), file_name))
