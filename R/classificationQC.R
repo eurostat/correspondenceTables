@@ -114,7 +114,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
      
       lengths <- read.csv(lengthsFile, header = TRUE)
     } else {
-      warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+      warning("Variable names do not match the expected headers for the LenghsFile. Renaming and using the first columns.")
       
       
       lengths <- read.csv(lengthsFile, header = FALSE)
@@ -124,7 +124,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     }
     
     if (length(header_columns) > length(expected_headers)) {
-      warning("There are more columns than needed. Using the first columns.")
+      warning("There are more columns than needed for LenghsFile. Using the first columns.")
     }
   } else {
     stop("The provided lengths file is not a CSV file.")
@@ -354,7 +354,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
         # Les en-têtes correspondent, lire le fichier avec header = TRUE
         singleChildCode <- read.csv(singleChildCode, header = TRUE)
       } else {
-        warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+        warning("Variable names do not match the expected headers for the SingleChildCode. Renaming and using the first columns.")
         
         # Lire le fichier avec header = FALSE
         singleChildCode <- read.csv(singleChildCode, header = FALSE)
@@ -364,7 +364,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
       }
       
       if (length(header_columns) > length(expected_headers)) {
-        warning("There are more columns than needed. Using the first columns.")
+        warning("There are more columns than needed for SingleChildCode. Using the first columns.")
       }
     } else {
       stop("The provided sequencing file is not a CSV file or does not exist.")
@@ -468,7 +468,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
         # Les en-têtes correspondent, lire le fichier avec header = TRUE
         sequencing <- read.csv(sequencing, header = TRUE)
       } else {
-        warning("Variable names do not match the expected headers. Renaming and using the first columns.")
+        warning("Variable names do not match the expected headers for the sequencing file. Renaming and using the first columns.")
         
         # Lire le fichier avec header = FALSE
         sequencing <- read.csv(sequencing, header = FALSE)
@@ -477,7 +477,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
       }
       
       if (length(header_columns) > length(expected_headers)) {
-        warning("There are more columns than needed. Using the first columns.")
+        warning("There are more columns than needed for Sequencing. Using the first columns.")
       }
     } else {
       stop("The provided sequencing file is not a CSV file or does not exist.")
