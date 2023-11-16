@@ -547,7 +547,35 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   
   ## RESULTS
   colnames(QC_output)[1:1] <- classificationName
+  ## RESULTS
+  if (!(fullHierarchy)) {
+    QC_childless = data.frame()
+  }
   
+  if (!(labelUniqueness)) {
+    QC_duplicatesLabel = data.frame()
+  }
+  
+  if (!(labelHierarchy)) {
+    QC_singleChildMismatch = data.frame()
+  }
+  
+  if (missing(singleChildCode)) {
+    QC_singleCodeError = data.frame()
+    QC_multipleCodeError = data.frame()
+  }
+  
+  if (missing(sequencing)) {
+    QC_lastSibling = data.frame()
+  }
+  
+  return_ls = list("QC_output" = QC_output, "QC_noLevels" = QC_noLevels, "QC_duplicatesCode" = QC_duplicatesCode, "QC_orphan" = QC_orphan, 
+                   "QC_childless" = QC_childless, "QC_duplicatesLabel" = QC_duplicatesLabel, "QC_singleChildMismatch" = QC_singleChildMismatch, 
+                   "QC_singleCodeError" = QC_singleCodeError, "QC_multipleCodeError" = QC_multipleCodeError, "QC_gapBefore" = QC_gapBefore, 
+                   "QC_lastSibling" = QC_lastSibling) 
+  
+  
+ 
   # Add the result in QC_output
   
   if (!is.null(CSVout)) {
@@ -563,5 +591,5 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   }
   
   
-  return(QC_output)
+  return(return_ls)
 }
