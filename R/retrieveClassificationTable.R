@@ -63,7 +63,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   
   
   # Check if classification has level, if not, set level = "ALL"
-  dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language)) 
+  dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language))
   
   if (nrow(dt_level) == 0 & level != "ALL") {
     level = "ALL"
