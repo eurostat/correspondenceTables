@@ -82,7 +82,7 @@
 
 
 
-classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = NULL) {
+  classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = NULL) {
   
   if ((length(grep("csv", classification)) == 0) ){
     stop("The classification should be provided as a csv file")
@@ -548,36 +548,56 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   ## RESULTS
   colnames(QC_output)[1:1] <- classificationName
   ## RESULTS
-  if (!(fullHierarchy)) {
-    QC_childless = data.frame()
-  }
+  return_ls <- list("QC_output" = QC_output)
   
-  if (!(labelUniqueness)) {
-    QC_duplicatesLabel = data.frame()
-  }
-  
-  if (!(labelHierarchy)) {
-    QC_singleChildMismatch = data.frame()
-  }
-  
-  if (missing(singleChildCode)) {
-    QC_singleCodeError = data.frame()
-    QC_multipleCodeError = data.frame()
-  }
-  
-  if (missing(sequencing)) {
-    QC_lastSibling = data.frame()
-  }
-  
-  return_ls = list("QC_output" = QC_output, "QC_noLevels" = QC_noLevels, "QC_duplicatesCode" = QC_duplicatesCode, "QC_orphan" = QC_orphan, 
-                   "QC_childless" = QC_childless, "QC_duplicatesLabel" = QC_duplicatesLabel, "QC_singleChildMismatch" = QC_singleChildMismatch, 
-                   "QC_singleCodeError" = QC_singleCodeError, "QC_multipleCodeError" = QC_multipleCodeError, "QC_gapBefore" = QC_gapBefore, 
-                   "QC_lastSibling" = QC_lastSibling) 
-  
-  
- 
   # Add the result in QC_output
+  return_ls <- list(
+    "QC_output" = QC_output,
+    "QC_noLevels" = QC_noLevels,
+    "QC_duplicatesCode" = QC_duplicatesCode,
+    "QC_childless" = QC_childless,
+    "QC_orphan" = QC_orphan,
+    "QC_duplicatesLabel" = QC_duplicatesLabel,
+   "QC_singleChildMismatch" = QC_singleChildMismatch
+  )
+  # Add the dataframe from what the user uses as parameters
+  if (!is.null(fullHierarchy)) {
+    if (!fullHierarchy) {
+      # Add codes childless
+      return_ls[["QC_childless"]] <- QC_childless
+      return_ls[["QC_orphan"]]  <-QC_orphan
+    }
+  }
   
+  if (!is.null(labelUniqueness)) {
+    if (!labelUniqueness) {
+      # Add duplicate label
+      return_ls[["QC_duplicatesLabel"]] <- QC_duplicatesLabel
+    }
+  }
+  
+  if (!is.null(labelHierarchy)) {
+    if (!labelHierarchy) {
+      # add singleChildMismatch
+      return_ls[["QC_singleChildMismatch"]] <- QC_singleChildMismatch
+    }
+  }
+  
+  if (!is.null(singleChildCode)) {
+    # Add Single & multiple code error 
+    return_ls[["QC_singleCodeError"]] <- QC_singleCodeError
+    return_ls[["QC_multipleCodeError"]] <- QC_multipleCodeError
+  }
+  
+  if (!is.null(sequencing)) {
+    if (!missing(sequencing)) {
+      # Add sequencing
+      return_ls[["QC_gapBefore"]] <- QC_gapBefore
+      return_ls[["QC_lastSibling"]] <- QC_lastSibling
+    }
+  }
+  
+  # Add the result in QC_output
   if (!is.null(CSVout)) {
     if (is.logical(CSVout) && CSVout == TRUE) {
       name <- names(QC_output)[1]
