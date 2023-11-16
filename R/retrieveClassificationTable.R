@@ -143,6 +143,9 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
     warning("There are duplicates codes in the classification table.") 
   }
   
+  #Get the good format before we got 
+  data <- lapply(data, function(x) gsub("\n", " ", x))
+  
   # Save results as CSV and show where it was stored
   if (CSVout == TRUE) {
     name_csv = paste0(prefix, "_table.csv")
