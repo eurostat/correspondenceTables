@@ -356,7 +356,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
       } else {
         warning("Variable names do not match the expected headers for the SingleChildCode. Renaming and using the first columns.")
         
-        # Lire le fichier avec header = FALSE
+     
         singleChildCode <- read.csv(singleChildCode, header = FALSE)
         singleChildCode <- singleChildCode[-1,]
         # Renommer les colonnes pour correspondre aux en-têtes attendues
