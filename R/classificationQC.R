@@ -60,9 +60,9 @@
 #'
 #' @examples 
 #' {
-#' # classification_path <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+#' # classification <- system.file("extdata", "Nace2.csv", package = "correspondenceTables")
 #'   
-#'   lengthsFile_path <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
+#'   lengthsFile <- system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables")
 #'   
 #'   Output <- classificationQC(classification = system.file("extdata", "Nace2.csv", package = "correspondenceTables") , lengthsFile = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables"), fullHierarchy = TRUE, labelUniqueness  = TRUE, labelHierarchy = TRUE, singleChildCode = NULL, sequencing = NULL, CSVout = system.file("extdata", "QC_Output.csv", package = "correspondenceTables")) 
 #'   print(Output$QC_output)
@@ -104,22 +104,22 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
     # Read the first line of the CSV file
     first_line <- gsub("\"", "", readLines(lengthsFile, n = 1))    
     # Check for expected headers
-    expected_headers <- c("charb", "chare")  # Liste des en-têtes attendues
+    expected_headers <- c("charb", "chare") 
     
     # Split the first line using ","
     header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
     header_columns <- gsub("\"", "", header_columns)  # Supprimer les guillemets
     
     if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
-      # Les en-têtes correspondent, lire le fichier avec header = TRUE
+     
       lengths <- read.csv(lengthsFile, header = TRUE)
     } else {
       warning("Variable names do not match the expected headers. Renaming and using the first columns.")
       
-      # Lire le fichier avec header = FALSE
+      
       lengths <- read.csv(lengthsFile, header = FALSE)
       
-      # Renommer les colonnes pour correspondre aux en-têtes attendues
+      
       colnames(lengths) <- expected_headers
     }
     
@@ -170,7 +170,7 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
   QC_output$level = sapply(classification$Code, function(x) which(nchar(x) == lengths$chare))
   
   # Initialize the superior column
-  QC_output$superior = NA
+  QC_output$Parent = NA
   
   # Add Code and segment columns
   for (i in 1:nrow(lengths)) {
@@ -473,7 +473,6 @@ classificationQC = function(classification, lengthsFile, fullHierarchy = TRUE, l
         # Lire le fichier avec header = FALSE
         sequencing <- read.csv(sequencing, header = FALSE)
         sequencing <- sequencing[-1,]
-        # Renommer les colonnes pour correspondre aux en-têtes attendues
         colnames(sequencing) <- expected_headers
       }
       
