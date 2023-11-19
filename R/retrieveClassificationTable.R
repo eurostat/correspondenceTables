@@ -145,13 +145,18 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   
   #Get the good format before we got 
   data <- lapply(data, function(x) gsub("\n", " ", x))
+  data <- as.data.frame(data)
   
   # Save results as CSV and show where it was stored
   if (CSVout == TRUE) {
     name_csv = paste0(prefix, "_table.csv")
     write.csv(data, file= name_csv, row.names=FALSE)
     message(paste0("The table was saved in ", getwd(), name_csv))
-  } 
+  } else if (is.character(CSVout)) {
+    # if user provide a csv file 
+    write.csv(data, file = CSVout, row.names = FALSE)
+    message(paste0("The table was saved in ", getwd(), CSVout))
+  }
   
   if (showQuery) {
     result=list()
