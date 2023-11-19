@@ -47,8 +47,8 @@ endpoint = "CELLAR"
 classificationEndpoint(endpoint)[[1]][,1:4]
 prefix = "nace2"
 conceptScheme = "nace2"
-language = "en"
-CSVout = FALSE
+language = "bg"
+CSVout = TRUE
 showQuery = TRUE
 level = "ALL"
 # identify lower level using dataStructure()
