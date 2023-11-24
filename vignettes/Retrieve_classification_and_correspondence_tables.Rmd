@@ -45,10 +45,11 @@ The following code is used to retrieve the NACE2 classification from CELLAR:
 endpoint = "CELLAR"
 # obtain prefix and conceptscheme using classificationEndpoint()
 classificationEndpoint(endpoint)[[1]][,1:4]
-prefix = "nace2"
-conceptScheme = "nace2"
-language = "bg"
-CSVout = TRUE
+prefix = "nace21"
+conceptScheme = "nace2.1"
+## You can modify the language by example "en" "bg"
+language = "en"
+CSVout = F
 showQuery = TRUE
 level = "ALL"
 # identify lower level using dataStructure()
@@ -66,6 +67,7 @@ cat(SPARQLquery, sep = "\n")
 table = result_ls[[2]]
 
 ```
+
 
 
 ### Other functions used to extract Classification Tables
