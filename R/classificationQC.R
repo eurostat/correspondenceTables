@@ -20,7 +20,8 @@
 #' @param CSVout The valid values are \code{NULL} means that the user don't need to write the parameters  \code{TRUE}. In both cases, the output will be returned as an R list. If the output should be saved as an CSV file, the argument should be set to \code{TRUE}. By default, no CSV file is produced.
 #' @importFrom  stringr str_squish 
 #' @importFrom  stringr str_sub
-#' @import writexl
+#' @importFrom  tools file_ext
+#' @import  
 #' @export
 #' @return
 #'
@@ -100,35 +101,48 @@
   # 
   colnames(classification)[1:2] = c("Code", "Label")
   
-  if (length(grep("csv", lengthsFile)) > 0) {
-    # Read the first line of the CSV file
-    first_line <- gsub("\"", "", readLines(lengthsFile, n = 1))    
-    # Check for expected headers
-    expected_headers <- c("charb", "chare") 
+  # (a) Check the file extension
+  if (tolower(file_ext(lengthsFile)) == "csv") {
     
-    # Split the first line using ","
-    header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
-    header_columns <- gsub("\"", "", header_columns)  # Supprimer les guillemets
-    
-    if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
-     
-      lengths <- read.csv(lengthsFile, header = TRUE)
+    # (b) Check if the file exists
+    if (file.exists(lengthsFile)) {
+      
+      # (c) Try reading the CSV file
+      tryCatch({
+        # Read the first line of the CSV file
+        first_line <- gsub("\"", "", readLines(lengthsFile, n = 1))    
+        
+        # Check for expected headers
+        expected_headers <- c("charb", "chare") 
+        
+        # Split the first line using ","
+        header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
+        header_columns <- gsub("\"", "", header_columns)  # Supprimer les guillemets
+        
+        if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
+          lengths <- read.csv(lengthsFile, header = TRUE)
+        } else {
+          warning("Variable names do not match the expected headers for the LengthsFile. Renaming and using the first columns.")
+          lengths <- read.csv(lengthsFile, header = FALSE)
+          colnames(lengths) <- expected_headers
+        }
+        
+        if (length(header_columns) > length(expected_headers)) {
+          warning("There are more columns than needed for LengthsFile. Using the first columns.")
+        }
+        
+      }, error = function(e) {
+        stop("Error reading CSV file: ", e$message)
+      })
+      
     } else {
-      warning("Variable names do not match the expected headers for the LenghsFile. Renaming and using the first columns.")
-      
-      
-      lengths <- read.csv(lengthsFile, header = FALSE)
-      
-      
-      colnames(lengths) <- expected_headers
+      stop("The provided lengths file does not exist.")
     }
     
-    if (length(header_columns) > length(expected_headers)) {
-      warning("There are more columns than needed for LenghsFile. Using the first columns.")
-    }
   } else {
-    stop("The provided lengths file is not a CSV file.")
+    stop("The provided file does not have a CSV extension.")
   }
+  
   ### RULE 1 - Correctness of formatting requirements (lengths file)
   
   #check that char file has at least one row
@@ -359,7 +373,7 @@
      
         singleChildCode <- read.csv(singleChildCode, header = FALSE)
         singleChildCode <- singleChildCode[-1,]
-        # Renommer les colonnes pour correspondre aux en-têtes attendues
+        # Rename of the column expected
         colnames(singleChildCode) <- expected_headers
       }
       
@@ -374,12 +388,12 @@
     QC_output$multipleCodeError = 0
     
     for (k in 1:(nrow(lengths)-1)) {
-      
+
       if (unique(nchar(na.omit(QC_output[[paste0("segment", k+1)]]))) > 1) {
-        warning(paste0("Single child code compliance cannot be checked at level ", k+1, " as segments of code have more than one character."))   
+        warning(paste0("Single child code compliance cannot be checked at level ", k+1, " as segments of code have more than one character."))
         QC_output$singleCodeError[which(nchar(na.omit(QC_output[[paste0("segment", k+1)]])) > 1)] = NA
         QC_output$multipleCodeError[which(nchar(na.omit(QC_output[[paste0("segment", k+1)]])) > 1)] = NA
-      } 
+      }
       
       if (unique(nchar(na.omit(QC_output[[paste0("segment", k+1)]]))) == 1) {
         
@@ -455,36 +469,44 @@
   
   ## RULE 8 - Sequencing of codes
   if (!is.null(sequencing)) {
-    if (file.exists(sequencing) && length(grep("csv", tolower(sequencing))) > 0) {
-      # Read the first line of the CSV file
-      first_line <- readLines(sequencing, n = 1)
-      
-      # Check for expected headers
-      expected_headers <- c("level", "multipleCode")
-      # Split the first line using ","
-      header_columns <- unlist(strsplit(first_line, ",", fixed = TRUE))
-      
-      if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
-        # Les en-têtes correspondent, lire le fichier avec header = TRUE
-        sequencing <- read.csv(sequencing, header = TRUE)
-      } else {
-        warning("Variable names do not match the expected headers for the sequencing file. Renaming and using the first columns.")
-        
-        # Lire le fichier avec header = FALSE
-        sequencing <- read.csv(sequencing, header = FALSE)
-        sequencing <- sequencing[-1,]
-        colnames(sequencing) <- expected_headers
-      }
-      
-      if (length(header_columns) > length(expected_headers)) {
-        warning("There are more columns than needed for Sequencing. Using the first columns.")
-      }
-    } else {
-      stop("The provided sequencing file is not a CSV file or does not exist.")
-    }
+    # if (file.exists(sequencing) && length(grep("csv", tolower(sequencing))) > 0) {
+    #   # Read the first line of the CSV file
+    #   first_line <- readLines(sequencing, n = 1)
+    #   
+    #   # Check for expected headers
+    #   expected_headers <- c("level", "multipleCode")
+    #   # Split the first line using ","
+    #   header_columns <- unlist(strsplit(first_line, ";", fixed = TRUE))
+    #   
+    #   if (length(header_columns) == length(expected_headers) && all(header_columns == expected_headers)) {
+    #     # Les en-têtes correspondent, lire le fichier avec header = TRUE
+    #     sequencing <- read.csv(sequencing, header = TRUE, sep = ";")
+    #   } else {
+    #     warning("Variable names do not match the expected headers for the sequencing file. Renaming and using the first columns.")
+    #     
+    #     # Lire le fichier avec header = FALSE
+    #     sequencing <- read.csv(sequencing, header = FALSE, sep = ";")
+    #     sequencing <- sequencing[-1,]
+    #     colnames(sequencing) <- expected_headers
+    #   }
+    #   
+    #   if (length(header_columns) > length(expected_headers)) {
+    #     warning("There are more columns than needed for Sequencing. Using the first columns.")
+    #   }
+    # } else {
+    #   stop("The provided sequencing file is not a CSV file or does not exist.")
+    # }
     
-    
-    
+   sequencing <- singleChildCode
+   sequencing <- sequencing[,-2]
+   
+   if (all(names(sequencing) %in% expected_headers)) {
+     # Récupérer les niveaux spécifiés
+     levels_to_filter <- unique(sequencing$level)
+     
+     # Filtrer les données en fonction des niveaux spécifiés
+     sequencing <- sequencing[sequencing$level %in% levels_to_filter, ]
+   }
     QC_output$gapBefore = 0
     QC_output$lastSibling = 0
     
