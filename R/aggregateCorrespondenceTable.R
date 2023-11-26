@@ -19,13 +19,6 @@
 #' result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = FALSE)
 #' print(result)
 #'
-
-
-AB <- "C:/Users/clement.thomas/Desktop/Rproject/CorrespondanceTable/Task4/CorrespondenceTable/ab_data.csv"
-A <-  "C:/Users/clement.thomas/Desktop/Rproject/CorrespondanceTable/Task4/CorrespondenceTable/a_data.csv"
-B <-  "C:/Users/clement.thomas/Desktop/Rproject/CorrespondanceTable/Task4/CorrespondenceTable/b_data.csv"
-
-
 aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
   # Check if input files exist
   if (!file.exists(AB) || !file.exists(A) || !file.exists(B)) {
