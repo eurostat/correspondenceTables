@@ -500,10 +500,10 @@
    sequencing <- sequencing[,-2]
    
    if (all(names(sequencing) %in% expected_headers)) {
-     # Récupérer les niveaux spécifiés
+     # take specific level 
      levels_to_filter <- unique(sequencing$level)
      
-     # Filtrer les données en fonction des niveaux spécifiés
+     # Filter the data of the user select 
      sequencing <- sequencing[sequencing$level %in% levels_to_filter, ]
    }
     QC_output$gapBefore = 0
