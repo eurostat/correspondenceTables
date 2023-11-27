@@ -7,11 +7,11 @@
 aggregateCorrespondenceTable(AB, A, B, CSVout = NULL)
 }
 \arguments{
-\item{AB}{a mandatory argument containing a correspondence table data frame with columns "Acode" and "Bcode" representing the correspondence between classifications A and B at the most granular level.}
+\item{AB}{a mandatory argument containing a correspondence table data frame with columns "Acode" and "Bcode" representing the correspondence between classifications A and B at the most granular level. This argument is mandatory}
 
-\item{A}{a path to a CSV file containing source classification data with an "Acode" "ALevel","ASuperior" column.}
+\item{A}{a path to a CSV file containing source classification data with an Acode ALevel,ASuperior column. This argument is mandatory}
 
-\item{B}{a path to a CSV file containing target classification data with a "Bcode" "Blevel" "BSuperior" column.}
+\item{B}{a path to a CSV file containing target classification data with a Bcode Blevel BSuperior column. This argument is mandatory}
 
 \item{CSVout}{a character string providing the path where the aggregated correspondence table CSV file should be saved. If NULL, no CSV file is generated.}
 }

@@ -30,7 +30,7 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
   }
   
   # Read the input correspondence table AB
-  ab_data <- read.csv(AB, header = TRUE, sep =",")
+  ab_data <- read.csv2(AB, header = TRUE, sep =",")
   ColumnNames <- colnames(ab_data)[1:2]
   colnames(ab_data)[1:2] = c("Acode","Bcode")
   # Check if AB table has the required columns
