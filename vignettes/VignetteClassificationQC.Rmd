@@ -112,8 +112,8 @@ output2 <-  classificationQC(
             sequencing = NULL,
             CSVout = NULL)
 
-View(output2$QC_multipleCodeError)
-View(output2$QC_output)
+output2$QC_multipleCodeError
+output2$QC_output
 
 ```
 
@@ -134,7 +134,7 @@ output3 <-  classificationQC(
             sequencing = c(3,4),
             CSVout = NULL)
 
-View(output3$QC_output)
-View(output3$QC_lastSibling)
+output3$QC_output
+output3$QC_lastSibling
 ```
 
