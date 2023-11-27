@@ -103,6 +103,7 @@
   # (a) Check the file extension
   if (tolower(file_ext(lengthsFile)) == "csv") {
     
+    
     # (b) Check if the file exists
     if (file.exists(lengthsFile)) {
       
@@ -389,7 +390,7 @@
     for (k in 1:(nrow(lengths)-1)) {
 
       if (unique(nchar(na.omit(QC_output[[paste0("segment", k+1)]]))) > 1) {
-        warning(paste0("Single child code compliance cannot be checked at level ", k+1, " as segments of code have more than one character."))
+        # warning(paste0("Single child code compliance cannot be checked at level ", k+1, " as segments of code have more than one character."))
         QC_output$singleCodeError[which(nchar(na.omit(QC_output[[paste0("segment", k+1)]])) > 1)] = NA
         QC_output$multipleCodeError[which(nchar(na.omit(QC_output[[paste0("segment", k+1)]])) > 1)] = NA
       }
@@ -496,20 +497,20 @@
     #   stop("The provided sequencing file is not a CSV file or does not exist.")
     # }
     
-   sequencing <- singleChildCode
-   sequencing <- sequencing[,-2]
-   
-   if (all(names(sequencing) %in% expected_headers)) {
-     # take specific level 
-     levels_to_filter <- unique(sequencing$level)
+     levels_to_filter <- unlist(strsplit(as.character(sequencing), " "))
      
+     sequencing <- singleChildCode
+     sequencing <- sequencing[,-2]
      # Filter the data of the user select 
      sequencing <- sequencing[sequencing$level %in% levels_to_filter, ]
-   }
+  
     QC_output$gapBefore = 0
     QC_output$lastSibling = 0
-    
-    for (k in 1:(nrow(lengths)-1)) {
+    lengths$level <- seq_len(nrow(lengths))
+    lengths2 <- lengths[lengths$level %in% levels_to_filter, ]
+    lengths2$level <- NULL
+      
+    for (k in 1:(nrow(lengths2))) {
       
       if (unique(nchar(na.omit(QC_output[[paste0("segment", k+1)]]))) > 1) {
         warning(paste0("Sequencing of codes cannot be checked at level ", k+1, " as segments of code have more than one character.")) 
@@ -525,7 +526,7 @@
         child_ls = sapply(unique(parents_k), function(x) length(unique(na.omit(QC_output[which(QC_output[[paste0("Code", k)]] == x),  paste0("Code", k+1)]))))
         code_multichild = QC_output[which(QC_output[[paste0("Code", k)]] %in% names(which(child_ls > 1)) & !is.na(QC_output[[paste0("Code", k+1)]]) & QC_output$level == k +1), c(paste0("Code", k), paste0("Code", k+1))]
         
-        level = sequencing[k, 1]
+        level = na.omit(sequencing$level)[k]
         
         ## MultipleCode take all the code end as in the csv file #COULD BE LETTER AS WELL
         multi = as.character(sequencing[which(sequencing[,1] == level),2])
@@ -633,4 +634,5 @@
   
   
   return(return_ls)
-}
+  }
+  
