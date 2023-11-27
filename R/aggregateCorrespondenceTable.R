@@ -1,8 +1,8 @@
 #' @title aggregateCorrespondenceTable aggregates correspondence tables to higher hierarchical levels
 #' @description The `aggregateCorrespondenceTable` function is designed to aggregate correspondence tables between two hierarchical classifications A and B to higher hierarchical levels. This is particularly useful when correspondence information is needed at levels other than the most granular level. The function provides a 'mechanically defined' aggregation, offering users candidate aggregations for subsequent analysis by statistical classification experts.
 #' @param AB a mandatory argument containing a correspondence table data frame with columns "Acode" and "Bcode" representing the correspondence between classifications A and B at the most granular level.
-#' @param A a path to a CSV file containing source classification data with an "Acode" column.
-#' @param B a path to a CSV file containing target classification data with a "Bcode" column.
+#' @param A a path to a CSV file containing source classification data with an "Acode" "ALevel","ASuperior" column.
+#' @param B a path to a CSV file containing target classification data with a "Bcode" "Blevel" "BSuperior" column.
 #'
 #' @param CSVout a character string providing the path where the aggregated correspondence table CSV file should be saved. If NULL, no CSV file is generated.
 #'
