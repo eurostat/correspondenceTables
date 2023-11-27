@@ -526,7 +526,7 @@
         child_ls = sapply(unique(parents_k), function(x) length(unique(na.omit(QC_output[which(QC_output[[paste0("Code", k)]] == x),  paste0("Code", k+1)]))))
         code_multichild = QC_output[which(QC_output[[paste0("Code", k)]] %in% names(which(child_ls > 1)) & !is.na(QC_output[[paste0("Code", k+1)]]) & QC_output$level == k +1), c(paste0("Code", k), paste0("Code", k+1))]
         
-        level = na.omit(sequencing$level)[k]
+        level = sequencing$level[k]
         
         ## MultipleCode take all the code end as in the csv file #COULD BE LETTER AS WELL
         multi = as.character(sequencing[which(sequencing[,1] == level),2])
