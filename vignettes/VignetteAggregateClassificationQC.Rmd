@@ -34,7 +34,7 @@ The function expects three mandatory CSV files (AB, A, and B) as input. The stru
 
 **Application of the aggregateCorrespondenceTable()**
 
-```{r}
+```{r, results = "hide"}
  AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
  A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
  B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
@@ -44,5 +44,19 @@ The function expects three mandatory CSV files (AB, A, and B) as input. The stru
  
  print(result)
 
+```
+
+**Other Example** 
+
+```{r, results = "hide"}
+
+ AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
+ A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
+ B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
+
+ 
+ result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = TRUE)
+ 
+ print(result)
 ```
 

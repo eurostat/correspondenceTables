@@ -74,7 +74,7 @@ output <- classificationQC(classification = system.file("extdata", "Nace2.csv", 
                              CSVout = NULL) 
 
 
-output
+output$QC_output
 ```
 
 **Full hierarchy** If fullHierarchy is FALSE, the rule applies to positions at hierarchical levels greater than 1.
