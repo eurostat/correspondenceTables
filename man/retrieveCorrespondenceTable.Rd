@@ -2,70 +2,49 @@
 % Please edit documentation in R/retrieveCorrespondenceTable..R
 \name{retrieveCorrespondenceTable}
 \alias{retrieveCorrespondenceTable}
-\title{Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.}
+\title{Retrieve a correspondence tables from CELLAR and FAO.}
 \usage{
 retrieveCorrespondenceTable(
   prefix,
   endpoint,
   ID_table,
   language = "en",
-  CSVout = FALSE,
-  showQuery = TRUE
+  CSVout = FALSE
 )
 }
 \arguments{
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query 
-and are used throughout the query to make it more concise and easier to read. 
-Multiple prefixes can be defined in a single query to cover different namespaces used in the dataset.
-The function 'classificationEndpoint()' can be used to generate the prefixes for the selected correspondence table.}
+\item{prefix}{The SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
 
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data.
-The valid values are \code{"CELLAR"} or \code{"FAO"}.}
+\item{endpoint}{The SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
-\item{ID_table}{Refers to a unique identifier associated with a specific correspondence table. 
-The ID_table can be obtained by utilizing the "correspondenceList()" function.}
+\item{ID_table}{The ID of the correspondence table which can be found using the correspondenceList() function.}
 
-\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected correspondence table. 
-By default is set to "en". This is an optional argument.}
+\item{language}{Language of the table. By default is set to "en". This is an optional argument.}
 
 \item{CSVout}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced.}
-
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
-If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.}
 }
 \value{
 \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
  \itemize{
     \item Source Classification name (e.g. cn2019): the code of each object in the source classification
-    \item Source Classification name (e.g. cn2021): the code of each object in the target classification
-    \item Target Classification label: the corresponding label of each object (e.g. cn2019)
-    \item Include: include details on each object (e.g. cn2019)
-    \item Exclude: details on each object (e.g. cn2019)
-    \item Target Classification label: the corresponding label of each object (e.g. cn2021)
-    \item Include: include details on each object (e.g. cn2021)
-    \item Exclude: details on each object (e.g. cn2021)
+    \item Source Classification label: the corresponding label of each object 
+    \item Target Classification name (e.g. cn2021): the code of each object in the target classification
+    \item Target Classification label: the corresponding label of each object 
     \item Comment: details on each object, if available 
     \item URL: the URL from which the SPARQL query was retrieved
 }
 }
 \description{
-To facilitate the utilization of correspondence tables as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions, 
-"retrieveCorrespondenceTable" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
+Retrieve a correspondence tables from CELLAR and FAO.
 }
 \examples{
 {
     endpoint = "CELLAR"
-    prefix = "cn2022"
-    ID_table = "CN2022_NST2007"
-    
-    results_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table)
-    
-    # View SPARQL Query
-    cat(results_ls[[1]])
-    
-    #View Classification Table
-    View(results_ls[[2]])
+    prefix = "nace2"
+    ID_table = "NACE2_PRODCOM2021"
+    language = "fr"
+    dt = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language)
+    head(dt)
     }
 }

@@ -1,23 +1,22 @@
-#' @title Create a list of prefixes for both CELLAR and FAO repositories. 
+#' @title Create a list of prefixes for both CELLAR and FAO
 #' @description  Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
-#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
-#' making it easier to retrieve specific information or perform complex queries on linked data.  
+#' @param endpoint A string of type character containing the endpoint where the table is stored. 
 #' The valid values are \code{"CELLAR"} and \code{"FAO"}.
-#' @import httr
 #' @export
 #' @return
 #' \code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.
 #' @examples
 #' {
 #'     endpoint = "CELLAR"
-#'     prefix_lst = prefixList(endpoint)
+#'     prefix_list = prefixList(endpoint)
 #'     }
 
 prefixList = function(endpoint) {
   if (endpoint != "CELLAR" & endpoint != "FAO"){
-      stop("Specify the endpoint: CELLAR or FAO.")
-    }
-       prefix_init = as.matrix(rbind( 
+      message("Specify the endpoint: CELLAR or FAO.")
+      prefix_all <- NULL
+  } else {
+    prefix_init = as.matrix(rbind( 
       "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
       "PREFIX dct: <http://purl.org/dc/terms/>",
       "PREFIX cb: <http://cbasewrap.ontologycentral.com/vocab#>",
@@ -34,16 +33,16 @@ prefixList = function(endpoint) {
       "PREFIX isi: <http://purl.org/ontology/is/inst/>",
       "PREFIX cpc: <https://data.epo.org/linked-data/def/cpc/>", 
       "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"))
-
     
-  ### Define List
-        uri  = classificationEndpoint(endpoint)[[1]][,3]
-        prefix = classificationEndpoint(endpoint)[[1]][,1]
-        prefix = gsub("\\.", "", prefix)
-        prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
-        prefix_all = rbind(prefix_init, prefix_all)
-        #remove duplicates 
-        prefix_all = prefix_all[!duplicated(prefix_all)]
-        
+    
+    ### Define List
+    uri  = classEndpoint(endpoint)[[1]][,3]
+    prefix = classEndpoint(endpoint)[[1]][,1]
+    prefix = gsub("\\.", "", prefix)
+    prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
+    prefix_all = rbind(prefix_init, prefix_all)
+    
+  }
+   
   return(prefix_all)
 }

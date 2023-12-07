@@ -2,13 +2,12 @@
 % Please edit documentation in R/prefixList.R
 \name{prefixList}
 \alias{prefixList}
-\title{Create a list of prefixes for both CELLAR and FAO repositories.}
+\title{Create a list of prefixes for both CELLAR and FAO}
 \usage{
 prefixList(endpoint)
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data.  
+\item{endpoint}{A string of type character containing the endpoint where the table is stored. 
 The valid values are \code{"CELLAR"} and \code{"FAO"}.}
 }
 \value{
@@ -20,6 +19,6 @@ Create a list of prefixes to be used when defying the SPARQL query to retrieve t
 \examples{
 {
     endpoint = "CELLAR"
-    prefix_lst = prefixList(endpoint)
+    prefix_list = prefixList(endpoint)
     }
 }

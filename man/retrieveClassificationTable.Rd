@@ -2,7 +2,7 @@
 % Please edit documentation in R/retrieveClassificationTable.R
 \name{retrieveClassificationTable}
 \alias{retrieveClassificationTable}
-\title{Retrieve classification tables from CELLAR and FAO repositories.}
+\title{Retrieve a classification tables from CELLAR and FAO}
 \usage{
 retrieveClassificationTable(
   prefix,
@@ -10,34 +10,23 @@ retrieveClassificationTable(
   conceptScheme,
   level = "ALL",
   language = "en",
-  CSVout = FALSE,
-  showQuery = TRUE
+  CSVout = FALSE
 )
 }
 \arguments{
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read. 
-Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-The function 'classificationEndpoint()' can be used to generate the prefixes for the selected classification table.}
+\item{prefix}{The  SPARQL instruction for a declaration of a namespace prefix. It can be found using the classEndpoint() function.}
 
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data.
-The valid values are \code{"CELLAR"} or \code{"FAO"}.}
+\item{endpoint}{The SPARQL Endpoint, the valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
-\item{conceptScheme}{Refers to a unique identifier associated to specific classification table. 
-The conceptScheme can be obtained by utilizing the "classificationEndpoint()" function.}
+\item{conceptScheme}{Taxonomy of the SKOS object to be retrieved. It can be found using the classEndpoint() function.}
 
-\item{level}{Refers  to the hierarchical levels of the selected classification table. 
-The detailed level information can be obtained by utilizing the "structureData() " function. 
+\item{level}{The levels of the objects in the collection to be retrieved, it can be found using the structureData() function. 
 By default is set to \code{"ALL"}. This is an optional argument.}
 
-\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
-By default is set to "en". This is an optional argument.}
+\item{language}{Language of the table. By default is set to \code{"en"}. This is an optional argument.}
 
-\item{CSVout}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
+\item{CSVout}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced.}
-
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
-If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.}
 }
 \value{
 \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
@@ -51,21 +40,15 @@ If needed to view the SPARQL query used, the argument should be set as \code{TRU
 }
 }
 \description{
-To facilitate the utilization of European classifications as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions, 
-"retrieveClassificationTable()" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
+Retrieve a classification tables from CELLAR and FAO
 }
 \examples{
 {
-    endpoint = "CELLAR"
     prefix = "nace2"
+    endpoint = "CELLAR"
     conceptScheme = "nace2"
-    
-    results_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme)
-    
-    # View SPARQL Query
-    cat(results_ls[[1]])
-    
-    #View Classification Table
-    View(results_ls[[2]])
+    dt = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+    # By default retrieved all levels and only English
+    head(dt)
     }
 }

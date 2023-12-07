@@ -7,6 +7,9 @@
     <loc>/articles/Implementation_of_sample_datasets.html</loc>
   </url>
   <url>
+    <loc>/articles/Retrieve_classification_and_correspondence_tables.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -19,10 +22,28 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/classEndpoint.html</loc>
+  </url>
+  <url>
+    <loc>/reference/correspondenceList.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
     <loc>/reference/newCorrespondenceTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/prefixList.html</loc>
+  </url>
+  <url>
+    <loc>/reference/retrieveClassificationTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/retrieveCorrespondenceTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/structureData.html</loc>
   </url>
   <url>
     <loc>/reference/updateCorrespondenceTable.html</loc>
