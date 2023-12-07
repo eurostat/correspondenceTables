@@ -21,6 +21,7 @@
 #' }
 #' @examples
 #' {
+#'     endpoint = "CELLAR"
 #'     prefix = "nace2"
 #'     endpoint = "CELLAR"
 #'     conceptScheme = "nace2"
@@ -52,6 +53,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   ### CLASSIFICATION TABLE SPARQL QUERIES
   ### Define SPARQL query -- BASE: all levels
   SPARQL.query_0 = paste0(prefixlist, "
+
         SELECT DISTINCT ?", prefix, " ?NAME ?Include ?Include_Also ?Exclude ?URL ?datatype
 
         WHERE {
@@ -76,6 +78,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
                 OPTIONAL {?s xkos:additionalContentNote ?Include_Also . FILTER (LANG(?Include_Also) = '", language, "').}
               
               ")
+
 
   ### Define SPARQL query -- FILTER LEVEL
   SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", level, ")")
@@ -128,4 +131,5 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   } 
 
   return(data)
+
 }

@@ -63,7 +63,6 @@ dt = retrieveClassificationTable(prefix, endpoint, conceptScheme, level, languag
 
 Following, the other functions used to extract the required information for the retrieveClassificationTable() function.
 
-
 **Application of function prefixList()**
 
 This function automatically obtains a list the prefixes from CELLAR and FAO used in the retrieveClassificationTable() and retrieveCorrespondenceTable() functions to retrieve the required tables. The list will be updated automatically each time a new classification or correspondence classification is introduced in CELLAR or FAO repository.
