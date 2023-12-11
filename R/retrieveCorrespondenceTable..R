@@ -130,12 +130,17 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
         name_csv = paste0(ID_table, "_table.csv")
         write.csv(data, file= name_csv, row.names=FALSE)
         message(paste0("The correspondence table was saved in ", getwd(), name_csv))
-    } 
+    } else if (is.character(CSVout)) {
+      # if user provide a csv file 
+      write.csv(data, file = CSVout, row.names = FALSE)
+      message(paste0("The table was saved in ", getwd(), CSVout))
+    }
     
     
     if (showQuery) {
         result=list()
         result[[1]]=SPARQL.query
+        cat(result$SPARQL.query, sep ="/n")
         result[[2]]=data
         
         names(result)=c("SPARQL.query", "CorrespondenceTable")
