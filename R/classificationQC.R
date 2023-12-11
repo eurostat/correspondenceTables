@@ -336,7 +336,12 @@
           label_child = label_nocode[row_child]
           if (label_parent != label_child) {
             QC_output$singleChildMismatch[row_child] = 1
+          } else if (length(row_child) > 1) {
+            QC_output$singleChildMismatch[row_child] = 9
+          } else {
+            QC_output$singleChildMismatch[row_child] = 0
           }
+          
           
         }
       }
@@ -438,15 +443,19 @@
             row_child = which(QC_output$Code == as.character(code_multichild[m,2]))
             label_child = label_nocode[row_child]
             #check if multiple child have same labels to their parents (=9)
-            if (label_parent == label_child) {
-              QC_output$singleChildMismatch[row_child] = 9
-            }
+            # if (label_parent == label_child) {
+            #   QC_output$singleChildMismatch[row_child] = 9
+            # }
             
             #check if multi child have correct end code
             end_code = str_sub(QC_output$Code[row_child], nchar(QC_output$Code[row_child]), nchar(QC_output$Code[row_child])) 
-            if (!end_code %in% multi) {
+            
+            
+            # Check if end_code is equal to any value in multi
+            if (!end_code %in% unlist(strsplit(multi, ""))) {
               QC_output$multipleCodeError[row_child] = 1
             }
+            
           }
         }
       }
@@ -526,14 +535,19 @@
         child_ls = sapply(unique(parents_k), function(x) length(unique(na.omit(QC_output[which(QC_output[[paste0("Code", k)]] == x),  paste0("Code", k+1)]))))
         code_multichild = QC_output[which(QC_output[[paste0("Code", k)]] %in% names(which(child_ls > 1)) & !is.na(QC_output[[paste0("Code", k+1)]]) & QC_output$level == k +1), c(paste0("Code", k), paste0("Code", k+1))]
         
+        
         level = sequencing$level[k]
         
         ## MultipleCode take all the code end as in the csv file #COULD BE LETTER AS WELL
-        multi = as.character(sequencing[which(sequencing[,1] == level),2])
-        
+         multi = as.character(sequencing[which(sequencing[,1] == level),2])
+             if (length(multi) > 0) {
+         multi = strsplit(multi, "")[[1]]
+     } else {
+         multi = NULL
+     }
         #Determine the observed code end for single and multi children
         multi_code = str_sub(code_multichild[,2], nchar(code_multichild[,2]), nchar(code_multichild[,2]))
-        
+      
         #identify last code for multi children
         mcode_ls = sapply(unique(code_multichild[,1]), function(x) code_multichild[,2][which(code_multichild[,1] == x)])
         ecode_ls = lapply(mcode_ls, function(x) str_sub(x, nchar(x), nchar(x)))
@@ -558,7 +572,7 @@
       if (length(gap) > 0) {
         warning(paste("There are gab in the sequencing of multiple children coding (see 'QC_gapBefore')."))
       }
-      QC_gapBefore = QC_output[gap,]
+        QC_gapBefore = QC_output[gap,]
       
       #identify last sibling -
       lastSibling = which(QC_output$lastSibling == 1)
