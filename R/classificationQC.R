@@ -515,7 +515,7 @@
      # Filter the data of the user select 
      sequencing <- sequencing[sequencing$level %in% levels_to_filter, ]
   
-    # QC_output$gapBefore = 0
+    QC_output$gapBefore = 0
     QC_output$lastSibling = 0
     lengths$level <- seq_len(nrow(lengths))
     lengths2 <- lengths[lengths$level %in% levels_to_filter, ]
@@ -566,6 +566,8 @@
         #flag in the QC_output
         QC_output$lastSibling[which(QC_output$Code %in% last_code)] = 1
         QC_output$gapBefore[which(QC_output$Code %in% gapbefore_code)] = 1
+        row_child = which(QC_output$level == k & QC_output$multipleCodeError == 1)
+        QC_output$gapBefore[row_child] = 9
       }
       
       #identify gab before 
