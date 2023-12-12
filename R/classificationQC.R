@@ -454,6 +454,7 @@
             # Check if end_code is equal to any value in multi
             if (!end_code %in% unlist(strsplit(multi, ""))) {
               QC_output$multipleCodeError[row_child] = 1
+              
             }
             
           }
@@ -509,16 +510,17 @@
      levels_to_filter <- unlist(strsplit(as.character(sequencing), " "))
      
      sequencing <- singleChildCode
+     #remove singleCode
      sequencing <- sequencing[,-2]
      # Filter the data of the user select 
      sequencing <- sequencing[sequencing$level %in% levels_to_filter, ]
   
-    QC_output$gapBefore = 0
+    # QC_output$gapBefore = 0
     QC_output$lastSibling = 0
     lengths$level <- seq_len(nrow(lengths))
     lengths2 <- lengths[lengths$level %in% levels_to_filter, ]
     lengths2$level <- NULL
-      
+      #lengths2
     for (k in 1:(nrow(lengths2))) {
       
       if (unique(nchar(na.omit(QC_output[[paste0("segment", k+1)]]))) > 1) {
@@ -542,12 +544,11 @@
          multi = as.character(sequencing[which(sequencing[,1] == level),2])
              if (length(multi) > 0) {
          multi = strsplit(multi, "")[[1]]
-     } else {
-         multi = NULL
-     }
+                 } else {
+                     multi = NULL
+                 }
         #Determine the observed code end for single and multi children
         multi_code = str_sub(code_multichild[,2], nchar(code_multichild[,2]), nchar(code_multichild[,2]))
-      
         #identify last code for multi children
         mcode_ls = sapply(unique(code_multichild[,1]), function(x) code_multichild[,2][which(code_multichild[,1] == x)])
         ecode_ls = lapply(mcode_ls, function(x) str_sub(x, nchar(x), nchar(x)))
