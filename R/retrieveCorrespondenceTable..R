@@ -125,6 +125,9 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     #remove datatype col
     data = data[, 1:(ncol(data)-2)]
     
+    data <- lapply(data, function(x) gsub("\n", " ", x))
+    data <- as.data.frame(data)
+    
     # Save results as CSV and show where it was stored
     if (CSVout == TRUE) {
         name_csv = paste0(ID_table, "_table.csv")
