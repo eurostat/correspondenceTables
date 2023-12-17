@@ -25,9 +25,6 @@ library(correspondenceTables)
 
 ```{r results='hide'}
 # Perform analysis
-system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
-system.file("extdata", "CorrespondenceInventoryExample.csv",package = "correspondenceTables")
- system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables")
 result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
                                      , A = NULL, formatA = NULL, B = NULL, formatB = NULL,
                                      CSVcorrespondenceInventory =system.file("extdata", "CorrespondenceInventoryExample.csv", package = "correspondenceTables"), CSVcorrespondenceAnalysis = system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables"))
@@ -41,5 +38,30 @@ print(result$Annexe_B)
 For this example we use output  **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are not NULL. 
 Indeed we put our output in these csv files and we can see these with the both print on this function.
 
+
+**Another example**
+
+Here we use all the function parameters. 
+
+We'll see what happens with AB, which contains data from nace2 & nace2.1. 
+
+A which contains Nace2 as a classification source 
+
+B which contains Nace2.1 as the classification target 
+
+formatA format B will have a numeric value of 1 and 5 here to have the first position and the last position at the lowest level. 
+
+```{r}
+result2 <-analyseCorrespondenceTable(AB = (system.file("extdata", "ab_data.csv", package = "correspondenceTables")),
+                             A =  (system.file("extdata", "a_data.csv", package = "correspondenceTables")) ,
+                             formatA = c(1,5) ,
+                             B = B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables")),
+                             formatB = c(1,5),
+                             CSVcorrespondenceInventory = T, CSVcorrespondenceAnalysis = T)
+
+print(result2$Annexe_A)
+###for Annexe_A run this code : View(result2$Annexe_A)
+print(result2$Annexe_B)
+```
 
 

@@ -3,9 +3,9 @@
 #' It checks the validity of the input data, identifies components, calculates correspondence types, and creates summary tables.
 #' @param AB a mandatory argument containing a CSV file provide by the user contains the correspondence table data with columns "Acode" and "Bcode".
 #' @param A  a path to a CSV file containing source classification data with "Acode" column.
-#' @param formatA A regular expression pattern to filter source classification data based on "Acode".
+#' @param formatA A regular expression pattern to filter source classification data based on "Acode" should contains start & end position.
 #' @param B a path to a CSV file containing target classification data with "Bcode" column.
-#' @param formatB A regular expression pattern to filter target classification data based on "Bcode".
+#' @param formatB A regular expression pattern to filter target classification data based on "Bcode" should contains start & end position.
 #' @param CSVcorrespondenceInventory The valid values are not NULL if the user put a path with a empty csv file it will return it with the correspondeceInventory or just a path with a csv file . By default no CSV is produce
 #' @param CSVcorrespondenceAnalysis  Provide an output containing the correpondenceAnalysis. the user put a path a empty file it will return with correpondenceAnalysis. by default no CSV is produce
 #' @importFrom igraph graph.data.frame decompose.graph
@@ -40,10 +40,11 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
     # If AB is a character string, assume it's a path to a CSV file
     input_file_path <- AB
     
-    AB <- read.csv(input_file_path, header = TRUE)
+    AB <- read.csv2(input_file_path, header = TRUE, sep = ",")
   } else if (class(AB) == "data.frame") {} else {
     stop("Parameter AB must be a path to a CSV file")
   }
+  ColumnNames <- colnames(AB)[1:2]
   colnames(AB)[1:2] = c("Acode", "Bcode")
   # Check if AB file has required columns
   if (!("Acode" %in% colnames(AB)) || !("Bcode" %in% colnames(AB))) {
@@ -68,19 +69,26 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
   # Read A file if provided
   if (!is.null(A)) {
     a_data <- read.csv(A, header = TRUE)
+    colnames(a_data)[1:1] = c("Acode")
     
-    # Check if A file has required column
+    # Check if A file has the required column
     if (!("Acode" %in% colnames(a_data))) {
       stop("The A file must contain 'Acode' column.")
     }
     
     # Filter out A records based on formatA, if specified
-    if (!is.null(formatA)) {
-      a_data <- a_data[grepl(formatA, a_data$Acode), ]
+    if (!is.null(formatA)) {# Check if formatA is numeric vector with two elements
+      if (!is.numeric(formatA) || length(formatA) != 2) {
+        stop("formatA must be a numeric vector with two elements.")
+      }
       
-      # Check if there are any valid records after filtering
+      # Convert Acode to character and filter based on end position
+      a_data$Acode <- as.character(a_data$Acode)
+      a_data <- a_data[nchar(a_data$Acode) == formatA[2], ]
+      
+      # Check if there are any valid records after end position filtering
       if (nrow(a_data) == 0) {
-        stop("No valid records found in the A file after applying formatA filter.")
+        stop("No valid records found in the A file after applying end position filter.")
       }
     }
     
@@ -114,19 +122,27 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
   # Read B file if provided
   if (!is.null(B)) {
     b_data <- read.csv(B, header = TRUE)
+    colnames(b_data)[1:1] = c("Bcode")
     
-    # Check if B file has required column
+    # Check if B file has the required column
     if (!("Bcode" %in% colnames(b_data))) {
       stop("The B file must contain 'Bcode' column.")
     }
     
     # Filter out B records based on formatB, if specified
     if (!is.null(formatB)) {
-      b_data <- b_data[grepl(formatB, b_data$Bcode), ]
+      # Check if formatB is numeric vector with two elements
+      if (!is.numeric(formatB) || length(formatB) != 2) {
+        stop("formatB must be a numeric vector with two elements.")
+      }
       
-      # Check if there are any valid records after filtering
+      # Convert Bcode to character and filter based on end position
+      b_data$Bcode <- as.character(b_data$Bcode)
+      b_data <- b_data[nchar(b_data$Bcode) == formatB[2], ]
+      
+      # Check if there are any valid records after end position filtering
       if (nrow(b_data) == 0) {
-        stop("No valid records found in the B file after applying formatB filter.")
+        stop("No valid records found in the B file after applying end position filter.")
       }
     }
     
@@ -136,11 +152,32 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
       first_duplicate <- b_data[duplicate_b_codes, "Bcode"][1]
       stop(paste("Duplicate Bcode found in B file:", first_duplicate))
     }
+    
+    # Find unmatched source classification codes for B
+    unmatched_codes_B <- setdiff(b_data$Bcode, AB$Bcode)
+    noCorrespondenceB <- b_data[b_data$Bcode %in% unmatched_codes_B, ]
+    noClassificationB <- AB[AB$Bcode %in% unmatched_codes_B, ]
+    
+    # Print the length of noCorrespondenceB or a message indicating all codes in B are covered
+    if (nrow(noCorrespondenceB) > 0) {
+      cat("Number of unmatched source classification codes in B:", nrow(noCorrespondenceB), "\n")
+    } else {
+      cat("All source classification codes in B are covered in the correspondence table.\n")
+    }
+    
+    # Print the length of noClassificationB or a message indicating all codes in the correspondence table are covered
+    if (nrow(noClassificationB) > 0) {
+      cat("Number of source classification codes in AB not found in B:", nrow(noClassificationB), "\n")
+    } else {
+      cat("All source classification codes in the correspondence table are covered by B.\n")
+    }
   }
   
   # Filter AB data based on formatA and formatB, if specified
   if (!is.null(formatA) && !is.null(formatB)) {
-    AB <- AB[grepl(formatA, AB$Acode) & grepl(formatB, AB$Bcode), ]
+    AB$Acode <- as.character(AB$Acode)
+    AB$Bcode <- as.character(AB$Bcode)
+    AB <- AB[nchar(AB$Acode) == formatA & nchar(AB$Bcode) == formatB, ]
     
     # Check if there are any valid records after filtering
     if (nrow(AB) == 0) {
@@ -220,7 +257,6 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
     nSourceClasses = NA,
     TargetToSourceMapping = NA
   )
-  
   # Update nTargetClasses column
   Annexe_B$nTargetClasses <- sapply(Annexe_B$ClassC, function(c_code) {
     length(unique(Annexe_B[Annexe_B$ClassC == c_code, "ClassD"]))
@@ -241,6 +277,7 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
     paste(unique(Annexe_B[Annexe_B$ClassD == d_code, "ClassC"]), collapse = ", ")
   })
   
+  colnames(Annexe_B)[1:2] = ColumnNames[1:2]
   # store annex on variable to make table 
   output_annex_A <- Annexe_A
   output_annex_B <- Annexe_B
@@ -261,18 +298,17 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
     # Generate a unique base file name (e.g., based on the timestamp)
     base_file_name <- paste0("correspondence_analysis_", format(Sys.time(), "%Y%m%d%H%M%S"))
   }
-  date <- format(Sys.time(), "%Y%m%d%H%M%S")
-   Acode <- colnames(AB[1])
-   Bcode <- colnames(AB[2])
+ 
   
   if (!is.null(CSVcorrespondenceInventory)) {
     if (is.character(CSVcorrespondenceInventory)) {
       chemin_inventaire <- CSVcorrespondenceInventory
     } else {
       # Generate a file name based on the name of the first column, "correspondence", and the date
-      chemin_inventaire <- paste0("Correspondence_inventory_",Acode, "_", Bcode, date, ".csv")
+      chemin_inventaire <- paste0("Correspondence_inventory_",ColumnNames[1], "_", ColumnNames[2],  ".csv")
     }
     write.csv(annex_A_df, chemin_inventaire, row.names = FALSE)
+    message(paste0("The table was saved in ", getwd(), chemin_inventaire))
   }
   
   if (!is.null(CSVcorrespondenceAnalysis)) {
@@ -281,9 +317,10 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
       chemin_analyse <- CSVcorrespondenceAnalysis
     } else {
       # Generate a file name based on the name of the first column, "correspondence", and the date
-      chemin_analyse <- paste0("Correspondence_analysis_", Acode, "_", Bcode, date, ".csv")
+      chemin_analyse <- paste0("Correspondence_analysis_", ColumnNames[1], "_", ColumnNames[2],  ".csv")
     }
     write.csv(annex_B_df, chemin_analyse, row.names = FALSE)
+    message(paste0("The table was saved in ", getwd(), chemin_analyse))
   }
   
   # Output list of the two dataframes.
