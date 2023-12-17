@@ -10,11 +10,10 @@
 #' @examples
 #' {
 #'     endpoint = "CELLAR"
-#'     desired_prefix = "nace2"
-#'     prefix_list = prefixList(endpoint,desired_prefix )
+#'     prefix_list = prefixList(endpoint)
 #'     }
 
-  prefixList = function(endpoint, desired_prefix) {
+  prefixList = function(endpoint, desired_prefix = NULL) {
     if (endpoint != "CELLAR" & endpoint != "FAO"){
         stop("Specify the endpoint: CELLAR or FAO.")
       }
@@ -42,18 +41,24 @@
           prefix = classificationEndpoint(endpoint)[[1]][,1]
           prefix = gsub("\\.", "", prefix)
           # Include the predefined prefixes
-          prefix_all <- rbind(prefix_init)
+          prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
+          prefix_all = rbind(prefix_init, prefix_all)
+          #remove duplicates 
+          prefix_all = prefix_all[!duplicated(prefix_all)]
           
           # Check if the desired prefix is available for the given endpoint
-          if (desired_prefix %in% prefix) {
-            # Find the URI corresponding to the desired prefix
-            uri_for_prefix <- uri[prefix == desired_prefix]
-            
-            # Construct the PREFIX statement for the desired prefix
-            prefix_selected <- matrix(paste0("PREFIX ", desired_prefix, ": <", uri_for_prefix, "/>"))
-            prefix_all <- rbind(prefix_all, prefix_selected)
-          } else {
-            stop("Desired prefix not found.")
+          if (!is.null(desired_prefix)) {
+            # Check if the desired prefix is available for the given endpoint
+            if (desired_prefix %in% prefix) {
+              # Find the URI corresponding to the desired prefix
+              uri_for_prefix <- uri[prefix == desired_prefix]
+              
+              # Construct the PREFIX statement for the desired prefix
+              prefix_selected <- matrix(paste0("PREFIX ", desired_prefix, ": <", uri_for_prefix, "/>"))
+              prefix_all <- rbind(prefix_init, prefix_selected)
+            } else {
+              stop("Desired prefix not found.")
+            }
           }
           
     return(prefix_all)
