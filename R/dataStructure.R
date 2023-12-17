@@ -53,7 +53,7 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
   }
   
   ## Create Prefixes list 
-  prefix_ls = prefixList(endpoint)
+  prefix_ls = prefixList(endpoint, desired_prefix = prefix)
   prefix_ls = as.character(paste(prefix_ls, collapse = "\n"))
   ### Load prefixes from Excel file
   #prefix_file = read.csv(paste0("//lu-fsp01/Data_Lux/AgSTAT/Projects/CorrespondenceTables_Rpck/Task 3/prefix_", endpoint, ".csv"))
