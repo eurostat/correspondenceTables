@@ -157,7 +157,7 @@ The namespace prefix needed to execute the SPARQL query are automatically genera
 
 **Application of function retrieveCorrespondenceTable()**
 
-To following code is used to retrieve the correspondence table between NACE2 and PRODCOM2021 from CELLAR:
+To following code is used to retrieve the correspondence table between NACE2 and CPA21 from CELLAR:
 ```{r, results = "hide"}
 
 endpoint = "CELLAR"

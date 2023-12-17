@@ -61,7 +61,7 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     }
     
     ### Load prefixes using prefixList function
-    prefixlist = prefixList(endpoint)
+    prefixlist = prefixList(endpoint, desired_prefix = prefix)
     prefixlist = as.character(paste(prefixlist, collapse = "\n"))
     
     ## Define A and B
@@ -112,6 +112,7 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
     data = data.frame(content(response, show_col_types = FALSE))
     
+    
     #keep only plainLiteral if more than one datatype // 
     #FAO - "http://www.w3.org/2001/XMLSchema#string"
     #CELLAR - "http://www.w3.org/2001/XMLSchema#string" - "http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral"
@@ -143,10 +144,9 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     if (showQuery) {
         result=list()
         result[[1]]=SPARQL.query
-        cat(result$SPARQL.query, sep ="/n")
         result[[2]]=data
-        
         names(result)=c("SPARQL.query", "CorrespondenceTable")
+        cat(result$SPARQL.query, sep ="/n")
     }
     
     if (showQuery==FALSE){

@@ -58,18 +58,18 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   }
   
   ### Load prefixes using prefixList function
-  prefixlist = prefixList(endpoint)
+  prefixlist = prefixList(endpoint, desired_prefix = prefix)
   prefixlist = as.character(paste(prefixlist, collapse = "\n"))
   
   
-  # Check if classification has level, if not, set level = "ALL"
+  # # Check if classification has level, if not, set level = "ALL"
   dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language))
-  
-  if (nrow(dt_level) == 0 & level != "ALL") {
-    level = "ALL"
-    message("Classification has no levels, so level = ALL was set to retrieve the table.")
-  }
-  
+   
+   if (nrow(dt_level) == 0 & level != "ALL") {
+     level = "ALL"
+     message("Classification has no levels, so level = ALL was set to retrieve the table.")
+   }
+   
   ### Define SPARQL query -- BASE: all levels
   SPARQL.query_0 = paste0(prefixlist, "
         SELECT DISTINCT ?", prefix, " ?NAME ?Parent ?Include ?Include_Also ?Exclude ?URL
@@ -161,10 +161,10 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   if (showQuery) {
     result=list()
     result[[1]]=SPARQL.query
-    cat(result$SPARQL.query, sep ="/n")
     result[[2]]=data
     
     names(result)=c("SPARQL.query", "ClassificationTable")
+    cat(result$SPARQL.query, sep ="/n")
   }
   
   if (showQuery==FALSE){
