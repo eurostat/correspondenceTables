@@ -19,11 +19,11 @@ analyseCorrespondenceTable(
 
 \item{A}{a path to a CSV file containing source classification data with "Acode" column.}
 
-\item{formatA}{A regular expression pattern to filter source classification data based on "Acode".}
+\item{formatA}{A regular expression pattern to filter source classification data based on "Acode" should contains start & end position.}
 
 \item{B}{a path to a CSV file containing target classification data with "Bcode" column.}
 
-\item{formatB}{A regular expression pattern to filter target classification data based on "Bcode".}
+\item{formatB}{A regular expression pattern to filter target classification data based on "Bcode" should contains start & end position.}
 
 \item{CSVcorrespondenceInventory}{The valid values are not NULL if the user put a path with a empty csv file it will return it with the correspondeceInventory or just a path with a csv file . By default no CSV is produce}
 
