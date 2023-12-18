@@ -60,15 +60,15 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
         source = "https://stats.fao.org/caliper/sparql/AllVocs"
     }
     
-    ### Load prefixes using prefixList function
-    prefixlist = prefixList(endpoint, desired_prefix = prefix)
-    prefixlist = as.character(paste(prefixlist, collapse = "\n"))
-    
     ## Define A and B
     ID_table_temp = gsub("-", "_", ID_table)
     ID_table_temp = gsub("__", "_", ID_table_temp)
     A = sub("_.*", "", ID_table_temp)
     B = sub(".*_", "", ID_table_temp)
+    
+    ### Load prefixes using prefixList function
+    prefixlist = prefixList(endpoint, desired_prefix = tolower(c(A,B)))
+    prefixlist = as.character(paste(prefixlist, collapse = "\n"))
     
     ### CLASSIFICATION TABLE SPARQL QUERIES
     ### Define SPARQL query -- BASE
