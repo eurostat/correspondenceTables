@@ -95,7 +95,7 @@ The `classificationQC()` function generates a QC output data frame with the clas
   print(Output$QC_singleChildMismatch)
   print(Output$QC_singleCodeError)
   print(Output$QC_multipleCodeError
-  
+    
  )
   print(Output$QC_gapBefore)
   print(Output$QC_lastSibling)
