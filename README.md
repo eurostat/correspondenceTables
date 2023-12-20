@@ -13,9 +13,11 @@ status](https://github.com/eurostat/correspondenceTables/workflows/R-CMD-check/b
 
 # CorrespondenceTables
 
-Empowering the seamless creation and refinement of correspondence tables between two statistical classifications, such as NACE, CPA, CN, and more. This toolkit not only streamlines the process of generating and updating these tables but also provides functionality for retrieving classification and correspondence tables. It includes features for conducting quality control on classifications and offers a comprehensive analysis of correspondence tables with the ability to aggregate them effectively.
+Empowering the seamless creation and refinement of correspondence tables between two statistical classifications, such as NACE, CPA, CN, and more.
+This toolkit not only streamlines the process of generating and updating these tables but also provides functionality for retrieving classification and correspondence tables.
+It includes features for conducting quality control on classifications and offers a comprehensive analysis of correspondence tables with the ability to aggregate them effectively.
 
-## installation
+## Installation
 
 'correspondenceTables' can be installed from [CRAN](https://CRAN.R-project.org/package=correspondenceTables) by 
 
@@ -29,11 +31,11 @@ or use the development version from GitHub
 devtools::install_github("eurostat/correspondenceTables")
 ```
 
-## background
+## Background
 
 This package serves as a tool to assist you in creating and updating a correspondence table between two classifications, such as NACE, CPA, CN, and others. It enables the retrieval of classification tables and correspondence tables. Additionally, it facilitates quality control on a classification and allows for the analysis and aggregation of correspondence tables.
 
-## content
+## Content
 
 The package contains 11 functions:
 
@@ -59,7 +61,7 @@ The package contains 11 functions:
 
 11. `aggregateCorrespondenceTable` aggregates correspondence tables to higher hierarchical levels.
 
-## examples
+## Examples
 
 For the examples see the vignettes.
 ```R
