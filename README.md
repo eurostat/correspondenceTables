@@ -31,7 +31,7 @@ devtools::install_github("eurostat/correspondenceTables")
 
 ## background
 
-This package is a tool to help you in the creation and updates of a correspondence table between two classification like NACE, CPA, CN, etc.
+This package serves as a tool to assist you in creating and updating a correspondence table between two classifications, such as NACE, CPA, CN, and others. It enables the retrieval of classification tables and correspondence tables. Additionally, it facilitates quality control on a classification and allows for the analysis and aggregation of correspondence tables.
 
 ## content
 
