@@ -119,7 +119,7 @@ output2$QC_output
 
 
 
-**Last application of an another example of the function classificationQC()**
+**Application of an another example of the function classificationQC()**
 
 We used here the parameter **sequencing** for our last example sequencing will be used on the level 3 and 4 here.
 
@@ -135,6 +135,7 @@ output3 <-  classificationQC(
             CSVout = NULL)
 
 output3$QC_output
+output3$QC_gapBefore
 output3$QC_lastSibling
 ```
 

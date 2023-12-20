@@ -507,11 +507,12 @@
     #   stop("The provided sequencing file is not a CSV file or does not exist.")
     # }
     
-     levels_to_filter <- unlist(strsplit(as.character(sequencing), " "))
-     
+
      sequencing <- singleChildCode
      #remove singleCode
      sequencing <- sequencing[,-2]
+     # levels_to_filter <- unlist(strsplit(as.character(sequencing), " "))
+     levels_to_filter <- unique(sequencing$level)
      # Filter the data of the user select 
      sequencing <- sequencing[sequencing$level %in% levels_to_filter, ]
   
