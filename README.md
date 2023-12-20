@@ -11,9 +11,9 @@ status](https://github.com/eurostat/correspondenceTables/workflows/R-CMD-check/b
 [![all downloads](https://cranlogs.r-pkg.org/badges/grand-total/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 <!-- badges: end -->
 
-# correspondenceTables
+# CorrespondenceTables
 
-Creating or updating correspondence tables between two statistical classifications
+Empowering the seamless creation and refinement of correspondence tables between two statistical classifications, such as NACE, CPA, CN, and more. This toolkit not only streamlines the process of generating and updating these tables but also provides functionality for retrieving classification and correspondence tables. It includes features for conducting quality control on classifications and offers a comprehensive analysis of correspondence tables with the ability to aggregate them effectively.
 
 ## installation
 
