@@ -31,16 +31,33 @@ devtools::install_github("eurostat/correspondenceTables")
 
 ## background
 
-This package is a tool to help you in the creation and updates of a correspondence table between 2 classification like NACE, CPA, CN, etc.
+This package is a tool to help you in the creation and updates of a correspondence table between two classification like NACE, CPA, CN, etc.
 
 ## content
 
-The package contains 2 functions:
+The package contains 11 functions:
 
 1. `newCorrespondenceTable` to create a candidate correspondence table between two classifications when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications.
 
 2. `updateCorrespondenceTable` to update the correspondence table between two statistical classifications when one of the classifications gets updated to a new version.
 
+3. `prefixList` Create a list of prefixes for both CELLAR and FAO repositories.
+
+4. `CorrespondenceList` Overview of all the available correspondence classification from CELLAR and FAO repository.
+
+5. `dataStructure`  Retrieve information about the structure of each classification tables from CELLAR and FAO repositories.
+
+6. `classificationEndpoint` Retrieve a list of classification tables from CELLAR and FAO repositories or both.
+
+7. `retrieveClassificationTable` Retrieve stastistical classification tables from CELLAR and FAO repositories.
+
+8. `retrieveCorrespondenceTable.` Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.
+
+9. `classificationQC` performs quality control checks on statistical classifications.
+
+10. `analyseCorrespondancetable` performs analysis on correspondence tables.  
+
+11. `aggregateCorrespondenceTable` aggregates correspondence tables to higher hierarchical levels.
 
 ## examples
 
