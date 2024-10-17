@@ -36,7 +36,6 @@
 #'       data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
 #'    }
 #'    names(data_CELLAR) = list_data$CELLAR[,1] 
-
 #'    ## FAO 
 #'    data_FAO = list()
 #'    endpoint = "FAO"
@@ -62,7 +61,7 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
   }
   
   ## Create Prefixes list 
-  prefix_ls = prefixList(endpoint)
+  prefix_ls = prefixList(endpoint, desired_prefix = prefix)
   prefix_ls = as.character(paste(prefix_ls, collapse = "\n"))
   ### Load prefixes from Excel file
   #prefix_file = read.csv(paste0("//lu-fsp01/Data_Lux/AgSTAT/Projects/CorrespondenceTables_Rpck/Task 3/prefix_", endpoint, ".csv"))
@@ -70,7 +69,7 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
   
   ### SPARQL query
   SPARQL.query = paste0(prefix_ls, "
-  SELECT  DISTINCT ?Concept_Scheme ?Level ?Depth (COUNT (distinct ?s) AS ?Count) 
+  SELECT  DISTINCT ?Concept_Scheme  ?Depth (COUNT (distinct ?s) AS ?Count) 
 
         WHERE {
           ?s skos:prefLabel ?Label ;
@@ -81,7 +80,7 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
           skos:notation ?notation .
           
           ?Member a xkos:ClassificationLevel .
-          OPTIONAL {?member xkos:levels ?levels_temp . }
+          #OPTIONAL {?member xkos:levels ?levels_temp . }
           OPTIONAL {?member xkos:depth ?Depth . }
         
           FILTER (?Scheme = ", prefix, ":", conceptScheme, ")

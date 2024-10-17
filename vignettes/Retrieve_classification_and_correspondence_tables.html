@@ -345,13 +345,13 @@ tables with the correspondenceTables package</h1>
 the correspondenceTables package used to extract classification and
 correspondence tables from CELLAR and FAO endpoints.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)</span></code></pre></div>
-<p>The main two functions used to exact tables are
+<p>The main two functions used to extract tables are
 retrieveClassificationTable() and retrieveCorrespondenceTable(), for
 classification and correspondence tables respectively. Other functions
-(prefixList(), classEndpoint(), structureData() and
+(prefixList(), classificationEndpoint(), dataStructure() and
 correspondenceList()) are used to understand the structure of each
-classification and retrieve information needed as input of the two main
-functions.</p>
+classification or correspondence table and retrieve information needed
+as input of the two main functions.</p>
 <div id="extract-classification-tables" class="section level2">
 <h2>Extract Classification Tables</h2>
 <p>The function retrieveClassificationTable() retrieves the
@@ -361,38 +361,47 @@ updateCorrespondenceTable functions. This function has five
 arguments:</p>
 <ul>
 <li>prefix - the SPARQL instruction for a declaration of a namespace
-prefix.</li>
-<li>endpoint - the SPARQL Endpoint: CELLAR or FAO.</li>
-<li>conceptScheme - taxonomy of the SKOS object to be retrieved.</li>
-<li>level - levels of the objects in the collection to be
-retrieved.</li>
-<li>language - language of the table.</li>
-<li>CSVout - preferred choice of output.</li>
+prefix</li>
+<li>endpoint - the SPARQL Endpoint: CELLAR or FAO</li>
+<li>conceptScheme - a unique identifier associated to specific
+classification table</li>
+<li>level - levels of the objects in the collection to be retrieved</li>
+<li>language - language of the table</li>
+<li>CSVout - preferred choice of output</li>
+<li>showQuery - the SPARQL query generated</li>
 </ul>
 <p>The values of the prefix, conceptScheme and level can be found using
-the classEndpoint() and structureData() functions (see below). The
-arguments level and language are optional and set as default as
-level=“ALL”, language=“en” and CSVout = “FALSE”.</p>
+the classificationEndpoint() and dataStructure() functions (see below).
+The arguments level, language, CSVout and showQuery are optional and set
+as default as level=“ALL”, language=“en”, CSVout=“FALSE” and
+showQuery=“FALSE”.</p>
 <p>The namespace prefix needed to execute the SPARQL query are
 automatically generated using the prefixList() function (see below).</p>
 <p><strong>Application of function
 retrieveClassificationTable()</strong></p>
-<p>To following code is used to retrieve the NACE2 classification from
+<p>The following code is used to retrieve the NACE2 classification from
 CELLAR:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain prefix and conceptscheme using classEndpoint()</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">classEndpoint</span>(endpoint)[[<span class="dv">1</span>]][,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain prefix and conceptscheme using classificationEndpoint()</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">classificationEndpoint</span>(endpoint)[[<span class="dv">1</span>]][,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>conceptScheme <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>CSVout <span class="ot">=</span> <span class="cn">FALSE</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># identify lower level using structureData()</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>level_dt <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint, language)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>level <span class="ot">=</span> level_dt[<span class="fu">nrow</span>(level_dt),<span class="dv">2</span>] </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>level_dt; level</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> <span class="fu">retrieveClassificationTable</span>(prefix, endpoint, conceptScheme, level, language, CSVout)</span></code></pre></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>showQuery <span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># identify lower level using dataStructure()</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>level_dt <span class="ot">=</span> <span class="fu">dataStructure</span>(prefix, conceptScheme, endpoint, language)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>level <span class="ot">=</span> level_dt[<span class="fu">nrow</span>(level_dt),<span class="dv">2</span>] </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>level_dt; level</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>result_ls <span class="ot">=</span> <span class="fu">retrieveClassificationTable</span>(prefix, endpoint, conceptScheme, <span class="at">level =</span> level, language, CSVout, showQuery) </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># identify the SPARQL query used</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>SPARQLquery <span class="ot">=</span> result_ls[[<span class="dv">1</span>]]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># obtained the table</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>table <span class="ot">=</span> result_ls[[<span class="dv">2</span>]]</span></code></pre></div>
 <div id="other-functions-used-to-extract-classification-tables" class="section level3">
 <h3>Other functions used to extract Classification Tables</h3>
 <p>Following, the other functions used to extract the required
@@ -406,47 +415,47 @@ correspondence classification is introduced in CELLAR or FAO
 repository.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">prefixList</span>(endpoint)</span></code></pre></div>
-<p><strong>Application of function classEndpoint()</strong></p>
+<p><strong>Application of function classificationEndpoint()</strong></p>
 <p>The function returns a table with information needed to retrieve the
 classification table: </p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a> endpoint <span class="ot">=</span> <span class="st">&quot;ALL&quot;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(endpoint)</span></code></pre></div>
-<p><strong>Application of function structureData()</strong></p>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> list_data <span class="ot">=</span> <span class="fu">classificationEndpoint</span>(endpoint)</span></code></pre></div>
+<p><strong>Application of function dataStructure()</strong></p>
 <p>Each classification has a different level based on their structure.
-The function structureData() retrieves information about the level
+The function dataStructure() retrieves information about the level
 names, their hierarchy and the numbers of records for all the
 classification available in the repositories (CELLAR and FAO). The level
-informations needed as an optional arguments of the
+information needed as an optional arguments of the
 retrieveClassificationTable() function.</p>
 <p>The function returns a table with the following columns:<br />
 </p>
 <p>The following code produce a list including the structure of each
 classification available in CELLAR and FAO.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Obtain the structure of all classifications </span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## CELLAR</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>data_CELLAR <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Get info to retrieve structure using classEndpoint()</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>list_data <span class="ot">=</span> <span class="fu">classEndpoint</span>(<span class="st">&quot;ALL&quot;</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#loop over all classification in CELLAR</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>CELLAR)){</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">1</span>] </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[i,<span class="dv">2</span>] </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#language by default is English</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  data_CELLAR[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_CELLAR) <span class="ot">=</span> list_data<span class="sc">$</span>CELLAR[,<span class="dv">1</span>] </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="do">## FAO </span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>data_FAO <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(list_data<span class="sc">$</span>FAO)){</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  prefix <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">1</span>]</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  conceptScheme <span class="ot">=</span> list_data<span class="sc">$</span>FAO[i,<span class="dv">2</span>] </span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  data_FAO[[i]] <span class="ot">=</span> <span class="fu">structureData</span>(prefix, conceptScheme, endpoint)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_FAO) <span class="ot">=</span>  list_data<span class="sc">$</span>FAO[,<span class="dv">1</span>]</span></code></pre></div>
+<pre class="results"><code>## Obtain the structure of all classifications 
+## CELLAR
+data_CELLAR = list()
+endpoint = &quot;CELLAR&quot;
+#Get info to retrieve structure using classificationEndpoint()
+list_data = classificationEndpoint(&quot;ALL&quot;)
+
+#loop over all classification in CELLAR
+for (i in 1:nrow(list_data$CELLAR)){
+  prefix = list_data$CELLAR[i,1] 
+  conceptScheme = list_data$CELLAR[i,2] 
+  #language by default is English
+  data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+}
+names(data_CELLAR) = list_data$CELLAR[,1] 
+
+## FAO 
+data_FAO = list()
+endpoint = &quot;FAO&quot;
+for (i in 1:nrow(list_data$FAO)){
+  prefix = list_data$FAO[i,1]
+  conceptScheme = list_data$FAO[i,2] 
+  data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+}
+names(data_FAO) =  list_data$FAO[,1]</code></pre>
 </div>
 </div>
 <div id="extract-correspondence-tables" class="section level2">
@@ -463,10 +472,12 @@ prefix</li>
 <li>ID_table - the ID of the correspondence table</li>
 <li>language - language of the table</li>
 <li>CSVout - preferred choice of output</li>
+<li>showQuery - the SPARQL query generated</li>
 </ul>
 <p>The values of the prefix and ID_table can be found using the
-correspondenceList() function (see below). The argument language is
-optional and set as default as language=“en” and CSVout = “FALSE”.</p>
+correspondenceList() function (see below). The argument language, CSVout
+and showQuery are optional and set as default as language=“en”,
+CSVout=“FALSE” and showQuery=“TRUE”.</p>
 <p>The namespace prefix needed to execute the SPARQL query are
 automatically generated using the prefixList() function (see above).</p>
 <p><strong>Application of function
@@ -478,7 +489,15 @@ between NACE2 and PRODCOM2021 from CELLAR:</p>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ID_table <span class="ot">=</span> <span class="st">&quot;NACE2_PRODCOM2021&quot;</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>CSVout <span class="ot">=</span> <span class="cn">FALSE</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> <span class="fu">retrieveCorrespondenceTable</span>(prefix, endpoint, ID_table, language, CSVout)</span></code></pre></div>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>showQuery<span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>result_ls <span class="ot">=</span> <span class="fu">retrieveCorrespondenceTable</span>(prefix, endpoint, ID_table, language, CSVout, showQuery)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># identify the SPARQL query used</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>SPARQLquery <span class="ot">=</span> result_ls[[<span class="dv">1</span>]]</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># obtained the table</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>table <span class="ot">=</span> result_ls[[<span class="dv">2</span>]]</span></code></pre></div>
 <p>To following code is used to retrieve a specific correspondence table
 between CPCv21 and ISIC4 from FAO:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
@@ -486,7 +505,15 @@ between CPCv21 and ISIC4 from FAO:</p>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ID_table <span class="ot">=</span> <span class="st">&quot;CPC21-ISIC4&quot;</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>CSVout <span class="ot">=</span> <span class="cn">FALSE</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> <span class="fu">retrieveCorrespondenceTable</span>(prefix, endpoint, ID_table, language, CSVout)</span></code></pre></div>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>showQuery<span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>result_ls <span class="ot">=</span> <span class="fu">retrieveCorrespondenceTable</span>(prefix, endpoint, ID_table, language, CSVout, showQuery)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># identify the SPARQL query used</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>SPARQLquery <span class="ot">=</span> result_ls[[<span class="dv">1</span>]]</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># obtained the table</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>table <span class="ot">=</span> result_ls[[<span class="dv">2</span>]]</span></code></pre></div>
 <div id="other-functions-used-to-extract-correspondence-tables" class="section level3">
 <h3>Other functions used to extract Correspondence Tables</h3>
 <p>Following, the function used to extract the required information for

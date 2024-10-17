@@ -54,28 +54,33 @@ classificationEndpoint = function(endpoint = "ALL") {
   ### Datasets in FAO
   endpoint_fao = "https://stats.fao.org/caliper/sparql/AllVocs"
   SPARQL.query_fao = paste0("
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-      SELECT DISTINCT ?classification ?label
+     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-      WHERE {
-          ?classification a skos:ConceptScheme .
-          ?classification skos:prefLabel ?label .
-          FILTER(regex(?label, 'classification', 'i'))
-      }
-    ORDER BY ?label
+SELECT  ?scheme ?notation ?label_en WHERE {
+   ?scheme rdf:type skos:ConceptScheme .
+   ?scheme skos:notation ?notation .
+  ?scheme skos:prefLabel ?label_en . FILTER(lang(?label_en)='en') .
+  }
+ORDER BY ASC(?notation)
   ")
   
   response = httr::POST(url = endpoint_fao, accept("text/csv"), body = list(query = SPARQL.query_fao), encode = "form")
   data_fao = read.csv(text=content(response, "text"), sep= ",")                                 
   
   ## add prefix name
-  str_dt = t(sapply(data_fao[,1], function(x) unlist(strsplit(as.character(x), "/+"))))
-  prefix = paste0(str_dt[,4], str_dt[,5])
-  prefix = gsub("\\.","",prefix)
-  uri = paste0(str_dt[,1], "/", "/", str_dt[,2], "/", str_dt[,3], "/", str_dt[,4], "/", str_dt[,5])
+  # str_dt = t(sapply(data_fao[,1], function(x) unlist(strsplit(as.character(x), "/+"))))
+  str_dt<- strsplit(data_fao[, 1], "/")
+  mat_str_dt <- suppressWarnings(do.call(rbind, str_dt))
+  df_str_dt <- as.data.frame(mat_str_dt)
+  prefix = data_fao[,2]
+  # prefix = paste0(df_str_dt[,5], df_str_dt[,6])
+  # prefix = gsub("\\.","",prefix)
+  uri = paste0(df_str_dt[,1],  "/", df_str_dt[,2], "/", df_str_dt[,3], "/", df_str_dt[,4], "/", prefix)
   #class = prefix
-  ConceptScheme = str_dt[,6]
-  data_fao = cbind(prefix, ConceptScheme, uri, data_fao[,2])
+  ConceptScheme = paste0(df_str_dt[,5], df_str_dt[,6])
+  data_fao = cbind(prefix, ConceptScheme, uri, data_fao[,3])
   rownames(data_fao) = 1:nrow(data_fao)
   colnames(data_fao) = c("Prefix", "ConceptScheme", "URI", "Title")
 
