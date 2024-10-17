@@ -40,7 +40,7 @@ The function expects three mandatory CSV files (AB, A, and B) as input. The stru
  B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
 
  
- result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = FALSE)
+ result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
  
  print(result)
 
@@ -55,7 +55,7 @@ The function expects three mandatory CSV files (AB, A, and B) as input. The stru
  B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
 
  
- result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = TRUE)
+ result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
  
  print(result)
 ```

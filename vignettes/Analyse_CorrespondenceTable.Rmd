@@ -26,12 +26,14 @@ library(correspondenceTables)
 ```{r results='hide'}
 # Perform analysis
 result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
-                                     , A = NULL, formatA = NULL, B = NULL, formatB = NULL,
-                                     CSVcorrespondenceInventory =system.file("extdata", "CorrespondenceInventoryExample.csv", package = "correspondenceTables"), CSVcorrespondenceAnalysis = system.file("extdata", "CorrespondenceAnalysisExample.csv", package = "correspondenceTables"))
+                                     , A = NULL, longestAcodeOnly = FALSE, B = NULL, longestBcodeOnly = FALSE,
+                                     CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL)
+
+
 
 # Print the results
-print(result$Annexe_A)
-print(result$Annexe_B)
+print(result$Inventory)
+print(result$Analysis)
 
 ```
 
@@ -49,19 +51,16 @@ A which contains Nace2 as a classification source
 
 B which contains Nace2.1 as the classification target 
 
-formatA format B will have a numeric value of 1 and 5 here to have the first position and the last position at the lowest level. 
+longestAcodeOnly and longestBcodeOnly will be set to TRUE here to have only the retain only the lowest level. 
 
 ```{r}
-result2 <-analyseCorrespondenceTable(AB = (system.file("extdata", "ab_data.csv", package = "correspondenceTables")),
-                             A =  (system.file("extdata", "a_data.csv", package = "correspondenceTables")) ,
-                             formatA = c(1,5) ,
-                             B = B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables")),
-                             formatB = c(1,5),
-                             CSVcorrespondenceInventory = T, CSVcorrespondenceAnalysis = T)
+result2 <-analyseCorrespondenceTable(AB = system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"), A =  NULL , longestAcodeOnly = FALSE ,
+                             B = NULL,
+                             longestBcodeOnly = FALSE, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL)
 
-print(result2$Annexe_A)
-###for Annexe_A run this code : View(result2$Annexe_A)
-print(result2$Annexe_B)
+print(result2$Inventory)
+###for Inventory run this code : View(result2$Inventory)
+print(result2$Analysis)
 ```
 
 
