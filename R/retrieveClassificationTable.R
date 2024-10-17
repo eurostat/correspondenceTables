@@ -105,7 +105,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   
   ### Define SPARQL query -- FILTER LEVEL
   SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", "division", ")")
-  
+ 
   ### End SPARQL query ", prefix 
   SPARQL.query_end = paste0("}
           ORDER BY ?", prefix
