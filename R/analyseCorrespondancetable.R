@@ -3,15 +3,15 @@
 #' It checks the validity of the input data, identifies components, calculates correspondence types, and creates summary tables.
 #' @param AB a mandatory argument containing a CSV file provide by the user contains the correspondence table data with columns "Acode" and "Bcode".
 #' @param A  a path to a CSV file containing source classification data with "Acode" column.
-#' @param formatA A regular expression pattern to filter source classification data based on "Acode" should contains start & end position.
+#' @param longestAcodeOnly A Boolean argument to filter source classification data based on "Acode" retaining only the maximum length, thus the lowest level Acode .
 #' @param B a path to a CSV file containing target classification data with "Bcode" column.
-#' @param formatB A regular expression pattern to filter target classification data based on "Bcode" should contains start & end position.
+#' @param longestBcodeOnly A Boolean argument to filter source classification data based on "Bcode" retaining only the maximum length, thus the lowest level Bcode.
 #' @param CSVcorrespondenceInventory The valid values are not NULL if the user put a path with a empty csv file it will return it with the correspondeceInventory or just a path with a csv file . By default no CSV is produce
 #' @param CSVcorrespondenceAnalysis  Provide an output containing the correpondenceAnalysis. the user put a path a empty file it will return with correpondenceAnalysis. by default no CSV is produce
 #' @importFrom igraph graph.data.frame decompose.graph
 #' @import igraph
 #'
-#' @return A list containing two data frames: Annexe_A and Annexe_B.
+#' @return A list containing two data frames: Inventory and Analysis.
 #' The `CSVcorrespondenceInventory` contains statistics related to components, correspondence types, and source/target positions.
 #' The `CSVcorrespondenceAnalysis` contains statistics for each class in the correspondence table.
 #'
@@ -27,166 +27,272 @@
 #'
 #'
 #' # Perform analysis
-#' result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),A = NULL, formatA = NULL, B = NULL, formatB = NULL, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
-#' print(result$Annexe_A)
-#' print(result$Annexe_B)
+#' result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),A = NULL, longestAcodeOnly = FALSE, B = NULL, longestBcodeOnly = FALSE, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
+#' print(result$Inventory)
+#' print(result$Analysis)
 
 
 
-analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, formatB = NULL,
+analyseCorrespondenceTable <- function(AB, A = NULL, longestAcodeOnly = FALSE, B = NULL, longestBcodeOnly = FALSE,
                                        CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) {
   
-  if (class(AB) == "character") {
-    # If AB is a character string, assume it's a path to a CSV file
-    input_file_path <- AB
+  # if (class(AB) == "character") {
+  #   # If AB is a character string, assume it's a path to a CSV file
+  #   input_file_path <- AB
+  #   
+  #   AB <- read.csv2(input_file_path, header = TRUE, sep = ",")
+  # } else if (class(AB) == "data.frame") {} else {
+  #   stop("Parameter AB must be a path to a CSV file")
+  # }
     
-    AB <- read.csv2(input_file_path, header = TRUE, sep = ",")
-  } else if (class(AB) == "data.frame") {} else {
-    stop("Parameter AB must be a path to a CSV file")
-  }
-  ColumnNames <- colnames(AB)[1:2]
-  colnames(AB)[1:2] = c("Acode", "Bcode")
-  # Check if AB file has required columns
-  if (!("Acode" %in% colnames(AB)) || !("Bcode" %in% colnames(AB))) {
-    stop("The AB file must contain 'Acode' and 'Bcode' columns.")
-  }
+  ab_data <- testInputTable("Correspondence table (AB)", AB)
+  #ab_data[] <- lapply(ab_data, as.character)
   
-  # Filter out records with missing Acode or Bcode
-  AB <- AB[complete.cases(AB[c("Acode", "Bcode")]), ]
+  #Check if required number of columns are present in input
+  #check_n_columns(ab_data,"Correspondence table (AB)", 2)
   
-  # Check if there are any valid records after filtering
-  if (nrow(AB) == 0) {
-    stop("No valid records found in the AB file.")
-  }
+  ColumnNames_ab <- colnames(ab_data)[1:2]
+  colnames(ab_data)[1:2] = c("Acode", "Bcode")
+  unused_data_ab <- ab_data
   
-  # Check uniqueness of code pairs in AB file
-  duplicate_pairs <- duplicated(AB[c("Acode", "Bcode")]) | duplicated(AB[c("Acode", "Bcode")], fromLast = TRUE)
-  if (any(duplicate_pairs)) {
-    first_duplicate <- AB[duplicate_pairs, c("Acode", "Bcode")][1, ]
-    stop(paste("Duplicate code pair found in AB file:", first_duplicate$Acode, "-", first_duplicate$Bcode))
+  # # Check if AB file has required columns
+  # if (!("Acode" %in% colnames(AB)) || !("Bcode" %in% colnames(AB))) {
+  #   stop("The AB file must contain 'Acode' and 'Bcode' columns.")
+  # }
+  # # Filter out records with missing Acode or Bcode
+  # AB <- AB[complete.cases(AB[c("Acode", "Bcode")]), ]
+  
+  # Check if there are any records
+  tryCatch(
+    {
+      if (nrow(ab_data) == 0) {
+        stop("No valid records found in the input correspondence table AB.")
+      }
+    }, error = function(e) {
+      message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+    })
+  
+  # Filter rows where Acode or Bcode is missing in the AB data
+  missing_code_rows <- ab_data[is.na(ab_data$Acode) | ab_data$Acode == "" | is.na(ab_data$Bcode) | ab_data$Bcode == "", ]
+  tryCatch(
+    {
+      # Display problematic rows
+      if (nrow(missing_code_rows) > 0) {
+        stop(paste("Rows with missing values in the", ColumnNames_ab[1], "or", ColumnNames_ab[2], "column of the AB data:"))
+      }
+    }, error = function(e) {
+      message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+      print(missing_code_rows)
+    })
+  
+  # # Check if there are any valid records after filtering
+  # if (nrow(AB) == 0) {
+  #   stop("No valid records found in the AB file.")
+  # }
+  
+  # Find duplicated combinations of Acode and Bcode in AB
+  duplicate_pairs <- ab_data[duplicated(ab_data[c("Acode", "Bcode")]), c("Acode", "Bcode")]
+  tryCatch(
+    {
+      # Check for duplicate combinations of Acode and Bcode
+      if (nrow(duplicate_pairs) > 0) {
+        stop("Please remove duplicate(s) combinations of Acode and Bcode found in AB file.")
+      }
+    }, error = function(e) {
+      message("Error in analyseCorrespondenceTable:",conditionMessage(e))
+      print(duplicate_pairs)
+      stop(e)
+    })
+  
+  # Filter AB data based on longestAcodeOnly and longestBcodeOnly, if specified
+  
+  if (longestAcodeOnly == TRUE | longestBcodeOnly == TRUE) {
+    if (longestAcodeOnly == TRUE) {
+      # Calculate the maximum length of Acode
+      maxLengthA <- max(nchar(ab_data$Acode, type = "width"))
+      # Filter rows where Acode has the maximum length
+      longest_Acode <- ab_data$Acode[nchar(ab_data$Acode, type = "width") == maxLengthA ]
+      if (length(longest_Acode) == nrow(ab_data)) {
+        ab_data$Acode <- longest_Acode
+      } else {
+        ab_data$Acode <- c(longest_Acode, rep("", nrow(ab_data) - length(longest_Acode)))
+      }
+    }
+    if (longestBcodeOnly == TRUE){
+      # Calculate the maximum length of Bcode
+      maxLengthB <- max(nchar(ab_data$Bcode, type = "width"))
+      # Filter rows where Bcode has the maximum length
+      longest_Bcode <- ab_data$Bcode[nchar(ab_data$Bcode, type = "width") == maxLengthB ]
+      if (length(longest_Bcode) == nrow(ab_data)) {
+        ab_data$Bcode <- longest_Bcode
+      } else {
+        ab_data$Bcode <- c(longest_Bcode, rep("", nrow(ab_data) - length(longest_Bcode)))
+      }
+    }
+    
+    # Check if there are any valid records after filtering
+    if (nrow(ab_data) == 0) {
+      stop("No valid records found in the AB file after applying longestAcodeOnly and/or longestBcodeOnly filters.")
+    }
+    if (length(ab_data$Acode) != length(ab_data$Bcode)) {
+      stop("Invalid records found in the AB file after applying the longestAcodeOnly and/or longestBcodeOnly filters. Acode and Bcode have different number of rows")
+    }
   }
   
   # Read A file if provided
   if (!is.null(A)) {
-    a_data <- read.csv(A, header = TRUE)
+    # a_data <- read.csv(A, header = TRUE)
+    
+    a_data <- testInputTable("Source classification table (A)", A)
+    
+    ColumnNames_a <- colnames(A)[1:1]
     colnames(a_data)[1:1] = c("Acode")
+    unused_data_a <- a_data
     
-    # Check if A file has the required column
-    if (!("Acode" %in% colnames(a_data))) {
-      stop("The A file must contain 'Acode' column.")
-    }
-    
-    # Filter out A records based on formatA, if specified
-    if (!is.null(formatA)) {# Check if formatA is numeric vector with two elements
-      if (!is.numeric(formatA) || length(formatA) != 2) {
-        stop("formatA must be a numeric vector with two elements.")
-      }
-      
-      # Convert Acode to character and filter based on end position
-      a_data$Acode <- as.character(a_data$Acode)
-      a_data <- a_data[nchar(a_data$Acode) == formatA[2], ]
-      
-      # Check if there are any valid records after end position filtering
-      if (nrow(a_data) == 0) {
-        stop("No valid records found in the A file after applying end position filter.")
-      }
-    }
+    # Check if there are any records
+    tryCatch(
+      {
+        if (nrow(a_data) == 0) {
+          stop("No valid records found in the input table ource classification table (A).")
+        }
+      }, error = function(e) {
+        message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+      })
     
     # Check uniqueness of A codes
     duplicate_a_codes <- duplicated(a_data$Acode) | duplicated(a_data$Acode, fromLast = TRUE)
-    if (any(duplicate_a_codes)) {
-      first_duplicate <- a_data[duplicate_a_codes, "Acode"][1]
-      stop(paste("Duplicate Acode found in A file:", first_duplicate))
+    tryCatch(
+      {
+        if (nrow(duplicate_a_codes) > 0) {
+          stop("Duplicate Acode(s) found in A file.")
+        }
+      },error = function(e) {
+        message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+        print(duplicate_a_codes)
+      })
+    
+    # Filter out A records based on longestAcodeOnly, if specified
+    if (longestAcodeOnly == TRUE) {
+      # Calculate the maximum length of Acode
+      maxLengthA <- max(nchar(a_data$Acode, type = "width"))
+      
+      # Filter rows where Acode has the maximum length
+      longest_Acode <- a_data$Acode[nchar(a_data$Acode, type = "width") == maxLengthA ]
+      if (length(longest_Acode) == nrow(a_data)) {
+        a_data$Acode <- longest_Acode
+      } else {
+        a_data$Acode <- c(longest_Acode, rep("", nrow(a_data) - length(longest_Acode)))
+      }
+      
+      # Check if there are any valid records after end position filtering
+      tryCatch(
+        {
+          if (nrow(a_data) == 0) {
+            stop("No valid records found in the A file after applying end position filter.")
+          }
+        },error = function(e) {
+          message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+          stop(e)
+        })
     }
     
-    # Find unmatched source classification codes
-    unmatched_codes_A <- setdiff(a_data$Acode, AB$Acode)
+    # Find unmatched source classification codes for A
+    unmatched_codes_A <- setdiff(a_data$Acode, ab_data$Acode)
     noCorrespondenceA <- a_data[a_data$Acode %in% unmatched_codes_A, ]
-    noClassificationA <- AB[AB$Acode %in% unmatched_codes_A, ]
+    noClassificationA <- ab_data[ab_data$Acode %in% unmatched_codes_A, ]
     
-    # Print the length of noCorrespondenceA or a message indicating all codes in A are covered
+    # Check if all codes in A are covered
     if (nrow(noCorrespondenceA) > 0) {
-      cat("Number of unmatched source classification codes in A:", nrow(noCorrespondenceA), "\n")
-    } else {
-      cat("All source classification codes in A are covered in the correspondence table.\n")
-    }
+      message("Warning:Number of unmatched source classification codes in A:\n")
+      print(noCorrespondenceA)
+    } 
     
-    # Print the length of noClassificationA or a message indicating all codes in the correspondence table are covered
+    # Check if all codes in the correspondence table are covered
     if (nrow(noClassificationA) > 0) {
-      cat("Number of source classification codes in AB not found in A:", nrow(noClassificationA), "\n")
-    } else {
-      cat("All source classification codes in the correspondence table are covered by A.\n")
+      message("Warning:Number of source classification codes in AB not found in A:\n")
+      print(noClassificationA)
     }
   }
   
   # Read B file if provided
   if (!is.null(B)) {
-    b_data <- read.csv(B, header = TRUE)
+    
+    #b_data <- read.csv(B, header = TRUE)
+    b_data <- testInputTable("Target classification table (B)", B)
+    ColumnNames_b <- colnames(B)[1:1]
     colnames(b_data)[1:1] = c("Bcode")
+    unused_data_b <- b_data
     
-    # Check if B file has the required column
-    if (!("Bcode" %in% colnames(b_data))) {
-      stop("The B file must contain 'Bcode' column.")
-    }
-    
-    # Filter out B records based on formatB, if specified
-    if (!is.null(formatB)) {
-      # Check if formatB is numeric vector with two elements
-      if (!is.numeric(formatB) || length(formatB) != 2) {
-        stop("formatB must be a numeric vector with two elements.")
-      }
-      
-      # Convert Bcode to character and filter based on end position
-      b_data$Bcode <- as.character(b_data$Bcode)
-      b_data <- b_data[nchar(b_data$Bcode) == formatB[2], ]
-      
-      # Check if there are any valid records after end position filtering
-      if (nrow(b_data) == 0) {
-        stop("No valid records found in the B file after applying end position filter.")
-      }
-    }
+    # Check if there are any records
+    tryCatch(
+      {
+        if (nrow(b_data) == 0) {
+          stop("No valid records found in the input table ource classification table (B).")
+        }
+      }, error = function(e) {
+        message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+      })
     
     # Check uniqueness of B codes
     duplicate_b_codes <- duplicated(b_data$Bcode) | duplicated(b_data$Bcode, fromLast = TRUE)
-    if (any(duplicate_b_codes)) {
-      first_duplicate <- b_data[duplicate_b_codes, "Bcode"][1]
-      stop(paste("Duplicate Bcode found in B file:", first_duplicate))
+    tryCatch(
+      {
+        if (nrow(duplicate_b_codes) > 0) {
+          stop("Duplicate Bcode(s) found in B file.")
+        }
+      },error = function(e) {
+        message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+        print(duplicate_b_codes)
+      })
+    
+    # Filter out B records based on longestBcodeOnly, if specified
+    if (longestBcodeOnly == TRUE) {
+      # Calculate the maximum length of Bcode
+      maxLengthB <- max(nchar(b_data$Bcode, type = "width"))
+      
+      # Filter rows where Bcode has the maximum length
+      longest_Bcode <- b_data$Bcode[nchar(b_data$Bcode, type = "width") == maxLengthB ]
+      if (length(longest_Bcode) == nrow(b_data)) {
+        b_data$Bcode <- longest_Bcode
+      } else {
+        b_data$Bcode <- c(longest_Bcode, rep("", nrow(b_data) - length(longest_Bcode)))
+      }
+      
+      # Check if there are any valid records after end position filtering
+      tryCatch(
+        {
+          if (nrow(b_data) == 0) {
+            stop("No valid records found in the B file after applying end position filter.")
+          }
+        },error = function(e) {
+          message("Error in analyseCorrespondenceTable: ",conditionMessage(e))
+          stop(e)
+        })
     }
     
     # Find unmatched source classification codes for B
-    unmatched_codes_B <- setdiff(b_data$Bcode, AB$Bcode)
+    unmatched_codes_B <- setdiff(b_data$Bcode, ab_data$Bcode)
     noCorrespondenceB <- b_data[b_data$Bcode %in% unmatched_codes_B, ]
-    noClassificationB <- AB[AB$Bcode %in% unmatched_codes_B, ]
+    noClassificationB <- ab_data[ab_data$Bcode %in% unmatched_codes_B, ]
     
-    # Print the length of noCorrespondenceB or a message indicating all codes in B are covered
+    ## Check if all codes in B are covered
     if (nrow(noCorrespondenceB) > 0) {
-      cat("Number of unmatched source classification codes in B:", nrow(noCorrespondenceB), "\n")
-    } else {
-      cat("All source classification codes in B are covered in the correspondence table.\n")
-    }
+      message("Warning:Number of unmatched source classification codes in B:\n")
+      print(noCorrespondenceB)
+    } 
     
-    # Print the length of noClassificationB or a message indicating all codes in the correspondence table are covered
+    # Check if all codes in the correspondence table are covered
     if (nrow(noClassificationB) > 0) {
-      cat("Number of source classification codes in AB not found in B:", nrow(noClassificationB), "\n")
-    } else {
-      cat("All source classification codes in the correspondence table are covered by B.\n")
-    }
+      message("Warning: Number of source classification codes in AB not found in B:\n")
+      print(noClassificationB)
+    } 
   }
   
-  # Filter AB data based on formatA and formatB, if specified
-  if (!is.null(formatA) && !is.null(formatB)) {
-    AB$Acode <- as.character(AB$Acode)
-    AB$Bcode <- as.character(AB$Bcode)
-    AB <- AB[nchar(AB$Acode) == formatA & nchar(AB$Bcode) == formatB, ]
+
     
-    # Check if there are any valid records after filtering
-    if (nrow(AB) == 0) {
-      stop("No valid records found in the AB file after applying formatA and formatB filters.")
-    }
-  }
   #bipartitePart
   # create the bipartite graph 
-  g <- graph.data.frame(AB, directed = FALSE)
+  g <- graph.data.frame(ab_data, directed = FALSE)
   
   # all composant
   components <- decompose.graph(g)
@@ -194,11 +300,11 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
   # list of composant by code 
   component_codes <- lapply(components, function(comp) V(comp)$name)
   
-  AB$component <- NA
+  ab_data$component <- NA
   
   for (i in seq_along(component_codes)) {
     component <- component_codes[[i]]
-    AB$component[AB$Acode %in% component] <- paste("Component", i)
+    ab_data$component[ab_data$Acode %in% component] <- paste("Component", i)
   }
   ### Print AB to see the component column for the correspondenceTable between Source & Target.
   
@@ -208,29 +314,29 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
   component_index <- 0
   component_stats <- lapply(components, function(comp) {
     component <- V(comp)$name
-    n_unique_targets <- length(unique(AB[AB$Acode %in% component, "Bcode"]))
+    n_unique_targets <- length(unique(ab_data[ab_data$Acode %in% component, "Bcode"]))
     
     correspondence_type <- if (n_unique_targets == 1) {
-      if (length(unique(AB[AB$Bcode %in% component, "Acode"])) == 1) {
+      if (length(unique(ab_data[ab_data$Bcode %in% component, "Acode"])) == 1) {
         "1:1"
       } else {
         "M:1"
       }
     } else {
-      if (length(unique(AB[AB$Bcode %in% component, "Acode"])) == 1) {
+      if (length(unique(ab_data[ab_data$Bcode %in% component, "Acode"])) == 1) {
         "1:M"
       } else {
         "M:M"
       }
     }
     
-    source_positions <- unique(AB[AB$Acode %in% component, "Acode"])
-    target_positions <- unique(AB[AB$Acode %in% component, "Bcode"])
+    source_positions <- unique(ab_data[ab_data$Acode %in% component, "Acode"])
+    target_positions <- unique(ab_data[ab_data$Acode %in% component, "Bcode"])
     n_source_positions <- length(source_positions)
     n_target_positions <- length(target_positions)
     
     component_index <- component_index + 1
-    component_name <- unique(AB[AB$Acode %in% component, "component"])
+    component_name <- unique(ab_data[ab_data$Acode %in% component, "component"])
     
     list(
       Component = component_name,
@@ -246,88 +352,79 @@ analyseCorrespondenceTable <- function(AB, A = NULL, formatA = NULL, B = NULL, f
   result <- do.call(rbind, component_stats)
   
   # Conversion into a data frame
-  Annexe_A <- as.data.frame(result)
+  Inventory <- as.data.frame(result)
   
-  ## Creation of Annex B
-  Annexe_B <- data.frame(
-    ClassC = AB$Acode,
-    ClassD = AB$Bcode,
+  ## Creation of Annex B (Analysis)
+  Analysis <- data.frame(
+    ClassC = ab_data$Acode,
+    ClassD = ab_data$Bcode,
     nTargetClasses = NA,
     SourceToTargetMapping = NA,
     nSourceClasses = NA,
     TargetToSourceMapping = NA
   )
   # Update nTargetClasses column
-  Annexe_B$nTargetClasses <- sapply(Annexe_B$ClassC, function(c_code) {
-    length(unique(Annexe_B[Annexe_B$ClassC == c_code, "ClassD"]))
+  Analysis$nTargetClasses <- sapply(Analysis$ClassC, function(c_code) {
+    length(unique(Analysis[Analysis$ClassC == c_code, "ClassD"]))
   })
   
   # Update SourceToTargetMapping column
-  Annexe_B$SourceToTargetMapping <- sapply(Annexe_B$ClassC, function(c_code) {
-    paste(unique(Annexe_B[Annexe_B$ClassC == c_code, "ClassD"]), collapse = ", ")
+  Analysis$SourceToTargetMapping <- sapply(Analysis$ClassC, function(c_code) {
+    paste(unique(Analysis[Analysis$ClassC == c_code, "ClassD"]), collapse = ", ")
   })
   
   # Update nSourceClasses column
-  Annexe_B$nSourceClasses <- sapply(Annexe_B$ClassD, function(d_code) {
-    length(unique(Annexe_B[Annexe_B$ClassD == d_code, "ClassC"]))
+  Analysis$nSourceClasses <- sapply(Analysis$ClassD, function(d_code) {
+    length(unique(Analysis[Analysis$ClassD == d_code, "ClassC"]))
   })
   
   # Update TargetToSourceMapping column
-  Annexe_B$TargetToSourceMapping <- sapply(Annexe_B$ClassD, function(d_code) {
-    paste(unique(Annexe_B[Annexe_B$ClassD == d_code, "ClassC"]), collapse = ", ")
+  Analysis$TargetToSourceMapping <- sapply(Analysis$ClassD, function(d_code) {
+    paste(unique(Analysis[Analysis$ClassD == d_code, "ClassC"]), collapse = ", ")
   })
   
-  colnames(Annexe_B)[1:2] = ColumnNames[1:2]
+  
+  
+  colnames(Analysis)[1:2] = c("Acode", "Bcode")
   # store annex on variable to make table 
-  output_annex_A <- Annexe_A
-  output_annex_B <- Annexe_B
-  
-  annex_A_df <- as.data.frame(output_annex_A)
-  annex_A_df$Component <- as.character(annex_A_df$Component)
-  annex_A_df$CorrespondenceType <- as.character(annex_A_df$CorrespondenceType)
-  annex_A_df$SourcePositions <- as.character(annex_A_df$SourcePositions)
-  annex_A_df$TargetPositions <- as.character(annex_A_df$TargetPositions)
-  annex_A_df$nSourcePositions <- as.numeric(annex_A_df$nSourcePositions)
-  annex_A_df$nTargetPositions <- as.numeric(annex_A_df$nTargetPositions)
-  annex_B_df <- as.data.frame(output_annex_B)
-  
-  # Take the user's CSV file name to create CSV files
-  if (!is.null(input_file_path)) {
-    base_file_name <- tools::file_path_sans_ext(tools::file_path_sans_ext(basename(input_file_path)))
-  } else {
-    # Generate a unique base file name (e.g., based on the timestamp)
-    base_file_name <- paste0("correspondence_analysis_", format(Sys.time(), "%Y%m%d%H%M%S"))
-  }
+  output_Inventory <- Inventory
+  output_Analysis <- Analysis
  
   
-  if (!is.null(CSVcorrespondenceInventory)) {
-    if (is.character(CSVcorrespondenceInventory)) {
-      chemin_inventaire <- CSVcorrespondenceInventory
-    } else {
-      # Generate a file name based on the name of the first column, "correspondence", and the date
-      chemin_inventaire <- paste0("Correspondence_inventory_",ColumnNames[1], "_", ColumnNames[2],  ".csv")
-    }
-    write.csv(annex_A_df, chemin_inventaire, row.names = FALSE)
-    message(paste0("The table was saved in ", getwd(), chemin_inventaire))
-  }
+  Inventory_df <- as.data.frame(output_Inventory)
   
-  if (!is.null(CSVcorrespondenceAnalysis)) {
-    if (is.character(CSVcorrespondenceAnalysis)) {
-      # If it's a valid file path, use it
-      chemin_analyse <- CSVcorrespondenceAnalysis
-    } else {
-      # Generate a file name based on the name of the first column, "correspondence", and the date
-      chemin_analyse <- paste0("Correspondence_analysis_", ColumnNames[1], "_", ColumnNames[2],  ".csv")
-    }
-    write.csv(annex_B_df, chemin_analyse, row.names = FALSE)
-    message(paste0("The table was saved in ", getwd(), chemin_analyse))
-  }
+  Inventory_df$Component <- as.character(Inventory_df$Component)
+  Inventory_df$CorrespondenceType <- as.character(Inventory_df$CorrespondenceType)
+  #Inventory_df$SourcePositions <- as.character(Inventory_df$SourcePositions)
+  Inventory_df$SourcePositions <- sapply(Inventory_df$SourcePositions, function(x) paste(x, collapse = ", "))
+  #Inventory_df$TargetPositions <- as.character(Inventory_df$TargetPositions)
+  Inventory_df$TargetPositions <- sapply(Inventory_df$TargetPositions, function(x) paste(x, collapse = ", "))
+  Inventory_df$nSourcePositions <- as.numeric(Inventory_df$nSourcePositions)
+  Inventory_df$nTargetPositions <- as.numeric(Inventory_df$nTargetPositions)
   
+  Analysis_df <- as.data.frame(output_Analysis)
+  Analysis_df <- merge(Analysis_df, unused_data_ab, by = c("Acode", "Bcode"), all = F)
+  
+  if (!is.null(B)) {
+    Analysis_df <- merge(Analysis_df, unused_data_b, by = "Bcode", all = F)
+  }
+ 
+  if (!is.null(A)) {
+    Analysis_df <- merge(Analysis_df, unused_data_a, by = "Acode", all = F)
+  }
+ 
+  Analysis_df <- Analysis_df[, c("Acode", "Bcode", setdiff(names(Analysis_df), c("Acode", "Bcode")))]
+  
+   colnames(Analysis_df)[1:2] = ColumnNames_ab[1:2]
+   base_file_name <- paste0("correspondence_analysis_", format(Sys.time(), "%Y%m%d%H%M%S"))
+
+   CsvFileSave(CSVcorrespondenceInventory, Inventory_df)
+   CsvFileSave(CSVcorrespondenceAnalysis, Analysis_df)
+
   # Output list of the two dataframes.
-  output <- list(Annexe_A = output_annex_A, Annexe_B = output_annex_B)
+  output <- list(Inventory = Inventory_df, Analysis =  Analysis_df)
   
   return(output)
-  
 }
 
 

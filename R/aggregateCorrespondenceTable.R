@@ -16,64 +16,121 @@
 #' B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
 #' 
 #' 
-#' result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = FALSE)
+#' result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
 #' print(result)
 #'
 aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
-  # Check if input files exist
-  if (!file.exists(AB) || !file.exists(A) || !file.exists(B)) {
-    stop("One or more input files do not exist.")
-  }
-  # Check if the input files are csv
-  if (!grepl("\\.csv$", AB) || !grepl("\\.csv$", A) || !grepl("\\.csv$", B)) {
-    stop("One or more input files do not have a .csv extension.")
-  }
+  
+  ab_data <- testInputTable("Correspondence table (AB)", AB)
+  a_data <- testInputTable("Source classification (A)", A)
+  b_data <- testInputTable("Target classification (B)", B)
+  
+#Check if required number of columns are present in each input
+check_n_columns(ab_data,"Correspondence table (AB)", 2)
+check_n_columns(a_data, "Source classification (A)", 3)
+check_n_columns(b_data,"Target classification (B)", 3)
   
   # Read the input correspondence table AB
-  ab_data <- read.csv2(AB, header = TRUE, sep =",")
-  ColumnNames <- colnames(ab_data)[1:2]
+  # ab_data <- read.csv2(AB, header = TRUE, sep =",")
+  ColumnNames_ab <- colnames(ab_data)[1:2]
   colnames(ab_data)[1:2] = c("Acode","Bcode")
-  # Check if AB table has the required columns
-  if (!all(c("Acode", "Bcode") %in% colnames(ab_data))) {
-    stop("Input correspondence table AB must have columns 'Acode' and 'Bcode'.")
-  }
+ 
+  # Check if there are any records 
+  tryCatch(
+    {
+      if (nrow(ab_data) == 0) {
+        stop("No valid records found in the input correspondence table AB.")
+      }
+    }, error = function(e) {
+      message("Error in aggregateCorrespondenceTable: ",conditionMessage(e))
+      stop(e)
+    })
   
-  # Check for duplicate combinations of Acode and Bcode in AB
-  if (any(duplicated(ab_data[c("Acode", "Bcode")]))) {
-    stop("Duplicate combinations of Acode and Bcode found in the input correspondence table AB.")
-  }
+  # Find duplicated combinations of Acode and Bcode in AB
+  duplicated_rows <- ab_data[duplicated(ab_data[c("Acode", "Bcode")]), c("Acode", "Bcode")]
+  tryCatch(
+    {
+  # Check for duplicate combinations of Acode and Bcode
+  if (nrow(duplicated_rows) > 0) {
+    stop("Please remove duplicate(s) combinations of Acode and Bcode from the input correspondence table AB.")
+          }
+    }, error = function(e) {
+      message("Error in aggregateCorrespondenceTable:",conditionMessage(e))
+      print(duplicated_rows)
+      stop(e)
+    })
   
-  # Filter out records with missing Acode or Bcode
-  ab_data <- ab_data[!is.na(ab_data$Acode) & !is.na(ab_data$Bcode), ]
   
-  # Check if there are any records left
-  if (nrow(ab_data) == 0) {
-    stop("No valid records found in the input correspondence table AB.")
-  }
+  # Filter rows where Acode or Bcode is missing in the AB data
+  missing_code_rows <- ab_data[is.na(ab_data$Acode) | ab_data$Acode == "" | is.na(ab_data$Bcode) | ab_data$Bcode == "", ]
+  tryCatch(
+    {
+  # Display problematic rows
+  if (nrow(missing_code_rows) > 0) {
+  stop(paste("Rows with missing values in the", ColumnNames_ab[1], "or", ColumnNames_ab[2], "column of the AB data:"))
+    }
+      }, error = function(e) {
+        message("Error in aggregateCorrespondenceTable: ",conditionMessage(e))
+        print(missing_code_rows)
+        stop(e)
+    })
+   
   
   ######## 
   ####Read the source classification table A
-  a_data <- read.csv(A, header = TRUE, sep = ",")
+ 
+  ColumnNames_a <- colnames(a_data)[1:3]
   colnames(a_data)[1:3] = c("Acode","Alevel","Asuperior")
-  # Check if A table has the required columns
-  if (!all(c("Acode", "Alevel", "Asuperior") %in% colnames(a_data))) {
-    stop("Source classification table A must have columns 'Acode', 'Alevel', and 'Asuperior'.")
+  
+  # Check if there are records in table A
+  tryCatch({
+    if (nrow(a_data) == 0) {
+      stop("No valid records found in the input correspondence table A.")
+    }
+  }, error = function(e) {
+    message("Error in aggregateCorrespondenceTable while processing input correspondence table A\n",conditionMessage(e))
+    stop(e)
+  })
+  
+  # Filter rows where there are NA or empty values in the Alevel column
+  problematic_rows <- a_data[is.na(a_data$Alevel) | a_data$Alevel == "", ]
+  
+  # Display problematic rows
+  if (nrow(problematic_rows) > 0) {
+    print(paste("Rows with missing or empty values in the Alevel column:", ColumnNames_a[2]))
+    print(problematic_rows)
+    cat("\n")
   }
   
-  #Uniqueness 3.2 Check for duplicate Acode values in A
-  if (any(duplicated(a_data$Acode))) {
-    stop("Duplicate Acode values found in the source classification table A.")
+  # Check for duplicate Acode values in table A
+  Aduplicated_rows <- a_data[duplicated(a_data$Acode), "Acode"]
+  if (length(Aduplicated_rows) > 0) {
+    message(paste("Duplicate(s) value(s) of Acode column named:", ColumnNames_a[1], "found in the input table A:"))
+    print(Aduplicated_rows)
+    stop(paste("Please remove duplicate(s) values of Acode column named:", ColumnNames_a[1], "in the input table A."))
+  } else {
+    # print("No duplicate(s) value(s) of Acode in the input table A.")
   }
   
-  # Check if Alevel is numeric
-  if (!all(is.numeric(a_data$Alevel))) {
-    stop("Alevel column in the source classification table A must contain numeric values.")
+  
+  # Identify rows with text in Asuperior for level 1 records
+  a_level_1_with_text <- a_data[a_data$Alevel == 1 & !is.na(a_data$Asuperior) & a_data$Asuperior != "", ]
+  
+  # Display rows with text in Asuperior for level 1 records
+  if (nrow(a_level_1_with_text) > 0) {
+    message(paste("In the source classification table, the following records at level 1 have text in the Asuperior column:", ColumnNames_a[3]))
+    print(a_level_1_with_text)
+    stop()
   }
   
-  # Check if Asuperior is a character or blank
-  if (!all(is.character(a_data$Asuperior) | a_data$Alevel == 1)) {
-    stop("Asuperior column in the source classification table A must contain characters or be blank for records at level 1.")
-  }
+  # Check if Asuperior is a character or blank for records at level 1
+  tryCatch({
+    if (!all((is.character(a_data$Asuperior) & a_data$Alevel != 1) | (is.na(a_data$Asuperior) & a_data$Alevel == 1))) {
+      stop(paste("Asuperior column,", ColumnNames_a[3], "in the source classification table A must be blank for records at level 1."))
+    }
+  }, error = function(e) {
+    stop(e)
+  })
   
   # Initialize the variable to store the current level for A
   mostGranularA <- max(a_data$Alevel)
@@ -86,84 +143,142 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
     AiMinus1 <- a_data[a_data$Alevel == (currentLevelA - 1), ]
     
     # Check if all values of Asuperior (in Ai) correspond to values of Acode (in AiMinus1)
-    error_rows <- which(!(Ai$Asuperior %in% AiMinus1$Acode))
-    if (length(error_rows) > 0) {
-      cat("Hierarchy error in A-data at level:", currentLevelA, "\n")
-      cat("Error occurred in rows:", error_rows, "\n")
-      break  # Exit the loop if an error is detected
-    }
+    error_occurence <- which(!(Ai$Asuperior %in% AiMinus1$Acode))
+    error_rows <- Ai[error_occurence,]
+    if (length(error_occurence) > 0) {
+      cat("Hierarchy error in A_data at level:", currentLevelA, "\n")
+      cat("For the specified level, error at occurence:", error_occurence, "\n")
+      cat("Offending row:\n")
+      print(error_rows)
+      stop("Hierarchy error detected in A_data.")
+    } 
     
     # Check if all values of Acode (in AiMinus1) correspond to values of Asuperior (in Ai)
-    error_rows <- which(!(AiMinus1$Acode %in% Ai$Asuperior))
-    if (length(error_rows) > 0) {
+    error_occurence <- which(!(AiMinus1$Acode %in% Ai$Asuperior))
+    error_rows <- AiMinus1[error_occurence,]
+    if (length(error_occurence) > 0) {
       cat("Hierarchy error in A-data at level:", currentLevelA - 1, "\n")
-      cat("Error occurred in rows:", error_rows, "\n")
-      break  # Exit the loop if an error is detected
+      cat("For the specified level, error at occurence:", error_occurence, "\n")
+      cat("Offending row:\n" )
+      print(error_rows)
+      stop("Hierarchy error detected in A_data.")
     }
     
     # Move to the next level
     currentLevelA <- currentLevelA - 1
   }
   
+  
   # Read the target classification table B
-  b_data <- read.csv(B, header = TRUE, sep = ",")
+  ColumnNames_b <- colnames(b_data)[1:3]
   colnames(b_data)[1:3] = c("Bcode","Blevel","Bsuperior")
-  # Check if B table has the required columns
-  if (!all(c("Bcode", "Blevel", "Bsuperior") %in% colnames(b_data))) {
-    stop("Target classification table B must have columns 'Bcode', 'Blevel', and 'Bsuperior'.")
+  
+  
+  # Check if there are any records left in table B
+  if (nrow(b_data) == 0) {
+  stop("No valid records found in the input correspondence table B.")
   }
   
-  #Uniqueness 3.2 Check for duplicate Bcode values in B
-  if (any(duplicated(b_data$Bcode))) {
-    stop("Duplicate Bcode values found in the target classification table B.")
+  # Filter rows where there are NA or empty values in the Blevel column
+  problematic_rows <- b_data[is.na(b_data$Blevel) | b_data$Blevel == "", ]
+  
+  # Display problematic rows
+  if (nrow(problematic_rows) > 0) {
+    print(paste("Rows with missing or empty values in the Blevel column:", ColumnNames_b[2]))
+    print(problematic_rows)
+    cat("\n")
   }
   
-  # Check if Blevel is numeric in B
-  if (!all(is.numeric(b_data$Blevel))) {
-    stop("Blevel column in the target classification table B must contain numeric values.")
+  # Check for duplicate Bcode values in table B
+  Bduplicated_rows <- b_data[duplicated(b_data$Bcode), "Bcode"]
+  if (length(Bduplicated_rows) > 0) {
+    message(paste("Duplicate(s) value(s) of Bcode column named:", ColumnNames_b[1], "found in the input table B :"))
+    print(Bduplicated_rows)
+    stop(paste("Please remove duplicate(s) value(s) of Bcode column named:", ColumnNames_b[1],"in the input table B ."))
+  } else {
+    # print("No duplicate(s) value(s) of Bcode in the input table B .")
   }
   
-  # Check if Bsuperior is a character or blank in B
-  if (!all(is.character(b_data$Bsuperior) | b_data$Blevel == 1)) {
-    stop("Bsuperior column in the target classification table B must contain characters or be blank for records at level 1.")
+  
+  # Identify rows with text in Bsuperior for level 1 records
+  b_level_1_with_text <- b_data[b_data$Blevel == 1 & !is.na(b_data$Bsuperior) & b_data$Bsuperior != "", ]
+  
+  # Display rows with text in Bsuperior for level 1 records
+  if (nrow(b_level_1_with_text) > 0) {
+    message(paste("Bsuperior column,", ColumnNames_b[3], "in the target classification table B must be blank for records at level 1."))
+    print(b_level_1_with_text)
+    stop()
   }
+  
+  # Check if Bsuperior is a character or blank for records at level 1
+  tryCatch({
+    if (!all((is.character(b_data$Bsuperior) & b_data$Blevel != 1) | (is.na(b_data$Bsuperior) & b_data$Blevel == 1))) {
+      stop(paste("Bsuperior column,", ColumnNames_b[3], "in the source classification table B must contain characters or be blank for records at level 1."))
+    }
+  }, error = function(e) {
+    stop(e)
+  })
   
   # Initialize the variable to store the current level
   mostGranularB <- max(b_data$Blevel)
   currentLevelB <- mostGranularB
   
-  # Loop to check hierarchy at each level for B
   while (currentLevelB >= 2) {
     # Select rows at the current level and the level below
     Bi <- b_data[b_data$Blevel == currentLevelB, ]
     BiMinus1 <- b_data[b_data$Blevel == (currentLevelB - 1), ]
     
     # Check if all values of Bsuperior (in Bi) correspond to values of Bcode (in BiMinus1)
-    error_rows <- which(!(Bi$Bsuperior %in% BiMinus1$Bcode))
-    if (length(error_rows) > 0) {
-      cat("Hierarchy error in B-data at level:", currentLevelB, "\n")
-      cat("Error occurred in rows:", error_rows, "\n")
-      break  # Exit the loop if an error is detected
-    }
+    error_occurence <- which(!(Bi$Bsuperior %in% BiMinus1$Bcode))
+    error_rows <- Bi[error_occurence,]
+    if (length(error_occurence) > 0) {
+      cat("Hierarchy error in B_data at level:", currentLevelB, "\n")
+      cat("For the specified level, error at occurence:", error_occurence, "\n")
+      cat("Offending row:\n" )
+      print(error_rows)
+      stop("Hierarchy error detected in B_data.")
+    } 
     
     # Check if all values of Bcode (in BiMinus1) correspond to values of Bsuperior (in Bi)
-    error_rows <- which(!(BiMinus1$Bcode %in% Bi$Bsuperior))
-    if (length(error_rows) > 0) {
+    error_occurence <- which(!(BiMinus1$Bcode %in% Bi$Bsuperior))
+    error_rows <- BiMinus1[error_occurence,]
+    if (length(error_occurence) > 0) {
       cat("Hierarchy error in B_data at level:", currentLevelB - 1, "\n")
-      cat("Error occurred in rows:", error_rows, "\n")
-      break  # Exit the loop if an error is detected
+      cat("For the specified level, error at occurence:", error_occurence, "\n")
+      cat("Offending row:\n" )
+      print(error_rows)
+      stop("Hierarchy error detected in B_data.")
     }
     
     # Move to the next level
     currentLevelB <- currentLevelB - 1
   }
   
-  #Uniqueness  Check if Acode and Bcode in AB exist in A and B respectively
-  if (!all(ab_data$Acode %in% a_data$Acode) || !all(ab_data$Bcode %in% b_data$Bcode)) {
-    stop("Acode or Bcode in the input correspondence table does not exist in source or target classification table.")
+  # Uniqueness Check if Acode and Bcode in AB exist in A and B respectively
+  if (!all(ab_data$Acode %in% a_data$Acode)) {
+    offending_Acodes <- ab_data$Acode[!ab_data$Acode %in% a_data$Acode]
+    tryCatch(
+      stop(paste("Acode in the input correspondence table does not exist in source classification table. Offending Acodes:", paste(offending_Acodes, collapse = ", "))),
+      error = function(e) {
+        cat("Error:", e$message, "\n")
+        stop(e)
+      }
+    )
+  } else if (!all(ab_data$Bcode %in% b_data$Bcode)) {
+    offending_Bcodes <- ab_data$Bcode[!ab_data$Bcode %in% b_data$Bcode]
+    tryCatch(
+      stop(paste("Bcode in the input correspondence table does not exist in target classification table. Offending Bcodes:", paste(offending_Bcodes, collapse = ", "))),
+      error = function(e) {
+        cat("Error:", e$message, "\n")
+        stop(e)
+      }
+    )
   }
   
- ###3.4 Correct and complete correspondences 
+  
+  
+  
+  ###3.4 Correct and complete correspondences 
   
   ###add additional the column because here you just add the code you need all the column
   AmostGranular <- subset(a_data, Alevel == max(Alevel), select = c(Acode, Asuperior))
@@ -171,12 +286,13 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
   
   AB_mostGranular <- merge(AmostGranular, BmostGranular, by.x = "Acode", by.y = "Bcode")
   
-  if (!(all(ab_data$Acode %in% AmostGranular$Acode) && all(ab_data$Bcode %in% BmostGranular$Bcode))) {
-    stop("Acode or Bcode in the input correspondence table does not exist in source or target classification table.")
+  if (!(all(AB_mostGranular$Acode %in% ab_data$Acode))) {
+    offending_Acodes <- AB_mostGranular$Acode[!AB_mostGranular$Acode %in% ab_data$Acode]
+    stop(paste("Acode in the most granular correspondence table does not exist in the input correspondence table. Offending Acodes:", paste(offending_Acodes, collapse = ", ")))
   }
-  
-  if (!(all(AB_mostGranular$Acode %in% ab_data$Acode) && all(AB_mostGranular$Bcode %in% ab_data$Bcode))) {
-    stop("Acode or Bcode in the most granular correspondence table does not exist in the input correspondence table.")
+  if (!(all(AB_mostGranular$Bcode %in% ab_data$Bcode))) {
+    offending_Bcodes <- AB_mostGranular$Bcode[!AB_mostGranular$Bcode %in% ab_data$Bcode]
+    stop(paste("Bcode in the most granular correspondence table does not exist in the input correspondence table. Offending Bcodes:", paste(offending_Bcodes, collapse = ", ")))
   }
   ########## 4.1 Creation of the table and merge it. 
   
@@ -188,7 +304,7 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
     level_data <- subset(a_data, a_data$Alevel == i, select = c(Acode, Asuperior))
     A_levels[[i]] <- level_data
   }
-
+  
   # Create an empty data frame to store the final result for A
   resultA <- data.frame()
   
@@ -208,7 +324,7 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
   }
   
   # Result will contain the final aggregated correspondence table with hierarchical code columns for A
-  resultA$test <- resultA[[paste0("Acode", mostGranularA)]]
+  resultA$granular <- resultA[[paste0("Acode", mostGranularA)]]
   resultA$Asuperior <- NULL
   
   # Determine the most granular level dynamically
@@ -242,14 +358,17 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
   }
   
   # Result will contain the final aggregated correspondence table with hierarchical code columns for B
-  resultB$test <- resultB[[paste0("Bcode", mostGranularB)]]
+  resultB$granular <- resultB[[paste0("Bcode", mostGranularB)]]
   resultB$Bsuperior <- NULL
   
   
-  # Merge resultA and resultB using the 'test' column as the key
-  Merged_AB <- merge(resultA, resultB, by.x = "test", by.y = "test", all = F)
-  Merged_AB$test <- NULL
-
+  # Merge resultA and resultB using the 'granular' column as the key
+  Merged_resultA_AB <- merge(resultA, ab_data, by.x = "granular", by.y= "Acode", all= F)
+  Merged_AB <- merge(Merged_resultA_AB, resultB, by.x= "Bcode", by.y= "granular", all=F)
+  names(Merged_AB)[names(Merged_AB) == "Acode"] <- "Acode1"
+  names(Merged_AB)[names(Merged_AB) == "Bcode.y"] <- "Bcode1"
+  Merged_AB$Bcode <- NULL
+  Merged_AB$granular <- NULL
   
   ##Table merged 
   final_result <-Merged_AB
@@ -289,7 +408,9 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
   }
   
   # Convert Matrices to Dataframe
-  results_df <- as.data.frame(do.call(rbind, results_matrices))
+  
+  results_df <- suppressWarnings(as.data.frame(do.call(rbind, results_matrices)))
+ 
   
   # Extract levels from Acode and Bcode columns
   acode_levels <- gsub("^Acode(\\d+)$", "\\1", acode_columns)
@@ -298,28 +419,22 @@ aggregateCorrespondenceTable <- function(AB, A, B, CSVout = NULL ) {
   acode_levels <- rep(acode_levels, length.out = max_levels)
   bcode_levels <- rep(bcode_levels, length.out = max_levels)
   # Define the new column names
-  new_colnames <- c(paste0(ColumnNames[1]," level"),
-                    paste0(ColumnNames[2]," level"),
-                    ColumnNames[1],
-                    ColumnNames[2],
-                    paste0("N of ", ColumnNames[1], acode_levels, " level values "),
-                    paste0("N of ", ColumnNames[2] , bcode_levels , " level values "))
+  new_colnames <- c(paste0(ColumnNames_ab[1]," level"),
+                    paste0(ColumnNames_ab[2]," level"),
+                    ColumnNames_ab[1],
+                    ColumnNames_ab[2],
+                    paste("N of", ColumnNames_ab[1], "level", acode_levels,  "values"),
+                    paste("N of", ColumnNames_ab[2] , "level", bcode_levels , "values"))
   
   # Update column names in results_df
   colnames(results_df) <- new_colnames
+  
   # Display Results
   
-  if (!is.null(CSVout)) {
-    if (is.logical(CSVout) && CSVout == TRUE) {
-      file_name <- paste0("AgrgregateCorrespondeceTable_", ColumnNames[1], " & ",ColumnNames[2], ".csv")
-      path_file <- file.path(getwd(), file_name)
-      write.csv(results_df, path_file, row.names = FALSE)
-      message(paste0("The table was saved in ", getwd(), file_name))
-    } else if (is.character(CSVout)) {
-      write.csv(results_df, CSVout, row.names = FALSE)
-    }
-  }
-  return(results_df)
-  
+    # Using the testCsvParameter function to validate CSVoutz
+    testCsvParameter("CSV", CSVout)
+      
+    CsvFileSave(CSVout, results_df)
+    
+return(results_df)  
 }
-
