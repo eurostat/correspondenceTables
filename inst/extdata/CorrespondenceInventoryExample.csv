@@ -1,0 +1,9 @@
+"Component","CorrespondenceType","SourcePositions","TargetPositions","nSourcePositions","nTargetPositions"
+"Component 1","M:M","c(""C01"", ""C06"", ""C12"", ""C21"", ""C24"")","c(""D04"", ""D21"", ""D13"", ""D20"", ""D11"")",5,5
+"Component 2","M:M","c(""C02"", ""C09"", ""C11"", ""C17"", ""C18"", ""C22"", ""C25"")","c(""D22"", ""D03"", ""D12"")",7,3
+"Component 3","M:M","c(""C03"", ""C05"", ""C08"", ""C15"")","c(""D07"", ""D08"", ""D05"", ""D02"", ""D17"")",4,5
+"Component 4","M:M","c(""C04"", ""C16"", ""C20"")","c(""D24"", ""D19"", ""D10"")",3,3
+"Component 5","M:M","c(""C07"", ""C14"", ""C23"")","c(""D16"", ""D06"")",3,2
+"Component 6","1:M","C10","c(""D01"", ""D18"", ""D09"")",1,3
+"Component 7","1:1","C13","D15",1,1
+"Component 8","M:1","c(""C19"", ""C26"")","D14",2,1

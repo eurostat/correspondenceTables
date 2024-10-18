@@ -1,8 +1,8 @@
 Package: correspondenceTables
 Type: Package
 Title: Creating Correspondence Tables Between Two Statistical Classifications
-Date: 2023-04-27
-Version: 0.8.2
+Date: 2022-09-30
+Version: 0.10.10
 Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
       person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
       person("Martin", "Karlberg", role = "aut"),
@@ -10,17 +10,16 @@ Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of
       person("Martina", "Patone", role = "aut"),
       person("Erkand", "Muraku", role = "aut"), 
       person("Clement", "Thomas", role = "aut"), 
-      person("Loic", "Bienvenue", role = "aut"))
+      person("Loic", "Bienvenu", role = "aut"))
 Description: 
     A candidate correspondence table between two classifications can be created when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications. 
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
 License: EUPL
 Encoding: UTF-8
-Imports: data.table, httr, tidyverse, writexl
+Imports: data.table, httr, stringr, igraph, tools
 Suggests: 
     knitr,
-    rmarkdown,
-    tinytest
+    rmarkdown, tinytest
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/eurostat/correspondenceTables

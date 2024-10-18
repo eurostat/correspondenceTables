@@ -227,19 +227,6 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     }
   }
   
-  
-  # Check Reference
-  if (!(Reference %in% c("A", "B", "none"))) {
-    stop(simpleError("You entered a non-allowed value for Reference. The allowed values are \"A\", \"B\" and \"none\"."))
-  }
-  
-  # Check MismatchTolerance
-  if (is.character(MismatchTolerance) || MismatchTolerance < 0 || MismatchTolerance >
-      1) {
-    stop(simpleError("You entered a non-allowed value for MismatchTolerance. The allowed values are numbers in the interval [0, 1]."))
-  }
-  
-  
   test.list <- list()
   test.list[[1]] <- "1"
   for (mat.index in 2:ncol(x)) {
@@ -276,6 +263,19 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # data.table::fread(x, sep = ",", check.names = FALSE, colClasses = c("character"),
     # encoding = "UTF-8")
   })
+
+  # Check Reference
+  if (!(Reference %in% c("A", "B", "none"))) {
+    stop(simpleError("You entered a non-allowed value for Reference. The allowed values are \"A\", \"B\" and \"none\"."))
+  }
+  
+  # Check MismatchTolerance
+  if (is.character(MismatchTolerance) || MismatchTolerance < 0 || MismatchTolerance >
+      1) {
+    stop(simpleError("You entered a non-allowed value for MismatchTolerance. The allowed values are numbers in the interval [0, 1]."))
+  }
+  
+  
   
   removeBOM <- function(headers) {
     gsub("\\xef\\xbb\\xbf", "", headers, useBytes = T)
