@@ -4,7 +4,8 @@
 #'   classifications \eqn{C_1, \ldots, C_k}. 
 #'   The correspondence tables leading from A to B are A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}: \eqn{1 \le i \le k -1}\}, B:\eqn{C_k}.
 #' @param Tables A string of type character containing the name of a csv file which contains the names of the files that
-#'   contain the classifications and the intermediate correspondence tables (see "Details" below).
+#'   contain the classifications and the intermediate correspondence tables OR a list of vectors with the names of the dataframes
+#'   classifications and the intermediate correspondence tables (see "Details" below).
 #' @param CSVout The preferred name for the \emph{output csv files} that will contain the candidate correspondence table
 #'   and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}. 
 #'   If the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output 
@@ -186,11 +187,27 @@
 
 newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", MismatchTolerance = 0.2, Redundancy_trim = TRUE) {
   
-  # Check if the file that contains the names of both classifications and
-  # correspondence tables exists in working directory
-  if (!file.exists(Tables)) {
-    stop(simpleError(paste("There is no file with name", Tables, "in your working directory.")))
-  } else {
+  # Check if the Tables is a File or a list of vectors
+  # Check if the file that contains the names of both classifications and correspondence tables exists in working directory
+  if (is.list(Tables)) {
+    # Convert list of lists to a matrix
+    x <- as.matrix(do.call(rbind, Tables))
+    mat.list <- apply(x, 2, function(x) {
+      as.character(which(x != ""))
+    })
+    
+    test.names <- as.vector(x)[which(as.vector(x) != "")]
+    if (!all(sapply(test.names, exists))) {
+      for (i in which(sapply(test.names, exists) == FALSE)) {
+        stop(simpleError(paste("The is no dataframe with name", test.names[i], "in your environment.")))
+      }
+    }
+    
+    if (length(which(duplicated(test.names) == TRUE)) >= 1) {
+      stop(simpleError(paste("At least two of the filenames in input list are the same.")))
+    }
+    
+  } else if (file.exists(Tables)) {
     # x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
     #                                 encoding = "UTF-8"))
     x <- as.matrix(data.table::fread(Tables, sep = ",", header = FALSE, colClasses = c("character"),
@@ -198,20 +215,23 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     mat.list <- apply(x, 2, function(x) {
       as.character(which(x != ""))
     })
-  }
-  
-  # Check if files exist in working directory
-  test.names <- as.vector(x)[which(as.vector(x) != "")]
-  if (!all(file.exists(test.names))) {
-    for (i in which(file.exists(test.names) == FALSE)) {
-      stop(simpleError(paste("The is no file with name", test.names[i], "in your working directory.")))
+    
+    # Check if files exist in working directory
+    test.names <- as.vector(x)[which(as.vector(x) != "")]
+    if (!all(file.exists(test.names))) {
+      for (i in which(file.exists(test.names) == FALSE)) {
+        stop(simpleError(paste("The is no file with name", test.names[i], "in your working directory.")))
+      }
     }
+    if (length(which(duplicated(test.names) == TRUE)) >= 1) {
+      stop(simpleError(paste("At least two of the filenames in", Tables, "are the same.")))
+    }
+    
+  } else {
+    stop(simpleError(paste("There is no file with name", Tables, "in your working directory. Or the argument is not a list of vectors")))
   }
   
-  if (length(which(duplicated(test.names) == TRUE)) >= 1) {
-    stop(simpleError(paste("At least two of the filenames in", Tables, "are the same.")))
-  }
-  
+
   # Check CSVout
   if (!is.null(CSVout)) {
     while (file.exists(CSVout)) {
@@ -243,7 +263,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # Error message in case the names of both classifications and
     # correspondence tables in the 'names.csv' file do not construct a
     # sparse square matrix.
-    stop(paste("The filenames in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
+    stop(paste("The filenames/ List  in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
   }
   
   # The list inputs includes the names of both classifications and
@@ -255,15 +275,22 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
   inputs[(k + 3):(k + 2 + length(as.list(x[upper.tri(x)][x[upper.tri(x)] != ""])))] <- as.list(x[upper.tri(x)][x[upper.tri(x)] !=
                                                                                                                  ""])
   
-  # Create a list of the classifications and the known correspondence tables
-  # as data frames.
-  RRR <- lapply(inputs[1:length(inputs)], function(x) {
-    utils::read.csv(x, sep = ",", check.names = FALSE, colClasses = c("character"),
-                    encoding = "UTF-8")
-    # data.table::fread(x, sep = ",", check.names = FALSE, colClasses = c("character"),
-    # encoding = "UTF-8")
-  })
-
+  if (is.list(Tables)) {
+    # Create a list of the classifications and the known correspondence tables
+    # as data frames.
+    RRR <- lapply(inputs, function(x) {
+      get(x)
+    })
+  } else {
+    # Create a list of the classifications and the known correspondence tables
+    # as data frames.
+    RRR <- lapply(inputs[1:length(inputs)], function(x) {
+      utils::read.csv(x, sep = ",", check.names = FALSE, colClasses = c("character"),
+                      encoding = "UTF-8")
+      # data.table::fread(x, sep = ",", check.names = FALSE, colClasses = c("character"),
+      # encoding = "UTF-8")
+    })
+  }
   # Check Reference
   if (!(Reference %in% c("A", "B", "none"))) {
     stop(simpleError("You entered a non-allowed value for Reference. The allowed values are \"A\", \"B\" and \"none\"."))
