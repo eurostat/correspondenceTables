@@ -44,7 +44,7 @@ The following code is used to retrieve the german,french and bulgarian NACE2  cl
 ```{r, results = "hide"}
 endpoint = "CELLAR"
 # obtain prefix and conceptscheme using classificationEndpoint()
-#classificationEndpoint(endpoint)[[1]][,1:4]
+classificationEndpoint(endpoint)[[1]][,1:4]
 prefix = "nace2"
 conceptScheme = "nace2"
 ## You can modify the language by example "en" "bg"
