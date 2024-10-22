@@ -21,7 +21,7 @@ testInputTable <- function(arg_name, arg_value) {
       
       if (length(errors) == 0) {  # Si aucune erreur, essayer de lire le fichier CSV
         data <- tryCatch({
-          read.csv2(arg_value, header = TRUE, sep = ",")
+          read.csv2(arg_value, header = TRUE, sep = ",", colClasses = c("character"), encoding = "UTF-8")
         }, warning = function(w) {
           errors <- c(errors, paste("Warning in", as.character(caller[1]), ": Failed to import data from", arg_name, ". The file might be corrupted or improperly formatted."))
           return(invisible())
