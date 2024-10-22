@@ -21,7 +21,7 @@ testInputTable <- function(arg_name, arg_value, all_ch = FALSE) {
       
       if (length(errors) == 0) {  # Si aucune erreur, essayer de lire le fichier CSV
         data <- tryCatch({
-          if (all_ch ==TRUE){ 
+          if (isTRUE(all_ch)){ 
             read.csv2(arg_value, header = TRUE, sep = ",",check.names = FALSE, colClasses = c("character"), encoding = "UTF-8")
           }else{
             read.csv2(arg_value, header = TRUE, sep = ",")
