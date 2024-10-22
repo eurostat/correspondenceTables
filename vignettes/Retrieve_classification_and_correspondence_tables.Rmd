@@ -227,10 +227,10 @@ Following, the function used to extract the required information for the retriev
 The correspondenceList() provides an overview of all the available correspondence classification from CELLAR and FAO repository. 
 
 ```{r, message=FALSE, warning=FALSE, results = "hide"}
-corr_list = correspondenceList("ALL")
+#corr_list = correspondenceList("ALL")
 
 #provides a table with all the correspondence tables for NACE2 in CELLAR
-corr_list$CELLAR$`nace2:`
+#corr_list$CELLAR$`nace2:`
 
 #provides a table with all the correspondence tables for CPC v21 in FAO
 # corr_list$FAO$`CPCv21:`
