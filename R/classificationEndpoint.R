@@ -23,7 +23,9 @@
 #'     }
 
 classificationEndpoint = function(endpoint = "ALL") {
-
+  tryCatch(
+    {
+  if (endpoint == "ALL" | endpoint == "CELLAR") {
   ### Datasets in CELLAR
   endpoint_cellar = "http://publications.europa.eu/webapi/rdf/sparql"
   
@@ -50,7 +52,14 @@ classificationEndpoint = function(endpoint = "ALL") {
   data_cellar = cbind(prefix, conceptscheme, uri, title)
   rownames(data_cellar) = 1:nrow(data_cellar)
   colnames(data_cellar) = c("Prefix", "ConceptScheme", "URI", "Title")
+  }
+    }, error = function(e) {
+      stop(simpleError(paste("Error in function ClassificationEndpoint(",endpoint,"),Endpoint Cellar is not available or is returning unexpected data")))
+    })
   
+  tryCatch(
+    {
+  if (endpoint == "ALL" | endpoint == "FAO") {
   ### Datasets in FAO
   endpoint_fao = "https://stats.fao.org/caliper/sparql/AllVocs"
   SPARQL.query_fao = paste0("
@@ -83,7 +92,10 @@ ORDER BY ASC(?notation)
   data_fao = cbind(prefix, ConceptScheme, uri, data_fao[,3])
   rownames(data_fao) = 1:nrow(data_fao)
   colnames(data_fao) = c("Prefix", "ConceptScheme", "URI", "Title")
-
+  }
+    }, error = function(e) {
+      stop(simpleError(paste("Error in function ClassificationEndpoint(",endpoint,"),Endpoint Fao is not available or is returning unexpected data")))
+    })
   if (endpoint == "ALL") {
     data = list("CELLAR" = data_cellar, "FAO" = data_fao)
   }

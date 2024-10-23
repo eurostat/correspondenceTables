@@ -62,6 +62,8 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
       return(data)
     }
   } else {
+    tryCatch(
+      {
     ### Define endpoint
     if (endpoint == "CELLAR") {
       source = "http://publications.europa.eu/webapi/rdf/sparql"
@@ -80,8 +82,15 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     prefixlist = prefixList(endpoint, desired_prefix = tolower(c(A,B)))
     prefixlist = as.character(paste(prefixlist, collapse = "\n"))
     
+      }, error = function(e) {
+        stop(simpleError(paste("Error in function retrieveCorrespondenceTable, building of the SPARQL query failed.",endpoint,"is not available or is returning unexpected data.")))
+      })
+    
+    
     ### CLASSIFICATION TABLE SPARQL QUERIES
     ### Define SPARQL query -- BASE
+    tryCatch(
+      {
     SPARQL.query_0 = paste0(prefixlist, "
         SELECT ?", A ," ?", B ," ?Label_", A ," ?Label_", B ," ?Include_", A ," ?Exclude_", A ," ?Include_", B ," ?Exclude_", B ," ?Comment ?URL  ?Sourcedatatype ?Targetdatatype 
         
@@ -121,6 +130,10 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
     data = data.frame(content(response, show_col_types = FALSE))
+      }, error = function(e) {
+        stop(simpleError("Error in function retrieveCorrespondenceTable, SPARQL query execution failed ."))
+        print(SPARQL.query)
+      })
     
     
     #keep only plainLiteral if more than one datatype // 
@@ -149,6 +162,9 @@ retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "e
     #   write.csv(data, file = CSVout, row.names = FALSE)
     #   message(paste0("The table was saved in ", getwd(), CSVout))
     # }
+      
+    
+    
     CsvFileSave(CSVout, data )
     
     
