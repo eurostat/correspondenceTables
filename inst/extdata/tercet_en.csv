@@ -1,0 +1,5 @@
+"tercet","NAME","Parent","Include","Include_Also","Exclude"
+"DEG1","densely populated areas",NA,"Cities (densely populated areas) — where at least 50 % of the population lives in one or more urban centres.",NA,NA
+"DEG2","towns and semi-dense areas",NA,"Towns and suburbs (intermediate density areas) — where less than 50 % of the population lives in an urban centre, but at least 50 % of the population lives in an urban cluster.",NA,NA
+"DEG2","iintermediate density areas",NA,"Towns and suburbs (intermediate density areas) — where less than 50 % of the population lives in an urban centre, but at least 50 % of the population lives in an urban cluster.",NA,NA
+"DEG3","thinly populated areas",NA,"Rural areas (thinly populated areas) — where more than 50 % of the population lives in rural grid cells.",NA,NA

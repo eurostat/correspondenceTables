@@ -62,6 +62,8 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
       return(data)
     }
   } else {
+    tryCatch(
+      {
   ### Define endpoint
   if (endpoint == "CELLAR") {
     source = "http://publications.europa.eu/webapi/rdf/sparql"
@@ -74,7 +76,12 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   prefixlist = prefixList(endpoint, desired_prefix = prefix)
   prefixlist = as.character(paste(prefixlist, collapse = "\n"))
   
-  
+      }, error = function(e) {
+        stop(simpleError(paste("Error in function retrieveClassificationTable, building of the SPARQL query failed.",endpoint,"is not available or is returning unexpected data.")))
+      })
+    
+    tryCatch(
+      {
   # # Check if classification has level, if not, set level = "ALL"
   dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language))
   
@@ -82,7 +89,12 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
     level = "ALL"
     message("Classification has no levels, so level = ALL was set to retrieve the table.")
   }
-  
+      }, error = function(e) {
+        stop(simpleError("Error in function retrieveClassificationTable, dataStructure() failed. Unable to check classification level"))
+      })
+    
+    tryCatch(
+      {
   ### Define SPARQL query -- BASE: all levels
   SPARQL.query_0 = paste0(prefixlist, "
         SELECT DISTINCT ?", prefix, " ?NAME ?Parent ?Include ?Include_Also ?Exclude ?URL
@@ -134,12 +146,12 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
     }
     
   }
-  tryCatch({
   response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
   data = data.frame(content(response, show_col_types = FALSE))
+
   }, error = function(e) {
-    stop(message("Error occurred during SPARQL query execution: ", e$message))
-    return(NULL)
+    stop(simpleError("Error in function retrieveClassificationTable, SPARQL query execution failed ."))
+    print(SPARQL.query)
   })
   
   #keep only plainLiteral if more than one datatype // 
