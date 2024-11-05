@@ -10,7 +10,7 @@ retrieveClassificationTable(
   conceptScheme,
   level = "ALL",
   language = "en",
-  CSVout = FALSE,
+  CSVout = NULL,
   showQuery = TRUE
 )
 }
@@ -33,11 +33,13 @@ By default is set to \code{"ALL"}. This is an optional argument.}
 \item{language}{Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
 By default is set to "en". This is an optional argument.}
 
-\item{CSVout}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
+\item{CSVout}{The valid value is a valid path to a csv file including file name and extension. By default, no csv file is produced, \code{NULL}
 If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced.}
 
 \item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
 If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.}
+
+\item{localData}{this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api}
 }
 \value{
 \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
@@ -68,4 +70,5 @@ To facilitate the utilization of European classifications as inputs for the newC
     #View Classification Table
     #View(results_ls[[2]])
     }
+    
 }
