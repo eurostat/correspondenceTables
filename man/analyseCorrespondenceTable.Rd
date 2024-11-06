@@ -7,9 +7,9 @@
 analyseCorrespondenceTable(
   AB,
   A = NULL,
-  formatA = NULL,
+  longestAcodeOnly = FALSE,
   B = NULL,
-  formatB = NULL,
+  longestBcodeOnly = FALSE,
   CSVcorrespondenceInventory = NULL,
   CSVcorrespondenceAnalysis = NULL
 )
@@ -19,18 +19,18 @@ analyseCorrespondenceTable(
 
 \item{A}{a path to a CSV file containing source classification data with "Acode" column.}
 
-\item{formatA}{A regular expression pattern to filter source classification data based on "Acode" should contains start & end position.}
+\item{longestAcodeOnly}{A Boolean argument to filter source classification data based on "Acode" retaining only the maximum length, thus the lowest level Acode .}
 
 \item{B}{a path to a CSV file containing target classification data with "Bcode" column.}
 
-\item{formatB}{A regular expression pattern to filter target classification data based on "Bcode" should contains start & end position.}
+\item{longestBcodeOnly}{A Boolean argument to filter source classification data based on "Bcode" retaining only the maximum length, thus the lowest level Bcode.}
 
 \item{CSVcorrespondenceInventory}{The valid values are not NULL if the user put a path with a empty csv file it will return it with the correspondeceInventory or just a path with a csv file . By default no CSV is produce}
 
 \item{CSVcorrespondenceAnalysis}{Provide an output containing the correpondenceAnalysis. the user put a path a empty file it will return with correpondenceAnalysis. by default no CSV is produce}
 }
 \value{
-A list containing two data frames: Annexe_A and Annexe_B.
+A list containing two data frames: Inventory and Analysis.
 The `CSVcorrespondenceInventory` contains statistics related to components, correspondence types, and source/target positions.
 The `CSVcorrespondenceAnalysis` contains statistics for each class in the correspondence table.
 }
@@ -49,7 +49,7 @@ It checks the validity of the input data, identifies components, calculates corr
 
 
 # Perform analysis
-result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),A = NULL, formatA = NULL, B = NULL, formatB = NULL, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
-print(result$Annexe_A)
-print(result$Annexe_B)
+result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),A = NULL, longestAcodeOnly = FALSE, B = NULL, longestBcodeOnly = FALSE, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
+print(result$Inventory)
+print(result$Analysis)
 }

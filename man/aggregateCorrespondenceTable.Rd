@@ -28,7 +28,7 @@ A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
 B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
 
 
-result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = FALSE)
+result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
 print(result)
 
 }

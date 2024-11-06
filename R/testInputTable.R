@@ -1,3 +1,21 @@
+#' @title Test input dataframe or CSV file. 
+#' @description  Validation of the input to accept only dataframes or CSV files and import accordingly.
+#' @param arg_name The name of the corresponding file or dataframe,  
+#' the name will be used in the validation messages.
+#' @param arg_value The input dataframe or full csv path including file name and extension.
+#' @param all_ch The optional argument with values \code{TRUE} or \code{FALSE}
+#'  
+#' @export
+#' @return A data frame representing the imported csv or the input dataframe, or validation errors
+#' 
+#' @examples
+#' {
+#'     AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
+#'     result <- testInputTable("Correspondence table (AB)", AB)
+#'     }
+
+
+
 testInputTable <- function(arg_name, arg_value, all_ch = FALSE) {
   errors <- c()  # Initialiser un vecteur pour collecter les messages d'erreur
   caller <- sys.call(-1) #define the caller function
