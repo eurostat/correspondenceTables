@@ -18,17 +18,22 @@
 testCsvParameter <- function(arg_name, arg_value) {
   caller <- sys.call(-1)
   tryCatch({
+    
     if (is.null(arg_value)) {
       # message(paste("Warning in", as.character(caller[1]), ":", arg_name, "argument is NULL. No CSV file will be generated."))
       return()
     }
     
+    if (!is.character(arg_value)) {
+      stop(paste("Error in", as.character(caller[1]), ":", arg_name, "must be character or NULL "))
+    }
+    
     if (arg_value == FALSE) {
-      stop(paste("Error in", as.character(caller[1]), ":", arg_name, "must be character, Bolean is not accepted."))
+      stop(paste("Error in", as.character(caller[1]), ":", arg_name, "must be character or NULL "))
     }
     
     if (arg_value == TRUE) {
-      stop(paste("Error in", as.character(caller[1]), ":", arg_name, "must be character, Bolean is not accepted."))
+      stop(paste("Error in", as.character(caller[1]), ":", arg_name, "must be character or NULL"))
     }
     
     if (arg_value == "") {
@@ -36,9 +41,6 @@ testCsvParameter <- function(arg_name, arg_value) {
       invisible(NULL)
     }
     
-    if (!is.character(arg_value)) {
-      stop(paste(arg_name, "argument must be a character string."))
-    }
     
     # Check if it's a directory path
     if (dir.exists(arg_value)) {
@@ -55,6 +57,6 @@ testCsvParameter <- function(arg_name, arg_value) {
     # }
  
   }, error = function(e) {
-    stop(message(paste("Error in", as.character(caller[1]), ":", e$message)))
+    stop(message(e$message))
   })
 }

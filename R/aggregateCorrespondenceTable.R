@@ -433,7 +433,7 @@ check_n_columns(b_data,"Target classification (B)", 3)
   # Display Results
   
     # Using the testCsvParameter function to validate CSVout
-    testCsvParameter("CSV", CSVout)
+    testCsvParameter("CSVout", CSVout)
       
     CsvFileSave(CSVout, results_df)
     
