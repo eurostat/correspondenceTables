@@ -1,3 +1,20 @@
+#' @title Validation of output csv parameter 
+#' @description  Validation of the CSV argument to make sure it is of the correct format 
+#' @param arg_name The name in error handling to describe the argument, 
+#' the name will be used in the validation messages.
+#' @param arg_value The input argument, a full csv path including file name and extension.
+#' 
+#'  
+#' @export
+#' @return validation or error messages
+#' 
+#' @examples
+#' {
+#'     CSVout = NULL
+#'     result <- testCsvParameter("CSV", CSVout)
+#'     }
+
+
 testCsvParameter <- function(arg_name, arg_value) {
   caller <- sys.call(-1)
   tryCatch({
@@ -7,17 +24,15 @@ testCsvParameter <- function(arg_name, arg_value) {
     }
     
     if (arg_value == FALSE) {
-      # message(paste("Warning in", as.character(caller[1]), ":", arg_name, "is FALSE. No CSV file will be generated."))
-      return()
+      stop(paste("Error in", as.character(caller[1]), ":", arg_name, "must be character, Bolean is not accepted."))
     }
     
     if (arg_value == TRUE) {
-      message(paste("CSVout is TRUE. A CSV file will be generated."))
-      return(invisible())  # Ne retourne rien
+      stop(paste("Error in", as.character(caller[1]), ":", arg_name, "must be character, Bolean is not accepted."))
     }
     
     if (arg_value == "") {
-      message(paste("Warning in", as.character(caller[1]), ":", arg_name, "is empty. No CSV file will be generated."))
+      #message(paste("Warning in", as.character(caller[1]), ":", arg_name, "is empty. No CSV file will be generated."))
       invisible(NULL)
     }
     

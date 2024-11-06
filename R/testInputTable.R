@@ -2,7 +2,7 @@
 #' @description  Validation of the input to accept only dataframes or CSV files and import accordingly.
 #' @param arg_name The name of the corresponding file or dataframe,  
 #' the name will be used in the validation messages.
-#' @param arg_value The input dataframe or full csv path including file name annd extension.
+#' @param arg_value The input dataframe or full csv path including file name and extension.
 #' @param all_ch The optional argument with values \code{TRUE} or \code{FALSE}
 #'  
 #' @export

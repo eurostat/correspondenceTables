@@ -10,7 +10,7 @@ testInputTable(arg_name, arg_value, all_ch = FALSE)
 \item{arg_name}{The name of the corresponding file or dataframe,
 the name will be used in the validation messages.}
 
-\item{arg_value}{The input dataframe or full csv path including file name annd extension.}
+\item{arg_value}{The input dataframe or full csv path including file name and extension.}
 
 \item{all_ch}{The optional argument with values \code{TRUE} or \code{FALSE}}
 }
