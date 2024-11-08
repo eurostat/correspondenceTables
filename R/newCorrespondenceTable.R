@@ -190,23 +190,34 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
   # Check if the Tables is a File or a list of vectors
   # Check if the file that contains the names of both classifications and correspondence tables exists in working directory
   if (is.list(Tables)) {
-    # Convert list of lists to a matrix
     x <- as.matrix(do.call(rbind, Tables))
-    mat.list <- apply(x, 2, function(x) {
-      as.character(which(x != ""))
-    })
     
-    test.names <- as.vector(x)[which(as.vector(x) != "")]
-    if (!all(sapply(test.names, exists))) {
-      for (i in which(sapply(test.names, exists) == FALSE)) {
-        stop(simpleError(paste("The is no dataframe with name", test.names[i], "in your environment.")))
+    y <- Tables
+    # Define inputs as an empty list
+    inputs <- list()
+    # Get the number of rows (and columns) from the length of `y` (assuming it's square)
+    n <- length(y)
+    # First diagonal element
+    inputs[1] <- y[[1]][1]
+    # Next n diagonal elements (from 2nd diagonal to the n th)
+    for (i in 2:n) {
+      inputs[i] <- y[[i]][i]
+    }
+    #Upper triangular elements excluding empty entries
+    # Initialize a counter to keep track of positions in `inputs`
+    counter <- length(inputs) + 1
+    # Loop through each row and each column above the diagonal
+    for (i in 1:(n - 1)) {
+      for (j in (i + 1):n) {
+        if (y[[i]][j] != "") {  # Check that the entry is not empty
+          inputs[counter] <- y[[i]][j]
+          counter <- counter + 1
+        }
       }
     }
-    
-    if (length(which(duplicated(test.names) == TRUE)) >= 1) {
-      stop(simpleError(paste("At least two of the filenames in input list are the same.")))
-    }
-    
+    #Remove nulls
+    inputs <- inputs[!sapply(inputs, is.null)]
+   
   } else if (file.exists(Tables)) {
     # x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
     #                                 encoding = "UTF-8"))
@@ -226,26 +237,6 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     if (length(which(duplicated(test.names) == TRUE)) >= 1) {
       stop(simpleError(paste("At least two of the filenames in", Tables, "are the same.")))
     }
-    
-  } else {
-    stop(simpleError(paste("There is no file with name", Tables, "in your working directory. Or the argument is not a list of vectors")))
-  }
-  
-
-  # Check CSVout
-  if (!is.null(CSVout)) {
-    while (file.exists(CSVout)) {
-      message(paste("Your working directory contains already a file with the name that you selected for the output file: ",
-                    CSVout))
-      answer <- utils::menu(c("Yes", "No"), title = "Do you want to overwrite it?")
-      if (answer == 2) {
-        CSVout <- readline(prompt = "Please enter a new name for the output file: ")
-      }
-      if (answer == 1) {
-        break
-      }
-    }
-  }
   
   test.list <- list()
   test.list[[1]] <- "1"
@@ -275,12 +266,29 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
   inputs[(k + 3):(k + 2 + length(as.list(x[upper.tri(x)][x[upper.tri(x)] != ""])))] <- as.list(x[upper.tri(x)][x[upper.tri(x)] !=
                                                                                                                  ""])
   
-  if (is.list(Tables)) {
-    # Create a list of the classifications and the known correspondence tables
-    # as data frames.
-    RRR <- lapply(inputs, function(x) {
-      get(x)
-    })
+  } else {
+    stop(simpleError(paste("There is no file with name", Tables, "in your working directory. Or the argument is not a list of vectors")))
+  }
+  
+  
+  # Check CSVout
+  if (!is.null(CSVout)) {
+    while (file.exists(CSVout)) {
+      message(paste("Your working directory contains already a file with the name that you selected for the output file: ",
+                    CSVout))
+      answer <- utils::menu(c("Yes", "No"), title = "Do you want to overwrite it?")
+      if (answer == 2) {
+        CSVout <- readline(prompt = "Please enter a new name for the output file: ")
+      }
+      if (answer == 1) {
+        break
+      }
+    }
+  }
+  
+   if (is.list(Tables)) {
+    RRR <- inputs
+    k <- nrow(x) - 2
   } else {
     # Create a list of the classifications and the known correspondence tables
     # as data frames.
