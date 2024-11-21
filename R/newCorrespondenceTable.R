@@ -189,34 +189,55 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
   
   # Check if the Tables is a File or a list of vectors
   # Check if the file that contains the names of both classifications and correspondence tables exists in working directory
+  
   if (is.list(Tables)) {
     x <- as.matrix(do.call(rbind, Tables))
-    
     y <- Tables
-    # Define inputs as an empty list
-    inputs <- list()
-    # Get the number of rows (and columns) from the length of `y` (assuming it's square)
+    
+    # The following if statement checks if the names of both classifications
+    # and correspondence tables lists construct a sparse square matrix.
+    is_square <- TRUE
     n <- length(y)
-    # First diagonal element
-    inputs[1] <- y[[1]][1]
-    # Next n diagonal elements (from 2nd diagonal to the n th)
-    for (i in 2:n) {
-      inputs[i] <- y[[i]][i]
+    
+    for (i in seq_along(y)) {
+      if (length(y[[i]]) != n) {
+        is_square <- FALSE
+       }
     }
-    #Upper triangular elements excluding empty entries
-    # Initialize a counter to keep track of positions in `inputs`
-    counter <- length(inputs) + 1
-    # Loop through each row and each column above the diagonal
-    for (i in 1:(n - 1)) {
-      for (j in (i + 1):n) {
-        if (y[[i]][j] != "") {  # Check that the entry is not empty
-          inputs[counter] <- y[[i]][j]
-          counter <- counter + 1
+    
+    if (is_square) {
+      # Define inputs as an empty list
+      inputs <- list()
+      inputs_name <- list()
+      n <- length(y)
+      # First diagonal element
+      inputs[1] <- y[[1]][1]
+      inputs_name[1] <- "Table[1,1]"
+      # Next n diagonal elements (from 2nd diagonal to the n th)
+      for (i in 2:n) {
+        inputs[i] <- y[[i]][i]
+        inputs_name[i]<- paste0("Table[",i, ",", i, "]")
+        
+      }
+      #Upper triangular elements excluding empty entries
+      # Initialize a counter to keep track of positions in `inputs`
+      counter <- length(inputs) + 1
+      # Loop through each row and each column above the diagonal
+      for (i in 1:(n - 1)) {
+        for (j in (i + 1):n) {
+          if (!is.null(y[[i]][[j]])) {  # Check that the entry is not empty
+            inputs[counter] <- y[[i]][j]
+            inputs_name[counter] <- paste0("Table[",i, ",", j, "]")
+            counter <- counter + 1
+          }
         }
       }
+    } else {
+      # Error message in case lists do not construct a
+      # sparse square matrix.
+      stop(paste("The List do not construct a sparse square matrix. \n Please verify that the appropriate number of elements are inserted in the appropriate cells."))
     }
-    #Remove nulls
-    inputs <- inputs[!sapply(inputs, is.null)]
+   
    
   } else if (file.exists(Tables)) {
     # x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
@@ -254,7 +275,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # Error message in case the names of both classifications and
     # correspondence tables in the 'names.csv' file do not construct a
     # sparse square matrix.
-    stop(paste("The filenames/ List  in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
+    stop(paste("The filenames  in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
   }
   
   # The list inputs includes the names of both classifications and
@@ -289,6 +310,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
    if (is.list(Tables)) {
     RRR <- inputs
     k <- nrow(x) - 2
+    
+    inputs <- inputs_name
+   
   } else {
     # Create a list of the classifications and the known correspondence tables
     # as data frames.
@@ -1922,7 +1946,14 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # Redundancy_trim parameter (MP)
     # Find the columns which are related to linking datasets which values need to be recorded as "Multiple"
     ## 2 + n_link_data*2 + 1 = n_data
-    num_link = (length(test.names) - 3)/2
+    if (is.list(Tables)){
+      num_link = (length(inputs_name) - 3)/2
+      
+    }else {
+      num_link = (length(test.names) - 3)/2
+      
+    }
+ 
     col_multiple = numeric(0)
     for (nl in 1:num_link){
       col_multiple = unique(c(col_multiple, grep(colnames(correspondenceAB)[1 + nl], colnames(correspondenceAB), value = T)))
