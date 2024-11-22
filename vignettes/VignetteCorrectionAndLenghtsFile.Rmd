@@ -1,5 +1,5 @@
 ---
-title: "CorrectionClassification"
+title: "Correction Classification"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{CorrectionClassification & LengthsFile}
