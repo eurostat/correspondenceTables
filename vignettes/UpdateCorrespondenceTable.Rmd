@@ -1,9 +1,9 @@
 ---
-title: "Sample datasets with the correspondenceTables package"
+title: "Update Correspondence Table"
 output: rmarkdown::html_vignette
 
 vignette: >
-  %\VignetteIndexEntry{Sample datasets with the correspondenceTables package}
+  %\VignetteIndexEntry{Sample datasets and the Update Correspondence Table Function}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -11,6 +11,8 @@ vignette: >
 ```{r include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
+
+This vignette provides information about using the Update Correspondence Table function
 
 This vignette provides information about applying the correspondenceTables package on the sample datasets included in it.
 
@@ -148,83 +150,6 @@ Execute the following code line to apply function updateCorrespondenceTable() on
 UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase6.csv"), "B", 0.3, 0.6, FALSE)
 ```
 
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Application of function newCorrespondenceTable().
-
-The function fullPath is used in all cases in order to get the path of the required input files.
-
-```{r}
-fullPath <- function(CSVraw, CSVappended){
-  NamesCsv <- system.file("extdata", CSVraw, package = "correspondenceTables")
-  A <- read.csv(NamesCsv, header = FALSE, sep = ",")
-   for (i in 1:nrow(A)) {
-    for (j in 1:ncol(A)) {
-      if (A[i,j]!="") {
-        A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
-      }}}
-  write.table(x = A, file = file.path(tmp_dir,CSVappended), row.names = FALSE, col.names = FALSE, sep = ",")
-  return(A)
-}
-```
-
-Case 1
-
-```{r, results = "hide"}
-fullPath("names1.csv", "names.csv")
-```
-
-Execute the following code to apply function newCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
-
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase1.csv"), "A", 0.5, FALSE))
-```
-
-```{r}
-print(NCT[[1]][1:10, 1:6])
-print(NCT[[2]])
-```
-
-Case 2
-
-```{r, results = "hide"}
-fullPath("names2.csv", "names.csv")
-```
-
-Execute the following code to apply function newCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
-
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase2.csv"), "B", 0.5, FALSE))
-```
-
-Case 3
-
-```{r, results = "hide"}
-fullPath("names3.csv", "names.csv")
-```
-
-Execute the following code to apply function newCorrespondenceTable() on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
-
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase3.csv"), "B", 0.5, TRUE))
-```
-
-Case 4
-
-```{r, results = "hide"}
-fullPath("names4.csv", "names.csv")
-```
-
-Execute the following code to apply function newCorrespondenceTable() on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
-
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase4.csv"), "none", 0.96, TRUE))
-```
-
-```{r message=TRUE, warning=TRUE, include=FALSE}
-csv_files<-list.files(tmp_dir, pattern = ".csv")
-if (length(csv_files)>0) unlink(csv_files)
-```
 
 
 

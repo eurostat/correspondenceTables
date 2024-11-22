@@ -1,0 +1,62 @@
+---
+title: "Vignette Aggregate Correspondence Table"
+output: html_document
+
+
+vignette: >
+  %\VignetteIndexEntry{Aggregate classification between A & B  with the correspondenceTables package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This vignette provides information about the functions included in the correspondenceTables package used to create an aggregation between two classifications
+
+Load the package correspondenceTables : 
+```{r cars}
+library(correspondenceTables)
+```
+
+The `aggregateCorrespondenceTable` function in R is designed to aggregate correspondence tables between two hierarchical classifications. It facilitates the process of expressing statistics compiled at different levels in classification A to corresponding levels in  classification B. The function output is mechanically defined and provides candidate  aggregations for subsequent analysis by statistical classification experts.
+ 
+The function expects three mandatory CSV files (AB, A, and B) as input. The structure of these files is crucial.
+ 
+- **AB**: Input correspondence table
+- **A**: Source classification table
+- **B**: Target classification table
+- **CSVOUT** Retrieve the result as a csv
+
+
+**Application of the aggregateCorrespondenceTable()**
+
+```{r, results = "hide"}
+ AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
+ A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
+ B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
+
+ 
+ result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
+ 
+ print(result)
+
+```
+
+**Other Example** 
+
+```{r, results = "hide"}
+
+ AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
+ A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
+ B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
+
+ 
+ result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
+ 
+ print(result)
+```
+

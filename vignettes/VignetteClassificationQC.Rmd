@@ -1,5 +1,5 @@
 ---
-title: "Vignette_Classification Quality Control"
+title: "Vignette Classification Quality Control"
 output: rmarkdown::html_vignette
 
 
