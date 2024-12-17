@@ -3,7 +3,7 @@ title: "New Correspondence Table"
 output: rmarkdown::html_vignette
 
 vignette: >
-  %\VignetteIndexEntry{Sample datasets and the New Correspondence Table Function}
+  %\VignetteIndexEntry{New Correspondence Table Function}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
