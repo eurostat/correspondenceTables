@@ -1,0 +1,96 @@
+---
+title: "Retrieve correspondence tables with the correspondenceTables package"
+output: rmarkdown::html_vignette
+
+vignette: >
+  %\VignetteIndexEntry{Retrieve correspondence tables with the correspondenceTables package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+Get correspondence tables that are stored as Linked Open Data
+
+```{r}
+library(correspondenceTables)
+```
+
+Correspondence tables between statistical classifications are stored as Linked Open Data (LOD) by various organisations, including the Publications Office of the European Union (OP) and the Food and Agriculture Organization (FAO). 
+Experts in the SPARQL query language (for LOD) can access those classifications and correspondence tables directly via their SPARQL endpoints of these organisations. The retrieveCorrespondenceTable functions allow practitioners that are not SPARQL experts to get these data themselves (as data frames, and optionally in CSV format). As an added bonus, they also return the relevant SPARQL code, allowing it to be re-used or adapted as needed.
+
+
+## Extract Correspondence Tables
+The function retrieveCorrespondenceTable() retrieves the correspondences table from the CELLAR and FAO repository, which can be used as an input to the newCorrespondenceTable and updateCorrespondenceTable functions. This function has four arguments: 
+
+* prefix - the SPARQL instruction for a declaration of a namespace prefix
+* endpoint - the SPARQL Endpoint: CELLAR or FAO
+* ID_table - the ID of the correspondence table
+* language - language of the table
+* CSVout - preferred choice of output
+* showQuery - the SPARQL query generated
+
+The values of the prefix and ID_table can be found using the correspondenceList() function (see Utility Functions Vignette).
+The argument language, CSVout and showQuery are optional and set as default as language="en", CSVout="FALSE" and showQuery="TRUE".
+
+The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see above).
+
+**Application of function retrieveCorrespondenceTable()**
+
+To following code is used to retrieve the French German and Bulgarian correspondence table  between NACE2 and CPA21 from static data :
+```{r, results = "hide"}
+
+# endpoint = "CELLAR"
+# ### correspondenceList 
+# correspondenceList(endpoint)
+# prefix = "nace2"
+# ID_table = "NACE2_CPA21"
+# language = "en"
+# CSVout = FALSE
+# showQuery= TRUE
+# 
+# result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+# 
+# # identify the SPARQL query usedN
+# SPARQLquery = result_ls[[1]]
+# cat(SPARQLquery, sep = "\n")
+# # obtained the table
+# table = result_ls[[2]]
+options(useLocalDataForVignettes = TRUE)
+result_cor_bg<- retrieveCorrespondenceTable(prefix = "nace2", endpoint = "CELLAR", ID_table = "NACE2_CPA21",language = "bg",
+                                        CSVout = FALSE)
+
+result_cor_fr<- retrieveCorrespondenceTable(prefix = "nace2", endpoint = "CELLAR", ID_table = "NACE2_CPA21",language = "fr",
+                                        CSVout = FALSE)
+
+result_cor_de<- retrieveCorrespondenceTable(prefix = "nace2", endpoint = "CELLAR", ID_table = "NACE2_CPA21",language = "de",
+                                        CSVout = FALSE)
+
+
+
+result_cor_bg
+result_cor_fr
+result_cor_de
+```
+
+To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
+```{r, results = "hide"}
+# endpoint = "FAO"
+# prefix = "CPCv21"
+# ID_table = "CPC21-ISIC4"
+# language = "en"
+# CSVout = NULL
+# showQuery= TRUE
+# 
+# result_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table, language, CSVout, showQuery)
+# 
+# # identify the SPARQL query used
+# SPARQLquery = result_ls[[1]]
+# 
+# # obtained the table
+# table = result_ls[[2]]
+```
+
+

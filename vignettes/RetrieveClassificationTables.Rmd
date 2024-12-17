@@ -1,0 +1,110 @@
+---
+title: "Retrieve classification tables with the correspondenceTables package"
+output: rmarkdown::html_vignette
+
+vignette: >
+  %\VignetteIndexEntry{Retrieve classification tables with the correspondenceTables package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+Get classifications that are stored as Linked Open Data
+
+```{r}
+library(correspondenceTables)
+```
+
+Statistical classifications are stored as Linked Open Data (LOD) by various organisations, including the Publications Office of the European Union (OP) and the Food and Agriculture Organization (FAO). 
+Experts in the SPARQL query language (for LOD) can access those classifications and correspondence tables directly via their SPARQL endpoints of these organisations. The retrieveClassification functions allow practitioners that are not SPARQL experts to get these data themselves (as data frames, and optionally in CSV format). As an added bonus, they also return the relevant SPARQL code, allowing it to be re-used or adapted as needed.
+
+## Extract Classification Tables
+
+The function retrieveClassificationTable() retrieves the classification table from the CELLAR and FAO repository, which can be used as an input to the newCorrespondenceTable and updateCorrespondenceTable functions. This function has five arguments: 
+
+* prefix - the SPARQL instruction for a declaration of a namespace prefix
+* endpoint - the SPARQL Endpoint: CELLAR or FAO
+* conceptScheme - a unique identifier associated to specific classification table
+* level - levels of the objects in the collection to be retrieved
+* language - language of the table
+* CSVout - preferred choice of output
+* showQuery - the SPARQL query generated
+
+The values of the prefix, conceptScheme and level can be found using the classificationEndpoint() and dataStructure() functions (see Utility Functions Vignette).
+The arguments level, language, CSVout and showQuery are optional and set as default as level="ALL", language="en", CSVout="NULL" and showQuery="FALSE".
+
+The namespace prefix needed to execute the SPARQL query are automatically generated using the prefixList() function (see below).
+
+**Application of function retrieveClassificationTable()**
+
+The following code is used to retrieve the german,french and bulgarian NACE2  classification from static data:
+
+```{r, results = "hide"}
+endpoint = "CELLAR"
+# obtain prefix and conceptscheme using classificationEndpoint()
+#classificationEndpoint(endpoint)[[1]][,1:4]
+prefix = "nace2"
+conceptScheme = "nace2"
+## You can modify the language by example "en" "bg"
+language = "en"
+CSVout = NULL
+showQuery = TRUE
+level = "ALL"
+# identify lower level using dataStructure()
+# level_dt = dataStructure(prefix, conceptScheme, endpoint, language)
+# level = level_dt[nrow(level_dt),2]
+# level_dt; level
+options(useLocalDataForVignettes = TRUE)
+# result_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme, level , language, CSVout, showQuery)
+result_de <-retrieveClassificationTable(prefix = "nace2", endpoint = "CELLAR", conceptScheme = "nace2", language = "de",CSVout=NULL)
+
+result_fr <-retrieveClassificationTable(prefix = "nace2", endpoint = "CELLAR", conceptScheme = "nace2", language = "fr",CSVout=NULL)
+
+result_bg <-retrieveClassificationTable(prefix = "nace2", endpoint = "CELLAR", conceptScheme = "nace2", language = "bg",CSVout=NULL)
+
+result_de
+result_fr
+result_bg
+# # identify the SPARQL query used
+# SPARQLquery = result_ls[[1]]
+# ### cat put the break line for the sparql query
+# cat(SPARQLquery, sep = "\n")
+# # obtained the table
+# table = result_ls[[2]]
+```
+
+
+The following code produce a list including the structure of each classification available in CELLAR and FAO. Please un-comment code before running.
+```{r,results = "hide"}
+## Obtain the structure of all classifications 
+## CELLAR
+# data_CELLAR = list()
+# endpoint = "CELLAR"
+# #Get info to retrieve structure using classificationEndpoint()
+# list_data = classificationEndpoint("ALL")
+
+# #loop over all classification in CELLAR
+# for (i in 1:nrow(list_data$CELLAR)){
+#   prefix = list_data$CELLAR[i,1] 
+#   conceptScheme = list_data$CELLAR[i,2] 
+#   #language by default is English
+#   data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+# }
+# names(data_CELLAR) = list_data$CELLAR[,1] 
+
+## FAO 
+# data_FAO = list()
+# endpoint = "FAO"
+# for (i in 1:nrow(list_data$FAO)){
+#   prefix = list_data$FAO[i,1]
+#   conceptScheme = list_data$FAO[i,2] 
+#   data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
+# }
+# names(data_FAO) =  list_data$FAO[,1]
+```
+
+
+
