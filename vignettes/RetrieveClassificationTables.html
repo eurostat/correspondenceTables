@@ -383,36 +383,38 @@ retrieveClassificationTable()</strong></p>
 <p>The following code is used to retrieve the german,french and
 bulgarian NACE2 classification from static data:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># obtain prefix and conceptscheme using classificationEndpoint()</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#classificationEndpoint(endpoint)[[1]][,1:4]</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>conceptScheme <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="do">## You can modify the language by example &quot;en&quot; &quot;bg&quot;</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>CSVout <span class="ot">=</span> <span class="cn">NULL</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>showQuery <span class="ot">=</span> <span class="cn">TRUE</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>level <span class="ot">=</span> <span class="st">&quot;ALL&quot;</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># identify lower level using dataStructure()</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co"># level_dt = dataStructure(prefix, conceptScheme, endpoint, language)</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co"># level = level_dt[nrow(level_dt),2]</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># level_dt; level</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="fu">options</span>(<span class="at">useLocalDataForVignettes =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># result_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme, level , language, CSVout, showQuery)</span></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>result_de <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(<span class="at">prefix =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">endpoint =</span> <span class="st">&quot;CELLAR&quot;</span>, <span class="at">conceptScheme =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">language =</span> <span class="st">&quot;de&quot;</span>,<span class="at">CSVout=</span><span class="cn">NULL</span>)</span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>result_fr <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(<span class="at">prefix =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">endpoint =</span> <span class="st">&quot;CELLAR&quot;</span>, <span class="at">conceptScheme =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">language =</span> <span class="st">&quot;fr&quot;</span>,<span class="at">CSVout=</span><span class="cn">NULL</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>conceptScheme <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#if you need to obtain prefix and conceptscheme using the classificationEndpoint() function</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#use the following call</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#classificationEndpoint(endpoint)[[1]][,1:4]</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="do">## You can modify the language by example &quot;en&quot; &quot;bg&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>CSVout <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>showQuery <span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>level <span class="ot">=</span> <span class="st">&quot;ALL&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co"># identify lower level using dataStructure()</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># level_dt = dataStructure(prefix, conceptScheme, endpoint, language)</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># level = level_dt[nrow(level_dt),2]</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># level_dt; level</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="fu">options</span>(<span class="at">useLocalDataForVignettes =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co"># result_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme, level , language, CSVout, showQuery)</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>result_de <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(<span class="at">prefix =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">endpoint =</span> <span class="st">&quot;CELLAR&quot;</span>, <span class="at">conceptScheme =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">language =</span> <span class="st">&quot;de&quot;</span>,<span class="at">CSVout=</span><span class="cn">NULL</span>)</span>
 <span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>result_bg <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(<span class="at">prefix =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">endpoint =</span> <span class="st">&quot;CELLAR&quot;</span>, <span class="at">conceptScheme =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">language =</span> <span class="st">&quot;bg&quot;</span>,<span class="at">CSVout=</span><span class="cn">NULL</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>result_fr <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(<span class="at">prefix =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">endpoint =</span> <span class="st">&quot;CELLAR&quot;</span>, <span class="at">conceptScheme =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">language =</span> <span class="st">&quot;fr&quot;</span>,<span class="at">CSVout=</span><span class="cn">NULL</span>)</span>
 <span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>result_de</span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>result_fr</span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>result_bg</span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co"># # identify the SPARQL query used</span></span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co"># SPARQLquery = result_ls[[1]]</span></span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co"># </span><span class="al">###</span><span class="co"> cat put the break line for the sparql query</span></span>
-<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co"># cat(SPARQLquery, sep = &quot;\n&quot;)</span></span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co"># # obtained the table</span></span>
-<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co"># table = result_ls[[2]]</span></span></code></pre></div>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>result_bg <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(<span class="at">prefix =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">endpoint =</span> <span class="st">&quot;CELLAR&quot;</span>, <span class="at">conceptScheme =</span> <span class="st">&quot;nace2&quot;</span>, <span class="at">language =</span> <span class="st">&quot;bg&quot;</span>,<span class="at">CSVout=</span><span class="cn">NULL</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>result_de</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>result_fr</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>result_bg</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co"># # To identify the SPARQL query used:</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co"># SPARQLquery = result_ls[[1]]</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co"># ## cat inserts the break line for the sparql query</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co"># cat(SPARQLquery, sep = &quot;\n&quot;)</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co"># # obtain the table</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co"># table = result_ls[[2]]</span></span></code></pre></div>
 <p>The following code produce a list including the structure of each
 classification available in CELLAR and FAO. Please un-comment code
 before running.</p>

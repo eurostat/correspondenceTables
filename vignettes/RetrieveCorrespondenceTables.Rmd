@@ -39,7 +39,8 @@ The namespace prefix needed to execute the SPARQL query are automatically genera
 
 **Application of function retrieveCorrespondenceTable()**
 
-To following code is used to retrieve the French German and Bulgarian correspondence table  between NACE2 and CPA21 from static data :
+The following code is used to retrieve the French German and Bulgarian correspondence table  between NACE2 and CPA21 from static data. Please un-comment code before running for dynamic data.
+
 ```{r, results = "hide"}
 
 # endpoint = "CELLAR"
@@ -75,7 +76,7 @@ result_cor_fr
 result_cor_de
 ```
 
-To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO:
+To following code is used to retrieve a specific correspondence table between CPCv21 and ISIC4 from FAO. Please un-comment code before running.
 ```{r, results = "hide"}
 # endpoint = "FAO"
 # prefix = "CPCv21"
