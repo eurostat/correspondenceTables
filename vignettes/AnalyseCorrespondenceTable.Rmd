@@ -56,9 +56,9 @@ B which contains Nace2.1 as the classification target
 longestAcodeOnly and longestBcodeOnly will be set to TRUE here to have only the retain only the lowest level. 
 
 ```{r}
-result2 <-analyseCorrespondenceTable(AB = system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"), A =  NULL , longestAcodeOnly = FALSE ,
-                             B = NULL,
-                             longestBcodeOnly = FALSE, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL)
+result2 <-analyseCorrespondenceTable(AB = system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"), 
+                                     A =  NULL , longestAcodeOnly = FALSE , B = NULL, longestBcodeOnly = FALSE, 
+                                     CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL)
 
 print(result2$Inventory)
 ###for Inventory run this code : View(result2$Inventory)

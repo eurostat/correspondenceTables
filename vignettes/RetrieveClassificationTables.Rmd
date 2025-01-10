@@ -44,10 +44,12 @@ The following code is used to retrieve the german,french and bulgarian NACE2  cl
 
 ```{r, results = "hide"}
 endpoint = "CELLAR"
-# obtain prefix and conceptscheme using classificationEndpoint()
-#classificationEndpoint(endpoint)[[1]][,1:4]
 prefix = "nace2"
 conceptScheme = "nace2"
+#if you need to obtain prefix and conceptscheme using the classificationEndpoint() function
+#use the following call
+#classificationEndpoint(endpoint)[[1]][,1:4]
+
 ## You can modify the language by example "en" "bg"
 language = "en"
 CSVout = NULL
@@ -68,11 +70,11 @@ result_bg <-retrieveClassificationTable(prefix = "nace2", endpoint = "CELLAR", c
 result_de
 result_fr
 result_bg
-# # identify the SPARQL query used
+# # To identify the SPARQL query used:
 # SPARQLquery = result_ls[[1]]
-# ### cat put the break line for the sparql query
+# ## cat inserts the break line for the sparql query
 # cat(SPARQLquery, sep = "\n")
-# # obtained the table
+# # obtain the table
 # table = result_ls[[2]]
 ```
 
