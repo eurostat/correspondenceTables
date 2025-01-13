@@ -41,7 +41,9 @@
   
 
 dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
-  
+  endpoint <- toupper(endpoint)
+  tryCatch(
+    {
   ### Define endpoint
   if (endpoint == "CELLAR") {
     source = "http://publications.europa.eu/webapi/rdf/sparql"
@@ -100,6 +102,11 @@ dataStructure = function(prefix, conceptScheme, endpoint, language = "en") {
   response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
   table = read.csv(text=content(response, "text"), sep= ",")  
   table = table[order(table[,3],decreasing=FALSE),]
+  
+    }, error = function(e) {
+      print(SPARQL.query)
+      stop(simpleError(paste0("Error in function datastructure(", prefix, conceptScheme, endpoint,"),endpoint is not available or is returning unexpected data")))
+    })
 
   if (nrow(table) == 0){
      message("This classification has no level. Please use level = 'ALL' when retrieving it using the retrieveClassificationTable")

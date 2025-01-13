@@ -14,6 +14,7 @@
 #'     }
 
 prefixList = function(endpoint, desired_prefix = NULL) {
+  endpoint <- toupper(endpoint)
   if (endpoint != "CELLAR" & endpoint != "FAO") {
     stop("Specify the endpoint: CELLAR or FAO.")
   }

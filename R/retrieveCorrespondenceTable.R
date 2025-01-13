@@ -49,6 +49,7 @@
  
 
 retrieveCorrespondenceTable = function(prefix, endpoint, ID_table, language = "en", CSVout = NULL, showQuery = TRUE) {
+  endpoint <- toupper(endpoint)
   # Check the useLocalDataForVignettes option
   if (getOption("useLocalDataForVignettes", FALSE)) {
     localDataPath <- system.file("extdata", paste0(ID_table, "_", language, ".csv"), package = "correspondenceTables")

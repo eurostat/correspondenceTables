@@ -23,6 +23,7 @@
 #'     }
 
 classificationEndpoint = function(endpoint = "ALL") {
+  endpoint <- toupper(endpoint)
   tryCatch(
     {
   if (endpoint == "ALL" | endpoint == "CELLAR") {
@@ -54,6 +55,7 @@ classificationEndpoint = function(endpoint = "ALL") {
   colnames(data_cellar) = c("Prefix", "ConceptScheme", "URI", "Title")
   }
     }, error = function(e) {
+      print(SPARQL.query_cellar)
       stop(simpleError(paste("Error in function ClassificationEndpoint(",endpoint,"),Endpoint Cellar is not available or is returning unexpected data")))
     })
   
@@ -94,6 +96,7 @@ ORDER BY ASC(?notation)
   colnames(data_fao) = c("Prefix", "ConceptScheme", "URI", "Title")
   }
     }, error = function(e) {
+      print(SPARQL.query_fao)
       stop(simpleError(paste("Error in function ClassificationEndpoint(",endpoint,"),Endpoint Fao is not available or is returning unexpected data")))
     })
   if (endpoint == "ALL") {
