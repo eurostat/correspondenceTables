@@ -5,11 +5,12 @@
 #' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
 #' making it easier to retrieve specific information or perform complex queries on linked data. This is an optional
 #' parameter, which by default is set to \code{"ALL"}.
-#' The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints. 
+#' The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints.
+#' @param showQuery The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
+#' If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.
 #' @import httr
-#' @export
 #' @return
-#' \code{classificationEndpoint()} returns a table with information needed to retrieve the classification table:
+#' \code{classificationList()} returns a table with information needed to retrieve the classification table:
 #' \itemize{
 #'     \item Prefix name: the  SPARQL instruction for a declaration of a namespace prefix
 #'     \item Conceptscheme: taxonomy of the SKOS object to be retrieved
@@ -19,16 +20,20 @@
 #' @examples
 #' {
 #'     endpoint = "ALL"
-#'     list_data = classificationEndpoint(endpoint)
+#'     list_data = classificationList(endpoint)
 #'     }
 
-classificationEndpoint = function(endpoint = "ALL") {
+classificationList = function(endpoint = "ALL", showQuery = FALSE) {
+  #Check correctness of endpoint argument
   endpoint <- toupper(endpoint)
+  if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
+    stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
+  }
   tryCatch(
     {
   if (endpoint == "ALL" | endpoint == "CELLAR") {
   ### Datasets in CELLAR
-  endpoint_cellar = "http://publications.europa.eu/webapi/rdf/sparql"
+  endpoint_cellar = "https://publications.europa.eu/webapi/rdf/sparql"
   
   SPARQL.query_cellar = paste0("
   SELECT DISTINCT ?s ?Title
@@ -55,15 +60,18 @@ classificationEndpoint = function(endpoint = "ALL") {
   colnames(data_cellar) = c("Prefix", "ConceptScheme", "URI", "Title")
   }
     }, error = function(e) {
-      print(SPARQL.query_cellar)
-      stop(simpleError(paste("Error in function ClassificationEndpoint(",endpoint,"),Endpoint Cellar is not available or is returning unexpected data")))
+
+      stop(simpleError(paste("Error in function ClassificationList(", endpoint,"), Endpoint Cellar is not available or is returning unexpected data")))
+      cat("The following SPARQL code was used in the call:\n", SPARQL.query_cellar, "\n")
+      cat("The following response was given for by the SPARQL call:\n", response)
+      
     })
   
   tryCatch(
     {
   if (endpoint == "ALL" | endpoint == "FAO") {
   ### Datasets in FAO
-  endpoint_fao = "https://stats.fao.org/caliper/sparql/AllVocs"
+  endpoint_fao = "https://caliper.integratedmodelling.org/caliper/sparql/"
   SPARQL.query_fao = paste0("
      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -96,8 +104,9 @@ ORDER BY ASC(?notation)
   colnames(data_fao) = c("Prefix", "ConceptScheme", "URI", "Title")
   }
     }, error = function(e) {
-      print(SPARQL.query_fao)
-      stop(simpleError(paste("Error in function ClassificationEndpoint(",endpoint,"),Endpoint Fao is not available or is returning unexpected data")))
+      stop(simpleError(paste("Error in function ClassificationList(",endpoint,"),Endpoint Fao is not available or is returning unexpected data")))
+      cat("The following SPARQL code was used in the call:\n", SPARQL.query_fao, "\n")
+      cat("The following response was given for by the SPARQL call:\n", response)
     })
   if (endpoint == "ALL") {
     data = list("CELLAR" = data_cellar, "FAO" = data_fao)
@@ -111,7 +120,17 @@ ORDER BY ASC(?notation)
     data = list("FAO" = data_fao)
   }  
   
-  return(data)
+  if (showQuery) {
+    result=list()
+    result[[1]]= data
+    result[[2]]= SPARQL.query
+    names(result)=c("ClassificationList", "SPARQL.query")
+    cat(result$ClassificationList, sep ="/n")
+    return(result)
+  } else {
+    return(data)
+  }
+  
 
 }
 
