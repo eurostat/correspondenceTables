@@ -1,23 +1,23 @@
 #' @title Retrieve classification tables from CELLAR and FAO repositories.
 #' @description To facilitate the utilization of European classifications as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions, 
 #' "retrieveClassificationTable()" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
-#' @param prefix Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read. 
-#' Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-#' The function 'classificationEndpoint()' can be used to generate the prefixes for the selected classification table. 
 #' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
 #' making it easier to retrieve specific information or perform complex queries on linked data.
 #' The valid values are \code{"CELLAR"} or \code{"FAO"}. 
+#' @param prefix Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read. 
+#' Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
+#' The function 'classificationList()' can be used to generate the prefixes for the selected classification table. 
 #' @param conceptScheme Refers to a unique identifier associated to specific classification table. 
-#' The conceptScheme can be obtained by utilizing the "classificationEndpoint()" function.
+#' The conceptScheme can be obtained by utilizing the "classificationList()" function.
+#' #' @param language Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
+#' By default is set to "en". This is an optional argument.
 #' @param level Refers  to the hierarchical levels of the selected classification table. 
 #' The detailed level information can be obtained by utilizing the "structureData() " function. 
 #' By default is set to \code{"ALL"}. This is an optional argument.  
-#' @param language Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
-#' By default is set to "en". This is an optional argument.
 #' @param CSVout The valid value is a valid path to a csv file including file name and extension. By default, no csv file is produced, \code{NULL}  
 #' If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced. 
 #' @param showQuery The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
-#' If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.
+#' If not needed to view the SPARQL query used, the argument should be set as \code{FALSE}. By default, the SPARQL query is produced.
 #' @param localData this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api
 #' @import httr
 #' @export
@@ -37,7 +37,7 @@
 #'     prefix = "nace2"
 #'     conceptScheme = "nace2"
 #'     
-#'     results_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme)
+#'     results_ls = retrieveClassificationTable(endpoint, prefix,  conceptScheme)
 #'     
 #'     # View SPARQL Query
 #'     cat(results_ls[[1]])
@@ -48,8 +48,12 @@
 #'     
 
 
-retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = "ALL", language = "en", CSVout = NULL, showQuery = TRUE) {
+retrieveClassificationTable = function(endpoint, prefix, conceptScheme, language = "en", level = "ALL", CSVout = NULL, showQuery = TRUE) {
+  #Check correctness of endpoint argument
   endpoint <- toupper(endpoint)
+  if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
+    stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
+  }
   # Check the useLocalDataForVignettes option
   if (getOption("useLocalDataForVignettes", FALSE)) {
     localDataPath <- system.file("extdata", paste0(prefix, "_", language, ".csv"), package = "correspondenceTables")
@@ -65,16 +69,19 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   } else {
     tryCatch(
       {
+        
+  ### Load the configuration file from GitHub
+  config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")
   ### Define endpoint
   if (endpoint == "CELLAR") {
-    source = "http://publications.europa.eu/webapi/rdf/sparql"
+    source <- config$CELLAR
   }
   if (endpoint == "FAO") {
-    source = "https://stats.fao.org/caliper/sparql/AllVocs"
+    source <- config$FAO
   }
   
   ### Load prefixes using prefixList function
-  prefixlist = prefixList(endpoint, desired_prefix = prefix)
+  prefixlist = prefixList(endpoint, prefix = prefix)
   prefixlist = as.character(paste(prefixlist, collapse = "\n"))
   
       }, error = function(e) {
@@ -84,7 +91,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
     tryCatch(
       {
   # # Check if classification has level, if not, set level = "ALL"
-  dt_level = suppressMessages(dataStructure(prefix, conceptScheme, endpoint, language))
+  dt_level = suppressMessages(dataStructure(endpoint, prefix, conceptScheme, language))
   
   if (nrow(dt_level) == 0 & level != "ALL") {
     level = "ALL"
@@ -98,7 +105,7 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
       {
   ### Define SPARQL query -- BASE: all levels
   SPARQL.query_0 = paste0(prefixlist, "
-        SELECT DISTINCT ?", prefix, " ?NAME ?Parent ?Include ?Include_Also ?Exclude ?URL
+        SELECT DISTINCT ?", prefix, " ?Name ?Level ?Parent ?Include ?Include_Also ?Exclude ?URL
 
         WHERE {
             ?s skos:altLabel ?Label ;
@@ -116,8 +123,16 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
                 
                 BIND (STR(?s) AS ?URL)
                 BIND (STR(?notation) as ?", prefix, " )
-                BIND (STR(?Label) as ?NAME)
-               # BIND (datatype(?notation) AS ?datatype)
+                BIND (STR(?Label) as ?Name)
+               #BIND (datatype(?notation) AS ?datatype)
+               
+               ?Member a xkos:ClassificationLevel;
+               xkos:depth ?Depth;
+              xkos:organizedBy ?L.
+              ?L skos:prefLabel ?Level_Name.
+               FILTER (LANG(?Level_Name)= '",language, "')
+                BIND (STR(?Level_Name) as ?LEVEL_S )
+                BIND (STR(?Depth) as ?Level )
                 
                 OPTIONAL {?s skos:scopeNote ?Include . FILTER (LANG(?Include) = '", language, "') .}
                 OPTIONAL {?s xkos:exclusionNote ?Exclude . FILTER (LANG(?Exclude) = '", language, "').}
@@ -130,7 +145,8 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   
   
   ### Define SPARQL query -- FILTER LEVEL
-  SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", "division", ")")
+  #SPARQL.query_level = paste0("FILTER (?Member = ", prefix, ":", "division", ")")
+  SPARQL.query_level = paste0("FILTER (?Depth =", level,")")
   
   ### End SPARQL query ", prefix 
   SPARQL.query_end = paste0("}
@@ -151,8 +167,9 @@ retrieveClassificationTable = function(prefix, endpoint, conceptScheme, level = 
   data = data.frame(content(response, show_col_types = FALSE))
 
   }, error = function(e) {
+    cat("The following SPARQL code was used in the call:\n", SPARQL.query, "\n")
+    cat("The following response was given for by the SPARQL call:\n", response)
     stop(simpleError("Error in function retrieveClassificationTable, SPARQL query execution failed ."))
-    print(SPARQL.query)
   })
   
   #keep only plainLiteral if more than one datatype // 

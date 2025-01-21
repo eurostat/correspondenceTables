@@ -18,7 +18,7 @@ Get structural information necessary for retrieving classifications and correspo
 library(correspondenceTables)
 ```
 
-In order to be able to retrieve classifications or correspondence tables using the retrieveClassification or retrieveCorrespondenceTable functions, users need to know where to look for these data – and what information is available there. To this end, the utility function classificationEndpoint has been developed to list available endpoints, and a range of utility functions (prefixList, dataStructure and correspondenceList) have been developed to list the relevant classification (and correspondence table) information available at each endpoint. 
+In order to be able to retrieve classifications or correspondence tables using the retrieveClassification or retrieveCorrespondenceTable functions, users need to know where to look for these data – and what information is available there. To this end, the utility function classificationList has been developed to list available endpoints, and a range of utility functions (prefixList, dataStructure and correspondenceTableList) have been developed to list the relevant classification (and correspondence table) information available at each endpoint. 
 
 
 ### Utility functions used to extract Classification and Correspondence Tables 
@@ -33,7 +33,7 @@ endpoint = "CELLAR"
 #prefixList(endpoint)
 ```
 
-**Application of function classificationEndpoint()**
+**Application of function classificationList()**
 
 The function returns a table with information needed to retrieve the classification table:
 \itemize{
@@ -45,7 +45,7 @@ The function returns a table with information needed to retrieve the classificat
 
 ```{r, results = "hide"}
  endpoint = "ALL"
- #list_data = classificationEndpoint(endpoint)
+ #list_data = classificationList(endpoint)
 ```
 
 
@@ -68,8 +68,8 @@ Please un-comment code before running for dynamic data.
 ## CELLAR
 # data_CELLAR = list()
 # endpoint = "CELLAR"
-# #Get info to retrieve structure using classificationEndpoint()
-# list_data = classificationEndpoint("ALL")
+# #Get info to retrieve structure using classificationList()
+# list_data = classificationList("ALL")
 
 # #loop over all classification in CELLAR
 # for (i in 1:nrow(list_data$CELLAR)){
@@ -92,12 +92,12 @@ Please un-comment code before running for dynamic data.
 ```
 
 
-**Application of function correspondenceList()**
+**Application of function correspondenceTableList()**
 
-The correspondenceList() provides an overview of all the available correspondence classification from CELLAR and FAO repository. 
+The correspondenceTableList() provides an overview of all the available correspondence classification from CELLAR and FAO repository. 
 
 ```{r, message=FALSE, warning=FALSE, results = "hide"}
-#corr_list = correspondenceList("ALL")
+#corr_list = correspondenceTableList("ALL")
 
 #provides a table with all the correspondence tables for NACE2 in CELLAR
 #corr_list$CELLAR$`nace2:`

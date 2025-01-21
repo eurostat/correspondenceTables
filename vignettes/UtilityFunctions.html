@@ -348,9 +348,9 @@ and correspondence tables that are stored as Linked Open Data</p>
 tables using the retrieveClassification or retrieveCorrespondenceTable
 functions, users need to know where to look for these data – and what
 information is available there. To this end, the utility function
-classificationEndpoint has been developed to list available endpoints,
-and a range of utility functions (prefixList, dataStructure and
-correspondenceList) have been developed to list the relevant
+classificationList has been developed to list available endpoints, and a
+range of utility functions (prefixList, dataStructure and
+correspondenceTableList) have been developed to list the relevant
 classification (and correspondence table) information available at each
 endpoint.</p>
 <div id="utility-functions-used-to-extract-classification-and-correspondence-tables" class="section level3">
@@ -365,11 +365,11 @@ correspondence classification is introduced in CELLAR or FAO repository.
 Please un-comment function before running for dynamic data.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#prefixList(endpoint)</span></span></code></pre></div>
-<p><strong>Application of function classificationEndpoint()</strong></p>
+<p><strong>Application of function classificationList()</strong></p>
 <p>The function returns a table with information needed to retrieve the
 classification table: </p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a> endpoint <span class="ot">=</span> <span class="st">&quot;ALL&quot;</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a> <span class="co">#list_data = classificationEndpoint(endpoint)</span></span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a> <span class="co">#list_data = classificationList(endpoint)</span></span></code></pre></div>
 <p><strong>Application of function dataStructure()</strong></p>
 <p>Each classification has a different level based on their structure.
 The function dataStructure() retrieves information about the level
@@ -386,8 +386,8 @@ before running for dynamic data.</p>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="do">## CELLAR</span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># data_CELLAR = list()</span></span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># endpoint = &quot;CELLAR&quot;</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># #Get info to retrieve structure using classificationEndpoint()</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># list_data = classificationEndpoint(&quot;ALL&quot;)</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># #Get info to retrieve structure using classificationList()</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># list_data = classificationList(&quot;ALL&quot;)</span></span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># #loop over all classification in CELLAR</span></span>
 <span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># for (i in 1:nrow(list_data$CELLAR)){</span></span>
@@ -407,10 +407,12 @@ before running for dynamic data.</p>
 <span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#   data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)</span></span>
 <span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co"># }</span></span>
 <span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co"># names(data_FAO) =  list_data$FAO[,1]</span></span></code></pre></div>
-<p><strong>Application of function correspondenceList()</strong></p>
-<p>The correspondenceList() provides an overview of all the available
-correspondence classification from CELLAR and FAO repository.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co">#corr_list = correspondenceList(&quot;ALL&quot;)</span></span>
+<p><strong>Application of function
+correspondenceTableList()</strong></p>
+<p>The correspondenceTableList() provides an overview of all the
+available correspondence classification from CELLAR and FAO
+repository.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co">#corr_list = correspondenceTableList(&quot;ALL&quot;)</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#provides a table with all the correspondence tables for NACE2 in CELLAR</span></span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#corr_list$CELLAR$`nace2:`</span></span>

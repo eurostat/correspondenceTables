@@ -4,18 +4,22 @@
 #' making it easier to retrieve specific information or perform complex queries on linked data. 
 #' The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
 #' @import httr
-#' @export
 #' @return
-#' \code{correspondenceList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
+#' \code{correspondenceTableList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
 #' Target classification, Table name and URI.
 #' @examples
 #' {
-#'     corr_list = correspondenceList("ALL")
+#'     corr_list = correspondenceTableList("ALL")
 #'     }
 
 
     
-correspondenceList = function(endpoint) {
+correspondenceTableList = function(endpoint) {
+  #Check correctness of endpoint argument
+endpoint <- toupper(endpoint)
+if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
+  stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
+}
   
   if (endpoint == "ALL") {
     cycle = 1:2
@@ -31,15 +35,17 @@ correspondenceList = function(endpoint) {
   
   for (j in cycle) {
     e = c("CELLAR", "FAO")[j]
-  
+    
+    ### Load the configuration file from GitHub
+    config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")  
     ### Define endpoint
     if (e == "CELLAR") {
-      source = "http://publications.europa.eu/webapi/rdf/sparql"
+      source <- config$CELLAR
       sep = "_"
       rm  = 1:16
     }
     if (e == "FAO") {
-      source = "https://stats.fao.org/caliper/sparql/AllVocs"
+      source <- config$FAO
       sep = "-"
       rm  = 1:16
     }
@@ -55,6 +61,9 @@ correspondenceList = function(endpoint) {
   
     for (i in 1:length(prefixes_loop)){
     prefix = prefixes_loop[i]
+    
+    tryCatch(
+      {
     
     SPARQL.query = paste0(prefixlist, "
        SELECT ?ID_table ?A ?B ?Table ?URL 
@@ -76,6 +85,12 @@ correspondenceList = function(endpoint) {
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
     data_t[[i]] = data.frame(content(response, show_col_types = FALSE))
+    
+      }, error = function(e) {
+        stop(simpleError(paste0("Error in function correspondenceTableList(", endpoint,"), endpoint is not available or is returning unexpected data")))
+        cat("The following SPARQL code was used in the call:\n", SPARQL.query, "\n")
+        cat("The following response was given for by the SPARQL call:\n", response)
+      })
     
     if (nrow(data_t[[i]]) == 0){
       data_t[[i]] = cbind(prefix = character(), data_t[[i]])
