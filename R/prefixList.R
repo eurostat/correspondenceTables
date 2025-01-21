@@ -4,7 +4,6 @@
 #' making it easier to retrieve specific information or perform complex queries on linked data.  
 #' The valid values are \code{"CELLAR"} and \code{"FAO"}.
 #' @import httr
-#' @export
 #' @return
 #' \code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.
 #' @examples
@@ -13,7 +12,8 @@
 #'     prefix_list = prefixList(endpoint)
 #'     }
 
-prefixList = function(endpoint, desired_prefix = NULL) {
+prefixList = function(endpoint, prefix = NULL) {
+  #Check correctness of endpoint argument
   endpoint <- toupper(endpoint)
   if (endpoint != "CELLAR" & endpoint != "FAO") {
     stop("Specify the endpoint: CELLAR or FAO.")
@@ -39,22 +39,22 @@ prefixList = function(endpoint, desired_prefix = NULL) {
   ))
   
   ### Define List
-  uri = classificationEndpoint(endpoint)[[1]][, 3]
-  prefix = classificationEndpoint(endpoint)[[1]][, 1]
-  prefix = gsub("\\.", "", prefix)
+  uri = classificationList(endpoint)[[1]][, 3]
+  prefix_endpoint = classificationList(endpoint)[[1]][, 1]
+  prefix_endpoint = gsub("\\.", "", prefix_endpoint)
   # Include the predefined prefixes
-  prefix_all = as.matrix(paste0("PREFIX ", prefix, ": <", uri, "/>"))
+  prefix_all = as.matrix(paste0("PREFIX ", prefix_endpoint, ": <", uri, "/>"))
   prefix_all = rbind(prefix_init, prefix_all)
   # remove duplicates
   prefix_all = prefix_all[!duplicated(prefix_all)]
   
   # Check if desired prefixes are available for the given endpoint
-  if (!is.null(desired_prefix)) {
+  if (!is.null(prefix)) {
     # Check if the desired prefixes are available for the given endpoint
-    valid_prefixes = desired_prefix[desired_prefix %in% prefix]
+    valid_prefixes = prefix[prefix %in% prefix_endpoint]
     if (length(valid_prefixes) > 0) {
       # Find the URIs corresponding to the desired prefixes
-      uri_for_prefix <- uri[prefix %in% valid_prefixes]
+      uri_for_prefix <- uri[prefix_endpoint %in% valid_prefixes]
       
       # Construct the PREFIX statements for the desired prefixes
       prefix_selected <- matrix(paste0("PREFIX ", valid_prefixes, ": <", uri_for_prefix, "/>"))

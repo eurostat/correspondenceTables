@@ -35,15 +35,17 @@ if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
   
   for (j in cycle) {
     e = c("CELLAR", "FAO")[j]
-  
+    
+    ### Load the configuration file from GitHub
+    config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")  
     ### Define endpoint
     if (e == "CELLAR") {
-      source = "https://publications.europa.eu/webapi/rdf/sparql"
+      source <- config$CELLAR
       sep = "_"
       rm  = 1:16
     }
     if (e == "FAO") {
-      source = "https://stats.fao.org/caliper/sparql/AllVocs"
+      source <- config$FAO
       sep = "-"
       rm  = 1:16
     }

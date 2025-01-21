@@ -31,10 +31,13 @@ classificationList = function(endpoint = "ALL", showQuery = FALSE) {
   }
   tryCatch(
     {
+  ### Load the configuration file from GitHub
+  config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")
+      
   if (endpoint == "ALL" | endpoint == "CELLAR") {
   ### Datasets in CELLAR
-  endpoint_cellar = "https://publications.europa.eu/webapi/rdf/sparql"
-  
+  endpoint_cellar <- config$CELLAR
+
   SPARQL.query_cellar = paste0("
   SELECT DISTINCT ?s ?Title
   WHERE { ?s a skos:ConceptScheme ;
@@ -60,18 +63,16 @@ classificationList = function(endpoint = "ALL", showQuery = FALSE) {
   colnames(data_cellar) = c("Prefix", "ConceptScheme", "URI", "Title")
   }
     }, error = function(e) {
-
-      stop(simpleError(paste("Error in function ClassificationList(", endpoint,"), Endpoint Cellar is not available or is returning unexpected data")))
       cat("The following SPARQL code was used in the call:\n", SPARQL.query_cellar, "\n")
       cat("The following response was given for by the SPARQL call:\n", response)
-      
+      stop(simpleError(paste("Error in function ClassificationList(", endpoint,"), Endpoint Cellar is not available or is returning unexpected data")))
     })
   
   tryCatch(
     {
   if (endpoint == "ALL" | endpoint == "FAO") {
   ### Datasets in FAO
-  endpoint_fao = "https://caliper.integratedmodelling.org/caliper/sparql/"
+  endpoint_fao <- config$FAO
   SPARQL.query_fao = paste0("
      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -104,9 +105,9 @@ ORDER BY ASC(?notation)
   colnames(data_fao) = c("Prefix", "ConceptScheme", "URI", "Title")
   }
     }, error = function(e) {
-      stop(simpleError(paste("Error in function ClassificationList(",endpoint,"),Endpoint Fao is not available or is returning unexpected data")))
       cat("The following SPARQL code was used in the call:\n", SPARQL.query_fao, "\n")
       cat("The following response was given for by the SPARQL call:\n", response)
+      stop(simpleError(paste("Error in function ClassificationList(",endpoint,"),Endpoint Fao is not available or is returning unexpected data")))
     })
   if (endpoint == "ALL") {
     data = list("CELLAR" = data_cellar, "FAO" = data_fao)
@@ -122,10 +123,10 @@ ORDER BY ASC(?notation)
   
   if (showQuery) {
     result=list()
-    result[[1]]= data
-    result[[2]]= SPARQL.query
-    names(result)=c("ClassificationList", "SPARQL.query")
-    cat(result$ClassificationList, sep ="/n")
+    result[[1]]= SPARQL.query
+    result[[2]]= data
+    names(result)=c("SPARQL.query" ,"ClassificationList")
+    cat(result$SPARQL.query, sep ="/n")
     return(result)
   } else {
     return(data)
