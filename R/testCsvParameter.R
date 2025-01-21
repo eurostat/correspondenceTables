@@ -1,20 +1,3 @@
-#' @title Validation of output csv parameter 
-#' @description  Validation of the CSV argument to make sure it is of the correct format 
-#' @param arg_name The name in error handling to describe the argument, 
-#' the name will be used in the validation messages.
-#' @param arg_value The input argument, a full csv path including file name and extension.
-#' 
-#'  
-#' @export
-#' @return validation or error messages
-#' 
-#' @examples
-#' {
-#'     CSVout = NULL
-#'     result <- testCsvParameter("CSV", CSVout)
-#'     }
-
-
 testCsvParameter <- function(arg_name, arg_value) {
   caller <- sys.call(-1)
   tryCatch({
