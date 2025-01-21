@@ -5,8 +5,8 @@
 \title{Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.}
 \usage{
 retrieveCorrespondenceTable(
-  prefix,
   endpoint,
+  prefix,
   ID_table,
   language = "en",
   CSVout = NULL,
@@ -14,17 +14,17 @@ retrieveCorrespondenceTable(
 )
 }
 \arguments{
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query 
-and are used throughout the query to make it more concise and easier to read. 
-Multiple prefixes can be defined in a single query to cover different namespaces used in the dataset.
-The function 'classificationEndpoint()' can be used to generate the prefixes for the selected correspondence table.}
-
 \item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
 making it easier to retrieve specific information or perform complex queries on linked data.
 The valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
+\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query 
+and are used throughout the query to make it more concise and easier to read. 
+Multiple prefixes can be defined in a single query to cover different namespaces used in the dataset.
+The function 'classificationList()' can be used to generate the prefixes for the selected correspondence table.}
+
 \item{ID_table}{Refers to a unique identifier associated with a specific correspondence table. 
-The ID_table can be obtained by utilizing the "correspondenceList()" function.}
+The ID_table can be obtained by utilizing the "correspondenceTableList()" function.}
 
 \item{language}{Refers to the specific language used for providing label, include and exclude information in the selected correspondence table. 
 By default is set to "en". This is an optional argument.}
@@ -32,7 +32,7 @@ By default is set to "en". This is an optional argument.}
 \item{CSVout}{The valid value is a valid path to a csv file including file name and extension. By default, no csv file is produced, \code{NULL}}
 
 \item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
-If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.}
+If not needed to view the SPARQL query used, the argument should be set as \code{FALSE}. By default, the SPARQL query is produced.}
 
 \item{localData}{this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api}
 }
@@ -61,7 +61,7 @@ To facilitate the utilization of correspondence tables as inputs for the newCorr
     prefix = "cn2022"
     ID_table = "CN2022_NST2007"
     
-    results_ls = retrieveCorrespondenceTable(prefix, endpoint, ID_table)
+    results_ls = retrieveCorrespondenceTable( endpoint, prefix, ID_table)
     
     # View SPARQL Query
     cat(results_ls[[1]])
