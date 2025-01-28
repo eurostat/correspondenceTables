@@ -29,6 +29,21 @@ classificationList = function(endpoint = "ALL", showQuery = FALSE) {
   if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
     stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
   }
+  # Check the useLocalDataForVignettes option
+  if (getOption("useLocalDataForVignettes", FALSE)) {
+    
+    localDataPath <- system.file("extdata", paste0("classificationlList_", endpoint, ".csv"), package = "correspondenceTables")
+    
+    if (file.exists(localDataPath)) {
+      # Read data from the local file if it exists
+      data <- read.csv(localDataPath)
+      if (showQuery) {
+        print("Data loaded from local file.")
+      }
+      return(data)
+    }
+  } else {
+  
   tryCatch(
     {
   ### Load the configuration file from GitHub
@@ -132,6 +147,6 @@ ORDER BY ASC(?notation)
     return(data)
   }
   
-
+ }
 }
 
