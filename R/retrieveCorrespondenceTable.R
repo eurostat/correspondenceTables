@@ -7,7 +7,7 @@
 #' @param prefix Prefixes are typically defined at the beginning of a SPARQL query 
 #' and are used throughout the query to make it more concise and easier to read. 
 #' Multiple prefixes can be defined in a single query to cover different namespaces used in the dataset.
-#' The function 'classificationList()' can be used to generate the prefixes for the selected correspondence table.
+#' The function 'prefixList()' can be used to generate the prefixes for the selected correspondence table.
 #' @param ID_table Refers to a unique identifier associated with a specific correspondence table. 
 #' The ID_table can be obtained by utilizing the "correspondenceTableList()" function.
 #' @param language Refers to the specific language used for providing label, include and exclude information in the selected correspondence table. 
@@ -86,7 +86,7 @@ retrieveCorrespondenceTable = function(endpoint, prefix, ID_table, language = "e
     B = sub(".*_", "", ID_table_temp)
     
     ### Load prefixes using prefixList function
-    prefixlist = prefixList(endpoint, desired_prefix = tolower(c(A,B)))
+    prefixlist = prefixList(endpoint, prefix = tolower(c(A,B)))
     prefixlist = as.character(paste(prefixlist, collapse = "\n"))
     
       }, error = function(e) {
@@ -176,7 +176,6 @@ retrieveCorrespondenceTable = function(endpoint, prefix, ID_table, language = "e
     CsvFileSave(CSVout, data )
     
     
-  }
   
   if (showQuery) {
     result=list()
@@ -191,4 +190,5 @@ retrieveCorrespondenceTable = function(endpoint, prefix, ID_table, language = "e
   }
   
   return(result)
+ }
 }

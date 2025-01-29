@@ -9,6 +9,8 @@
 #' @param showQuery The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 #' If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.
 #' @import httr
+#' @import jsonlite
+#' @export
 #' @return
 #' \code{classificationList()} returns a table with information needed to retrieve the classification table:
 #' \itemize{
@@ -126,14 +128,17 @@ ORDER BY ASC(?notation)
     })
   if (endpoint == "ALL") {
     data = list("CELLAR" = data_cellar, "FAO" = data_fao)
+    SPARQL.query <- paste0(SPARQL.query_cellar, "\n", SPARQL.query_fao )
   }
   
   if (endpoint == "CELLAR") {
     data = list("CELLAR" = data_cellar)
+    SPARQL.query <- SPARQL.query_cellar
   }
   
   if (endpoint == "FAO") {
     data = list("FAO" = data_fao)
+    SPARQL.query <- SPARQL.query_fao
   }  
   
   if (showQuery) {
