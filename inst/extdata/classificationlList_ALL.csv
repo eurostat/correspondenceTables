@@ -1,0 +1,83 @@
+CELLAR,,,
+Prefix,ConceptScheme,URI,Title
+timeuse2018,acl2018,http://data.europa.eu/b8y/timeuse2018,"Activity coding list for harmonised European time use surveys, 2018 (ACL 2018)"
+cbf10,cbf,http://data.europa.eu/38u/cbf1.0,Classification of Business Functions (CBF)
+cepa2000,cepa2000,http://data.europa.eu/o5i/cepa2000,Classification of Environmental Protection Activities 2000 (CEPA 2000)
+cep,cep,http://data.europa.eu/4k9/cep,Classification of Environmental Purposes (CEP)
+crema2008,crema2008,http://data.europa.eu/o5i/crema2008,"Classification of Resource Management Activities, 2008 (CReMA 2008)"
+esa2010s,esa2010s,http://data.europa.eu/x3b/esa2010s,Classification of institutional sectors (ESA 2010 S)
+cn2019,cn2019,http://data.europa.eu/xsp/cn2019,"Combined Nomenclature, 2019 (CN 2019)"
+cn2022,cn2022,http://data.europa.eu/xsp/cn2022,"Combined Nomenclature, 2022 (CN 2022)"
+cn2020,cn2020,http://data.europa.eu/xsp/cn2020,"Combined Nomenclature, 2020 (CN 2020)"
+cn2021,cn2021,http://data.europa.eu/xsp/cn2021,"Combined Nomenclature, 2021 (CN 2021)"
+cn2018,cn2018,http://data.europa.eu/xsp/cn2018,"Combined Nomenclature, 2018 (CN 2018)"
+cn2023,cn2023,http://data.europa.eu/xsp/cn2023,"Combined Nomenclature, 2023 (CN 2023)"
+cn2017,cn2017,http://data.europa.eu/xsp/cn2017,"Combined Nomenclature, 2017 (CN 2017)"
+cn2024,cn2024,http://data.europa.eu/xsp/cn2024,"Combined Nomenclature, 2024 (CN 2024)"
+cn2025,cn2025,http://data.europa.eu/xsp/cn2025,"Combined Nomenclature, 2025 (CN 2025)"
+qglossary,quality,http://data.europa.eu/vjg/qglossary,ESS Quality Glossary
+directory,ESTAT,http://publications.europa.eu/resource/directory,EU Whoiswho dataset ENG
+statmanuals,ebs,http://data.europa.eu/9jo/statmanuals,European Business Statistics Manuals (EBS)
+ecoicop,ecoicop,http://data.europa.eu/ed1/ecoicop,European Classification of Individual Consumption according to Purpose (ECOICOP)
+low2015,scheme,http://data.europa.eu/6p8/low2015,"European List of Wastes, 2015 (LoW 2015)"
+eseg2016,eseg2016,http://data.europa.eu/57r/eseg2016,European Socio-economic Groups (ESeG 2016)
+ewc4-stat,scheme,http://data.europa.eu/6p8/ewc4-stat,European Waste Classification for Statistics (EWC-Stat Rev. 4)
+ecoicop,ecoicop-hicp,http://data.europa.eu/ed1/ecoicop,European classification of individual consumption according to purpose adapted to the needs of the Harmonised Indices of Consumer Prices (ECOICOP-HICP)
+class-series,series,http://data.europa.eu/2en/class-series,European statistical classification series
+fss_2005-07,fss,http://data.europa.eu/kx8/fss_2005-07,Farm Structure Survey (FSS 2005 2007)
+fss_2010-16,fss,http://data.europa.eu/kx8/fss_2010-16,Farm Structure Survey (FSS 2010 2016)
+agriprod,ifs2020,http://data.europa.eu/3t3/agriprod,Integrated Farm Statistics (IFS2020 Core)
+icstcom2009,icst,http://data.europa.eu/z1e/icstcom2009,International Classification of Ship by Type (ICST-COM)
+lucas2022,lucas,http://data.europa.eu/oxm/lucas2022,LUCAS Classification 2022 (LUCAS SU LC + LU + FT)
+lucas2022,lucas_ft,http://data.europa.eu/oxm/lucas2022,LUCAS Survey Forest types (LUCAS SU FT)
+lucas2022,lucas_lc,http://data.europa.eu/oxm/lucas2022,LUCAS Survey Land Cover Classification (LUCAS SU LC)
+lucas2022,lucas_lu,http://data.europa.eu/oxm/lucas2022,LUCAS Survey Land Use Classification (LUCAS SU LU)
+lucas2022,lucas_lf,http://data.europa.eu/oxm/lucas2022,LUCAS Survey Linear Features (LUCAS SU LF)
+lucas2022,lucas_wf,http://data.europa.eu/oxm/lucas2022,LUCAS Survey Water Features (LUCAS SU WF)
+geonom2022,geonom2022,http://data.europa.eu/4j8/geonom2022,NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2022)
+geonom2023,geonom2023,http://data.europa.eu/4j8/geonom2023,NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2023)
+geonom2021,geonom2021,http://data.europa.eu/4j8/geonom2021,NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2021)
+geonom2024,geonom2024,http://data.europa.eu/4j8/geonom2024,NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2024)
+nabs2007,nabs2007,http://data.europa.eu/u7a/nabs2007,Nomenclature for the analysis and comparison of scientific programmes and budgets (NABS 2007)
+prodcom2019,prodcom2019,http://data.europa.eu/qw1/prodcom2019,PRODCOM List 2019-2020
+prodcom2021,prodcom2021,http://data.europa.eu/qw1/prodcom2021,PRODCOM List 2021
+prodcom2022,prodcom2022,http://data.europa.eu/qw1/prodcom2022,PRODCOM List 2022
+prodcom2023,prodcom2023,http://data.europa.eu/qw1/prodcom2023,PRODCOM List 2023
+prodcom2024,prodcom2024,http://data.europa.eu/qw1/prodcom2024,PRODCOM List 2024
+prodtypes,prodtype,http://data.europa.eu/gzn/prodtypes,Production type
+nst2007,nst2007,http://data.europa.eu/1j7/nst2007,Standard goods classification for transport statistics (NST 2007)
+nace2,nace2,http://data.europa.eu/ux2/nace2,"Statistical Classification of Economic Activities in the European Community, Rev. 2 (NACE Rev. 2)"
+nace21,nace2.1,http://data.europa.eu/ux2/nace2.1,"Statistical Classification of Economic Activities in the European Community, Rev. 2.1 (NACE Rev. 2.1)"
+aa,scheme,http://data.europa.eu/83i/aa,Statistical abbreviations and acronyms
+cpa21,cpa21,http://data.europa.eu/ehl/cpa21,"Statistical classification of products by activity, 2.1 (CPA 2.1)"
+cpa2008,cpa2008,http://data.europa.eu/ehl/cpa2008,"Statistical classification of products by activity, 2008 (CPA 2008)"
+su,SU,http://data.europa.eu/gzn/su,Supplementary Units
+waste,scheme,http://data.europa.eu/6p8/waste,Waste categories
+tercet,border,http://data.europa.eu/q8e/tercet,border typology
+tercet,coastalArea,http://data.europa.eu/q8e/tercet,coastal areas typology
+tercet,coastalRegion,http://data.europa.eu/q8e/tercet,coastal regions typology
+tercet,degurba,http://data.europa.eu/q8e/tercet,degree of urbanisation (DEGURBA)
+tercet,island,http://data.europa.eu/q8e/tercet,island typology
+tercet,metro,http://data.europa.eu/q8e/tercet,metropolitan typology
+tercet,mountain,http://data.europa.eu/q8e/tercet,mountain typology
+tercet,tercet,http://data.europa.eu/q8e/tercet,territorial typologies (Tercet)
+tercet,urbanRural,http://data.europa.eu/q8e/tercet,urban-rural typology
+,,,
+FAO,,,
+Prefix,ConceptScheme,URI,Title
+COICOP1999,COICOP1999,http://unstats.un.org/classifications/COICOP1999,Classification of Individual Consumption According to Purpose (COICOP) 1999
+CPC20,CPCv2.0,https://unstats.un.org/classifications/CPC20,The Central Product Classification (CPC) v2.0
+CPC21,CPCv2.1,https://unstats.un.org/classifications/CPC21,The Central Product Classification (CPC) v2.1
+CPC21AG,CPCv2.1,https://unstats.un.org/classifications/CPC21AG,The Central Product Classification (CPC) v2.1. Expansion for agriculture and rural statistics
+CPC21FI,CPCv2.1,https://stats.fao.org/classifications/CPC21FI,The Central Product Classification (CPC) v2.1. Items relevant to FAO Fisheries and Aquaculture
+FCL,FCLscheme,https://stats.fao.org/classifications/FCL,The FAOSTAT Commodity List (FCL)
+FPC&D2022,FPCDv2022,https://stats.fao.org/classifications/FPC&D2022,Forest Products Classification and Definitions (FPC&D) v2022
+ICATUS2016,icatus#ICATUS2016https:,https://metadata.officialstatistics.org/classifications/ICATUS2016,International Classification of Activities for Time-Use Statistics 2016
+ICC10,ICCv1.0,https://stats.fao.org/classifications/ICC10,The Indicative Crop Classification for the Agricultural Census (ICC) Version 1.0
+ICC11,ICCv1.1,https://stats.fao.org/classifications/ICC11,The Indicative Crop Classification for the World Agricultural Census (ICC) Version 1.1
+ISIC4,ISICrev4,https://unstats.un.org/classifications/ISIC4,ISIC vRev4
+M49-UNSD,geoM49,https://unstats.un.org/classifications/M49-UNSD,Standard Country or Area Codes for Statistical Use (M49)
+NOCS,territorieshttp:,http://stats-class.fao.uniroma2.it/NOCS/NOCS,NOCS Territories members published as RDF/SKOS(XKOS) (v2.0)
+NOCS,nonFAO-membershttp:,http://stats-class.fao.uniroma2.it/NOCS/NOCS,NOCS non-FAO members published as RDF/SKOS(XKOS) (v2.0)
+NOCS,FAOmembershttp:,http://stats-class.fao.uniroma2.it/NOCS/NOCS,Names of Countries and Territories (NOCS) (RDF/SKOS/XKOS v2.0)
+WCACROPS,WCA2020crops,https://stats.fao.org/classifications/WCACROPS,FAO WCA2020 Crop List

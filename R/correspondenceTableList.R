@@ -4,6 +4,8 @@
 #' making it easier to retrieve specific information or perform complex queries on linked data. 
 #' The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
 #' @import httr
+#' @import jsonlite
+#' @export
 #' @return
 #' \code{correspondenceTableList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
 #' Target classification, Table name and URI.

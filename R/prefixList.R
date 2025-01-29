@@ -4,6 +4,7 @@
 #' making it easier to retrieve specific information or perform complex queries on linked data.  
 #' The valid values are \code{"CELLAR"} and \code{"FAO"}.
 #' @import httr
+#' @export
 #' @return
 #' \code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.
 #' @examples
@@ -39,8 +40,16 @@ prefixList = function(endpoint, prefix = NULL) {
   ))
   
   ### Define List
-  uri = classificationList(endpoint)[[1]][, 3]
-  prefix_endpoint = classificationList(endpoint)[[1]][, 1]
+  
+  # Check the useLocalDataForVignettes option
+  if (getOption("useLocalDataForVignettes", FALSE)) {
+    uri = classificationList(endpoint)[, 3]
+    prefix_endpoint = classificationList(endpoint)[, 1]
+    
+  }else{
+    uri = classificationList(endpoint)[[1]][, 3]
+    prefix_endpoint = classificationList(endpoint)[[1]][, 1]
+  }
   prefix_endpoint = gsub("\\.", "", prefix_endpoint)
   # Include the predefined prefixes
   prefix_all = as.matrix(paste0("PREFIX ", prefix_endpoint, ": <", uri, "/>"))

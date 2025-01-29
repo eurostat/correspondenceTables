@@ -21,7 +21,7 @@ The valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
 \item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read. 
 Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-The function 'classificationList()' can be used to generate the prefixes for the selected classification table.}
+The function 'prefixList()' can be used to generate the prefixes for the selected classification table.}
 
 \item{conceptScheme}{Refers to a unique identifier associated to specific classification table. 
 The conceptScheme can be obtained by utilizing the "classificationList()" function.

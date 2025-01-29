@@ -7,7 +7,7 @@
 #' @param CSVout a character string providing the path where the aggregated correspondence table CSV file should be saved. If NULL, no CSV file is generated.
 #'
 #' @return A data frame representing the aggregated correspondence table.
-#'
+#'@import jsonlite
 #' @export
 #' @examples 
 #' # Use data from the folder extdata

@@ -6,7 +6,7 @@
 #' The valid values are \code{"CELLAR"} or \code{"FAO"}. 
 #' @param prefix Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read. 
 #' Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-#' The function 'classificationList()' can be used to generate the prefixes for the selected classification table. 
+#' The function 'prefixList()' can be used to generate the prefixes for the selected classification table. 
 #' @param conceptScheme Refers to a unique identifier associated to specific classification table. 
 #' The conceptScheme can be obtained by utilizing the "classificationList()" function.
 #' #' @param language Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
@@ -20,6 +20,7 @@
 #' If not needed to view the SPARQL query used, the argument should be set as \code{FALSE}. By default, the SPARQL query is produced.
 #' @param localData this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api
 #' @import httr
+#' @import jsonlite
 #' @export
 #' @return
 #' \code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
@@ -61,6 +62,10 @@ retrieveClassificationTable = function(endpoint, prefix, conceptScheme, language
     if (file.exists(localDataPath)) {
       # Read data from the local file if it exists
       data <- read.csv(localDataPath)
+      # filter data according to level if not all
+      if(level != "ALL"){
+      data <- data[nchar(gsub("\\.", "", data[[prefix]])) == as.numeric(level), ]
+      }
       if (showQuery) {
         print("Data loaded from local file.")
       }

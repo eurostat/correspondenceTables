@@ -15,6 +15,8 @@
 #' @param showQuery The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 #' If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.
 #' @import httr
+#' @import jsonlite
+#' @export
 #' @return
 #' \code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
 #'  \itemize{
@@ -47,6 +49,20 @@ dataStructure = function(endpoint, prefix, conceptScheme, language = "en", showQ
   if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
     stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
   }
+  # Check the useLocalDataForVignettes option
+  if (getOption("useLocalDataForVignettes", FALSE)) {
+    
+    localDataPath <- system.file("extdata", paste0("dataStructure_", prefix, ".csv"), package = "correspondenceTables")
+    
+    if (file.exists(localDataPath)) {
+      # Read data from the local file if it exists
+      data <- read.csv(localDataPath)
+      if (showQuery) {
+        print("Data loaded from local file.")
+      }
+      return(data)
+    }
+  } else {
   
   ### Load the configuration file from GitHub
   config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")    
@@ -133,5 +149,5 @@ dataStructure = function(endpoint, prefix, conceptScheme, language = "en", showQ
     return(table)
   }
   
-
+ }
 }
