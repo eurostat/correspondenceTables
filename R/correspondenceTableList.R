@@ -54,19 +54,33 @@ if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
   
     ## Create Prefixes list 
     prefixlist = prefixList(e)
+    prefixlist = gsub("PREFIX FPC&D2022: <https://stats.fao.org/classifications/FPC&D2022/>", 
+                     "",prefixlist)
     prefixlist = as.character(paste(prefixlist, collapse = "\n"))
     
     prefixes_loop = unlist(lapply(strsplit(as.character(prefixList(e)), " "), function(x) x[2]))
     prefixes_loop = prefixes_loop[-rm]
-  
     data_t = list()
   
     for (i in 1:length(prefixes_loop)){
+      
     prefix = prefixes_loop[i]
+    if (prefix == "FCL:"){
+      sep = "--"
+    }
+    if (prefix == "ICC10:"){
+      sep = "--"
+    }
+    if (prefix == "ICC11:"){
+      sep = "--"
+    }
+    if (prefix == "ISIC4:"){
+      sep = "--"
+    }
     
     tryCatch(
       {
-    
+
     SPARQL.query = paste0(prefixlist, "
        SELECT ?ID_table ?A ?B ?Table ?URL 
 
@@ -84,6 +98,7 @@ if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
             FILTER (STRLEN(?ID_table) != 0) 
         }
       ")
+    #print( SPARQL.query)
     
     response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
     data_t[[i]] = data.frame(content(response, show_col_types = FALSE))

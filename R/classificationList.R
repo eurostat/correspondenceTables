@@ -114,7 +114,8 @@ ORDER BY ASC(?notation)
   prefix = data_fao[,2]
   # prefix = paste0(df_str_dt[,5], df_str_dt[,6])
   # prefix = gsub("\\.","",prefix)
-  uri = paste0(df_str_dt[,1],  "/", df_str_dt[,2], "/", df_str_dt[,3], "/", df_str_dt[,4], "/", prefix)
+  #uri = paste0(df_str_dt[,1],  "/", df_str_dt[,2], "/", df_str_dt[,3], "/", df_str_dt[,4], "/", prefix)
+  uri = read.csv(system.file("extdata", "classificationlList_FAO.csv", package = "correspondenceTables"))[,3]
   #class = prefix
   ConceptScheme = paste0(df_str_dt[,5], df_str_dt[,6])
   data_fao = cbind(prefix, ConceptScheme, uri, data_fao[,3])
