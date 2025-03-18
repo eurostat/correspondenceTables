@@ -86,7 +86,12 @@ retrieveCorrespondenceTable = function(endpoint, prefix, ID_table, language = "e
     B = sub(".*_", "", ID_table_temp)
     
     ### Load prefixes using prefixList function
-    prefixlist = prefixList(endpoint, prefix = tolower(c(A,B)))
+    if (endpoint == "CELLAR") {
+      prefixlist = prefixList(endpoint, prefix = tolower(c(A,B)))
+    }
+    if (endpoint == "FAO") {
+      prefixlist = prefixList(endpoint, prefix = c(A,B))
+    }
     prefixlist = as.character(paste(prefixlist, collapse = "\n"))
     
       }, error = function(e) {

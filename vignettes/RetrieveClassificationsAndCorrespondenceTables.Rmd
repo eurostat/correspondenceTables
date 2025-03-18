@@ -50,7 +50,7 @@ You can also get lists of all classifications available at all (both) SPARQL end
 **EXAMPLE A**
 
 ```{r}
-endpoint = "ALL"
+endpoint = "CELLAR"
 list_data = classificationList(endpoint)
 print(list_data, right= FALSE)
 ```
@@ -65,7 +65,7 @@ For any classification that you want to retrieve, you will have to indicate the 
 - has the concept scheme “`nace2`”.
 
 
-In case you only are interested in a particular level of this hierarchical classification, you are advised to check the structural information for this classification before proceeding (to check which levels are available). The dataStructure function allows you to do so – and the necessary arguments are those that you have just obtained using `classificationList()`.
+In case you only are interested in a particular level of this hierarchical classification, you are advised to check the structural information for this classification before proceeding (to check which levels are available). The `dataStructure()` function allows you to do so – and the necessary arguments are those that you have just obtained using `classificationList()`.
 
 **EXAMPLE B**
 
@@ -82,12 +82,14 @@ In case you already are familiar with the structure of the NACE Rev. 2 classific
 
 **Retrieving a classification**
 
-The function `retrieveClassificationTable()` retrieves the classification table from the CELLAR and FAO repository, formatted in such a way that it can be used as an input to the `newCorrespondenceTable()`, `updateCorrespondenceTable()`, `analyseCorrespondenceTable()`, `aggredateCorrespondenceTable()` functions . This function has seven arguments:
+The function `retrieveClassificationTable()` retrieves the classification table from the CELLAR and FAO repository, formatted in such a way that it can be used as an input to the `newCorrespondenceTable()`, `updateCorrespondenceTable()` functions. For an input to `analyseCorrespondenceTable()` and `aggredateCorrespondenceTable()`, a reformatting will most probably be necessary. 
+
+This function has seven arguments:
 
 -	endpoint - the SPARQL Endpoint: CELLAR or FAO
 - prefix - the SPARQL instruction for a declaration of a namespace prefix
 -	conceptScheme - a unique identifier associated to specific classification table
--	language - language of the table, default is "en" for english. (for language codes, please refer to XXXXX) 
+-	language - language of the table, default is "en" for english. (for language codes, please refer to *https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Language_codes*) 
 -	level – level of the objects in the collection to be retrieved, default is "ALL" for all levels.
 -	CSVout – if non-null: a string with the full path of the CSV file where the retrieved classification table is to be saved 
 -	showQuery – Boolean argument – if TRUE, the SPARQL query generated is printed as output.
@@ -111,9 +113,12 @@ result_bg <-retrieveClassificationTable(endpoint, prefix, conceptScheme, languag
 print(head(result_fr),right= FALSE)
 ```
 
-When using dynamic data, the return value is a list with two elements. The SPARQL query is saved in the first element of the returned list and The classification table is saved in the second element of the list.
+When using dynamic data, the return value is a list with two elements. The SPARQL query is saved in the first element of the returned list and the classification table is saved in the second element of the list.
 
 ```{r}
+# # Extract the SPARQL query used
+# SPARQLquery = result_ls[[1]]
+
 # # Obtain data frame in which the classification table is saved
 # table = result_ls[[2]]
 ```
@@ -133,13 +138,13 @@ Assuming that you are interested in the *CPC 2.1 : ISIC Rev. 4* correspondence t
 
 ```{r}
 endpoint = "FAO"
-prefix = "CPCv21"
+prefix = "CPC21"
 ID_table = "CPC21-ISIC4"
 ```
 
 •	is available in the *FAO* repository
 
-•	is associated with the prefix *“CPCv21”*
+•	is associated with the prefix *“CPC21”*
 
 •	is available in the table with ID *“CPC21-ISIC4”*
 
@@ -151,7 +156,7 @@ Using the values of the prefix and ID table retrieved in the above example for `
 
 ```{r}
 endpoint = "FAO"
-prefix = "CPCv21"
+prefix = "CPC21"
 ID_table = "CPC21-ISIC4"
 language = "en"
 CSVout = NULL
