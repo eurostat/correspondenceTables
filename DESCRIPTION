@@ -2,7 +2,7 @@ Package: correspondenceTables
 Type: Package
 Title: Creating Correspondence Tables Between Two Statistical Classifications
 Date: 2022-09-30
-Version: 0.10.20
+Version: 0.10.21
 Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
       person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
       person("Martin", "Karlberg", role = "aut"),
