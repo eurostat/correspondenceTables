@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Retrieve classifications and correspondence tables stored as Linked Open Data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Retrieve classifications and correspondence
+tables stored as Linked Open Data</h1>
+
+
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>Statistical classifications and correspondence tables are stored as
+Linked Open Data (LOD) by various organisations, including the
+Publications Office of the European Union (OP) and the Food and
+Agriculture Organization (FAO). Experts in the SPARQL query language
+(for LOD) can access those classifications and correspondence tables
+directly via their SPARQL endpoints of these organisations.</p>
+<p>The <code>retrieveClassification()</code> and
+<code>retrieveCorrespondenceTable()</code> functions allow practitioners
+that are not SPARQL experts to get these data themselves (as data
+frames, and optionally in CSV format). As an added bonus, they also
+return the relevant SPARQL code, allowing it to be re-used or adapted as
+needed.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)</span></code></pre></div>
+<p>In this vignette, some of the example codes are commented out to
+prevent calls to SPAQL queries during vignette building and
+installation. Please remove the comments if dynamic data is required.
+The option <code>useLocalDataForVignettes</code> is set to true to force
+the use of static data (CSV files) instead of dynamic data (SPARQL
+queries).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">useLocalDataForVignettes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="utility-function-to-help-you-use-the-core-functions" class="section level2">
+<h2>Utility function to help you use the core functions</h2>
+<p>In order to be able to use the core functions
+(<code>retrieveClassification()</code> and
+<code>retrieveCorrespondenceTable()</code>), you need to know what to
+ask for: which classifications (or correspondence tables) can be
+retrieved from the selectable SPARQL endpoints? For hierarchical
+classifications, you would also need to know which levels could be
+selected for a given classification.</p>
+<p><strong>Gathering information necessary for classification
+retrieval</strong></p>
+<p>The utility function <code>classificationList()</code> provides a
+list of all classifications available for retrieval – either at a
+specific SPARQL endpoint (FAO or CELLAR).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">prefixList</span>(endpoint)</span></code></pre></div>
+<p>You can also get lists of all classifications available at all (both)
+SPARQL endpoints to which the correspondenceTables package has been
+adapted.</p>
+<p><strong>EXAMPLE A</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>list_data <span class="ot">=</span> <span class="fu">classificationList</span>(endpoint)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">print</span>(list_data, <span class="at">right=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;    Prefix       ConceptScheme URI                                              Title                                                                                                                                                  </span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 1  timeuse2018  acl2018       http://data.europa.eu/b8y/timeuse2018            Activity coding list for harmonised European time use surveys, 2018 (ACL 2018)                                                                         </span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 2  cbf10        cbf           http://data.europa.eu/38u/cbf1.0                 Classification of Business Functions (CBF)                                                                                                             </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 3  cepa2000     cepa2000      http://data.europa.eu/o5i/cepa2000               Classification of Environmental Protection Activities 2000 (CEPA 2000)                                                                                 </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; 4  cep          cep           http://data.europa.eu/4k9/cep                    Classification of Environmental Purposes (CEP)                                                                                                         </span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; 5  crema2008    crema2008     http://data.europa.eu/o5i/crema2008              Classification of Resource Management Activities, 2008 (CReMA 2008)                                                                                    </span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; 6  esa2010s     esa2010s      http://data.europa.eu/x3b/esa2010s               Classification of institutional sectors (ESA 2010 S)                                                                                                   </span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; 7  cn2019       cn2019        http://data.europa.eu/xsp/cn2019                 Combined Nomenclature, 2019 (CN 2019)                                                                                                                  </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; 8  cn2022       cn2022        http://data.europa.eu/xsp/cn2022                 Combined Nomenclature, 2022 (CN 2022)                                                                                                                  </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 9  cn2020       cn2020        http://data.europa.eu/xsp/cn2020                 Combined Nomenclature, 2020 (CN 2020)                                                                                                                  </span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 10 cn2021       cn2021        http://data.europa.eu/xsp/cn2021                 Combined Nomenclature, 2021 (CN 2021)                                                                                                                  </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 11 cn2018       cn2018        http://data.europa.eu/xsp/cn2018                 Combined Nomenclature, 2018 (CN 2018)                                                                                                                  </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 12 cn2023       cn2023        http://data.europa.eu/xsp/cn2023                 Combined Nomenclature, 2023 (CN 2023)                                                                                                                  </span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 13 cn2017       cn2017        http://data.europa.eu/xsp/cn2017                 Combined Nomenclature, 2017 (CN 2017)                                                                                                                  </span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 14 cn2024       cn2024        http://data.europa.eu/xsp/cn2024                 Combined Nomenclature, 2024 (CN 2024)                                                                                                                  </span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 15 cn2025       cn2025        http://data.europa.eu/xsp/cn2025                 Combined Nomenclature, 2025 (CN 2025)                                                                                                                  </span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 16 qglossary    quality       http://data.europa.eu/vjg/qglossary              ESS Quality Glossary                                                                                                                                   </span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 17 directory    ESTAT         http://publications.europa.eu/resource/directory EU Whoiswho dataset ENG                                                                                                                                </span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; 18 statmanuals  ebs           http://data.europa.eu/9jo/statmanuals            European Business Statistics Manuals (EBS)                                                                                                             </span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 19 ecoicop      ecoicop       http://data.europa.eu/ed1/ecoicop                European Classification of Individual Consumption according to Purpose (ECOICOP)                                                                       </span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; 20 low2015      scheme        http://data.europa.eu/6p8/low2015                European List of Wastes, 2015 (LoW 2015)                                                                                                               </span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; 21 eseg2016     eseg2016      http://data.europa.eu/57r/eseg2016               European Socio-economic Groups (ESeG 2016)                                                                                                             </span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; 22 ewc4-stat    scheme        http://data.europa.eu/6p8/ewc4-stat              European Waste Classification for Statistics (EWC-Stat Rev. 4)                                                                                         </span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; 23 ecoicop      ecoicop-hicp  http://data.europa.eu/ed1/ecoicop                European classification of individual consumption according to purpose adapted to the needs of the Harmonised Indices of Consumer Prices (ECOICOP-HICP)</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; 24 class-series series        http://data.europa.eu/2en/class-series           European statistical classification series                                                                                                             </span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; 25 fss_2005-07  fss           http://data.europa.eu/kx8/fss_2005-07            Farm Structure Survey (FSS 2005 2007)                                                                                                                  </span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; 26 fss_2010-16  fss           http://data.europa.eu/kx8/fss_2010-16            Farm Structure Survey (FSS 2010 2016)                                                                                                                  </span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; 27 agriprod     ifs2020       http://data.europa.eu/3t3/agriprod               Integrated Farm Statistics (IFS2020 Core)                                                                                                              </span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; 28 icstcom2009  icst          http://data.europa.eu/z1e/icstcom2009            International Classification of Ship by Type (ICST-COM)                                                                                                </span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; 29 lucas2022    lucas         http://data.europa.eu/oxm/lucas2022              LUCAS Classification 2022 (LUCAS SU LC + LU + FT)                                                                                                      </span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; 30 lucas2022    lucas_ft      http://data.europa.eu/oxm/lucas2022              LUCAS Survey Forest types (LUCAS SU FT)                                                                                                                </span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; 31 lucas2022    lucas_lc      http://data.europa.eu/oxm/lucas2022              LUCAS Survey Land Cover Classification (LUCAS SU LC)                                                                                                   </span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; 32 lucas2022    lucas_lu      http://data.europa.eu/oxm/lucas2022              LUCAS Survey Land Use Classification (LUCAS SU LU)                                                                                                     </span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt; 33 lucas2022    lucas_lf      http://data.europa.eu/oxm/lucas2022              LUCAS Survey Linear Features (LUCAS SU LF)                                                                                                             </span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt; 34 lucas2022    lucas_wf      http://data.europa.eu/oxm/lucas2022              LUCAS Survey Water Features (LUCAS SU WF)                                                                                                              </span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; 35 geonom2022   geonom2022    http://data.europa.eu/4j8/geonom2022             NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2022)                                    </span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt; 36 geonom2023   geonom2023    http://data.europa.eu/4j8/geonom2023             NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2023)                                    </span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; 37 geonom2021   geonom2021    http://data.europa.eu/4j8/geonom2021             NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2021)                                    </span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt; 38 geonom2024   geonom2024    http://data.europa.eu/4j8/geonom2024             NOMENCLATURE OF COUNTRIES AND TERRITORIES FOR THE EUROPEAN STATISTICS ON INTERNATIONAL TRADE IN GOODS (GEONOM 2024)                                    </span></span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt; 39 nabs2007     nabs2007      http://data.europa.eu/u7a/nabs2007               Nomenclature for the analysis and comparison of scientific programmes and budgets (NABS 2007)                                                          </span></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co">#&gt; 40 prodcom2019  prodcom2019   http://data.europa.eu/qw1/prodcom2019            PRODCOM List 2019-2020                                                                                                                                 </span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co">#&gt; 41 prodcom2021  prodcom2021   http://data.europa.eu/qw1/prodcom2021            PRODCOM List 2021                                                                                                                                      </span></span>
+<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a><span class="co">#&gt; 42 prodcom2022  prodcom2022   http://data.europa.eu/qw1/prodcom2022            PRODCOM List 2022                                                                                                                                      </span></span>
+<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a><span class="co">#&gt; 43 prodcom2023  prodcom2023   http://data.europa.eu/qw1/prodcom2023            PRODCOM List 2023                                                                                                                                      </span></span>
+<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a><span class="co">#&gt; 44 prodcom2024  prodcom2024   http://data.europa.eu/qw1/prodcom2024            PRODCOM List 2024                                                                                                                                      </span></span>
+<span id="cb4-49"><a href="#cb4-49" tabindex="-1"></a><span class="co">#&gt; 45 prodtypes    prodtype      http://data.europa.eu/gzn/prodtypes              Production type                                                                                                                                        </span></span>
+<span id="cb4-50"><a href="#cb4-50" tabindex="-1"></a><span class="co">#&gt; 46 nst2007      nst2007       http://data.europa.eu/1j7/nst2007                Standard goods classification for transport statistics (NST 2007)                                                                                      </span></span>
+<span id="cb4-51"><a href="#cb4-51" tabindex="-1"></a><span class="co">#&gt; 47 nace2        nace2         http://data.europa.eu/ux2/nace2                  Statistical Classification of Economic Activities in the European Community, Rev. 2 (NACE Rev. 2)                                                      </span></span>
+<span id="cb4-52"><a href="#cb4-52" tabindex="-1"></a><span class="co">#&gt; 48 nace21       nace2.1       http://data.europa.eu/ux2/nace2.1                Statistical Classification of Economic Activities in the European Community, Rev. 2.1 (NACE Rev. 2.1)                                                  </span></span>
+<span id="cb4-53"><a href="#cb4-53" tabindex="-1"></a><span class="co">#&gt; 49 aa           scheme        http://data.europa.eu/83i/aa                     Statistical abbreviations and acronyms                                                                                                                 </span></span>
+<span id="cb4-54"><a href="#cb4-54" tabindex="-1"></a><span class="co">#&gt; 50 cpa21        cpa21         http://data.europa.eu/ehl/cpa21                  Statistical classification of products by activity, 2.1 (CPA 2.1)                                                                                      </span></span>
+<span id="cb4-55"><a href="#cb4-55" tabindex="-1"></a><span class="co">#&gt; 51 cpa2008      cpa2008       http://data.europa.eu/ehl/cpa2008                Statistical classification of products by activity, 2008 (CPA 2008)                                                                                    </span></span>
+<span id="cb4-56"><a href="#cb4-56" tabindex="-1"></a><span class="co">#&gt; 52 su           SU            http://data.europa.eu/gzn/su                     Supplementary Units                                                                                                                                    </span></span>
+<span id="cb4-57"><a href="#cb4-57" tabindex="-1"></a><span class="co">#&gt; 53 waste        scheme        http://data.europa.eu/6p8/waste                  Waste categories                                                                                                                                       </span></span>
+<span id="cb4-58"><a href="#cb4-58" tabindex="-1"></a><span class="co">#&gt; 54 tercet       border        http://data.europa.eu/q8e/tercet                 border typology                                                                                                                                        </span></span>
+<span id="cb4-59"><a href="#cb4-59" tabindex="-1"></a><span class="co">#&gt; 55 tercet       coastalArea   http://data.europa.eu/q8e/tercet                 coastal areas typology                                                                                                                                 </span></span>
+<span id="cb4-60"><a href="#cb4-60" tabindex="-1"></a><span class="co">#&gt; 56 tercet       coastalRegion http://data.europa.eu/q8e/tercet                 coastal regions typology                                                                                                                               </span></span>
+<span id="cb4-61"><a href="#cb4-61" tabindex="-1"></a><span class="co">#&gt; 57 tercet       degurba       http://data.europa.eu/q8e/tercet                 degree of urbanisation (DEGURBA)                                                                                                                       </span></span>
+<span id="cb4-62"><a href="#cb4-62" tabindex="-1"></a><span class="co">#&gt; 58 tercet       island        http://data.europa.eu/q8e/tercet                 island typology                                                                                                                                        </span></span>
+<span id="cb4-63"><a href="#cb4-63" tabindex="-1"></a><span class="co">#&gt; 59 tercet       metro         http://data.europa.eu/q8e/tercet                 metropolitan typology                                                                                                                                  </span></span>
+<span id="cb4-64"><a href="#cb4-64" tabindex="-1"></a><span class="co">#&gt; 60 tercet       mountain      http://data.europa.eu/q8e/tercet                 mountain typology                                                                                                                                      </span></span>
+<span id="cb4-65"><a href="#cb4-65" tabindex="-1"></a><span class="co">#&gt; 61 tercet       tercet        http://data.europa.eu/q8e/tercet                 territorial typologies (Tercet)                                                                                                                        </span></span>
+<span id="cb4-66"><a href="#cb4-66" tabindex="-1"></a><span class="co">#&gt; 62 tercet       urbanRural    http://data.europa.eu/q8e/tercet                 urban-rural typology</span></span></code></pre></div>
+<p>For any classification that you want to retrieve, you will have to
+indicate the “prefix” and “concept scheme” features in the core
+retrieval function (<code>retrieveClassification()</code>). Assuming
+that you are interested in the NACE Rev. 2 classification, the above
+output shows that this classification:</p>
+<ul>
+<li><p>is available in the “<code>CELLAR</code>” repository.</p></li>
+<li><p>has the prefix “<code>nace2</code>”.</p></li>
+<li><p>has the concept scheme “<code>nace2</code>”.</p></li>
+</ul>
+<p>In case you only are interested in a particular level of this
+hierarchical classification, you are advised to check the structural
+information for this classification before proceeding (to check which
+levels are available). The <code>dataStructure()</code> function allows
+you to do so – and the necessary arguments are those that you have just
+obtained using <code>classificationList()</code>.</p>
+<p><strong>EXAMPLE B</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>conceptScheme <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">dataStructure</span>(endpoint, prefix, conceptScheme)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt;   Concept_Scheme Depth     Level Count</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 1          nace2     1  sections    21</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 2          nace2     2 divisions    88</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; 3          nace2     3    groups   272</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 4          nace2     4   classes   615</span></span></code></pre></div>
+<p>The above output shows you that the NACE Rev. 2 features 4 levels
+(level 1 = sections, level 2 = divisions, level 3 = groups, level 4 =
+classes).</p>
+<p>In case you already are familiar with the structure of the NACE
+Rev. 2 classification (meaning that you know that classes have level 4),
+you could skip this step, since you then already know what to indicate
+in <code>retrieveClassification()</code>.</p>
+<p><strong>Retrieving a classification</strong></p>
+<p>The function <code>retrieveClassificationTable()</code> retrieves the
+classification table from the CELLAR and FAO repository, formatted in
+such a way that it can be used as an input to the
+<code>newCorrespondenceTable()</code>,
+<code>updateCorrespondenceTable()</code> functions. For an input to
+<code>analyseCorrespondenceTable()</code> and
+<code>aggredateCorrespondenceTable()</code>, a reformatting will most
+probably be necessary.</p>
+<p>This function has seven arguments:</p>
+<ul>
+<li>endpoint - the SPARQL Endpoint: CELLAR or FAO</li>
+<li>prefix - the SPARQL instruction for a declaration of a namespace
+prefix</li>
+<li>conceptScheme - a unique identifier associated to specific
+classification table</li>
+<li>language - language of the table, default is “en” for english. (for
+language codes, please refer to <em><a href="https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Language_codes" class="uri">https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Language_codes</a></em>)</li>
+<li>level – level of the objects in the collection to be retrieved,
+default is “ALL” for all levels.</li>
+<li>CSVout – if non-null: a string with the full path of the CSV file
+where the retrieved classification table is to be saved</li>
+<li>showQuery – Boolean argument – if TRUE, the SPARQL query generated
+is printed as output.</li>
+</ul>
+<p>Using the values of the prefix and conceptScheme retrieved in the
+above example for <code>classificationList()</code>, and using one of
+the available levels (level 4) as per the above example for
+<code>dataStructure()</code>, the following code is used to retrieve the
+class-level (level 4) data of the German, French and Bulgarian versions
+of the NACE Rev. 2 classification (from static data, as noted
+above):</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>conceptScheme <span class="ot">=</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>level <span class="ot">=</span> <span class="st">&quot;4&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>CSVout <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>showQuery <span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>result_de <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(endpoint, prefix, conceptScheme, <span class="at">language =</span> <span class="st">&quot;de&quot;</span>, level, CSVout, showQuery)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Data loaded from local file.&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>result_fr <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(endpoint, prefix, conceptScheme, <span class="at">language =</span> <span class="st">&quot;fr&quot;</span>, level, CSVout, showQuery)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Data loaded from local file.&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>result_bg <span class="ot">&lt;-</span><span class="fu">retrieveClassificationTable</span>(endpoint, prefix, conceptScheme, <span class="at">language =</span> <span class="st">&quot;bg&quot;</span>, level, CSVout, showQuery)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Data loaded from local file.&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(result_fr),<span class="at">right=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt;   nace2 NAME                                                                                   Parent</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; 3 01.11 Culture de céréales (à l&#39;exception du riz), de légumineuses et de graines oléagineuses 01.1  </span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; 4 01.12 Culture du riz                                                                         01.1  </span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; 5 01.13 Culture de légumes, de melons, de racines et de tubercules                             01.1  </span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; 6 01.14 Culture de la canne à sucre                                                            01.1  </span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; 7 01.15 Culture du tabac                                                                       01.1  </span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; 8 01.16 Culture de plantes à fibres                                                            01.1  </span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt;   Include                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; 3 Cette classe comprend toutes les formes de culture de plein champ de céréales, de légumineuses et de graines oléagineuses. Ces cultures sont souvent combinées au sein des unités agricoles.  Cette classe comprend: - la culture de céréales telles que:   • blé   • maïs-grain   • sorgho   • orge   • seigle   • avoine   • millet   • autres céréales n.c.a. - la culture de légumineuses telles que:   • haricots   • fèves   • pois chiches   • pois à vache   • lentilles   • lupins   • pois   • pois cajans   • autres légumineuses - la culture de graines oléagineuses telles que:   • graines de soja   • arachides   • graines de ricin   • graines de lin   • graines de moutarde   • graines de niger   • graines de colza   • graines de carthame   • graines de sésame   • graines de tournesol   • autres graines oléagineuses                                                                                                                                                                                                                                                 </span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; 4 &lt;NA&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; 5 Cette classe comprend: - la culture des légumes à feuilles et à tiges, tels que:   • artichauts   • asperges   • choux   • choux-fleurs et brocolis   • laitues et chicorées   • épinards   • autres légumes à feuilles et à tiges - la culture de plantes cultivées pour leurs fruits, telles que:   • concombres et cornichons   • aubergines   • tomates   • pastèques   • melons cantaloups   • autres melons et plantes cultivées pour leurs fruits - la culture des légumes à racines, à bulbes ou à tubercules, tels que:   • carottes   • navets   • ail   • oignons (et échalotes)   • poireaux et autres légumes alliacés   • autres légumes à racines, à bulbes ou à tubercules - la culture des champignons et des truffes - la production de semences de légumes, y compris de graines de betteraves sucrières, à l’exclusion des graines d’autres betteraves - la culture des betteraves sucrières - la culture d’autres légumes - la culture de racines et de tubercules, tels que:   • pommes de terre   • patates douces   • manioc   • ignames   • autres racines et tubercules</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; 6 &lt;NA&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 7 &lt;NA&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; 8 Cette classe comprend: - la culture du coton - la culture de jute, de kenaf et d’autres fibres textiles libériennes - la culture de lin ou de chanvre - la culture de sisal et d’autres fibres textiles du genre agave - la culture de l’abaca, de la ramie et d’autres fibres textiles végétales - la culture d’autres plantes à fibres                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;   Include_Also Exclude                                                                                                                                                                                     </span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 3 &lt;NA&gt;         Cette classe ne comprend pas: - la culture du riz, voir 01.12 - la culture du maïs doux, voir 01.13 - la culture du maïs fourrager, voir 01.19 - la culture de fruits oléagineux, voir 01.26</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; 4 &lt;NA&gt;         &lt;NA&gt;                                                                                                                                                                                        </span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 5 &lt;NA&gt;         Cette classe ne comprend pas: - la culture de piments, de poivrons et d’autres plantes à épices et aromatiques, voir 01.28 - la culture de blanc de champignons, voir 01.30                 </span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 6 &lt;NA&gt;         Cette classe ne comprend pas: - la culture de betteraves sucrières, voir 01.13                                                                                                              </span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 7 &lt;NA&gt;         Cette classe ne comprend pas: - la fabrication de produits à base de tabac, voir 12.00                                                                                                      </span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 8 &lt;NA&gt;         &lt;NA&gt;</span></span></code></pre></div>
+<p>When using dynamic data, the return value is a list with two
+elements. The SPARQL query is saved in the first element of the returned
+list and the classification table is saved in the second element of the
+list.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># # Extract the SPARQL query used</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co"># SPARQLquery = result_ls[[1]]</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># # Obtain data frame in which the classification table is saved</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co"># table = result_ls[[2]]</span></span></code></pre></div>
+<p><strong>Gathering information necessary for correspondence table
+retrieval</strong></p>
+<p>The <code>correspondenceTableList()</code> function is analogous to
+the <code>classificationList()</code> function – but serves to list the
+available correspondence tables in the CELLAR and/or FAO
+repositories.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#corr_list = correspondenceTableList(&quot;ALL&quot;)</span></span></code></pre></div>
+<p><strong>EXAMPLE C</strong></p>
+<p>Assuming that you are interested in the <em>CPC 2.1 : ISIC
+Rev. 4</em> correspondence table, the above output shows that the
+table:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;CPC21&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>ID_table <span class="ot">=</span> <span class="st">&quot;CPC21-ISIC4&quot;</span></span></code></pre></div>
+<p>• is available in the <em>FAO</em> repository</p>
+<p>• is associated with the prefix <em>“CPC21”</em></p>
+<p>• is available in the table with ID <em>“CPC21-ISIC4”</em></p>
+<p><strong>Retrieving a correspondence table</strong></p>
+<p>The <code>retrieveCorrespondenceTable()</code> function has virtually
+the same set of parameters as the <code>retrieveClassification()</code>
+function. The main difference is that the “ID_table” parameter is used
+rather than the “conceptScheme”, and that it is not possible to select a
+level (since correspondence tables are typically established at the most
+granular level of the two classifications involved).</p>
+<p>Using the values of the prefix and ID table retrieved in the above
+example for <code>correspondenceTableList()</code>, the English language
+version of the <em>CPC 2.1 : ISIC Rev. 4</em> correspondence table is
+retrieved with the following code:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>endpoint <span class="ot">=</span> <span class="st">&quot;FAO&quot;</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>prefix <span class="ot">=</span> <span class="st">&quot;CPC21&quot;</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>ID_table <span class="ot">=</span> <span class="st">&quot;CPC21-ISIC4&quot;</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>language <span class="ot">=</span> <span class="st">&quot;en&quot;</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>CSVout <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>showQuery<span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>result_en <span class="ot">=</span> <span class="fu">retrieveCorrespondenceTable</span>(endpoint, prefix, ID_table, language, CSVout, showQuery)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Data loaded from local file.&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(result_en),<span class="at">right=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt;   CPC21 ISIC4 Label_CPC21 Label_ISIC4</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; 1 1111  111   NA          NA         </span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; 2 1112  111   NA          NA         </span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; 3 1121  111   NA          NA         </span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; 4 1122  111   NA          NA         </span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; 5 1131  112   NA          NA         </span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; 6 1132  112   NA          NA         </span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt;   Include_CPC21                                                                                                                                                                                                                                                                                                                                                                                                                                  </span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; 1 This subclass includes:\n - wheat, species of &lt;i&gt;Triticum&lt;/i&gt;, mainly &lt;i&gt;aestivum&lt;/i&gt; and &lt;i&gt;durum&lt;/i&gt;, and meslin grown specifically for seed purposes, whether or not processed. Meslin is a mixture of wheat and rye, generally in proportions of two to one.\n \n This subclass does not include:\n - wheat not grown specifically for seed purposes, cf. 01112                                                                            </span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; 2 This subclass includes:\n - wheat, species of &lt;i&gt;Triticum&lt;/i&gt;, mainly &lt;i&gt;aestivum&lt;/i&gt; and &lt;i&gt;durum&lt;/i&gt;, including common wheat of the following kinds: \n * spring wheat\n * winter wheat\n * hard wheat\n * soft wheat\n * red and white wheat\n * durum wheat\n - meslin (a mixture of wheat and rye, generally in proportions of two to one).\n \n This subclass does not include:\n - wheat grown specifically for seed purposes, cf. 01111</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; 3 &lt;NA&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                           </span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; 4 &lt;NA&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                           </span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; 5 This subclass includes:\n - rice, species of &lt;i&gt;Oryza&lt;/i&gt;, mainly &lt;i&gt;Oryza sativa&lt;/i&gt;, not husked, grown specifically for seed purposes, whether or not processed\n \n This subclass does not include:\n - rice not grown specifically for seed purposes, cf. 01132                                                                                                                                                                            </span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; 6 This subclass includes:\n - rice, species of &lt;i&gt;Oryza&lt;/i&gt;, mainly &lt;i&gt;Oryza sativa&lt;/i&gt;, not husked\n \n This subclass does not include:\n - rice grown specifically for seed purposes, cf. 01131\n - semi-milled or wholly milled rice, whether or not polished or glazed, cf. 23161\n - broken rice, cf. 23161\n - husked rice, cf. 23162                                                                                                      </span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt;   Exclude_CPC21 Include_ISIC4 Exclude_ISIC4 Comment URL                                                              </span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; 1 NA            NA            NA            NA      https://unstats.un.org/classifications/CPC/v2.1/01111_CPC21-ISIC4</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt; 2 NA            NA            NA            NA      https://unstats.un.org/classifications/CPC/v2.1/01112_CPC21-ISIC4</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; 3 NA            NA            NA            NA      https://unstats.un.org/classifications/CPC/v2.1/01121_CPC21-ISIC4</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt; 4 NA            NA            NA            NA      https://unstats.un.org/classifications/CPC/v2.1/01122_CPC21-ISIC4</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; 5 NA            NA            NA            NA      https://unstats.un.org/classifications/CPC/v2.1/01131_CPC21-ISIC4</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt; 6 NA            NA            NA            NA      https://unstats.un.org/classifications/CPC/v2.1/01132_CPC21-ISIC4</span></span></code></pre></div>
+<p>Similar to retrieveClassificationTable, the return value is a list
+with two elements.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># # Extract the SPARQL query used</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co"># SPARQLquery = result_en[[1]]</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co"># # Obtain data frame in which the correspondence table is saved</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co"># table = result_en[[2]]</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

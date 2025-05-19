@@ -14,11 +14,12 @@ newCorrespondenceTable(
 }
 \arguments{
 \item{Tables}{A string of type character containing the name of a csv file which contains the names of the files that
-contain the classifications and the intermediate correspondence tables (see "Details" below).}
+contain the classifications and the intermediate correspondence tables OR a list of vectors with the names of the dataframes
+classifications and the intermediate correspondence tables (see "Details" below).}
 
 \item{CSVout}{The preferred name for the \emph{output csv files} that will contain the candidate correspondence table
-and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}. 
-If the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output 
+and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}.
+If the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output
 is exported into two csv files whose names contain the provided name (see "Value" below).}
 
 \item{Reference}{The reference classification among A and B. If a classification is the reference to the other, and hence
@@ -31,9 +32,9 @@ is exported into two csv files whose names contain the provided name (see "Value
 no code for classification A or no code for classification B. The default value is \code{0.2}. The valid values are
 real numbers in the interval [0, 1].}
 
-\item{Redundancy_trim}{An argument in the function containing the logical values \code{TRUE} or \code{FALSE} 
+\item{Redundancy_trim}{An argument in the function containing the logical values \code{TRUE} or \code{FALSE}
 used to facilitate the trimming of the redundant records.
-The default value is \code{TRUE}, which removes all redundant records. 
+The default value is \code{TRUE}, which removes all redundant records.
 The other values is \code{FALSE}, which shows redundant records together with the redundancy flag.}
 }
 \value{
@@ -54,7 +55,7 @@ The other values is \code{FALSE}, which shows redundant records together with th
 \description{
 Creation of a candidate correspondence table between two classifications, A and B, when there are
   correspondence tables leading from the first classification to the second one via \eqn{k} intermediate pivot
-  classifications \eqn{C_1, \ldots, C_k}. 
+  classifications \eqn{C_1, \ldots, C_k}.
   The correspondence tables leading from A to B are A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}: \eqn{1 \le i \le k -1}\}, B:\eqn{C_k}.
 }
 \details{
@@ -103,10 +104,10 @@ Interdependency requirements:
         \item If there is only one pivot classification, \eqn{C_1}, at least one code of it must appear in both the file of
         correspondence table A:\eqn{C_1} and the file of correspondence table B:\eqn{C_1}.
         \item If the pivot classifications are \eqn{k} with \eqn{k\ge 2} then at least one code of \eqn{C_1} must appear in
-        both the file of correspondence table A:\eqn{C_1} and the file of correspondence table \eqn{C_1}:\eqn{C_2}, at least one 
-        code of each of the \eqn{C_i}, \eqn{i = 2, \ldots, k-1} (if \eqn{k\ge 3}) must appear in both the file of correspondence 
-        table \eqn{C_{i-1}}:\eqn{C_i} and the file of correspondence table \eqn{C_i}:\eqn{C_{i+1}}, and at least one code of 
-        \eqn{C_k} must appear in both the file of correspondence table \eqn{C_{k-1}}:\eqn{C_k} and the file of correspondence table 
+        both the file of correspondence table A:\eqn{C_1} and the file of correspondence table \eqn{C_1}:\eqn{C_2}, at least one
+        code of each of the \eqn{C_i}, \eqn{i = 2, \ldots, k-1} (if \eqn{k\ge 3}) must appear in both the file of correspondence
+        table \eqn{C_{i-1}}:\eqn{C_i} and the file of correspondence table \eqn{C_i}:\eqn{C_{i+1}}, and at least one code of
+        \eqn{C_k} must appear in both the file of correspondence table \eqn{C_{k-1}}:\eqn{C_k} and the file of correspondence table
         B:\eqn{C_k}.
     }
 Mismatch tolerance:
@@ -145,14 +146,14 @@ If any of the conditions required from the arguments is violated an error messag
     value of the flag is \code{0} if the row contains a code of B that appears in both the table of classification B and
     correspondence table B:\eqn{C_k}. Finally, the value of the flag is empty if the row contains no code of B or if it
     contains a code of B that appears in correspondence table B:\eqn{C_k} but not in the table of classification B.
-    \item The argument "Redundancy_trim" is used to delete all the redundancies which are mapping correctly. 
-    The valid logical values for this argument in the candidate correspondence table are \code{TRUE} or \code{FALSE}. 
-    If the selected value is \code{TRUE}, all redundant records are removed and kept exactly one record for each unique combination. 
-    For this retained record, the codes, the label and the supplementary information of the pivot classifications are replaced with 
+    \item The argument "Redundancy_trim" is used to delete all the redundancies which are mapping correctly.
+    The valid logical values for this argument in the candidate correspondence table are \code{TRUE} or \code{FALSE}.
+    If the selected value is \code{TRUE}, all redundant records are removed and kept exactly one record for each unique combination.
+    For this retained record, the codes, the label and the supplementary information of the pivot classifications are replaced with
     'multiple'. If the multiple infomration of the pivot classifications are the same, their value will not be replaced.
-    If the selected value is \code{FALSE}, no trimming is executed so redundant records are shown, together with the redundancy flag.  
+    If the selected value is \code{FALSE}, no trimming is executed so redundant records are shown, together with the redundancy flag.
     If the logical values are missing the implementation of the function will stop.
-     
+
 }
 }
 
@@ -198,7 +199,7 @@ library. All sample datasets may be found there.
      NCT<-newCorrespondenceTable(file.path(tmp_dir,"example.csv"),
                                  file.path(tmp_dir,"newCorrespondenceTable.csv"),
                                  "A",
-                                 0.56, 
+                                 0.56,
                                  FALSE)
 
      summary(NCT)

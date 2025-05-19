@@ -4,7 +4,7 @@
 \alias{prefixList}
 \title{Create a list of prefixes for both CELLAR and FAO repositories.}
 \usage{
-prefixList(endpoint, desired_prefix = NULL)
+prefixList(endpoint, prefix = NULL)
 }
 \arguments{
 \item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 

@@ -5,45 +5,46 @@
 \title{Retrieve classification tables from CELLAR and FAO repositories.}
 \usage{
 retrieveClassificationTable(
-  prefix,
   endpoint,
+  prefix,
   conceptScheme,
-  level = "ALL",
   language = "en",
-  CSVout = FALSE,
+  level = "ALL",
+  CSVout = NULL,
   showQuery = TRUE
 )
 }
 \arguments{
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read. 
-Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-The function 'classificationEndpoint()' can be used to generate the prefixes for the selected classification table.}
-
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
+\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets,
 making it easier to retrieve specific information or perform complex queries on linked data.
 The valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
-\item{conceptScheme}{Refers to a unique identifier associated to specific classification table. 
-The conceptScheme can be obtained by utilizing the "classificationEndpoint()" function.}
+\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read.
+Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
+The function 'prefixList()' can be used to generate the prefixes for the selected classification table.}
 
-\item{level}{Refers  to the hierarchical levels of the selected classification table. 
-The detailed level information can be obtained by utilizing the "structureData() " function. 
-By default is set to \code{"ALL"}. This is an optional argument.}
-
-\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
+\item{conceptScheme}{Refers to a unique identifier associated to specific classification table.
+The conceptScheme can be obtained by utilizing the "classificationList()" function.
+#' @param language Refers to the specific language used for providing label, include and exclude information in the selected classification table.
 By default is set to "en". This is an optional argument.}
 
-\item{CSVout}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
+\item{level}{Refers  to the hierarchical levels of the selected classification table.
+The detailed level information can be obtained by utilizing the "structureData() " function.
+By default is set to \code{"ALL"}. This is an optional argument.}
+
+\item{CSVout}{The valid value is a valid path to a csv file including file name and extension. By default, no csv file is produced, \code{NULL}
 If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced.}
 
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object. 
-If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, no SPARQL query is produced.}
+\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object.
+If not needed to view the SPARQL query used, the argument should be set as \code{FALSE}. By default, the SPARQL query is produced.}
+
+\item{localData}{this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api}
 }
 \value{
-\code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables: 
+\code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
  \itemize{
     \item Classification name (e.g. nace2): the code of each object
-    \item NAME: the corresponding name of each object 
+    \item NAME: the corresponding name of each object
     \item Include: details on each object
     \item Include_Also: details on each object
     \item Exclude: details on each object
@@ -51,7 +52,7 @@ If needed to view the SPARQL query used, the argument should be set as \code{TRU
 }
 }
 \description{
-To facilitate the utilization of European classifications as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions, 
+To facilitate the utilization of European classifications as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions,
 "retrieveClassificationTable()" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
 }
 \examples{
@@ -59,13 +60,14 @@ To facilitate the utilization of European classifications as inputs for the newC
     endpoint = "CELLAR"
     prefix = "nace2"
     conceptScheme = "nace2"
-    
-    results_ls = retrieveClassificationTable(prefix, endpoint, conceptScheme)
-    
+
+    results_ls = retrieveClassificationTable(endpoint, prefix,  conceptScheme)
+
     # View SPARQL Query
     cat(results_ls[[1]])
-    
+
     #View Classification Table
     #View(results_ls[[2]])
     }
+
 }
