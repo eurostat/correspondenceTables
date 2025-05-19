@@ -4,23 +4,32 @@
 \alias{dataStructure}
 \title{Retrieve information about the structure of each classification tables from CELLAR and FAO repositories.}
 \usage{
-dataStructure(prefix, conceptScheme, endpoint, language = "en")
+dataStructure(
+  endpoint,
+  prefix,
+  conceptScheme,
+  language = "en",
+  showQuery = FALSE
+)
 }
 \arguments{
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query 
-and are used throughout the query to make it more concise and easier to read. 
-Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-The function 'classificationEndpoint()' can be used to generate the prefixes for the selected classification table.}
-
-\item{conceptScheme}{Refers to a unique identifier associated to specific classification table. 
-The conceptScheme can be obtained by utilizing the "classificationEndpoint()" function.}
-
 \item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
 making it easier to retrieve specific information or perform complex queries on linked data.
 The valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
+\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query 
+and are used throughout the query to make it more concise and easier to read. 
+Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
+The function 'classificationList()' can be used to generate the prefixes for the selected classification table.}
+
+\item{conceptScheme}{Refers to a unique identifier associated to specific classification table. 
+The conceptScheme can be obtained by utilizing the "classificationList()" function.}
+
 \item{language}{Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
 By default is set to "en". This is an optional argument.}
+
+\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
+If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.}
 }
 \value{
 \code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
@@ -33,30 +42,15 @@ By default is set to "en". This is an optional argument.}
 }
 \description{
 Retrieve information, for all the classification available in the repositories (CELLAR and FAO),
-about the level names their hierarchy and the numbers of records the function "structureData()" can be used.
+about the level names their hierarchy and the numbers of records the function "dataStructure()" can be used.
 }
 \examples{
 {
    ## Obtain a list including the structure of each classification available 
    ## CELLAR
-   data_CELLAR = list()
-   endpoint = "CELLAR"
-   list_data = classificationEndpoint("ALL")
-   
-   for (i in 1:nrow(list_data$CELLAR)){
-       prefix = list_data$CELLAR[i,1] 
-       conceptScheme = list_data$CELLAR[i,2] 
-      data_CELLAR[[i]] = dataStructure(prefix, conceptScheme, endpoint)
-   }
-   names(data_CELLAR) = list_data$CELLAR[,1] 
-   ## FAO 
-   data_FAO = list()
-   endpoint = "FAO"
-   for (i in 1:nrow(list_data$FAO)){
-       prefix = list_data$FAO[i,1]
-       conceptScheme = list_data$FAO[i,2] 
-       data_FAO[[i]] = dataStructure(prefix, conceptScheme, endpoint)
-   }
-   names(data_FAO) =  list_data$FAO[,1]
-    }
+   #data_CELLAR = list()
+   #endpoint = "CELLAR"
+   #list_data = classificationList("ALL")
+  # 
+}
 }

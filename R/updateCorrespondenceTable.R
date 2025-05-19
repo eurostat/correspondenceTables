@@ -190,11 +190,17 @@
 updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Reference = "none", MismatchToleranceB = 0.2, MismatchToleranceAStar = 0.2, Redundancy_trim = TRUE) {
   
   # Check if files exist in working directory
-  test.names <- as.character(c(A, B, AStar, AB, AAStar))
-  if (!all(file.exists(test.names))) {
-    for (i in which(file.exists(test.names) == FALSE)) {
-      stop(simpleError(paste("There is no file with name", test.names[i], "in your working directory.")))
-    }
+  # test.names <- as.character(c(A, B, AStar, AB, AAStar))
+  # if (!all(file.exists(test.names))) {
+  #   for (i in which(file.exists(test.names) == FALSE)) {
+  #     stop(simpleError(paste("There is no file with name", test.names[i], "in your working directory.")))
+  #   }
+  # }
+  
+  if (!is.data.frame(A)) {
+    test.names <- as.character(c(A, B, AStar, AB, AAStar))
+  }else {
+    test.names <- sapply(as.list(substitute(list(A, B, AStar, AB, AAStar)))[-1], deparse)
   }
   
   if (length(unique(test.names)) != 5) {
@@ -243,26 +249,31 @@ updateCorrespondenceTable <- function(A, B, AStar, AB, AAStar, CSVout = NULL, Re
   }
   # The following code lines read the classifications A, AStar, and B.
   
-  classA <- utils::read.csv(A, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
-                            encoding = "UTF-8")
+  # classA <- utils::read.csv(A, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
+  #                           encoding = "UTF-8")
+  classA <- testInputTable("Classification (A)", A, all_ch = TRUE)
   colnames(classA) <- removeBOM(colnames(classA))
   
-  classAStar <- utils::read.csv(AStar, sep = ",", header = TRUE, check.names = FALSE,
-                                colClasses = c("character"), encoding = "UTF-8")
+  # classAStar <- utils::read.csv(AStar, sep = ",", header = TRUE, check.names = FALSE,
+  #                               colClasses = c("character"), encoding = "UTF-8")
+  classAStar <- testInputTable("Classification (AStar)", AStar, all_ch = TRUE)
   colnames(classAStar) <- removeBOM(colnames(classAStar))
   
-  classB <- utils::read.csv(B, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
-                            encoding = "UTF-8")
+  # classB <- utils::read.csv(B, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
+  #                           encoding = "UTF-8")
+  classB <- testInputTable("Classification (B)", B, all_ch = TRUE)
   colnames(classB) <- removeBOM(colnames(classB))
   
   # The following code lines read the correspondence tables AAStar and AB.
   
-  corrAAStar <- utils::read.csv(AAStar, sep = ",", header = TRUE, check.names = FALSE,
-                                colClasses = c("character"), encoding = "UTF-8")
+  # corrAAStar <- utils::read.csv(AAStar, sep = ",", header = TRUE, check.names = FALSE,
+  #                               colClasses = c("character"), encoding = "UTF-8")
+  corrAAStar <- testInputTable("Correspondence (AAStar)", AAStar, all_ch = TRUE)
   colnames(corrAAStar) <- removeBOM(colnames(corrAAStar))
   
-  corrAB <- utils::read.csv(AB, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
-                            encoding = "UTF-8")
+  # corrAB <- utils::read.csv(AB, sep = ",", header = TRUE, check.names = FALSE, colClasses = c("character"),
+  #                           encoding = "UTF-8")
+  corrAB<- testInputTable("Correspondence (AB)", AB, all_ch = TRUE)
   colnames(corrAB) <- removeBOM(colnames(corrAB))
   
   # The correspondence tables without codes in A
