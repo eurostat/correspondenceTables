@@ -4,7 +4,8 @@
 #'   classifications \eqn{C_1, \ldots, C_k}. 
 #'   The correspondence tables leading from A to B are A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}: \eqn{1 \le i \le k -1}\}, B:\eqn{C_k}.
 #' @param Tables A string of type character containing the name of a csv file which contains the names of the files that
-#'   contain the classifications and the intermediate correspondence tables (see "Details" below).
+#'   contain the classifications and the intermediate correspondence tables OR a list of vectors with the names of the dataframes
+#'   classifications and the intermediate correspondence tables (see "Details" below).
 #' @param CSVout The preferred name for the \emph{output csv files} that will contain the candidate correspondence table
 #'   and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}. 
 #'   If the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output 
@@ -186,11 +187,59 @@
 
 newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", MismatchTolerance = 0.2, Redundancy_trim = TRUE) {
   
-  # Check if the file that contains the names of both classifications and
-  # correspondence tables exists in working directory
-  if (!file.exists(Tables)) {
-    stop(simpleError(paste("There is no file with name", Tables, "in your working directory.")))
-  } else {
+  # Check if the Tables is a File or a list of vectors
+  # Check if the file that contains the names of both classifications and correspondence tables exists in working directory
+  
+  if (is.list(Tables)) {
+    x <- as.matrix(do.call(rbind, Tables))
+    y <- Tables
+    
+    # The following if statement checks if the names of both classifications
+    # and correspondence tables lists construct a sparse square matrix.
+    is_square <- TRUE
+    n <- length(y)
+    
+    for (i in seq_along(y)) {
+      if (length(y[[i]]) != n) {
+        is_square <- FALSE
+       }
+    }
+    
+    if (is_square) {
+      # Define inputs as an empty list
+      inputs <- list()
+      inputs_name <- list()
+      n <- length(y)
+      # First diagonal element
+      inputs[1] <- y[[1]][1]
+      inputs_name[1] <- "Table[1,1]"
+      # Next n diagonal elements (from 2nd diagonal to the n th)
+      for (i in 2:n) {
+        inputs[i] <- y[[i]][i]
+        inputs_name[i]<- paste0("Table[",i, ",", i, "]")
+        
+      }
+      #Upper triangular elements excluding empty entries
+      # Initialize a counter to keep track of positions in `inputs`
+      counter <- length(inputs) + 1
+      # Loop through each row and each column above the diagonal
+      for (i in 1:(n - 1)) {
+        for (j in (i + 1):n) {
+          if (!is.null(y[[i]][[j]])) {  # Check that the entry is not empty
+            inputs[counter] <- y[[i]][j]
+            inputs_name[counter] <- paste0("Table[",i, ",", j, "]")
+            counter <- counter + 1
+          }
+        }
+      }
+    } else {
+      # Error message in case lists do not construct a
+      # sparse square matrix.
+      stop(paste("The List do not construct a sparse square matrix. \n Please verify that the appropriate number of elements are inserted in the appropriate cells."))
+    }
+   
+   
+  } else if (file.exists(Tables)) {
     # x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
     #                                 encoding = "UTF-8"))
     x <- as.matrix(data.table::fread(Tables, sep = ",", header = FALSE, colClasses = c("character"),
@@ -198,34 +247,17 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     mat.list <- apply(x, 2, function(x) {
       as.character(which(x != ""))
     })
-  }
-  
-  # Check if files exist in working directory
-  test.names <- as.vector(x)[which(as.vector(x) != "")]
-  if (!all(file.exists(test.names))) {
-    for (i in which(file.exists(test.names) == FALSE)) {
-      stop(simpleError(paste("The is no file with name", test.names[i], "in your working directory.")))
-    }
-  }
-  
-  if (length(which(duplicated(test.names) == TRUE)) >= 1) {
-    stop(simpleError(paste("At least two of the filenames in", Tables, "are the same.")))
-  }
-  
-  # Check CSVout
-  if (!is.null(CSVout)) {
-    while (file.exists(CSVout)) {
-      message(paste("Your working directory contains already a file with the name that you selected for the output file: ",
-                    CSVout))
-      answer <- utils::menu(c("Yes", "No"), title = "Do you want to overwrite it?")
-      if (answer == 2) {
-        CSVout <- readline(prompt = "Please enter a new name for the output file: ")
-      }
-      if (answer == 1) {
-        break
+    
+    # Check if files exist in working directory
+    test.names <- as.vector(x)[which(as.vector(x) != "")]
+    if (!all(file.exists(test.names))) {
+      for (i in which(file.exists(test.names) == FALSE)) {
+        stop(simpleError(paste("The is no file with name", test.names[i], "in your working directory.")))
       }
     }
-  }
+    if (length(which(duplicated(test.names) == TRUE)) >= 1) {
+      stop(simpleError(paste("At least two of the filenames in", Tables, "are the same.")))
+    }
   
   test.list <- list()
   test.list[[1]] <- "1"
@@ -243,7 +275,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # Error message in case the names of both classifications and
     # correspondence tables in the 'names.csv' file do not construct a
     # sparse square matrix.
-    stop(paste("The filenames in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
+    stop(paste("The filenames  in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
   }
   
   # The list inputs includes the names of both classifications and
@@ -255,15 +287,42 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
   inputs[(k + 3):(k + 2 + length(as.list(x[upper.tri(x)][x[upper.tri(x)] != ""])))] <- as.list(x[upper.tri(x)][x[upper.tri(x)] !=
                                                                                                                  ""])
   
-  # Create a list of the classifications and the known correspondence tables
-  # as data frames.
-  RRR <- lapply(inputs[1:length(inputs)], function(x) {
-    utils::read.csv(x, sep = ",", check.names = FALSE, colClasses = c("character"),
-                    encoding = "UTF-8")
-    # data.table::fread(x, sep = ",", check.names = FALSE, colClasses = c("character"),
-    # encoding = "UTF-8")
-  })
-
+  } else {
+    stop(simpleError(paste("There is no file with name", Tables, "in your working directory. Or the argument is not a list of vectors")))
+  }
+  
+  
+  # Check CSVout
+  if (!is.null(CSVout)) {
+    while (file.exists(CSVout)) {
+      message(paste("Your working directory contains already a file with the name that you selected for the output file: ",
+                    CSVout))
+      answer <- utils::menu(c("Yes", "No"), title = "Do you want to overwrite it?")
+      if (answer == 2) {
+        CSVout <- readline(prompt = "Please enter a new name for the output file: ")
+      }
+      if (answer == 1) {
+        break
+      }
+    }
+  }
+  
+   if (is.list(Tables)) {
+    RRR <- inputs
+    k <- nrow(x) - 2
+    
+    inputs <- inputs_name
+   
+  } else {
+    # Create a list of the classifications and the known correspondence tables
+    # as data frames.
+    RRR <- lapply(inputs[1:length(inputs)], function(x) {
+      utils::read.csv(x, sep = ",", check.names = FALSE, colClasses = c("character"),
+                      encoding = "UTF-8")
+      # data.table::fread(x, sep = ",", check.names = FALSE, colClasses = c("character"),
+      # encoding = "UTF-8")
+    })
+  }
   # Check Reference
   if (!(Reference %in% c("A", "B", "none"))) {
     stop(simpleError("You entered a non-allowed value for Reference. The allowed values are \"A\", \"B\" and \"none\"."))
@@ -1887,7 +1946,14 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # Redundancy_trim parameter (MP)
     # Find the columns which are related to linking datasets which values need to be recorded as "Multiple"
     ## 2 + n_link_data*2 + 1 = n_data
-    num_link = (length(test.names) - 3)/2
+    if (is.list(Tables)){
+      num_link = (length(inputs_name) - 3)/2
+      
+    }else {
+      num_link = (length(test.names) - 3)/2
+      
+    }
+ 
     col_multiple = numeric(0)
     for (nl in 1:num_link){
       col_multiple = unique(c(col_multiple, grep(colnames(correspondenceAB)[1 + nl], colnames(correspondenceAB), value = T)))

@@ -14,7 +14,8 @@ newCorrespondenceTable(
 }
 \arguments{
 \item{Tables}{A string of type character containing the name of a csv file which contains the names of the files that
-contain the classifications and the intermediate correspondence tables (see "Details" below).}
+contain the classifications and the intermediate correspondence tables OR a list of vectors with the names of the dataframes
+classifications and the intermediate correspondence tables (see "Details" below).}
 
 \item{CSVout}{The preferred name for the \emph{output csv files} that will contain the candidate correspondence table
 and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}. 

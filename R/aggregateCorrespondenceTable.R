@@ -7,7 +7,7 @@
 #' @param CSVout a character string providing the path where the aggregated correspondence table CSV file should be saved. If NULL, no CSV file is generated.
 #'
 #' @return A data frame representing the aggregated correspondence table.
-#'
+#'@import jsonlite
 #' @export
 #' @examples 
 #' # Use data from the folder extdata
@@ -57,7 +57,7 @@ check_n_columns(b_data,"Target classification (B)", 3)
     }, error = function(e) {
       message("Error in aggregateCorrespondenceTable:",conditionMessage(e))
       print(duplicated_rows)
-      stop(e)
+      stop()
     })
   
   
@@ -72,7 +72,7 @@ check_n_columns(b_data,"Target classification (B)", 3)
       }, error = function(e) {
         message("Error in aggregateCorrespondenceTable: ",conditionMessage(e))
         print(missing_code_rows)
-        stop(e)
+        stop()
     })
    
   
@@ -89,7 +89,7 @@ check_n_columns(b_data,"Target classification (B)", 3)
     }
   }, error = function(e) {
     message("Error in aggregateCorrespondenceTable while processing input correspondence table A\n",conditionMessage(e))
-    stop(e)
+    stop()
   })
   
   # Filter rows where there are NA or empty values in the Alevel column
@@ -129,7 +129,8 @@ check_n_columns(b_data,"Target classification (B)", 3)
       stop(paste("Asuperior column,", ColumnNames_a[3], "in the source classification table A must be blank for records at level 1."))
     }
   }, error = function(e) {
-    stop(e)
+    message("Error in aggregateCorrespondenceTable:",conditionMessage(e))
+    stop()
   })
   
   # Initialize the variable to store the current level for A
@@ -431,8 +432,8 @@ check_n_columns(b_data,"Target classification (B)", 3)
   
   # Display Results
   
-    # Using the testCsvParameter function to validate CSVoutz
-    testCsvParameter("CSV", CSVout)
+    # Using the testCsvParameter function to validate CSVout
+    testCsvParameter("CSVout", CSVout)
       
     CsvFileSave(CSVout, results_df)
     

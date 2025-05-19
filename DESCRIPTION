@@ -2,7 +2,7 @@ Package: correspondenceTables
 Type: Package
 Title: Creating Correspondence Tables Between Two Statistical Classifications
 Date: 2022-09-30
-Version: 0.10.10
+Version: 0.10.22
 Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
       person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
       person("Martin", "Karlberg", role = "aut"),
@@ -16,7 +16,7 @@ Description:
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
 License: EUPL
 Encoding: UTF-8
-Imports: data.table, httr, stringr, igraph, tools
+Imports: data.table, httr, stringr, igraph, tools, jsonlite
 Suggests: 
     knitr,
     rmarkdown, tinytest
@@ -25,4 +25,4 @@ NeedsCompilation: no
 URL: https://github.com/eurostat/correspondenceTables
 BugReports: https://github.com/eurostat/correspondenceTables/issues
 Maintainer: Mátyás Mészáros <matyas.meszaros@ec.europa.eu>
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
