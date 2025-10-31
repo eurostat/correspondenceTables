@@ -1,26 +1,10 @@
-#' @title Create a list of prefixes for both CELLAR and FAO repositories. 
-#' @description  Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
-#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
-#' making it easier to retrieve specific information or perform complex queries on linked data.  
-#' The valid values are \code{"CELLAR"} and \code{"FAO"}.
-#' @import httr
-#' @export
-#' @return
-#' \code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.
-#' @examples
-#' {
-#'     endpoint = "CELLAR"
-#'     prefix_list = prefixList(endpoint)
-#'     }
-
-prefixList = function(endpoint, prefix = NULL) {
-  #Check correctness of endpoint argument
+prefixList <- function(endpoint, prefix = NULL) {
   endpoint <- toupper(endpoint)
-  if (endpoint != "CELLAR" & endpoint != "FAO") {
-    stop("Specify the endpoint: CELLAR or FAO.")
+  if (!endpoint %in% c("CELLAR", "FAO")) {
+    stop("`endpoint` must be either 'CELLAR' or 'FAO'.")
   }
   
-  prefix_init = as.matrix(rbind(
+  prefix_init <- as.matrix(rbind(
     "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
     "PREFIX dct: <http://purl.org/dc/terms/>",
     "PREFIX cb: <http://cbasewrap.ontologycentral.com/vocab#>",
@@ -36,41 +20,40 @@ prefixList = function(endpoint, prefix = NULL) {
     "PREFIX is: <http://purl.org/ontology/is/core#>",
     "PREFIX isi: <http://purl.org/ontology/is/inst/>",
     "PREFIX cpc: <https://data.epo.org/linked-data/def/cpc/>",
-    "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"
+    "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
+    "PREFIX CPC20: <https://unstats.un.org/classifications/CPC/v2.0/>",
+    "PREFIX CPC21: <https://unstats.un.org/classifications/CPC/v2.1/>"
   ))
   
-  ### Define List
+  # --- Retrieve dynamic prefixes from the classification list ---
+  res <- classificationList(endpoint)
   
-  # Check the useLocalDataForVignettes option
-  if (getOption("useLocalDataForVignettes", FALSE)) {
-    uri = classificationList(endpoint)[, 3]
-    prefix_endpoint = classificationList(endpoint)[, 1]
-    
-  }else{
-    uri = classificationList(endpoint)[[1]][, 3]
-    prefix_endpoint = classificationList(endpoint)[[1]][, 1]
+  if (!is.data.frame(res) || !all(c("Prefix", "URI") %in% colnames(res))) {
+    stop("Unexpected structure returned by classificationList().")
   }
-  prefix_endpoint = gsub("\\.", "", prefix_endpoint)
-  # Include the predefined prefixes
-  prefix_all = as.matrix(paste0("PREFIX ", prefix_endpoint, ": <", uri, "/>"))
-  prefix_all = rbind(prefix_init, prefix_all)
-  # remove duplicates
-  prefix_all = prefix_all[!duplicated(prefix_all)]
   
-  # Check if desired prefixes are available for the given endpoint
+  uri <- res$URI
+  prefix_endpoint <- gsub("\\.", "", res$Prefix)
+  
+  # --- Construct PREFIX declarations from endpoint metadata ---
+  dynamic_prefixes <- as.matrix(paste0("PREFIX ", prefix_endpoint, ": <", uri, "/>"))
+  
+  # --- Combine standard and dynamic prefixes, remove duplicates ---
+  prefix_all <- rbind(prefix_init, dynamic_prefixes)
+  prefix_all <- prefix_all[!duplicated(prefix_all), , drop = FALSE]
+  
+  # --- Filter by requested prefixes, if any ---
   if (!is.null(prefix)) {
-    # Check if the desired prefixes are available for the given endpoint
-    valid_prefixes = prefix[prefix %in% prefix_endpoint]
-    if (length(valid_prefixes) > 0) {
-      # Find the URIs corresponding to the desired prefixes
-      uri_for_prefix <- uri[prefix_endpoint %in% valid_prefixes]
-      
-      # Construct the PREFIX statements for the desired prefixes
-      prefix_selected <- matrix(paste0("PREFIX ", valid_prefixes, ": <", uri_for_prefix, "/>"))
-      prefix_all <- rbind(prefix_init, prefix_selected)
-    } else {
-      stop("Desired prefixes not found.")
+    valid_prefixes <- prefix[prefix %in% prefix_endpoint]
+    if (length(valid_prefixes) == 0) {
+      stop("Desired prefixes not found for endpoint ", endpoint, ".")
     }
+    
+    uri_filtered <- uri[prefix_endpoint %in% valid_prefixes]
+    filtered_matrix <- matrix(paste0("PREFIX ", valid_prefixes, ": <", uri_filtered, "/>"))
+    
+    # Return standard + selected dynamic prefixes
+    prefix_all <- rbind(prefix_init, filtered_matrix)
   }
   
   return(prefix_all)

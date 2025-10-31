@@ -2,7 +2,7 @@
 % Please edit documentation in R/analyseCorrespondancetable.R
 \name{analyseCorrespondenceTable}
 \alias{analyseCorrespondenceTable}
-\title{analyseCorrespondenceTable performs analysis on correspondence tables}
+\title{Perform analysis on correspondence tables}
 \usage{
 analyseCorrespondenceTable(
   AB,
@@ -15,13 +15,13 @@ analyseCorrespondenceTable(
 )
 }
 \arguments{
-\item{AB}{a mandatory argument containing a CSV file provide by the user contains the correspondence table data with columns "Acode" and "Bcode".}
+\item{AB}{A mandatory argument containing a CSV file provide by the user contains the correspondence table data with columns "Acode" and "Bcode".}
 
-\item{A}{a path to a CSV file containing source classification data with "Acode" column.}
+\item{A}{A path to a CSV file containing source classification data with "Acode" column.}
 
 \item{longestAcodeOnly}{A Boolean argument to filter source classification data based on "Acode" retaining only the maximum length, thus the lowest level Acode .}
 
-\item{B}{a path to a CSV file containing target classification data with "Bcode" column.}
+\item{B}{A path to a CSV file containing target classification data with "Bcode" column.}
 
 \item{longestBcodeOnly}{A Boolean argument to filter source classification data based on "Bcode" retaining only the maximum length, thus the lowest level Bcode.}
 
@@ -35,21 +35,20 @@ The `CSVcorrespondenceInventory` contains statistics related to components, corr
 The `CSVcorrespondenceAnalysis` contains statistics for each class in the correspondence table.
 }
 \description{
-The `analyseCorrespondenceTable` function takes input correspondence tables (AB) and related data (A and B) to perform analysis and generate various statistics.
+Perform analysis on a correspondence table using its associated classifications to generate various statistics.
 It checks the validity of the input data, identifies components, calculates correspondence types, and creates summary tables.
 }
 \examples{
 # Use data from the folder extdata
-
-
-  
-
-
-
-
-
-# Perform analysis
-result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),A = NULL, longestAcodeOnly = FALSE, B = NULL, longestBcodeOnly = FALSE, CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL) 
+result <- analyseCorrespondenceTable(
+  AB = system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),
+  A = NULL,
+  longestAcodeOnly = FALSE,
+  B = NULL,
+  longestBcodeOnly = FALSE,
+  CSVcorrespondenceInventory = NULL,
+  CSVcorrespondenceAnalysis = NULL
+)
 print(result$Inventory)
 print(result$Analysis)
 }

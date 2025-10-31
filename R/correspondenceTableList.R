@@ -1,134 +1,105 @@
-#' @title Overview of all the available correspondence classification from CELLAR and FAO repository.
-#' @description Provides an overview of all the available correspondence classification from CELLAR and FAO repository.
-#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
-#' making it easier to retrieve specific information or perform complex queries on linked data. 
-#' The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.
+#' @title Retrieve a list of all correspondence tables in the CELLAR and FAO repositories
+#' @description List all correspondence tables in the CELLAR of FAO repositories
+#' @param endpoint Character. SPARQL endpoint(s) to query. Valid values are:
+#' \code{"CELLAR"}, \code{"FAO"}, or \code{"ALL"} (default).
+#'
+#' @return
+#' If \code{endpoint = "CELLAR"} or \code{"FAO"}, returns a \code{data.frame} with:
+#' \itemize{
+#'   \item Prefix
+#'   \item ID
+#'   \item Source Classification
+#'   \item Target Classification
+#'   \item Table Name
+#'   \item URI
+#' }
+#' If \code{endpoint = "ALL"}, returns a named list of two \code{data.frame}s: one for each endpoint.
+#'
+#' @details
+#' The behaviour of this function is contingent on the global option \code{useLocalDataForVignettes}:
+#' The default behaviour (when the option is not set, or set to something else than \code{TRUE}), is that is queries live SPARQL endpoints online.
+#' When the option is set to \code{TRUE} via \code{options(useLocalDataForVignettes = TRUE)}, the function returns local (embedded) data instead of querying live SPARQL endpoints.
+#' This is useful for building vignettes or offline testing.
+#'
 #' @import httr
 #' @import jsonlite
 #' @export
-#' @return
-#' \code{correspondenceTableList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
-#' Target classification, Table name and URI.
+#'
 #' @examples
-#' {
-#'     corr_list = correspondenceTableList("ALL")
-#'     }
+#' if (interactive()) {
+#'   # Retrieve list of all available correspondence tables
+#'   corr_list <- correspondenceTableList("ALL")
+#'   View(corr_list)
+#' }
 
 
-    
-correspondenceTableList = function(endpoint) {
-  #Check correctness of endpoint argument
-endpoint <- toupper(endpoint)
-if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
-  stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
-}
+correspondenceTableList <- function(endpoint) {
+  endpoint <- toupper(endpoint)
+  if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
+    stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
+  }
   
   if (endpoint == "ALL") {
-    cycle = 1:2
-  }
-  if (endpoint == "CELLAR") {
-    cycle = 1
-  }
-  if (endpoint == "FAO") {
-    cycle = 2
+    return(list(
+      CELLAR = correspondenceTableList("CELLAR"),
+      FAO = correspondenceTableList("FAO")
+    ))
   }
   
-  data = list()
+  config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")
+  source <- config[[endpoint]]
+  sep <- ifelse(endpoint == "CELLAR", "_", "-")
+  rm <- 1:16
   
-  for (j in cycle) {
-    e = c("CELLAR", "FAO")[j]
+  prefixlist_raw <- prefixList(endpoint)
+  prefixlist_raw <- gsub("PREFIX FPC&D2022: <https://stats.fao.org/classifications/FPC&D2022/>", "", prefixlist_raw)
+  prefix_header <- as.character(paste(prefixlist_raw, collapse = "\n"))
+  
+  prefixes_loop <- unlist(lapply(strsplit(as.character(prefixList(endpoint)), " "), function(x) x[2]))
+  prefixes_loop <- prefixes_loop[-rm]
+  
+  data_t <- list()
+  
+  for (i in seq_along(prefixes_loop)) {
+    prefix <- prefixes_loop[i]
     
-    ### Load the configuration file from GitHub
-    config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")  
-    ### Define endpoint
-    if (e == "CELLAR") {
-      source <- config$CELLAR
-      sep = "_"
-      rm  = 1:16
-    }
-    if (e == "FAO") {
-      source <- config$FAO
-      sep = "-"
-      rm  = 1:16
-    }
-  
-    ## Create Prefixes list 
-    prefixlist = prefixList(e)
-    prefixlist = gsub("PREFIX FPC&D2022: <https://stats.fao.org/classifications/FPC&D2022/>", 
-                     "",prefixlist)
-    prefixlist = as.character(paste(prefixlist, collapse = "\n"))
-    
-    prefixes_loop = unlist(lapply(strsplit(as.character(prefixList(e)), " "), function(x) x[2]))
-    prefixes_loop = prefixes_loop[-rm]
-    data_t = list()
-  
-    for (i in 1:length(prefixes_loop)){
-      
-    prefix = prefixes_loop[i]
-    if (prefix == "FCL:"){
-      sep = "--"
-    }
-    if (prefix == "ICC10:"){
-      sep = "--"
-    }
-    if (prefix == "ICC11:"){
-      sep = "--"
-    }
-    if (prefix == "ISIC4:"){
-      sep = "--"
+    # exceptions où le séparateur change
+    if (prefix %in% c("FCL:", "ICC10:", "ICC11:", "ISIC4:")) {
+      sep <- "--"
     }
     
-    tryCatch(
-      {
-
-    SPARQL.query = paste0(prefixlist, "
-       SELECT ?ID_table ?A ?B ?Table ?URL 
-
-       WHERE {
-             ?s a xkos:Correspondence ;
+    tryCatch({
+      SPARQL.query <- paste0(prefix_header, "
+        SELECT ?ID_table ?A ?B ?Table ?URL 
+        WHERE {
+          ?s a xkos:Correspondence ;
              skos:prefLabel ?Label .
-    
-            BIND (STR(?s) AS ?URL)
-            BIND (STR(?Label) AS ?Table)
-  
-            BIND (STRAFTER(STR(?s), STR(", prefix, ")) AS ?ID_table)
-   		      BIND (STRAFTER(STR(?ID_table), '", sep, "') AS ?B)
-  		      BIND (STRBEFORE(STR(?ID_table), '", sep, "') AS ?A)  
-  
-            FILTER (STRLEN(?ID_table) != 0) 
+          BIND (STR(?s) AS ?URL)
+          BIND (STR(?Label) AS ?Table)
+          BIND (STRAFTER(STR(?s), STR(", prefix, ")) AS ?ID_table)
+          BIND (STRAFTER(STR(?ID_table), '", sep, "') AS ?B)
+          BIND (STRBEFORE(STR(?ID_table), '", sep, "') AS ?A)
+          FILTER (STRLEN(?ID_table) != 0)
         }
       ")
-    #print( SPARQL.query)
-    
-    response = httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
-    data_t[[i]] = data.frame(content(response, show_col_types = FALSE))
-    
-      }, error = function(e) {
-        stop(simpleError(paste0("Error in function correspondenceTableList(", endpoint,"), endpoint is not available or is returning unexpected data")))
-        cat("The following SPARQL code was used in the call:\n", SPARQL.query, "\n")
-        cat("The following response was given for by the SPARQL call:\n", response)
-      })
-    
-    if (nrow(data_t[[i]]) == 0){
-      data_t[[i]] = cbind(prefix = character(), data_t[[i]])
-    } else {
-      data_t[[i]] = cbind(prefix = rep(gsub(":","",prefix), nrow(data_t[[i]])), data_t[[i]])
-    }
       
-    #if (nrow(data_t[[i]]) > 0){
-    #  data_t[[i]]$prefix = gsub(":","",prefix)
-    #  data_t[[i]] = data_t[[i]][,c(6, 1:5)]
-    #  names(data_t)[2] = "ID_table"
-    #}
-    names(data_t)[i] = prefix
-    }
-    
-    data[[j]] = data_t
-    names(data)[j] = c("CELLAR", "FAO")[j]
+      response <- httr::POST(url = source, accept("text/csv"), body = list(query = SPARQL.query), encode = "form")
+      df <- read.csv(text = content(response, "text"), stringsAsFactors = FALSE)
+      
+      if (nrow(df) == 0) {
+        df <- data.frame(prefix = character(), df)
+      } else {
+        df <- cbind(prefix = rep(gsub(":", "", prefix), nrow(df)), df)
+      }
+      
+      data_t[[i]] <- df
+      names(data_t)[i] <- prefix
+      
+    }, error = function(e) {
+      message("The following SPARQL code was used:\n", SPARQL.query)
+      stop(simpleError(paste0("Error in function correspondenceTableList(", endpoint, "), endpoint not available or returned unexpected data.")))
+    })
   }
-    
-  return(data)
   
+  return(data_t)
 }
-
-

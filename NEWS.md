@@ -34,3 +34,27 @@
 # correspondenceTables 0.7.1
 
 - initial public release on GitHub
+
+
+# correspondenceTables 0.10.22
+
+## 🔧 Changes and Improvements
+
+- Rewrote the logic for `classificationList()` and `correspondenceTableList()` to handle the `"ALL"` endpoint through recursive calls, ensuring consistent and robust behavior.
+- Internal function `prefixList()` is now no longer exported, as it is not meant for end-users. It remains accessible via `correspondenceTables:::prefixList()` if needed.
+- Cleaned up the "RetrieveClassificationsAndCorrespondenceTables" vignette:
+  - Restored uncommented example code (e.g., `correspondenceTableList("ALL")`) to improve readability and reproducibility.
+  - Removed internal calls to `prefixList()` from examples to avoid confusion.
+- Fixed vignette rendering errors by defining missing intermediate objects (e.g., `result_ls`).
+- Improved `@examples` sections and corrected Rd documentation accordingly.
+
+##  Package Infrastructure
+
+- Reduced export clutter by making utility-only functions internal.
+- Ensured full `R CMD check` compliance (0 errors, 0 warnings, 1 note on line width).
+
+##  Minor
+
+- Cleaned up documentation and fixed formatting for clarity.
+- Updated vignettes titles to ensure consistency between YAML and `\VignetteIndexEntry`.
+

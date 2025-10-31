@@ -4,7 +4,7 @@ output: html_document
 
 
 vignette: >
-  %\VignetteIndexEntry{Aggregate classification between A & B  with the correspondenceTables package}
+  %\VignetteIndexEntry{Aggregate a correspondence table to higher hierarchical levels}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

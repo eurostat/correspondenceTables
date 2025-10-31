@@ -2,7 +2,7 @@
 % Please edit documentation in R/retrieveCorrespondenceTable.R
 \name{retrieveCorrespondenceTable}
 \alias{retrieveCorrespondenceTable}
-\title{Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.}
+\title{Retrieve classifications and correspondence tables stored as Linked Open Data}
 \usage{
 retrieveCorrespondenceTable(
   endpoint,
@@ -10,31 +10,30 @@ retrieveCorrespondenceTable(
   ID_table,
   language = "en",
   CSVout = NULL,
-  showQuery = TRUE
+  showQuery = TRUE,
+  localData = NULL
 )
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
+\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets,
 making it easier to retrieve specific information or perform complex queries on linked data.
 The valid values are \code{"CELLAR"} or \code{"FAO"}.}
 
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query 
-and are used throughout the query to make it more concise and easier to read. 
-Multiple prefixes can be defined in a single query to cover different namespaces used in the dataset.
-The function 'prefixList()' can be used to generate the prefixes for the selected correspondence table.}
+\item{prefix}{The namespace prefix identifying the correspondence table to retrieve.
+Available prefixes can be found using the \code{correspondenceTableList()} function.}
 
-\item{ID_table}{Refers to a unique identifier associated with a specific correspondence table. 
+\item{ID_table}{Refers to a unique identifier associated with a specific correspondence table.
 The ID_table can be obtained by utilizing the "correspondenceTableList()" function.}
 
-\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected correspondence table. 
+\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected correspondence table.
 By default is set to "en". This is an optional argument.}
 
 \item{CSVout}{The valid value is a valid path to a csv file including file name and extension. By default, no csv file is produced, \code{NULL}}
 
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
+\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object.
 If not needed to view the SPARQL query used, the argument should be set as \code{FALSE}. By default, the SPARQL query is produced.}
 
-\item{localData}{this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api}
+\item{localData}{Logical. If TRUE, the function retrieves static (local) data embedded in the package instead of querying the remote SPARQL endpoint. Default is FALSE.}
 }
 \value{
 \code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
@@ -47,26 +46,36 @@ If not needed to view the SPARQL query used, the argument should be set as \code
     \item Target Classification label: the corresponding label of each object (e.g. cn2021)
     \item Include: include details on each object (e.g. cn2021)
     \item Exclude: details on each object (e.g. cn2021)
-    \item Comment: details on each object, if available 
+    \item Comment: details on each object, if available
     \item URL: the URL from which the SPARQL query was retrieved
+   
 }
+
+If \code{showQuery = TRUE}, the function returns a list of two elements:
+\itemize{
+  \item A character string containing the SPARQL query used.
+  \item A \code{data.frame} containing the retrieved classification or correspondence table.
+}
+If \code{showQuery = FALSE}, the function returns only the \code{data.frame}.
 }
 \description{
-To facilitate the utilization of correspondence tables as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions, 
-"retrieveCorrespondenceTable" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
+Retrieve correspondence tables between classifications from the CELLAR and FAO repositories
+}
+\details{
+The behaviour of this function is contingent on the global option \code{useLocalDataForVignettes}:
+The default behaviour (when the option is not set, or set to something else than \code{TRUE}), is that queries live SPARQL endpoints online.
+When the option is set to \code{TRUE} via \code{options(useLocalDataForVignettes = TRUE)}, the function returns local (embedded) data instead of querying live SPARQL endpoints.
+This is useful for building vignettes or offline testing.
 }
 \examples{
-{
-    endpoint = "CELLAR"
-    prefix = "cn2022"
-    ID_table = "CN2022_NST2007"
-    
-    results_ls = retrieveCorrespondenceTable( endpoint, prefix, ID_table)
-    
-    # View SPARQL Query
+if (interactive()) {
+  endpoint = "CELLAR"
+  prefix = "cn2022"
+  ID_table = "CN2022_NST2007"
+  results_ls = try(retrieveCorrespondenceTable(endpoint, prefix, ID_table), silent = TRUE)
+  if (!inherits(results_ls, "try-error") && is.character(results_ls[[1]])) {
     cat(results_ls[[1]])
-    
-    #View Classification Table
-    #View(results_ls[[2]])
-    }
+  }
+  # if (!inherits(results_ls, "try-error")) View(results_ls[[2]])
+}
 }

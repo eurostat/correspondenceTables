@@ -2,16 +2,16 @@
 % Please edit documentation in R/aggregateCorrespondenceTable.R
 \name{aggregateCorrespondenceTable}
 \alias{aggregateCorrespondenceTable}
-\title{aggregateCorrespondenceTable aggregates correspondence tables to higher hierarchical levels}
+\title{Aggregate a correspondence table to higher hierarchical levels}
 \usage{
 aggregateCorrespondenceTable(AB, A, B, CSVout = NULL)
 }
 \arguments{
-\item{AB}{a mandatory argument containing a correspondence table data frame with columns "Acode" and "Bcode" representing the correspondence between classifications A and B at the most granular level. This argument is mandatory}
+\item{AB}{A mandatory argument containing a correspondence table data frame with columns "Acode" and "Bcode" representing the correspondence between classifications A and B at the most granular level. This argument is mandatory}
 
-\item{A}{a path to a CSV file containing source classification data with an Acode ALevel,ASuperior column. This argument is mandatory}
+\item{A}{A path to a CSV file containing source classification data with an Acode ALevel,ASuperior column. This argument is mandatory}
 
-\item{B}{a path to a CSV file containing target classification data with a Bcode Blevel BSuperior column. This argument is mandatory}
+\item{B}{A path to a CSV file containing target classification data with a Bcode Blevel BSuperior column. This argument is mandatory}
 
 \item{CSVout}{a character string providing the path where the aggregated correspondence table CSV file should be saved. If NULL, no CSV file is generated.}
 }
@@ -19,7 +19,7 @@ aggregateCorrespondenceTable(AB, A, B, CSVout = NULL)
 A data frame representing the aggregated correspondence table.
 }
 \description{
-The `aggregateCorrespondenceTable` function is designed to aggregate correspondence tables between two hierarchical classifications A and B to higher hierarchical levels. This is particularly useful when correspondence information is needed at levels other than the most granular level. The function provides a 'mechanically defined' aggregation, offering users candidate aggregations for subsequent analysis by statistical classification experts.
+Aggregate a correspondence table to higher hierarchical levels.
 }
 \examples{
 # Use data from the folder extdata

@@ -4,7 +4,7 @@ output: rmarkdown::html_vignette
 
 
 vignette: >
-  %\VignetteIndexEntry{Retrieve classification quality control with the correspondenceTables package}
+  %\VignetteIndexEntry{Perform quality control on a classification}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,7 +24,7 @@ The main function `classificationQC()` function is designed for hierarchical cla
 
  This function has eight arguments :
 * classification - containing the name of a CSV file of the classification provided by the user.
-* lenghtsfile -  The user provide a csv file the different level of hierarchical classification.    
+* lengths -  The user provide a csv file the different level of hierarchical classification.    
 * fullHierarchy - This rule outlines criteria for assessing the completeness If fullHierarchy is FALSE, the rule applies to positions at hierarchical levels greater than 1. If fullHierarchy is TRUE, a second rule is tested.
 * labelUniqueness - This rule define is there is in our classification any duplicates
 * labelHierarchy - This rule define a new column depending on the children label in relation to the parents.
@@ -33,9 +33,9 @@ The main function `classificationQC()` function is designed for hierarchical cla
 * CSVout - preferred choice of output
 
 
-**Requirement for the csv file for LenghtsFile, singleChildCode, sequencing**
+**Requirement for the csv file for lengths, singleChildCode, sequencing**
 
-**LenghtsFile** the user provide a csv file with these headers **charb chare**
+**lengths** the user provide a csv file with these headers **charb chare**
 if not return a warning message that there is not these headears and will be corrected.
 
 **SingleChildCode** the user provide a csv with these headers **level,singleCode,multipleCode** If this is not the case, then the function will return a warning saying that the headers are wrong and will correct them to set the correct ones 
@@ -44,9 +44,9 @@ if not return a warning message that there is not these headears and will be cor
 
 Here we load the different  csv file in order to see the column for the next example with error on the headers
 ```{r, results = "hide"}
-lengthsFile <- read.csv( system.file("extdata", "lenghtsNaceNoColumn.csv", package = "correspondenceTables"))
-## Here lenghtsFile has no column
-colnames(lengthsFile)
+lengths <- read.csv( system.file("extdata", "lenghtsNaceNoColumn.csv", package = "correspondenceTables"))
+## Here lengths has no column
+colnames(lengths)
 singleChildCode <- read.csv(system.file("extdata","SingleChild.csv", package = "correspondenceTables"))
 # SingleChildCode has the good column
 colnames(singleChildCode)
@@ -63,11 +63,11 @@ colnames(sequencing)
 The following code is used to create the quality control of the NACE2 classification from CELLAR:
 Here we used different parameters :
 
-The user provide a csv file for Classification and lengthsFile. 
+The user provide a csv file for Classification and lengths. 
 
 ```{r, results = "hide"}
 output <- classificationQC(classification = system.file("extdata", "Nace2.csv", package ="correspondenceTables"),
-                             lengthsFile = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables"),
+                             lengths = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables"),
                              fullHierarchy = TRUE,
                              labelUniqueness  = TRUE, labelHierarchy = TRUE,
                              singleChildCode = NULL, sequencing = NULL,
@@ -96,15 +96,13 @@ Otherwise, the value is assumed to be 0.
 
 **Application of an another example of the function classificationQC()**
 
-For this example the different  CSV File have wrong headers in the output we got warning messages.
-
 The following code is used to create the quality control of the NACE2 classification from CELLAR:
 Here we used different parameters and we had SingleChildCode :
 
 ```{r, results = "hide"}
 output2 <-  classificationQC(
             classification = system.file("extdata", "Nace2.csv", package ="correspondenceTables"),
-            lengthsFile = system.file("extdata", "lenghtsNaceNoColumn.csv", package = "correspondenceTables"),
+            lengths = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables"),
             fullHierarchy = TRUE,
             labelUniqueness  = TRUE,
             labelHierarchy = TRUE,
@@ -124,14 +122,20 @@ output2$QC_output
 We used here the parameter **sequencing** for our last example sequencing will be used on the level 3 and 4 here.
 
 ```{r, results = "hide"}
+
+sequencing = data.frame(
+  level = c(3, 4),
+  multipleCode = c("1,2,3", "1,2,3")
+)
+
 output3 <-  classificationQC(
             classification = system.file("extdata", "Nace2.csv", package ="correspondenceTables"),
-            lengthsFile = system.file("extdata", "lenghtsNaceNoColumn.csv", package = "correspondenceTables"),
+            lengths = system.file("extdata", "lenghtsNace.csv", package = "correspondenceTables"),
             fullHierarchy = TRUE,
             labelUniqueness  = TRUE,
             labelHierarchy = TRUE,
             singleChildCode = system.file("extdata","SingleChild2.csv", package = "correspondenceTables"),
-            sequencing = c(3,4),
+            sequencing = sequencing,
             CSVout = NULL)
 
 output3$QC_output

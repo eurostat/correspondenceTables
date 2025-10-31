@@ -25,12 +25,12 @@ library(correspondenceTables)
 ```
 
 
-In this vignette, some of the example codes are commented out to prevent calls to SPAQL queries during vignette building and installation. Please remove the comments if dynamic data is required.
-The option `useLocalDataForVignettes` is set to true to force the use of static data (CSV files) instead of dynamic data (SPARQL queries).
+This vignette uses the option `useLocalDataForVignettes = TRUE` to ensure reproducibility. All examples are based on static data files and can be executed without requiring a network connection or SPARQL access.
 
 ```{r}
 options(useLocalDataForVignettes = TRUE)
 ```
+
 
 ## Utility function to help you use the core functions
 
@@ -38,21 +38,16 @@ In order to be able to use the core functions (`retrieveClassification()`  and `
 
 **Gathering information necessary for classification retrieval**
 
-The utility function `classificationList()`  provides a list of all classifications available for retrieval – either at a specific SPARQL endpoint (FAO or CELLAR).
+The utility function `classificationList()` provides a list of all classifications available for retrieval – either at a specific SPARQL endpoint (FAO or CELLAR).
 
-```{r, results="hide"}
-endpoint = "CELLAR"
-prefixList(endpoint)
-```
-
-You can also get lists of all classifications available at all (both) SPARQL endpoints to which the correspondenceTables package has been adapted.
 
 **EXAMPLE A**
 
 ```{r}
 endpoint = "CELLAR"
 list_data = classificationList(endpoint)
-print(list_data, right= FALSE)
+knitr::kable(head(list_data), caption = "Example output of classificationList() using CELLAR endpoint")
+
 ```
 
 
@@ -116,11 +111,11 @@ print(head(result_fr),right= FALSE)
 When using dynamic data, the return value is a list with two elements. The SPARQL query is saved in the first element of the returned list and the classification table is saved in the second element of the list.
 
 ```{r}
-# # Extract the SPARQL query used
-# SPARQLquery = result_ls[[1]]
-
-# # Obtain data frame in which the classification table is saved
-# table = result_ls[[2]]
+#Extract the SPARQL query used
+ SPARQLquery = result_de[[1]]
+# 
+##Obtain data frame in which the classification table is saved
+ table = result_de[[2]]
 ```
 
 **Gathering information necessary for correspondence table retrieval**
@@ -128,7 +123,11 @@ When using dynamic data, the return value is a list with two elements. The SPARQ
 The `correspondenceTableList()` function is analogous to the `classificationList()` function – but serves to list the available correspondence tables in the CELLAR and/or FAO repositories.
 
 ```{r}
-#corr_list = correspondenceTableList("ALL")
+corr_list = correspondenceTableList("ALL")
+names(corr_list)
+head(corr_list$CELLAR)
+head(corr_list$FAO)
+
 ```
 
 **EXAMPLE C**
@@ -169,10 +168,10 @@ Similar to retrieveClassificationTable, the return value is a list with two elem
 
 ```{r}
 # # Extract the SPARQL query used
-# SPARQLquery = result_en[[1]]
+ SPARQLquery = result_en[[1]]
 # 
 # # Obtain data frame in which the correspondence table is saved
-# table = result_en[[2]]
+ table = result_en[[2]]
 ```
 
 

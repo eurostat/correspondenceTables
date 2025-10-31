@@ -3,7 +3,7 @@ title: "Analyse Correspondence Table"
 output:  rmarkdown::html_vignette
 
 vignette:  >
-  %\VignetteIndexEntry{Analyse classification correspondence tables with the correspondenceTables package} 
+  %\VignetteIndexEntry{Perform analysis on correspondence tables} 
   %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---

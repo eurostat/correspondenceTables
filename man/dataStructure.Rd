@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataStructure.R
 \name{dataStructure}
 \alias{dataStructure}
-\title{Retrieve information about the structure of each classification tables from CELLAR and FAO repositories.}
+\title{Retrieve information about the structure of each classification table from the CELLAR and FAO repositories}
 \usage{
 dataStructure(
   endpoint,
@@ -25,32 +25,44 @@ The function 'classificationList()' can be used to generate the prefixes for the
 \item{conceptScheme}{Refers to a unique identifier associated to specific classification table. 
 The conceptScheme can be obtained by utilizing the "classificationList()" function.}
 
-\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
-By default is set to "en". This is an optional argument.}
+\item{language}{The language for which the labels (level names) are to be provided. This is an optional argument which defaults to "en".}
 
 \item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
 If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.}
 }
 \value{
-\code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
+\code{dataStructure()} returns a table with one line per hierarchical level and the following columns:        
  \itemize{
-    \item Concept_Scheme: taxonomy of the SKOS object to be retrieved
-    \item Level: the levels of the objects in the collection 
-    \item Depth: identify the hierarchy of each level
-    \item Count: the number of objects retrieved in each level
+    \item Concept_Scheme: the classification for which the data structure is listed
+    \item Depth: the hierarchical position of each level
+    \item Level: the label (for the given language) assigned to each level
+    \item Count: the number of categories at each level
 }
 }
 \description{
-Retrieve information, for all the classification available in the repositories (CELLAR and FAO),
-about the level names their hierarchy and the numbers of records the function "dataStructure()" can be used.
+Retrieve information about the structure of a classification table (from either CELLAR and FAO repositories)
+}
+\details{
+The behaviour of this function is contingent on the global option \code{useLocalDataForVignettes}:
+The default behaviour (when the option is not set, or set to something else than \code{TRUE}), it queries live SPARQL endpoints online.
+When the option is set to \code{TRUE} via \code{options(useLocalDataForVignettes = TRUE)}, the function returns local (embedded) data instead of querying live SPARQL endpoints.
+This is useful for building vignettes or offline testing.
 }
 \examples{
-{
-   ## Obtain a list including the structure of each classification available 
-   ## CELLAR
-   #data_CELLAR = list()
-   #endpoint = "CELLAR"
-   #list_data = classificationList("ALL")
-  # 
+# Minimal example using CELLAR endpoint
+endpoint <- "CELLAR"
+prefix <- "nace2"
+conceptScheme <- "nace2"
+dataStructure(endpoint, prefix, conceptScheme)
+\dontrun{
+# Full example: get data for all CELLAR codes
+list_data <- classificationList("ALL")
+data_CELLAR <- list()
+for (i in 1:nrow(list_data$CELLAR)) {
+  prefix <- list_data$CELLAR[i, 1]
+  conceptScheme <- list_data$CELLAR[i, 2]
+  data_CELLAR[[i]] <- dataStructure("CELLAR", prefix, conceptScheme)
+}
+names(data_CELLAR) <- list_data$CELLAR[, 1]
 }
 }
