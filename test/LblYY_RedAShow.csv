@@ -1,0 +1,12 @@
+﻿NACE2code,NACE21code,CPAcode,CodeChange,Review,Redundancy,Redundancy_keep,NoMatchToAStar,NoMatchToB,NoMatchFromAStar,NoMatchFromB,LabelChange,NACE2code_NACE2label,NACE21code_NACE21label
+11,10,101,1,1,1,1,0,0,0,0,1,Apples,Banana
+12,10,101,1,1,1,0,0,0,0,0,1,Apples,Banana
+10,12,101,1,1,0,0,0,0,0,0,1,Pears,Apples
+20,20,200,1,0,0,0,0,0,0,0,0,Oranges,Oranges
+21,20,210,1,0,0,0,0,0,0,0,1,Lemons,Oranges
+30,30,300,0,0,0,0,0,0,0,0,0,Peaches,Peaches
+31,31,310,1,0,0,0,0,0,0,0,0,Nectarines,Nectarines
+40,31,400,1,0,1,1,0,0,0,0,1,Kiwi,Nectarines
+41,31,400,1,0,1,0,0,0,0,0,1,Pineapple,Nectarines
+52,31,400,1,0,1,0,0,0,0,0,1,Cherries,Nectarines
+,,110,,,0,0,1,,,1,,,
