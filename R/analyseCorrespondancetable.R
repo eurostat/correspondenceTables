@@ -29,11 +29,61 @@
 #' @importFrom igraph graph.data.frame decompose.graph
 #' @import igraph
 #'
-#' @return A list containing two data frames: \code{Inventory} and \code{Analysis}.
-#'   \code{Inventory} contains statistics related to components, correspondence
-#'   types, and source/target positions. \code{Analysis} contains statistics for
-#'   each class in the correspondence table.
+#' @return #' @section Inventory dataset:
+#' The `Inventory` data frame contains one row per connected component
+#' identified in the bipartite A–B correspondence graph. It provides summary
+#' statistics about the structure of each component.
 #'
+#' \describe{
+#'
+#'   \item{Component}{Identifier of the connected component in the bipartite
+#'     graph. Each component groups all A and B codes that are directly or
+#'     indirectly linked through the correspondence table.}
+#'
+#'   \item{CorrespondenceType}{Type of correspondence observed within the 
+#'     component: `"1:1"`, `"M:1"`, `"1:M"`, or `"M:M"`, depending on the 
+#'     number of distinct A and B codes connected.}
+#'
+#'   \item{SourcePositions}{List of all source classification codes (Acode)
+#'     that appear in the component.}
+#'
+#'   \item{TargetPositions}{List of all target classification codes (Bcode)
+#'     that appear in the component.}
+#'
+#'   \item{nSourcePositions}{Number of distinct A codes contained in the
+#'     component.}
+#'
+#'   \item{nTargetPositions}{Number of distinct B codes contained in the
+#'     component.}
+#' }
+#'
+#'
+#' @section Analysis dataset:
+#' The `Analysis` data frame contains one row per A–B pair in the original
+#' correspondence table (before filtering). It includes statistics describing
+#' how each Acode maps to Bcodes and vice versa.
+#'
+#' \describe{
+#'
+#'   \item{Acode}{Source classification code, corresponding to the first column
+#'     of the AB correspondence table.}
+#'
+#'   \item{Bcode}{Target classification code, corresponding to the second column
+#'     of the AB correspondence table.}
+#'
+#'   \item{nTargetClasses}{Number of distinct Bcodes linked to the same Acode
+#'     (cardinality of the A → B mapping).}
+#'
+#'   \item{SourceToTargetMapping}{Comma-separated list of all Bcodes mapped to
+#'     the Acode.}
+#'
+#'   \item{nSourceClasses}{Number of distinct Acodes linked to the same Bcode
+#'     (cardinality of the B → A mapping).}
+#'
+#'   \item{TargetToSourceMapping}{Comma-separated list of all Acodes mapped to 
+#'     the Bcode.}
+#' }
+#' 
 #' @export
 #'
 #' @examples
@@ -49,8 +99,6 @@
 #' )
 #' print(result$Inventory)
 #' print(result$Analysis)
-
-
 
 
 analyseCorrespondenceTable <- function(AB,
@@ -171,7 +219,7 @@ analyseCorrespondenceTable <- function(AB,
     
     unmatched_codes_B <- setdiff(b_data$Bcode, ab_data$Bcode)
     extra_codes_in_AB_B <- setdiff(ab_data$Bcode, b_data$Bcode)
-
+    
     # Warnings explicites
     if (length(unmatched_codes_B) > 0) {
       warning(paste0(
@@ -191,7 +239,7 @@ analyseCorrespondenceTable <- function(AB,
   #graph biparti
   g <- igraph::graph_from_data_frame(ab_data, directed = FALSE)
   components <- igraph::decompose(g)
-  component_codes <- lapply(components, function(comp) V(comp)$name)
+  component_codes <- lapply(components, function(comp) igraph::V(comp)$name)
   
   ab_data$component <- NA
   for (i in seq_along(component_codes)) {
@@ -200,7 +248,7 @@ analyseCorrespondenceTable <- function(AB,
   }
   
   component_stats <- lapply(components, function(comp) {
-    component <- V(comp)$name
+    component <-  igraph::V(comp)$name
     n_unique_targets <- length(unique(ab_data[ab_data$Acode %in% component, "Bcode"]))
     
     correspondence_type <- if (n_unique_targets == 1) {
@@ -268,7 +316,7 @@ analyseCorrespondenceTable <- function(AB,
   Inventory_df$SourcePositions <- sapply(Inventory_df$SourcePositions, function(x) paste(x, collapse = ", "))
   Inventory_df$TargetPositions <- sapply(Inventory_df$TargetPositions, function(x) paste(x, collapse = ", "))
   
-
+  
   Analysis_df <- merge(Analysis, unused_data_ab, by = c("Acode", "Bcode"), all = FALSE)
   
   if (!is.null(B)) {
@@ -294,7 +342,3 @@ analyseCorrespondenceTable <- function(AB,
   
   list(Inventory = Inventory_df, Analysis = Analysis_df)
 }
-
-
-
-

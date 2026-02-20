@@ -2,103 +2,176 @@
 % Please edit documentation in R/dataStructure.R
 \name{dataStructure}
 \alias{dataStructure}
-\title{Retrieve the hierarchical structure of a classification scheme}
+\title{Data structure (levels and depth) for a SKOS/XKOS classification}
 \usage{
 dataStructure(
   endpoint,
   prefix,
   conceptScheme,
   language = "en",
-  showQuery = FALSE
+  showQuery = FALSE,
+  return = c("summary", "details", "both")
 )
 }
 \arguments{
-\item{endpoint}{Character string specifying which SPARQL endpoint to query.
-Must be one of:
-\itemize{
-  \item \code{"CELLAR"},
-  \item \code{"FAO"}.
-}}
+\item{endpoint}{Character scalar. Accepted values are `"CELLAR"` or `"FAO"`.
+`"ALL"` is not queryable and will error. Matching is case-insensitive.}
 
-\item{prefix}{Character string giving the namespace prefix used for the
-selected classification scheme in SPARQL.  
-This value must correspond to the \code{Prefix} column returned by
-\code{\link{classificationEndpoint}} for the chosen scheme, and it is
-used in the query to:
-\itemize{
-  \item build the \code{PREFIX} declaration (\code{prefixList}),
-  \item qualify the scheme and its members
-        (e.g. \code{prefix:conceptScheme}, \code{prefix:SomeMember}).
-}}
+\item{prefix}{Character. A classification prefix used in the registry
+(e.g. `"NACE"`, `"CPA"`, `"HS"`, `"AGROVOC"`). Used to resolve the scheme.}
 
-\item{conceptScheme}{The internal identifier of the classification scheme
-(also returned by \code{\link{classificationEndpoint}}). It is used in
-the SPARQL query together with \code{prefix} to select the target scheme.}
+\item{conceptScheme}{Character or `NULL`. Optional alternative identifier
+for the concept scheme. The resolver tries both `prefix` and `conceptScheme`
+with multiple normalization steps (case-insensitive, dot removal, etc.).}
 
-\item{language}{Character string giving the language code for level labels.
-Defaults to \code{"en"}.}
+\item{language}{Character scalar. ISO 639-1 language code used to select
+labels (default: `"en"`). Fallback chain: requested language → English (`en`)
+→ no-language literal → local name.}
 
-\item{showQuery}{Boolean; if \code{TRUE}, the SPARQL query
-If \code{FALSE} (default), only the resulting data frame is returned.  
-If \code{TRUE}, the function returns a list containing:
-\itemize{
-  \item \code{SPARQL.query}: the full query text,
-  \item \code{dataStructure}: the resulting table.
-}}
+\item{showQuery}{Logical. If `TRUE`, returns a list with the SPARQL query
+(or queries) and the resolved metadata instead of just the data frame(s).
+The query text is also printed to the console.}
+
+\item{return}{One of `c("summary", "details", "both")`. Controls which table(s)
+are fetched and returned.}
 }
 \value{
-A data frame containing one row per level of the classification, with
-the following columns:
-\itemize{
-  \item \code{Concept_Scheme} – name of the classification scheme,
-  \item \code{Depth} – hierarchical depth of the level,
-  \item \code{Level} – label of the level (in the selected language),
-  \item \code{Count} – number of categories at this level.
-}
-
-If \code{showQuery = TRUE}, a list is returned instead (see details).
+A `data.frame` (for `"summary"` or `"details"`), or a `list(summary, details)`
+when `return = "both"`. If `showQuery = TRUE`, returns a list containing the
+query text, resolved metadata, and the fetched table(s).
 }
 \description{
-This function retrieves structural information about a classification scheme
-hosted in the CELLAR or FAO SPARQL repositories.  
-It returns one row per hierarchical level and includes metadata such as:
-\itemize{
-  \item the name of the classification scheme,
-  \item the depth of each level,
-  \item the label of the level (in a selected language),
-  \item the number of categories present at that level.
-}
+Queries a SPARQL endpoint (CELLAR or FAO) to retrieve the structure of a
+SKOS/XKOS classification scheme (levels, depth, and concepts), with
+language-aware label fallback. You can return a compact **summary** table,
+a detailed **concept-level** table, or **both**.
+
+The function first resolves the input classification using a local registry
+returned by [classificationList()], then builds SPARQL queries and fetches
+the results as CSV. An **offline** mode is supported for vignette/demo
+use via `options(useLocalDataForVignettes = TRUE)`.
 }
 \details{
-Before executing any SPARQL query, the function performs a pre-check using
-\code{\link{classificationEndpoint}} to ensure that the combination
-(\code{prefix}, \code{conceptScheme}) exists for the selected endpoint.
+Retrieve a classification data structure from CELLAR/FAO via SPARQL
 
-If the combination does not exist, or if the endpoint is unavailable,
-the function stops with a clear error message *before* issuing any SPARQL request.
 
-The behaviour of this function is also affected by the global option
-\code{useLocalDataForVignettes}.  
-If set to \code{TRUE}, a local CSV file is returned instead of querying
-live endpoints. This is useful for offline use or vignette building.
+**Resolution of the scheme**
+
+- The function calls an in-package registry via `classificationList(endpoint)`
+  and tries to match either `prefix` or `conceptScheme` using a set of
+  normalized keys. On success it extracts the namespace `ns_uri` and the
+  concept scheme ID.
+
+**Offline mode**
+
+- If `options(useLocalDataForVignettes) == TRUE`, the function looks for a
+  CSV under `inst/extdata/` named `dataStructure_<scheme>.csv` and returns
+  it (summary only). This is useful for vignettes or examples without network.
+
+**Online mode**
+
+- The function downloads a small JSON configuration from the project’s
+  repository to select the correct SPARQL endpoint URL for the given
+  `endpoint`, then executes one or two SPARQL queries via `httr::POST`
+  requesting CSV output.
+
+**Label and level fallback**
+
+- Labels for both the classification levels and concepts follow a multi-step
+  fallback: requested `language` → `"en"` → no-language literal → local name
+  extracted from the resource IRI.
+
+**Columns / Shapes**
+
+- When `return = "summary"`, the result is a `data.frame` with:
+  - `Concept_Scheme` (character): scheme local name
+  - `Depth` (integer or character): depth value from XKOS
+  - `Level` (character): resolved level label
+  - `Count` (integer): count of concepts at that level/depth
+
+- When `return = "details"`, the result is a `data.frame` with:
+  - `Concept` (IRI as character)
+  - `Code` (notation as character)
+  - `Label` (resolved pref/alt label)
+  - `Depth` (integer or character)
+  - `Level` (resolved level label)
+  - `BroaderList` (pipe-separated IRIs of broader concepts)
+  - `BroaderCodeList` (pipe-separated notations of broader concepts)
+
+- When `return = "both"`, a named list with `summary` and `details`.
+
+- If `showQuery = TRUE`, the function returns a list containing:
+  - `resolved`: metadata (`endpoint`, inputs, `scheme_id`, `ns_prefix`,
+    `ns_uri`, and `title` if available)
+  - the SPARQL query (or queries)
+  - the retrieved table(s)
 }
+\section{Errors and Warnings}{
+
+- Will error if `endpoint` is not one of `"CELLAR"` or `"FAO"`, or if the
+  scheme cannot be resolved from the registry.
+- Will warn and return only a summary table in offline mode.
+- Will propagate HTTP errors from the SPARQL endpoint.
+}
+
 \examples{
 \dontrun{
-# Minimal example (CELLAR)
-dataStructure("CELLAR", prefix = "nace2", conceptScheme = "nace2")
+# -------------------------------------------------------------------
+# Online examples (require network and a valid registry entry)
+# Classification: CN 2022 (CELLAR), English labels
+# -------------------------------------------------------------------
 
-# Loop over all CELLAR schemes
-list_data <- classificationEndpoint("CELLAR")
-res <- list()
-for (i in seq_len(nrow(list_data))) {
-  p  <- list_data$Prefix[i]
-  cs <- list_data$ConceptScheme[i]
-  res[[p]] <- dataStructure("CELLAR", prefix = p, conceptScheme = cs)
+# 1) CN (English) — Summary only
+ds_cn <- dataStructure(
+  endpoint      = "CELLAR",
+  prefix        = "cn2022",
+  conceptScheme = "cn2022",
+  language      = "en",
+  return        = "summary"
+)
+print(ds_cn)
+
+# 2) CN (English) — Details only (one row per concept)
+det_cn <- dataStructure(
+  endpoint      = "CELLAR",
+  prefix        = "cn2022",
+  conceptScheme = "cn2022",
+  language      = "en",
+  return        = "details"
+)
+head(det_cn)
+
+# 3) CN (English) — Summary and Details together
+both_cn <- dataStructure(
+  endpoint      = "CELLAR",
+  prefix        = "cn2022",
+  conceptScheme = "cn2022",
+  language      = "en",
+  return        = "both"
+)
+names(both_cn)                 # Expect: "summary" "details"
+print(both_cn$summary)
+head(both_cn$details)
+
+# 4) CN (English) — Split Details by Depth (one data.frame per level)
+det_cn_levels <- split(det_cn, as.character(det_cn$Depth))
+names(det_cn_levels)           # e.g. "1", "2", "3", "4", "5"
+print(det_cn_levels)
 }
+
+# -------------------------------------------------------------------
+# Offline demo (if the package ships the CSV files):
+# -------------------------------------------------------------------
+\dontshow{
+old <- getOption("useLocalDataForVignettes"); on.exit(options(useLocalDataForVignettes = old))
 }
+options(useLocalDataForVignettes = TRUE)
+# Example: #' CSV under `inst/extdata/` named `dataStructure_<scheme>.csv`
+#' # Same API, but data are read from inst/extdata/ instead of SPARQL
+# dataStructure("CELLAR", "NACE", "NACERev2", return = "summary")#' 
+options(useLocalDataForVignettes = FALSE)
 
 }
 \seealso{
-\code{\link{classificationEndpoint}},
-\code{\link{retrieveClassificationTable}}.
+[classificationList()]
 }
