@@ -1,170 +1,66 @@
 #' @title List available classification schemes from CELLAR or FAO
 #'
 #' @description
-#' This function extracts, from the endpoint of interest (CELLAR or FAO),
-#' a list of all classifications that are available in that endpoint.
-#' Apart from basic information, the list also contains, for each
-#' classification listed, all elements that are required to parameterise
-#' a SPARQL call to extract the actual classification structure.
-#' These elements include:
-#' \itemize{
-#'   \item the prefix name,
-#'   \item the full URI of the concept scheme,
-#'   \item the concept-scheme identifier (derived from the URI),
-#'   \item the human-readable title (English label),
-#'   \item and the list of languages observed among the concepts belonging
-#'         to the scheme.
-#' }
+#' List all classification schemes available on the selected repository
+#' (CELLAR, FAO, or both). Returns, for each scheme, its prefix, identifier,
+#' URI, English title, and the list of languages detected on its concepts.
 #'
-#' The function can operate in two modes. By default, it queries live SPARQL
-#' endpoints online. If the global option
-#' \code{options(useLocalDataForVignettes = TRUE)} is set, the function
-#' instead loads embedded CSV files located in \code{inst/extdata} and
-#' bypasses live SPARQL calls, which is useful for vignettes or offline work.
-#'
-#' When \code{endpoint = "ALL"}, the function queries both CELLAR and FAO and
-#' returns the two results in a named list. If \code{showQuery = TRUE},
-#' the function also returns the SPARQL query (or queries) used to generate
-#' the output.
-#'
-#' @details
-#' The URLs of the SPARQL endpoints are obtained from an online JSON
-#' configuration file (\code{endpoint_source_config.json}). If this file
-#' cannot be loaded, the function falls back to built-in default URLs.
-#'
-#' In online mode, languages are inferred from the language tags of the
-#' \code{skos:prefLabel} of all concepts belonging to each scheme. All
-#' distinct languages are returned as a comma-separated character vector.
-#'
-#' When operating offline (via
-#' \code{options(useLocalDataForVignettes = TRUE)}), the function returns the
-#' pre-computed CSV data for the requested endpoint(s). This allows vignettes
-#' to be built reproducibly and without network access.
-#'
-#' @param endpoint Character string indicating which repository to query.
-#'   Must be one of \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} (the latter
-#'   queries both repositories and returns a named list).
-#'
-#' @param showQuery Logical; if \code{TRUE}, the function returns, in addition
-#'   to the classification list, the SPARQL query (or queries) used to produce
-#'   the result. Defaults to \code{FALSE}.
+#' @param endpoint Character scalar. One of "CELLAR", "FAO" or "ALL".
+#'                 "ALL" queries both repositories and returns a named list.
+#' @param showQuery Logical; if TRUE, returns also the SPARQL query used.
 #'
 #' @return
-#' If \code{endpoint} is \code{"CELLAR"} or \code{"FAO"} and
-#' \code{showQuery = FALSE}, the function returns a data frame with the
-#' following columns:
-#' \itemize{
-#'   \item \strong{Prefix}: Short identifier of the classification scheme.
-#'   \item \strong{ConceptScheme}: Identifier of the concept scheme
-#'         (derived from the URI).
-#'   \item \strong{URI}: Full URI of the concept scheme.
-#'   \item \strong{Title}: Human-readable English title of the scheme.
-#'   \item \strong{Languages}: Comma-separated list of language tags
-#'         observed for concepts in the scheme.
-#' }
+#' If endpoint is "CELLAR" or "FAO" and showQuery = FALSE: a data.frame with
+#' columns Prefix, ConceptScheme, URI, Title, Languages.
 #'
-#' If \code{endpoint} is \code{"CELLAR"} or \code{"FAO"} and
-#' \code{showQuery = TRUE}, the function returns a list with two
-#' elements:
-#' \itemize{
-#'   \item \code{"ClassificationList"}: The data frame described above.
-#'   \item \code{"SPARQL.query"}: The SPARQL query string that was sent
-#'         to the endpoint.
-#' }
+#' If showQuery = TRUE: a list with "ClassificationList" and "SPARQL.query".
 #'
-#' If \code{endpoint = "ALL"} and \code{showQuery = FALSE}, the function
-#' returns a named list with two elements, \code{$CELLAR} and \code{$FAO},
-#' each containing a data frame structured as described above.
-#'
-#' If \code{endpoint = "ALL"} and \code{showQuery = TRUE}, the function
-#' returns a named list with two elements, \code{$CELLAR} and \code{$FAO};
-#' each of these elements is itself a list with two components:
-#' \code{"ClassificationList"} (the data frame for that endpoint) and
-#' \code{"SPARQL.query"} (the query used to obtain it).
+#' If endpoint = "ALL": a named list with $CELLAR and $FAO. If showQuery = TRUE,
+#' each element is itself a list (ClassificationList + SPARQL.query).
 #'
 #' @examples
-#' # --- Offline mode (uses embedded CSVs, no internet required) ---
-#' old_opt <- getOption("useLocalDataForVignettes")
-#' options(useLocalDataForVignettes = TRUE)
-#'
-#' # List of available classification schemes in CELLAR (offline)
-#' head(classificationList("CELLAR"))
-#'
-#' # List of available classification schemes in FAO (offline)
-#' head(classificationList("FAO"))
-#'
-#' # Restore previous option
-#' options(useLocalDataForVignettes = old_opt)
-#'
 #' \dontrun{
-#' # --- Online examples (live SPARQL, requires internet connection) ---
-#'
-#' # Direct query on CELLAR
 #' head(classificationList("CELLAR"))
-#'
-#' # Retrieve SPARQL query for debugging
-#' res <- classificationList("CELLAR", showQuery = TRUE)
+#' res <- classificationList("FAO", showQuery = TRUE)
 #' names(res)
 #' }
 #'
 #' @import httr
-#' @import jsonlite
-#' @importFrom utils capture.output str
+#' @importFrom utils read.csv
 #' @export
-
 classificationList <- function(endpoint = "ALL", showQuery = FALSE) {
-  endpoint <- toupper(endpoint)
-  if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
-    stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
-  }
+  # Validate and normalize endpoint using the internal helper.
+  # .expand_endpoints() returns a vector of endpoint names.
+  # Example: "ALL" -> c("CELLAR", "FAO")
+  endpoints <- .expand_endpoints(endpoint)
   
-  # ---- Offline / vignette mode ----
-  if (getOption("useLocalDataForVignettes", FALSE)) {
-    if (endpoint == "ALL") {
-      return(list(
-        CELLAR = classificationList("CELLAR", showQuery = showQuery),
-        FAO    = classificationList("FAO",    showQuery = showQuery)
-      ))
+  # If multiple endpoints were requested, return a named list.
+  if (length(endpoints) > 1L) {
+    out <- setNames(vector("list", length(endpoints)), endpoints)
+    for (ep in endpoints) {
+      out[[ep]] <- .ct_classification_list_single(ep, showQuery = showQuery)
     }
-    path <- system.file("extdata", paste0("classificationList_", endpoint, ".csv"),
-                        package = "correspondenceTables")
-    if (file.exists(path)) {
-      return(utils::read.csv(path, stringsAsFactors = FALSE))
-    } else {
-      stop(paste("Local file for", endpoint, "is missing."))
-    }
+    return(out)
   }
   
-  # ---- Helpers ----
-  basename_uri <- function(x) {
-    out <- sub("^.*[/#]", "", x)
-    gsub("[^A-Za-z0-9_\\-\\.]", "", out)
-  }
+  # Single endpoint case.
+  .ct_classification_list_single(endpoints, showQuery = showQuery)
+}
+
+# -------------------------------------------------------------------
+# Internal: run the SPARQL query for a single endpoint
+# -------------------------------------------------------------------
+#' @keywords internal
+#' @noRd
+.ct_classification_list_single <- function(endpoint, showQuery = FALSE) {
   
-  # ---- Load endpoints config (with fallback) ----
-  cfg_url <- "https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json"
-  config <- tryCatch(jsonlite::fromJSON(cfg_url), error = function(e) NULL)
-  if (is.null(config)) {
-    config <- list(
-      CELLAR = "https://publications.europa.eu/webapi/rdf/sparql",
-      # FAO    = "https://stats.fao.org/caliper/sparql"
-      FAO    = "https://caliper.integratedmodelling.org/caliper/sparql"
-    )
-  }
+  # Resolve the endpoint URL via internal single source of truth
+  endpoint_url <- .sparql_endpoint(endpoint)
   
-  SPARQL.query <- ""
-  endpoint_url <- ""
-  
-  if (endpoint == "ALL") {
-    return(list(
-      CELLAR = classificationList("CELLAR", showQuery = showQuery),
-      FAO    = classificationList("FAO",    showQuery = showQuery)
-    ))
-  } else if (endpoint == "CELLAR") {
-    endpoint_url <- config$CELLAR
+  # Choose the SPARQL query by endpoint
+  if (identical(endpoint, "CELLAR")) {
     SPARQL.query <- "
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-
 SELECT
   (?scheme AS ?URI)
   (COALESCE(STR(?notation),
@@ -193,8 +89,7 @@ WHERE {
 GROUP BY ?scheme ?notation
 ORDER BY ?Prefix
 "
-  } else {
-    endpoint_url <- config$FAO
+  } else if (identical(endpoint, "FAO")) {
     SPARQL.query <- "
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -220,13 +115,17 @@ WHERE {
 GROUP BY ?scheme ?notation
 ORDER BY ?Prefix
 "
+  } else {
+    stop("Unsupported endpoint in .ct_classification_list_single().")
   }
 
+# Optionally print the query for debugging
 if (isTRUE(showQuery)) {
   message("Endpoint: ", endpoint_url)
   message(SPARQL.query)
 }
 
+# Execute the request and parse CSV response
 out <- tryCatch({
   resp <- httr::POST(
     url    = endpoint_url,
@@ -237,21 +136,23 @@ out <- tryCatch({
   txt <- httr::content(resp, "text", encoding = "UTF-8")
   df  <- utils::read.csv(text = txt, sep = ",", stringsAsFactors = FALSE, check.names = FALSE)
   
+  # Basic post-conditions: expected columns should exist
   needed <- c("URI", "Prefix", "Title", "Languages")
   if (!all(needed %in% names(df))) {
     stop("Unexpected columns returned by SPARQL endpoint. Got: ",
          paste(names(df), collapse = ", "))
   }
   
+  # Prepare result structure; normalize prefix, extract basename of URI
   uri    <- df[["URI"]]
-  prefix <- if (endpoint == "CELLAR") gsub("\\.", "", df[["Prefix"]]) else df[["Prefix"]]
+  prefix <- if (identical(endpoint, "CELLAR")) gsub("\\.", "", df[["Prefix"]]) else df[["Prefix"]]
   prefix <- .ct_clean_prefix(prefix)
   title  <- df[["Title"]]
   langs  <- df[["Languages"]]
   
   result <- data.frame(
     Prefix        = prefix,
-    ConceptScheme = basename_uri(uri),
+    ConceptScheme = .ct_basename_uri(uri),
     URI           = uri,
     Title         = title,
     Languages     = langs,
@@ -260,12 +161,17 @@ out <- tryCatch({
   rownames(result) <- seq_len(nrow(result))
   result
 }, error = function(e) {
+  # Provide helpful diagnostics while keeping a clean error for callers
   message("The following SPARQL code was used in the call:\n", SPARQL.query)
-  message("The above SPARQL call to ", endpoint_url, " generated the following error message:\n", conditionMessage(e))
-  stop(simpleError(paste("Error in function classificationList(", endpoint, "), Endpoint", endpoint, "is not available or is returning unexpected data")))
+  message("The above SPARQL call to ", endpoint_url,
+          " generated the following error message:\n", conditionMessage(e))
+  stop(simpleError(
+    paste0("Error in classificationList(", endpoint, "): endpoint unavailable or returned unexpected data")
+  ))
 })
 
-if (showQuery) {
+# Return either the data.frame alone or a list with the query
+if (isTRUE(showQuery)) {
   return(list("SPARQL.query" = SPARQL.query, "ClassificationList" = out))
 } else {
   return(out)
@@ -273,33 +179,28 @@ if (showQuery) {
 }
 
 # -------------------------------------------------------------------
-# Internal helper to normalise classification prefix codes
+# Internal utilities
 # -------------------------------------------------------------------
+
 #' @keywords internal
 #' @noRd
-.ct_clean_prefix <- function(prefix) { 
-  prefix <- tolower(prefix)
-  
-  # remove version suffixes like "_v2.1" or "-v2"
-  prefix <- sub("(_v[0-9.]+)$", "", prefix)
-  prefix <- sub("(-v[0-9.]+)$", "", prefix)
-  
-  # remove dots
-  prefix <- gsub("\\.", "", prefix)
-  
-  # remove all spaces
-  prefix <- gsub(" ", "", prefix)
-  
-  # remove weird characters (keep letters, numbers, underscore)
-  prefix <- gsub("[^a-z0-9_]", "", prefix)
-  
-  trimws(prefix)
+.ct_basename_uri <- function(x) {
+  # Keep only the last path/token after '/' or '#', then sanitize
+  out <- sub("^.*[/#]", "", x)
+  gsub("[^A-Za-z0-9_\\-\\.]", "", out)
 }
 
-
-
-
-
-
-
+#' @keywords internal
+#' @noRd
+.ct_clean_prefix <- function(prefix) {
+  # Normalize prefixes: lowercase, drop common version suffixes,
+  # remove dots/spaces and keep a safe alphanumeric/underscore set
+  prefix <- tolower(prefix)
+  prefix <- sub("(_v[0-9.]+)$", "", prefix)
+  prefix <- sub("(-v[0-9.]+)$", "", prefix)
+  prefix <- gsub("\\.", "", prefix)
+  prefix <- gsub(" ", "", prefix)
+  prefix <- gsub("[^a-z0-9_]", "", prefix)
+  trimws(prefix)
+}
 

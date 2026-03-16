@@ -2,48 +2,83 @@
 % Please edit documentation in R/aggregateCorrespondenceTable.R
 \name{aggregateCorrespondenceTable}
 \alias{aggregateCorrespondenceTable}
-\title{Aggregate a correspondence table to higher hierarchical levels}
+\title{Aggregate values from classification A to classification B}
 \usage{
-aggregateCorrespondenceTable(AB, A, B, CSVout = NULL)
+aggregateCorrespondenceTable(AB, A, B = NULL)
 }
 \arguments{
-\item{AB}{A mandatory argument containing either:
-\itemize{
-  \item a data frame with columns \code{Acode} and \code{Bcode} representing
-        the correspondence between classifications A and B at the most
-        granular level, or
-  \item a character string giving the path to a CSV file containing such a table.
-}}
+\item{AB}{A \code{data.frame} containing A→B links, with optional numeric
+\code{weight}.}
 
-\item{A}{A mandatory argument containing either:
-\itemize{
-  \item a data frame with columns \code{Acode}, \code{ALevel} and \code{ASuperior}
-        describing the hierarchy of the source classification A, or
-  \item a character string giving the path to a CSV file containing such a table.
-}}
+\item{A}{A \code{data.frame} with one (character) code column and one
+numeric value column.}
 
-\item{B}{A mandatory argument containing either:
-\itemize{
-  \item a data frame with columns \code{Bcode}, \code{BLevel} and \code{BSuperior}
-        describing the hierarchy of the target classification B, or
-  \item a character string giving the path to a CSV file containing such a table.
-}}
-
-\item{CSVout}{A character string providing the path where the aggregated
-correspondence table CSV file should be saved. If \code{NULL}, no CSV file
-is generated.}
+\item{B}{Optional \code{data.frame} with a code column defining the output
+domain. Additional columns (e.g., labels) are preserved.}
 }
 \value{
-A data frame representing the aggregated correspondence table.
+A list with:
+\itemize{
+  \item \code{result}: data.frame with aggregated values for each B code
+        (and any additional columns from \code{B}, if provided),
+  \item \code{mapping}: standardized A→B mapping used internally,
+  \item \code{diagnostics}: list with total input value, mapped value,
+        coverage ratio, and codes in A that could not be mapped.
+}
 }
 \description{
-Aggregate a correspondence table to higher hierarchical levels.
+Aggregates numeric values from a source classification A into a target
+classification B using a correspondence table AB.  
+Each value in A is redistributed to one or more B codes according to weights
+in AB (if available), or split equally when no valid weights exist.
+}
+\details{
+This function is used when data expressed in one classification must be
+converted into another classification using an A→B correspondence table.
+
+The workflow is:
+\enumerate{
+  \item Detect and standardize column names in \code{AB}, \code{A} and \code{B}
+        (case-insensitive).
+  \item For each code in A, determine all corresponding B codes.
+  \item Apply proportional allocation:
+        \itemize{
+          \item If \code{AB} contains a numeric weight column, weights
+                are normalized per source code.
+          \item If weights are missing, invalid, or sum to zero, values are
+                split equally across all mapped B codes.
+        }
+  \item Values are multiplied by the resulting weights and aggregated by B code.
+  \item If \code{B} is provided, the result is aligned to its list of codes
+        (unmatched codes receive 0).
+}
+
+This function is appropriate for tasks such as converting statistical datasets
+from NACE to CPA, CPA to CN, CPC to HS, or any situation where values have to
+be re-expressed according to a different classification system.
 }
 \examples{
-# Using CSV paths from the extdata folder
-AB_path <- system.file("extdata", "ab_data.csv", package = "correspondenceTables")
-A_path  <- system.file("extdata", "a_data.csv",  package = "correspondenceTables")
-B_path  <- system.file("extdata", "b_data.csv",  package = "correspondenceTables")
+## Simple example (equal split)
+AB <- data.frame(
+  from_code = c("A1","A1","A2"),
+  to_code   = c("B1","B2","B1")
+)
 
-result <- aggregateCorrespondenceTable(AB = AB_path, A = A_path, B = B_path, CSVout = NULL)
+print(AB)
+
+A_tbl <- data.frame(
+  code  = c("A1","A2"),
+  value = c(100, 50)
+)
+
+print(A_tbl)
+
+result <- aggregateCorrespondenceTable(AB, A_tbl)
+
+print(result$result) 
+print(result$mapping)
+
+}
+\seealso{
+\code{\link{retrieveCorrespondenceTable}} for downloading AB tables.
 }

@@ -10,92 +10,58 @@ retrieveClassificationTable(
   conceptScheme,
   language = "en",
   level = "ALL",
-  CSVout = NULL,
   showQuery = FALSE,
   knownSchemes = NULL,
   preferMappingOnly = FALSE
 )
 }
 \arguments{
-\item{endpoint}{Character. Repository to query. Must be either
-\code{"CELLAR"} or \code{"FAO"}.}
+\item{endpoint}{Character. Repository to query. Must be either "CELLAR" or "FAO".}
 
 \item{prefix}{Character. Classification prefix used for matching and URI resolution
-(e.g. \code{"cn2022"}, \code{"cpc21"}, \code{"isic4"}).}
+(e.g. "cn2022", "cpc21", "isic4").}
 
-\item{conceptScheme}{Character. Local identifier of the scheme
-(often identical to \code{prefix}). The function automatically resolves this  
-to the canonical ConceptScheme URI published in the endpoint.}
+\item{conceptScheme}{Character. Local identifier of the scheme (often identical to
+\code{prefix}). The function automatically resolves this to the canonical
+ConceptScheme URI published in the endpoint.}
 
 \item{language}{Character. Desired language for labels, scope notes and exclusion notes.
-Default: \code{"en"}.}
+Default: "en".}
 
-\item{level}{Character.
+\item{level}{Character. One of:
 \itemize{
-  \item \code{"ALL"} (default): return all levels in the hierarchy;
-  \item a specific depth value (e.g. \code{"2"}) to filter concepts at that depth only.
-}}
-
-\item{CSVout}{Logical or character.
-\itemize{
-  \item \code{NULL}: do not export;  
-  \item \code{TRUE}: export automatically to  
-    \verb{<prefix>_<scheme>_<language>_classification.csv};  
-  \item character: export to the provided filepath.
+  \item "ALL" (default): return all levels in the hierarchy;
+  \item a specific depth value (e.g. "2") to filter concepts at that depth only.
 }}
 
 \item{showQuery}{Logical.
 \itemize{
-  \item \code{FALSE} (default): return only the classification table;  
-  \item \code{TRUE}: return a list containing the SPARQL query,  
-        the resolved scheme URI, and the table itself.
+  \item FALSE (default): returns only the classification table;
+  \item TRUE: returns a list containing the SPARQL query, the resolved scheme URI, and the table itself.
 }}
 
-\item{knownSchemes}{Optional. A data frame supplying authoritative mappings
-of the form \code{Prefix, ConceptScheme, URI[, Endpoint]}.  
-When provided, this overrides automatic discovery. To be obtained using \code{classificationList(endpoint)}.}
+\item{knownSchemes}{Optional. A data.frame supplying authoritative mappings of the
+form \code{Prefix, ConceptScheme, URI[, Endpoint]}. When provided, this overrides
+automatic discovery. To be obtained using \code{classificationList(endpoint)}.}
 
-\item{preferMappingOnly}{Logical.
-If \code{TRUE}, the function *never* attempts SPARQL discovery and  
-uses only information in \code{knownSchemes} or \code{classificationList(endpoint)}.  
-Default: \code{FALSE}.}
+\item{preferMappingOnly}{Logical. If TRUE, the function never attempts SPARQL
+discovery and uses only information in \code{knownSchemes} or \code{classificationList(endpoint)}.
+Default: FALSE.}
 }
 \value{
-If \code{showQuery = FALSE}, returns a \code{data.frame} with one row per concept  
-and the following columns:
-
+If \code{showQuery = FALSE}, a \code{data.frame} with one row per concept and columns:
 \itemize{
-
-  \item \strong{Concept}  
-        Full URI of the concept node.
-
-  \item \strong{Code}  
-        Notation/code of the concept (\code{skos:notation}), coerced to string.
-
-  \item \strong{Label}  
-        Human‑readable label of the concept in the requested language  
-        (via \code{skos:prefLabel} or \code{skos:altLabel}, combined with COALESCE).
-
-  \item \strong{Depth}  
-        Depth level in the classification hierarchy (\code{xkos:depth}),  
-        when published.
-
-  \item \strong{BroaderList}  
-        Concatenated list of broader concepts (URIs), separated by \code{" | "}.
-
-  \item \strong{BroaderCodeList}  
-        Concatenated list of broader concept notations, aligned with \code{BroaderList}.
-
-  \item \strong{IncludeNotes}  
-        Concatenated \code{skos:scopeNote} values describing what is *included*  
-        in the meaning of the concept.
-
-  \item \strong{ExcludeNotes}  
-        *excluded* from the meaning of the concept.
-
+  \item \strong{Concept}: full concept URI;
+  \item \strong{Code}: \code{skos:notation} coerced to string;
+  \item \strong{Label}: preferred or alternative label in the requested language;
+  \item \strong{Depth}: \code{xkos:depth} if available;
+  \item \strong{BroaderList}: broader concept URIs (pipe-separated);
+  \item \strong{BroaderCodeList}: broader concept notations (pipe-separated);
+  \item \strong{IncludeNotes}: \code{skos:scopeNote} values (double-pipe-separated);
+  \item \strong{ExcludeNotes}: \code{xkos:exclusionNote} values (double-pipe-separated).
 }
 
-If \code{showQuery = TRUE}, returns a list:
+If \code{showQuery = TRUE}, returns a list with:
 \itemize{
   \item \code{SPARQL.query} – the executed SPARQL string;
   \item \code{scheme_uri} – the resolved ConceptScheme URI;
@@ -103,21 +69,11 @@ If \code{showQuery = TRUE}, returns a list:
 }
 }
 \description{
-Retrieves the complete structure of a statistical classification published in  
-either CELLAR or FAO, using SKOS/XKOS semantics.  
+Retrieves the complete structure of a statistical classification published in
+either CELLAR or FAO repositories based on a Prefix–ConceptScheme pair obtained
+using \code{classificationList()}.
 
-The function:
-\itemize{
-  \item resolves the full ConceptScheme URI associated with the classification,  
-        through endpoint‑aware matching, ASK‑based validation, and SPARQL discovery;
-  \item anchors the extraction on the validated scheme URI;
-  \item retrieves all concepts belonging to the scheme and their metadata;
-  \item aggregates labels, hierarchical relations, inclusion/exclusion notes,  
-        and optional depth information;
-  \item returns one row per concept.
-}
-
-The resulting table is suitable for classification browsing, integrity checks,  
+The resulting table is suitable for classification browsing, integrity checks,
 hierarchical analysis, documentation, and downstream correspondence mapping.
 }
 \examples{

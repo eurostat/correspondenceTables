@@ -2,46 +2,35 @@
 % Please edit documentation in R/correspondenceTableList.R
 \name{correspondenceTableList}
 \alias{correspondenceTableList}
-\title{Retrieve a list of all correspondence tables in the CELLAR and FAO repositories}
+\title{List available correspondence tables from online services}
 \usage{
 correspondenceTableList(endpoint = "ALL", showQuery = FALSE)
 }
 \arguments{
-\item{endpoint}{Character. SPARQL endpoint(s) to query. One of:
-\code{"CELLAR"}, \code{"FAO"}, or \code{"ALL"} (default).}
+\item{endpoint}{Character. Which service(s) to query.
+One or more of the supported endpoints (e.g. "CELLAR", "FAO"),
+or "ALL" to query all available services. Case-insensitive.
+If multiple endpoints are supplied (including "ALL"), a **named list**
+is returned; otherwise a single `data.frame`.}
 
-\item{showQuery}{Logical; if \code{TRUE}, prints the SPARQL query used.
-Default is \code{FALSE}.}
+\item{showQuery}{Logical. If `TRUE`, the SPARQL queries used are emitted via
+`message()` (suppress with `suppressMessages()`).}
 }
 \value{
-If \code{endpoint = "CELLAR"} or \code{"FAO"}, returns a \code{data.frame} with:
-\itemize{
-  \item Prefix
-  \item ID
-  \item Source.Classification
-  \item Target.Classification
-  \item Table.Name
-  \item URI
-}
-If \code{endpoint = "ALL"}, returns a named list with elements \code{$CELLAR}
-and \code{$FAO}, each a \code{data.frame} as above.
+If a single endpoint is requested, a `data.frame` (one row per correspondence).
+If multiple endpoints are requested (including "ALL"), a **named list**
+of data frames, one per endpoint.
 }
 \description{
-Lists all correspondence tables (XKOS correspondences) in the selected endpoint(s).
-The function relies on \code{classificationList()} to obtain the set of known
-classification schemes, then retrieves correspondences that reference those schemes.
+Returns a data frame listing available correspondence tables (mappings between
+statistical classifications) published by one or more supported online services.
+
+Use this function to discover valid `prefix` and `ID_table` values before
+calling `retrieveCorrespondenceTable()`.
 }
 \details{
-Behaviour depends on the global option \code{useLocalDataForVignettes}:
-\itemize{
-  \item If \code{TRUE}: reads pre-embedded CSVs in \code{inst/extdata}.
-  \item If \code{FALSE}: runs live SPARQL queries.
+Read-only queries; no side effects (no file writes or caching).
 }
-}
-\examples{
-if (interactive()) {
-  out <- correspondenceTableList("ALL")
-  head(out$CELLAR)
-  head(out$FAO)
-}
+\seealso{
+retrieveCorrespondenceTable()
 }

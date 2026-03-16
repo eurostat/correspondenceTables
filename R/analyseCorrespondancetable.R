@@ -4,13 +4,23 @@
 #' input data, identifies components, calculates correspondence types, and
 #' creates summary tables.
 #'
-#' @param AB A mandatory argument containing a CSV file provided by the user
-#'   with the correspondence table data. The table must contain at least the
-#'   columns \code{"Acode"} and \code{"Bcode"}.
-#' @param A A path to a CSV file containing source classification data with
+#' @param AB A mandatory argument containing a data frame provided by the user
+#'   with the correspondence table data. The table must contain at least two
+#'   columns containing the two classifications \code{A code} and \code{B code}. The name of the two columns is irrelevant.
+#' @param Aname Optional. A character string specifying the name of the column
+#'   in `AB` that should be used as the source classification (`Acode`). If
+#'   `NULL`, the function assumes that the first column of `AB` represents the
+#'   source classification.
+#'
+#' @param Bname Optional. A character string specifying the name of the column
+#'   in `AB` that should be used as the target classification (`Bcode`). If
+#'   `NULL`, the function assumes that the second column of `AB` represents the
+#'   target classification.
+#'    
+#' @param A A data frame containing the source classification data with
 #'   an \code{"Acode"} column. Can be \code{NULL} if no source classification
 #'   table is provided.
-#' @param B A path to a CSV file containing target classification data with
+#' @param B A data frame containing the target classification data with
 #'   a \code{"Bcode"} column. Can be \code{NULL} if no target classification
 #'   table is provided.
 #' @param longestAcodeOnly Logical. If \code{TRUE}, source classification data
@@ -19,95 +29,134 @@
 #' @param longestBcodeOnly Logical. If \code{TRUE}, target classification data
 #'   are filtered based on \code{"Bcode"} retaining only the maximum length,
 #'   i.e. the lowest-level Bcodes in the correspondence table.
-#' @param CSVcorrespondenceInventory Character string giving the path to a CSV
-#'   file where the correspondence inventory should be written. If \code{NULL},
-#'   no CSV is produced.
-#' @param CSVcorrespondenceAnalysis Character string giving the path to a CSV
-#'   file where the correspondence analysis should be written. If \code{NULL},
-#'   no CSV is produced.
 #'
 #' @importFrom igraph graph.data.frame decompose.graph
 #' @import igraph
 #'
-#' @return #' @section Inventory dataset:
-#' The `Inventory` data frame contains one row per connected component
-#' identified in the bipartite A–B correspondence graph. It provides summary
-#' statistics about the structure of each component.
+#' @return A list containing two data frames: \code{Inventory} and \code{Analysis}.
+#'   \code{Inventory} contains statistics related to components, correspondence
+#'   types, and source/target positions. \code{Analysis} contains statistics for
+#'   each class in the correspondence table.
 #'
-#' \describe{
-#'
-#'   \item{Component}{Identifier of the connected component in the bipartite
-#'     graph. Each component groups all A and B codes that are directly or
-#'     indirectly linked through the correspondence table.}
-#'
-#'   \item{CorrespondenceType}{Type of correspondence observed within the 
-#'     component: `"1:1"`, `"M:1"`, `"1:M"`, or `"M:M"`, depending on the 
-#'     number of distinct A and B codes connected.}
-#'
-#'   \item{SourcePositions}{List of all source classification codes (Acode)
-#'     that appear in the component.}
-#'
-#'   \item{TargetPositions}{List of all target classification codes (Bcode)
-#'     that appear in the component.}
-#'
-#'   \item{nSourcePositions}{Number of distinct A codes contained in the
-#'     component.}
-#'
-#'   \item{nTargetPositions}{Number of distinct B codes contained in the
-#'     component.}
-#' }
-#'
-#'
-#' @section Analysis dataset:
-#' The `Analysis` data frame contains one row per A–B pair in the original
-#' correspondence table (before filtering). It includes statistics describing
-#' how each Acode maps to Bcodes and vice versa.
-#'
-#' \describe{
-#'
-#'   \item{Acode}{Source classification code, corresponding to the first column
-#'     of the AB correspondence table.}
-#'
-#'   \item{Bcode}{Target classification code, corresponding to the second column
-#'     of the AB correspondence table.}
-#'
-#'   \item{nTargetClasses}{Number of distinct Bcodes linked to the same Acode
-#'     (cardinality of the A → B mapping).}
-#'
-#'   \item{SourceToTargetMapping}{Comma-separated list of all Bcodes mapped to
-#'     the Acode.}
-#'
-#'   \item{nSourceClasses}{Number of distinct Acodes linked to the same Bcode
-#'     (cardinality of the B → A mapping).}
-#'
-#'   \item{TargetToSourceMapping}{Comma-separated list of all Acodes mapped to 
-#'     the Bcode.}
-#' }
-#' 
 #' @export
 #'
 #' @examples
 #' # Use data from the folder extdata
+#' 
+#' AB = read.csv(system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"))
+#' head(AB)
+#' 
 #' result <- analyseCorrespondenceTable(
-#'   AB = system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),
+#'   AB = AB,
+#'   Aname = NULL,
+#'   Bname = NULL,
 #'   A  = NULL,
 #'   B  = NULL,
 #'   longestAcodeOnly          = FALSE,
-#'   longestBcodeOnly          = FALSE,
-#'   CSVcorrespondenceInventory = NULL,
-#'   CSVcorrespondenceAnalysis  = NULL
+#'   longestBcodeOnly          = FALSE
 #' )
+#' 
 #' print(result$Inventory)
 #' print(result$Analysis)
+#' 
+#' # the name of the columns does not matter:
+#' AB_mod = AB
+#' colnames(AB_mod) = c("a", "b")
+#' 
+#' result_mod <- analyseCorrespondenceTable(
+#'   AB = AB_mod,
+#'   Aname = NULL,
+#'   Bname = NULL,
+#'   A  = NULL,
+#'   B  = NULL,
+#'   longestAcodeOnly          = FALSE,
+#'   longestBcodeOnly          = FALSE
+#' )
+#' 
+#' print(result_mod$Inventory)
+#' print(result_mod$Analysis)
+#' 
+#' 
+#' # examples with using Aname and Bname
+#' 
+#' # fist we add two more column to the same dataset
+#' set.seed(123)
+#' AB_mod2 = AB_mod
+#' 
+#' AB_mod2 <- cbind(new_first_col = sample(1:100, nrow(AB_mod2), replace = TRUE), AB_mod2)
+#' AB_mod2 <- cbind(
+#'   AB_mod2[1:2], 
+#'   new_middle_col = sample(1:100, nrow(AB_mod2), replace = TRUE),
+#'   AB_mod2[3:ncol(AB_mod2)]
+#' )
+#' colnames(AB_mod2)
+#' 
+#' result_mod2 <- analyseCorrespondenceTable(
+#'   AB = AB_mod2,
+#'   Aname = "a",
+#'   Bname = "b",
+#'   A  = NULL,
+#'   B  = NULL,
+#'   longestAcodeOnly          = FALSE,
+#'   longestBcodeOnly          = FALSE
+#' )
+#' 
+#' print(result_mod2$Inventory)
+#' print(result_mod2$Analysis)
+#' 
+#' # check if we obtained the same results in all the 3 examples
+#' 
+#' first = identical(result$Inventory, result_mod$Inventory) 
+#' second = identical(result_mod$Inventory, result_mod2$Inventory)
+#' first && second
+#' # TRUE
+#' 
+#' # the following won't work as we changed column names in AB_mod, 
+#' # and added new columns in AB_mod2 but the results are the same.
+#' first = identical(result$Analysis, result_mod$Analysis)
+#' second = identical(result_mod$Analysis, result_mod2$Analysis)
+#' first && second
+
 
 
 analyseCorrespondenceTable <- function(AB,
-                                       A = NULL,
-                                       B = NULL,
-                                       longestAcodeOnly = FALSE,
-                                       longestBcodeOnly = FALSE,
-                                       CSVcorrespondenceInventory = NULL,
-                                       CSVcorrespondenceAnalysis = NULL) {
+                                             Aname = NULL,
+                                             Bname = NULL,
+                                             A = NULL,
+                                             B = NULL,
+                                             longestAcodeOnly = FALSE,
+                                             longestBcodeOnly = FALSE) {
+  # checks  
+  
+  if (!inherits(AB, "data.frame")) {
+    stop("AB must be a data.frame.")
+  }
+  
+  if (!is.null(Aname) && !is.character(Aname)) {
+    stop("Aname must be a character or NULL.")
+  }
+  
+  if (!is.null(Bname) && !is.character(Bname)) {
+    stop("Bname must be a character or NULL.")
+  }
+  
+  if (!(is.null(Aname) == is.null(Bname))) {
+    stop("Aname and Bname must be both NULL or both non-NULL.")
+  }
+  
+  if (!is.null(Aname)) {
+    if (!all(c(Aname, Bname) %in% colnames(AB))) {
+      stop("Both Aname and Bname must correspond to existing columns in AB.")
+    }
+  }
+  
+  if (!is.null(A) && !inherits(A, "data.frame")) {
+    stop("A must be a data.frame or NULL.")
+  }
+  
+  if (!is.null(B) && !inherits(B, "data.frame")) {
+    stop("B must be a data.frame or NULL.")
+  }
   
   if (!is.logical(longestAcodeOnly)) {
     stop("Argument 'longestAcodeOnly' must be TRUE or FALSE (logical).")
@@ -115,15 +164,24 @@ analyseCorrespondenceTable <- function(AB,
   if (!is.logical(longestBcodeOnly)) {
     stop("Argument 'longestBcodeOnly' must be TRUE or FALSE (logical).")
   }
-  # If AB is provided as a path to a file, check that the file exists
-  if (is.character(AB) && !file.exists(AB)) {
-    stop(paste0("File not found: ", AB, ". Please check the path and filename of the correspondence table."))
-  }
-  ab_data <- testInputTable("Correspondence table (AB)", AB)
   
-  ColumnNames_ab <- colnames(ab_data)[1:2]
-  colnames(ab_data)[1:2] <- c("Acode", "Bcode")
-  unused_data_ab <- ab_data
+  # function
+  
+  ab_data = AB
+  
+  if (!is.null(Aname) && !is.null(Bname)){
+    ColumnNames_ab = c(Aname, Bname)
+    colnames(ab_data)[which(colnames(ab_data)==Aname)] = "Acode"
+    colnames(ab_data)[which(colnames(ab_data)==Bname)] = "Bcode"
+    unused_data_ab <- ab_data
+    ab_data <- ab_data[,c("Acode","Bcode")]
+    
+  } else {
+    ColumnNames_ab <- colnames(ab_data)[1:2]
+    colnames(ab_data)[1:2] <- c("Acode", "Bcode")
+    unused_data_ab <- ab_data
+  }
+  
   
   # Nrows > 0
   if (nrow(ab_data) == 0) {
@@ -159,12 +217,8 @@ analyseCorrespondenceTable <- function(AB,
   if (nrow(ab_data) == 0) stop("No valid records after filtering longest codes.")
   
   
-  if (!is.null(A) && is.character(A) && !file.exists(A)) {
-    stop(paste0("File not found: ", A, ". Please check the path and filename."))
-  }
-  
   if (!is.null(A)) {
-    a_data <- testInputTable("Source classification table (A)", A)
+    a_data <- A
     
     
     colnames(a_data)[1] <- "Acode"
@@ -198,12 +252,10 @@ analyseCorrespondenceTable <- function(AB,
     }
   }
   
-  if (!is.null(B) && is.character(B) && !file.exists(B)) {
-    stop(paste0("File not found: ", B, ". Please check the path and filename."))
-  }
   
   if (!is.null(B)) {
-    b_data <- testInputTable("Target classification table (B)", B)
+    b_data <- B
+    
     colnames(b_data)[1] <- "Bcode"
     unused_data_b <- b_data
     
@@ -248,7 +300,7 @@ analyseCorrespondenceTable <- function(AB,
   }
   
   component_stats <- lapply(components, function(comp) {
-    component <-  igraph::V(comp)$name
+    component <- igraph::V(comp)$name
     n_unique_targets <- length(unique(ab_data[ab_data$Acode %in% component, "Bcode"]))
     
     correspondence_type <- if (n_unique_targets == 1) {
@@ -337,8 +389,9 @@ analyseCorrespondenceTable <- function(AB,
   Analysis_df <- Analysis_df[, c("Acode", "Bcode", setdiff(names(Analysis_df), c("Acode", "Bcode")))]
   colnames(Analysis_df)[1:2] <- ColumnNames_ab[1:2]
   
-  CsvFileSave(CSVcorrespondenceInventory, Inventory_df)
-  CsvFileSave(CSVcorrespondenceAnalysis, Analysis_df)
-  
   list(Inventory = Inventory_df, Analysis = Analysis_df)
 }
+
+
+
+

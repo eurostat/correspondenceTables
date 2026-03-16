@@ -2,7 +2,7 @@
 % Please edit documentation in R/retrieveCorrespondenceTable.R
 \name{retrieveCorrespondenceTable}
 \alias{retrieveCorrespondenceTable}
-\title{Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.}
+\title{Download a correspondence (mapping) table between two classifications}
 \usage{
 retrieveCorrespondenceTable(
   endpoint,
@@ -14,73 +14,110 @@ retrieveCorrespondenceTable(
 )
 }
 \arguments{
-\item{endpoint}{Character: "CELLAR" or "FAO".}
+\item{endpoint}{Character. The online service to query. Case-insensitive.
+Supported values are those returned by the internal endpoint registry
+(e.g., \code{"CELLAR"}, \code{"FAO"}).}
 
-\item{prefix}{Character: namespace prefix of the correspondence table (e.g., "cn2022").}
+\item{prefix}{Character. Catalogue prefix where the correspondence is
+published (e.g., \code{"nace2"}, \code{"cpa21"}, \code{"cn2022"}).
+Use \code{\link{correspondenceTableList}()} to discover valid values.}
 
-\item{ID_table}{Character: identifier of the correspondence (e.g., "CN2022_NACE2").}
+\item{ID_table}{Character. Identifier of the correspondence, typically of
+the form \code{"A_B"} such as \code{"NACE2_CPA21"} or \code{"CN2022_NACE2"}.
+Discover identifiers via \code{\link{correspondenceTableList}()}.}
 
-\item{language}{Character: label language (default "en").}
+\item{language}{Character. Preferred label language as a BCP‑47 code.
+Defaults to \code{"en"} (English). Examples: \code{"fr"}, \code{"de"}.}
 
-\item{CSVout}{Logical or character: FALSE (default), TRUE (auto filename), or explicit path.}
+\item{CSVout}{Logical or character. \strong{Deprecated} and ignored.
+Retained only for backward compatibility. If you need a CSV, call
+\code{utils::write.csv()} on the returned data.}
 
-\item{showQuery}{Logical: TRUE returns list(query, table); FALSE returns data.frame only.}
+\item{showQuery}{Logical. If \code{TRUE}, returns a list with the SPARQL
+query and the result data frame; otherwise (default) returns just the data frame.}
 }
 \value{
-If \code{showQuery = FALSE}, returns a \code{data.frame} where each row
-represents one mapping between a source concept and a target concept.
+A \code{data.frame} where each row represents one mapping from the source
+classification (\strong{A}) to the target classification (\strong{B}).
 
-The columns returned are:
-
+Columns (when available):
 \itemize{
-
-  \item \code{<A>}  
-        The notation/code of the source concept (e.g. "CN2022" code).
-
-  \item \code{<B>}  
-        The notation/code of the target concept (e.g. "NACE2" code).  
-
-  \item \code{Label_<A>}  
-        Human‑readable label of the source concept in the selected language
-        (prefLabel or altLabel via COALESCE).
-
-  \item \code{Label_<B>}  
-        Human‑readable label of the target concept in the selected language
-        (prefLabel or altLabel).  
-
-  \item \code{Include_<A>}  
-        SKOS \code{scopeNote} attached to the source concept.  
-        Represents textual information describing what is *included* in the definition
-        of the source concept.  
-        Often empty; presence depends on the classification metadata.
-
-  \item \code{Exclude_<A>}  
-        XKOS \code{exclusionNote} on the source concept.  
-        Describes what is *explicitly excluded* from the meaning of the concept.
-
-  \item \code{Include_<B>}  
-        SKOS \code{scopeNote} for the target concept.  
-        Same meaning as \code{Include_<A>} but on the target side.
-
-  \item \code{Exclude_<B>}  
-        XKOS \code{exclusionNote} for the target concept.  
-        Same semantics as \code{Exclude_<A>}, but for the target.
-
-  \item \code{Comment}  
-        Free‑text comment attached to the correspondence association
-        (from \code{rdfs:comment}).  
-
-  \item \code{URL}  
-        String representation of the association (the internal URI of the mapping link).
+  \item \code{CorrespondenceID} — Requested identifier (e.g., \code{"NACE2_CPA21"}).
+  \item \code{Prefix} — Catalogue prefix (constant per table).
+  \item \code{&lt;A&gt;} — Source code (\code{A} parsed from \code{ID_table}).
+  \item \code{&lt;B&gt;} — Target code (\code{B} parsed from \code{ID_table}).
+  \item \code{Label_&lt;A&gt;}, \code{Label_&lt;B&gt;} — Human‑readable labels in \code{language}.
+  \item \code{Include_&lt;A&gt;}, \code{Exclude_&lt;A&gt;}, \code{Include_&lt;B&gt;}, \code{Exclude_&lt;B&gt;} — Notes, if present.
+  \item \code{Comment} — Free‑text comment on the mapping, if any.
+  \item \code{URL} — URI of the mapping association.
 }
 
-If \code{showQuery = TRUE}, returns a list with two elements:
+Attributes attached for traceability:
 \itemize{
-  \item \code{SPARQL.query}: the full query issued to the endpoint;
-  \item \code{CorrespondenceTable}: the data.frame described above.
+  \item \code{endpoint}, \code{endpoint_url}, \code{prefix}, \code{ID_table}
+  \item \code{A}, \code{B}, \code{language}, \code{normalized_codes}, \code{anchor_mode}, \code{anchor}
 }
 }
 \description{
-Retrieves a correspondence (mapping) table between two statistical classifications (SKOS/XKOS)
-stored as Linked Open Data in the CELLAR or FAO repositories.
+Downloads a correspondence table, a mapping of codes, from one statistical
+classification (A) to another (B) from an online service (CELLAR or
+FAO), and returns it as a plain data frame. The function has no side effects
+(it does not read or write files).
+
+A correspondence table tells you which codes in classification A relate
+to which codes in classification B (e.g., \code{NACE2} → \code{CPA21}).
+}
+\details{
+\strong{When to use this.} Use \code{retrieveCorrespondenceTable()} when you
+know (or have discovered) the \code{prefix} and \code{ID_table} of a
+correspondence and want the mapping rows as a standard data frame.
+
+\strong{How it works (short).}
+\enumerate{
+  \item Validates the selected service (\code{endpoint}).
+  \item Optionally resolves a stable anchor via \code{\link{correspondenceTableList}()}.
+  \item Builds a SPARQL query returning source/target codes, labels, notes, and link URI.
+  \item Issues an HTTP request and parses the response into a data frame.
+}
+
+The function does not write to disk. If you need a file, export the returned
+data frame explicitly (e.g., \code{utils::write.csv(x, file)}).
+}
+\section{Notes}{
+
+\itemize{
+  \item \code{CSVout} is deprecated and ignored (no side effects).
+  \item The function focuses on retrieval. Any code normalization is left to
+        downstream steps (unless enabled internally by package options).
+}
+}
+
+\examples{
+\dontrun{
+# 1) Discover available correspondences at CELLAR
+ct <- correspondenceTableList(endpoint = "CELLAR")
+subset(ct, grepl("NACE2", ID) & grepl("CPA21", ID))
+
+# 2) Retrieve one correspondence (English labels)
+x <- retrieveCorrespondenceTable(
+  endpoint = "CELLAR",
+  prefix   = "nace2",
+  ID_table = "NACE2_CPA21",
+  language = "en"
+)
+head(x)
+
+# 3) Save to CSV explicitly if needed (no automatic writing)
+# utils::write.csv(x, "NACE2_CPA21.csv", row.names = FALSE)
+
+# 4) Inspect the generated SPARQL query
+dbg <- retrieveCorrespondenceTable(
+  endpoint = "FAO",
+  prefix   = "cpa21",
+  ID_table = "NACE2_CPA21",
+  showQuery = TRUE
+)
+message(substr(dbg$SPARQL.query, 1, 400), "...")
+}
+
 }
