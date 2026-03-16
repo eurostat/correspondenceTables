@@ -11,29 +11,16 @@ classificationQC(
   labelUniqueness = TRUE,
   labelHierarchy = TRUE,
   singleChildCode = NULL,
-  sequencing = NULL,
-  CSVout = NULL
+  sequencing = NULL
 )
 }
 \arguments{
-\item{classification}{Either:
-\itemize{
-  \item a \code{data.frame} containing (at least) two columns: the codes
-        and labels of the classification to be checked, or
-  \item a character string giving the path to a CSV file containing the
-        same information.
-}
-This argument is mandatory.}
+\item{classification}{A \code{data.frame} containing (at least) two columns: the codes
+and labels of the classification to be checked. This argument is mandatory.}
 
-\item{lengths}{Either:
-\itemize{
-  \item a \code{data.frame} with one row per hierarchical level giving the
+\item{lengths}{A \code{data.frame} with one row per hierarchical level giving the
         initial and final positions of the segment of the code referring
-        to that level, or
-  \item a character string giving the path to a CSV file containing such
-        information.
-}  
-The number of rows implicitly defines the number of hierarchical levels
+        to that level. The number of rows implicitly defines the number of hierarchical levels
 (\eqn{k}). This argument is mandatory.}
 
 \item{fullHierarchy}{Logical.
@@ -55,30 +42,13 @@ When \code{TRUE}, the function checks that:
         single-child parent.
 }}
 
-\item{singleChildCode}{Either:
-\itemize{
-  \item a \code{data.frame} specifying admissible codes for single
-        children at each hierarchical level, or
-  \item a character string giving the path to such a CSV file.
-}
+\item{singleChildCode}{A \code{data.frame} specifying admissible codes for single
+        children at each hierarchical level.
 If not \code{NULL}, the function checks compliance with these codes.}
 
-\item{sequencing}{Either:
-\itemize{
-  \item a \code{data.frame} defining admissible codes and their expected
-        order for multiple-child situations at each level, or
-  \item a character string giving the path to a CSV file containing these
-        rules.
-}
+\item{sequencing}{A \code{data.frame} defining admissible codes and their expected
+        order for multiple-child situations at each level.
 If not \code{NULL}, the function checks sequencing consistency.}
-
-\item{CSVout}{Either:
-\itemize{
-  \item \code{NULL} (default), meaning that the function only returns a
-        list of data.frames in R, or
-  \item a character string giving the path where the resulting
-        \code{QC_output} table should be saved as a CSV file.
-}}
 }
 \value{
 A list of data frames flagging potential issues in the classification:
@@ -115,12 +85,8 @@ The output is a list of data frames flagging potential issues.
 
 classification <- read.csv(system.file("extdata", "Nace2.csv",
                                       package = "correspondenceTables"))
-                                      
 lengths <- data.frame(charb = c(1,2,3,5), chare = c(1,2,4,5))
 
-CSVout <- system.file("extdata", "QC_Output.csv",
-                     package = "correspondenceTables")
-                     
 Output <- classificationQC(
  classification = classification,
  lengths = lengths,
@@ -128,8 +94,7 @@ Output <- classificationQC(
  labelUniqueness = TRUE,
  labelHierarchy = TRUE,
  singleChildCode = NULL,
- sequencing = NULL,
- CSVout = CSVout
+ sequencing = NULL
 )
 
 print(Output$QC_output)
@@ -137,4 +102,5 @@ print(Output$QC_orphan)
 print(Output$QC_childless)
 print(Output$QC_duplicatesLabel)
 print(Output$QC_duplicatesCode)
+
 }
