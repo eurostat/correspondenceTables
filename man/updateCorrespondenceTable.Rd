@@ -13,113 +13,68 @@ updateCorrespondenceTable(
   Reference = "none",
   MismatchToleranceB = 0.2,
   MismatchToleranceAStar = 0.2,
-  Redundancy_trim = TRUE,
-  CSVout = NULL
+  Redundancy_trim = TRUE
 )
 }
 \arguments{
-\item{A}{A string of the type \code{character} containing the name of a csv file that contains the original classification A.}
+\item{A}{A data frame containing the original classification A. The first column holds the codes;
+optional subsequent columns may hold labels and supplementary info.}
 
-\item{B}{A string of the type \code{character} containing the name of a csv file that contains classification B.}
+\item{B}{A data frame containing the target classification B. Same structure expectations as \code{A}.}
 
-\item{AStar}{A string of the type \code{character} containing the name of a csv file that contains the updated version A*.}
+\item{AStar}{A data frame containing the updated version A*. Same structure expectations as \code{A}.}
 
-\item{AB}{A string of the type \code{character} containing the name of a csv file that contains the previous correspondence table A:B.}
+\item{AB}{A data frame containing the previous correspondence table A:B (at least two columns: A-codes, B-codes).}
 
-\item{AAStar}{A string of the type character containing the name of a csv file that contains the \emph{concordance table} A:A*,
-which contains the mapping between the codes of the two versions of the classification.}
+\item{AAStar}{A data frame containing the concordance table A:A* (at least two columns: A-codes, A*-codes).}
 
-\item{Reference}{The reference classification among A and B. If a classification is the reference to the other, and
-hence \emph{hierarchically superior} to it, each code of the other classification is expected to be mapped to at most one
-code of the reference classification. The valid values are \code{"none"}, \code{"A"}, and \code{"B"}. If the selected
-value is \code{"A"} or \code{"B"}, a "Review" flag column is included in the output (see "Explanation of the flags" below).}
+\item{Reference}{The reference classification among A and B. Valid values: \code{"none"}, \code{"A"}, \code{"B"}.
+If \code{"A"} or \code{"B"}, a "Review" flag column is included (see "Explanation of the flags").}
 
-\item{MismatchToleranceB}{The maximum acceptable proportion of rows in the updated correspondence table which contain no
-code of the target classification B, among those which contain a code of A, of A*, or of both. The default value
-is \code{0.2}. The valid values are real numbers in the interval [0, 1].}
+\item{MismatchToleranceB}{Maximum acceptable proportion of rows in the updated table with no code of B
+among those that have a code for A and/or A*. Default \code{0.2}, range [0,1].}
 
-\item{MismatchToleranceAStar}{The maximum acceptable proportion of rows in the updated correspondence table which contain
-no code of the updated classification A*, among those which contain a code of A, of B, or of both. The default value
-is \code{0.2}. The valid values are real numbers in the interval [0, 1].}
+\item{MismatchToleranceAStar}{Maximum acceptable proportion of rows in the updated table with no code of A*
+among those that have a code for A and/or B. Default \code{0.2}, range [0,1].}
 
-\item{Redundancy_trim}{An argument used to facilitate the trimming of the redundant records. The valid logical values are \code{TRUE} or  \code{FALSE}.
-The default value is \code{TRUE}, which removes all redundant records, replacing the values of Acode Alabel and Asupp with the value ‘Multiple’ (to indicate that multiple A records are involved). If the multiple A records are the same, their value will not be replaced. 
-The other values is \code{FALSE}, which shows redundant records together with the redundancy flag.}
-
-\item{CSVout}{The preferred name for the \emph{output csv files} that will contain the updated correspondence table and
-information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}. If
-the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output is
-exported into two csv files whose names contain the provided name (see "Value" below).}
+\item{Redundancy_trim}{Logical. If \code{TRUE} (default) trims correct redundant records by collapsing A-side fields to "Multiple"
+when appropriate; if \code{FALSE}, keeps redundancies and adds a \code{Redundancy_keep} indicator.}
 }
 \value{
-\code{updateCorrespondenceTable()} returns a list with two elements, both of which are data frames.
+\code{updateCorrespondenceTable()} returns a list with two data frames:
 \itemize{
-    \item The first element is the updated correspondence table A*:B augmented with flags "CodeChange", "Review" (if
-    applicable), "Redundancy", "NoMatchToAStar", "NoMatchToB", "NoMatchFromAStar", "NoMatchFromB", "LabelChange", and
-    with all the additional columns of the \code{A},  \code{B}, \code{AStar}, \code{AB} and \code{AAStar} files.
-    \item The second element contains the names of the original classification A, the target classification B, and the
-    updated version A*, as read from the top left-hand side cell of the respective input files.
-    \item If the value of argument \code{CSVout} is a string of type \code{character}, the elements of the list are
-    exported into files of csv format. The name of the file for the first element is the value of argument \code{CSVout}
-    and the name of the file for the second element is classificationNames_\code{CSVout}. For example, if
-    \code{CSVout} = "updateCorrespondenceTable.csv", the elements of the list are exported into
-    "updateCorrespondenceTable.csv" and "classificationNames_updateCorrespondenceTable.csv", respectively.
+  \item \code{updateCorrespondenceTable}: the updated correspondence A*:B with flags "CodeChange", "Review" (if applicable),
+        "Redundancy", "NoMatchToAStar", "NoMatchToB", "NoMatchFromAStar", "NoMatchFromB", "LabelChange",
+        plus any additional columns coming from \code{A}, \code{B}, \code{AStar}, \code{AB}, \code{AAStar}.
+  \item \code{classificationNames}: the names of the classifications (A, B, A*) read from the first column headers.
 }
 }
 \description{
-Update the correspondence table between two classifications when one out of them has been updated
+Update the correspondence table between two classifications when one of them has been updated.
 }
 \details{
-File and file name requirements:
-    \itemize{
-        \item The files that correspond to arguments \code{A},  \code{B}, \code{AStar}, \code{AB}, \code{AAStar} must be
-        in \emph{csv format with comma as delimiter}. If full paths are not provided, then these files must be available
-        in the working directory. No two filenames provided must be identical.
-        \item If any of the two files where the output will be stored is read protected (for instance because it is open
-        elsewhere) an error message will be reported and execution will be halted.
-    }
-Classification table requirements:
-    \itemize{
-        \item The files that correspond to arguments \code{A},  \code{B} and \code{AStar} must contain at least one column
-        and at least two rows. The first column contains the codes of the respective classification. The first row contains
-        column headers. The name of the first column is the name of the respective classification (e.g., "CN 2021").
-        \item The classification codes contained in a classification file (expected in its first column as mentioned above)
-        must be unique. No two identical codes are allowed in the column.
-        \item If any of the files that correspond to arguments \code{A},  \code{B} and \code{AStar} has additional columns
-        the first one of them is considered as containing the labels of the respective classification codes.
-    }
-Correspondence and concordance table requirements:
-    \itemize{
-        \item The files that correspond to arguments \code{AB} and \code{AAStar} must contain at least two columns and at least
-        two rows. The first column of the file that corresponds to \code{AB} contains the codes of classification A. The second
-        column contains the codes of classification B. Similar requirements apply to the file that corresponds to \code{AAStar}.
-        The first row of each of these files contains column headers. The names of the first two columns are the names of the
-        respective classifications.
-        \item The pairs of classification codes contained in the concordance and the correspondence table files (expected in
-        their first two columns as mentioned above) must be unique. No two identical pairs of codes are allowed in the first
-        two columns.
-    }
-Interdependency requirements:
-    \itemize{
-        \item At least one code of classification A must appear in both the file of concordance table A:A* and the file of
-        correspondence table A:B.
-        \item	At least one code of classification A* must appear in both the file of
-        classification A* and the file of
-        concordance table A:A*.
-        \item	At least one code of classification B must appear in both the file of classification B and the file of
-        correspondence table A:B.
-    }
-Mismatch tolerance:
-    \itemize{
-        \item The ratio that is compared with \code{MismatchToleranceB} has as numerator the number of rows of the updated
-        correspondence table which contain a code for A, for A*, or for both, but no code for B and as denominator the number of
-        rows which contain a code for A, for A*, or for both (regardless of whether there is a code for B or not). If the ratio
-        exceeds \code{MismatchToleranceB} the execution of the function is halted.
-        \item The ratio that is compared with \code{MismatchToleranceAStar} has as numerator the number of rows of the updated
-        correspondence table which contain a code for A, for B, or for both, but no code for A* and as denominator the number of
-        rows which contain a code for A, for B*, or for both (regardless of whether there is a code
-        for A* or not). If the ratio exceeds \code{MismatchToleranceAStar} the execution of the function is halted.
-    }
+*Input data frame requirements*
+\itemize{
+  \item \code{A}, \code{B}, \code{AStar}: at least 1 column and at least 1 row. The first column contains the codes; the first row is the header.
+  \item \code{AB}, \code{AAStar}: at least 2 columns and at least 1 row; the first two columns contain code pairs; the first row is the header.
+  \item Codes in the first column of \code{A}, \code{B}, \code{AStar} must be unique (no duplicates).
+  \item Pairs (first two columns) in \code{AB} and \code{AAStar} must be unique (no duplicate pairs).
+  \item If additional columns are present in classification or correspondence tables, the second column is treated as a label.
+  \item All columns are coerced to character.
+}
+
+*Minimum interdependencies*
+\itemize{
+  \item At least one code of A must appear in both \code{AAStar} and \code{AB}.
+  \item At least one code of A* must appear in both \code{AStar} and \code{AAStar}.
+  \item At least one code of B must appear in both \code{B} and \code{AB}.
+}
+
+*Mismatch tolerance*
+\itemize{
+  \item If the share of rows with \code{NoMatchToAStar == 1} exceeds \code{MismatchToleranceAStar}, the function stops with an error.
+  \item If the share of rows with \code{NoMatchToB == 1} exceeds \code{MismatchToleranceB}, the function stops with an error.
+}
 }
 \section{Explanation of the flags}{
 
@@ -169,57 +124,34 @@ Mismatch tolerance:
 }
 }
 
-\section{Sample datasets included in the package}{
-
-
-    Running \code{browseVignettes("correspondenceTables")} in the console opens an html page in the user's default browser.
-    Selecting HTML from the menu, users can read information about the use of the sample datasets that are included in the
-    package.
-If they wish to access the csv files with the sample data, users have two options:
-\itemize{
-\item Option 1: Unpack into any folder of their choice the tar.gz file into which the package has arrived. All sample datasets
-may be found in the "inst/extdata" subfolder of this folder.
-\item Option 2: Go to the "extdata" subfolder of the folder in which the package has been installed in their PC's \code{R}
-library. All sample datasets may be found there.
-}
-}
-
 \examples{
- {
- ## Application of function updateCorrespondenceTable() with NAICS 2017 being the
- ## original classification A, NACE being the target classification B, NAICS 2022
- ## being the updated version A*, NAICS 2017:NACE being the previous correspondence
- ## table A:B, and NAICS 2017:NAICS 2022 being the A:A* concordance table. The desired
- ## name for the csv file that will contain the updated correspondence table is
- ## "updateCorrespondenceTable.csv", there is no reference classification, and the
- ## maximum acceptable proportions of unmatched codes between the original
- ## classification A and the target classification B, and between the original
- ## classification A and the updated classification A* are 0.5 and 0.3, respectively.
+\dontrun{
 
- tmp_dir<-tempdir()
- A <- system.file("extdata", "NAICS2017.csv", package = "correspondenceTables")
- AStar <- system.file("extdata", "NAICS2022.csv", package = "correspondenceTables")
- B <- system.file("extdata", "NACE.csv", package = "correspondenceTables")
- AB <- system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTables")
- AAStar <- system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables")
+  # Read CSVs outside, pass data frames in:
+  
+  A_df      <- utils::read.csv(system.file("extdata", "NAICS2017.csv", package = "correspondenceTables"),
+                               sep = ",", header = TRUE, check.names = FALSE, colClasses = "character", encoding = "UTF-8")
+                               
+  AStar_df  <- utils::read.csv(system.file("extdata", "NAICS2022.csv", package = "correspondenceTables"),
+                               sep = ",", header = TRUE, check.names = FALSE, colClasses = "character", encoding = "UTF-8")
+                               
+  B_df      <- utils::read.csv(system.file("extdata", "NACE.csv", package = "correspondenceTables"),
+                               sep = ",", header = TRUE, check.names = FALSE, colClasses = "character", encoding = "UTF-8")
+  AB_df     <- utils::read.csv(system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTables"),
+                               sep = ",", header = TRUE, check.names = FALSE, colClasses = "character", encoding = "UTF-8")
+                               
+  AAStar_df <- utils::read.csv(system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables"),
+                               sep = ",", header = TRUE, check.names = FALSE, colClasses = "character", encoding = "UTF-8")
 
   UPC <- updateCorrespondenceTable(
-     A = A,
-     B = B,
-     AStar = AStar,
-     AB = AB,
- AAStar = AAStar,
- Reference = "none",
- MismatchToleranceB = 0.5,
- MismatchToleranceAStar = 0.3,
- Redundancy_trim = FALSE,
- CSVout = file.path(tmp_dir, "updateCorrespondenceTable.csv")
-          )
+    A = A_df, B = B_df, AStar = AStar_df, AB = AB_df, AAStar = AAStar_df,
+    Reference = "none", MismatchToleranceB = 0.5, MismatchToleranceAStar = 0.3,
+    Redundancy_trim = FALSE
+  )
 
- summary(UPC)
- head(UPC$updateCorrespondenceTable)
- UPC$classificationNames
- csv_files<-list.files(tmp_dir, pattern = ".csv")
- if (length(csv_files)>0) unlink(csv_files)
-    }
+  summary(UPC)
+  head(UPC$updateCorrespondenceTable)
+  UPC$classificationNames
+}
+
 }

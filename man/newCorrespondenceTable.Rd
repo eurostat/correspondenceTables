@@ -8,8 +8,7 @@ newCorrespondenceTable(
   Tables,
   Reference = "none",
   MismatchTolerance = 0.2,
-  Redundancy_trim = TRUE,
-  CSVout = NULL
+  Redundancy_trim = TRUE
 )
 }
 \arguments{
@@ -31,11 +30,6 @@ real numbers in the interval [0, 1].}
 used to facilitate the trimming of the redundant records.
 The default value is \code{TRUE}, which removes all redundant records.
 The other values is \code{FALSE}, which shows redundant records together with the redundancy flag.}
-
-\item{CSVout}{The preferred name for the \emph{output csv files} that will contain the candidate correspondence table
-and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}.
-If the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output
-is exported into two csv files whose names contain the provided name (see "Value" below).}
 }
 \value{
 \code{newCorrespondenceTable()} returns a list with two elements, both of which are data frames.
@@ -45,11 +39,6 @@ is exported into two csv files whose names contain the provided name (see "Value
      the additional columns of the classification and intermediate correspondence table files.
     \item The second element contains the names of classification A, the "pivot" classifications and classification B as
     read from the top left-hand side cell of the respective input files.
-    \item If the value of argument \code{CSVout} a string of type \code{character}, the elements of the list are exported
-    into files of csv format. The name of the file for the first element is the value of argument \code{CSVout} and the
-    name of the file for the second element is classificationNames_\code{CSVout}. For example, if
-    \code{CSVout} = "newCorrespondenceTable.csv", the elements of the list are exported into "newCorrespondenceTable.csv"
-    and "classificationNames_newCorrespondenceTable.csv" respectively.
 }
 }
 \description{
@@ -68,8 +57,6 @@ File and file name requirements:
         diagonal contains the filenames of the files that contain, with this order, the correspondence tables
         A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and B:\eqn{C_k}. All other cells of the table
         must be empty.
-        \item If any of the two files where the output will be stored is read protected (for instance because it is open
-        elsewhere) an error message will be reported and execution will be halted.
     }
 Classification table requirements:
     \itemize{
@@ -157,8 +144,7 @@ If any of the conditions required from the arguments is violated an error messag
 \section{Sample datasets included in the package}{
 
 
-Running \code{browseVignettes("correspondenceTables")} in the console opens an html page in the user's default browser. Selecting HTML from the menu, users can read information about the use of the sample datasets that are included in the package.
-If they wish to access the csv files with the sample data, users have two options:
+If the user wish to access the csv files with the sample data, they have two options:
 \itemize{
 \item Option 1: Unpack into any folder of their choice the tar.gz file into which the package has arrived. All sample
 datasets may be found in the "inst/extdata" subfolder of this folder.
@@ -169,42 +155,36 @@ library. All sample datasets may be found there.
 
 \examples{
 {
-   ## Application of function newCorrespondenceTable() with "example.csv" being the file
-   ## that includes the names the files  and the intermediate tables in a sparse square
-   ## matrix containing the 100 rows of the classifications (from ISIC v4 to CPA v2.1 through
-   ## CPC v2.1). The desired name for the csv file that will contain the candidate
-   ## correspondence table is "newCorrespondenceTable.csv", the reference classification is
-   ## ISIC v4 ("A") and the maximum acceptable proportion of unmatched codes between
-   ## ISIC v4 and CPC v2.1 is 0.56 (this is the minimum mismatch tolerance for the first 100 row
-   ## as 55.5\% of the code of ISIC v4 is unmatched).
 
-     tmp_dir<-tempdir()
-     A <- read.csv(system.file("extdata", "example.csv", package = "correspondenceTables"),
-                   header = FALSE,
-                   sep = ",")
-     for (i in 1:nrow(A)) {
-       for (j in 1:ncol(A)) {
-         if (A[i,j]!="") {
-           A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
-       }}}
-     write.table(x = A,
-                 file = file.path(tmp_dir,"example.csv"),
-                 row.names = FALSE,
-                 col.names = FALSE,
-                 sep = ",")
+code_in   <- data.frame(code_in  = c("A","B"))
+code_mid  <- data.frame(code_mid = c("B","C","D"))
+in_to_mid <- data.frame(code_in  = c("A","B")
+                        , code_out = c("C","B"))
+code_out  <- data.frame(code_out = c("B","C","D","E"))
+mid_to_out <- data.frame(code_mid = c("B","C","D")
+                         , code_out = c("B","C","D"))
 
-      NCT <- newCorrespondenceTable(
-        Tables            = file.path(tmp_dir, "example.csv"),
-        Reference         = "A",
-        MismatchTolerance = 0.56,
-        Redundancy_trim   = FALSE,
-        CSVout= file.path(tmp_dir, "newCorrespondenceTable.csv")
-        )
+write.csv(code_in,    file = "code_in.csv",   row.names  = FALSE)
+write.csv(code_mid,   file = "code_mid.csv",  row.names  = FALSE)
+write.csv(in_to_mid,  file = "in_to_mid.csv", row.names  = FALSE)
+write.csv(mid_to_out, file = "mid_to_out.csv", row.names = FALSE)
+write.csv(code_out,   file = "code_out.csv",   row.names = FALSE)
 
-     summary(NCT)
-     head(NCT$newCorrespondenceTable)
-     NCT$classificationNames
-     csv_files<-list.files(tmp_dir, pattern = ".csv")
-     unlink(csv_files)
+
+m <- matrix("",3,3)
+diag(m) <- c("code_in.csv","code_mid.csv","code_out.csv")
+m[1,2] <- "in_to_mid.csv"
+m[2,3] <- "mid_to_out.csv"
+
+
+
+write.table(m, file="merge_sequence.csv",row.names=FALSE,col.names=FALSE,sep=",")
+
+
+out <- newCorrespondenceTable("merge_sequence.csv",MismatchTolerance = 0.9)
+print(out$newCorrespondenceTable)
+print(out$classificationNames)
+
+
     }
 }
