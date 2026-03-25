@@ -37,7 +37,7 @@
 #' \strong{Language fallback}
 #'
 #' Labels for both the classification levels and concepts follow a multi-step
-#' fallback: requested \code{language} -> \code{"en"} → no-language literal → local name.
+#' fallback: requested \code{language} -> \code{"en"} -> no-language literal -> local name.
 #'
 #' @return
 #' A \code{data.frame} (for \code{"summary"} or \code{"details"}), or a
@@ -84,10 +84,10 @@
 #' @importFrom utils read.csv head
 #' @export
 dataStructure <- function(endpoint, prefix, conceptScheme = NULL,
-                                language = "en",
-                                showQuery = FALSE,
-                                return = c("summary", "details", "both"),
-                                timeout_sec = 60, retries = 3) {
+                          language = "en",
+                          showQuery = FALSE,
+                          return = c("summary", "details", "both"),
+                          timeout_sec = 60, retries = 3) {
   
   return <- match.arg(return)
   
@@ -401,6 +401,4 @@ ORDER BY ?Code
   }
   list(summary = tab, details = det)
 }
-
-
 

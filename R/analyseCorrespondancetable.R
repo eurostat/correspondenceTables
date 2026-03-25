@@ -120,23 +120,23 @@
 
 
 analyseCorrespondenceTable <- function(AB,
-                                             Aname = NULL,
-                                             Bname = NULL,
-                                             A = NULL,
-                                             B = NULL,
-                                             longestAcodeOnly = FALSE,
-                                             longestBcodeOnly = FALSE) {
+                                       Aname = NULL,
+                                       Bname = NULL,
+                                       A = NULL,
+                                       B = NULL,
+                                       longestAcodeOnly = FALSE,
+                                       longestBcodeOnly = FALSE) {
   # checks  
   
   if (!inherits(AB, "data.frame")) {
     stop("AB must be a data.frame.")
   }
   
-  if (!is.null(Aname) && !is.character(Aname)) {
+  if (!is.null(Aname) && !(is.character(Aname) && length(Aname) == 1)) {
     stop("Aname must be a character or NULL.")
   }
   
-  if (!is.null(Bname) && !is.character(Bname)) {
+  if (!is.null(Bname) && !(is.character(Bname) && length(Bname) == 1)) {
     stop("Bname must be a character or NULL.")
   }
   
@@ -144,11 +144,19 @@ analyseCorrespondenceTable <- function(AB,
     stop("Aname and Bname must be both NULL or both non-NULL.")
   }
   
-  if (!is.null(Aname)) {
+  
+  if (!is.null(Aname) && !is.null(Bname)) {
+    
+    # Check they exist in AB
     if (!all(c(Aname, Bname) %in% colnames(AB))) {
       stop("Both Aname and Bname must correspond to existing columns in AB.")
     }
+    
+    if (Aname == Bname) {
+      stop("Aname and Bname must refer to two different columns.")
+    }
   }
+  
   
   if (!is.null(A) && !inherits(A, "data.frame")) {
     stop("A must be a data.frame or NULL.")
@@ -391,7 +399,3 @@ analyseCorrespondenceTable <- function(AB,
   
   list(Inventory = Inventory_df, Analysis = Analysis_df)
 }
-
-
-
-

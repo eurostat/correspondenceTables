@@ -79,7 +79,7 @@ the classification namespace and scheme identifier needed to compose requests.
 \strong{Language fallback}
 
 Labels for both the classification levels and concepts follow a multi-step
-fallback: requested \code{language} -> \code{"en"} → no-language literal → local name.
+fallback: requested \code{language} -> \code{"en"} -> no-language literal -> local name.
 }
 \section{Errors and Warnings}{
 

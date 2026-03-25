@@ -75,6 +75,7 @@
 #'
 #' @import httr
 #' @export
+
 retrieveClassificationTable <- function(endpoint,
                                         prefix,
                                         conceptScheme,
@@ -103,20 +104,41 @@ retrieveClassificationTable <- function(endpoint,
     prefix            = prefix,
     conceptScheme     = conceptScheme,
     language          = language,
-    knownSchemes      = knownSchemes,      # optional data.frame (Prefix, ConceptScheme, URI[, Endpoint])
+    knownSchemes      = knownSchemes,      
     preferMappingOnly = preferMappingOnly  # TRUE = mapping only, no discovery/fallback
   )
-  if (!nzchar(scheme_uri)) {
-    stop(sprintf("Could not resolve ConceptScheme for prefix='%s' conceptScheme='%s' in %s.",
-                 prefix, conceptScheme, endpoint), call. = FALSE)
+  
+  if (length(scheme_uri) != 1L || is.na(scheme_uri) || !nzchar(scheme_uri)) {
+    stop("Prefix or ConceptScheme not present in this endpoint.", call. = FALSE)
   }
+  
   
   # --- Existence check (extra robustness) ------------------------------------
-  if (!isTRUE(.ask_scheme_exists(endpoint_url, scheme_uri))) {
-    stop(paste0("Prefix or ConceptScheme not present in this endpoint: ", endpoint), call. = FALSE)
+  
+  ask_ok <- try(.ask_scheme_exists(endpoint_url, scheme_uri), silent = TRUE)
+  
+  if (inherits(ask_ok, "try-error")) {
+    stop(sprintf("Scheme URI '%s' could not be checked against endpoint '%s'.",
+                 scheme_uri, endpoint),
+         call. = FALSE)
   }
   
-  # --- SPARQL prefixes --------------------------------------------------------
+  if (!isTRUE(ask_ok)) {
+    
+    # If mapping was provided and preferMappingOnly=TRUE -> the mapping entry is invalid
+    if (!is.null(knownSchemes) && isTRUE(preferMappingOnly)) {
+      stop(sprintf("The URI '%s' from knownSchemes is not valid for endpoint '%s'.",
+                   scheme_uri, endpoint),
+           call. = FALSE)
+    }
+    
+    stop(paste0(
+      "Prefix or ConceptScheme not present in this endpoint: ", endpoint,
+      " (resolved URI was: ", scheme_uri, ")"
+    ), call. = FALSE)
+  }
+  
+  # --- SPARQL prefixes-------
   prefix_block <- paste(
     "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
     "PREFIX xkos: <http://rdf-vocabulary.ddialliance.org/xkos#>",
@@ -124,13 +146,13 @@ retrieveClassificationTable <- function(endpoint,
     sep = "\n"
   )
   
-  # --- Optional depth filter --------------------------------------------------
+  # --- Optional depth filter -------
   filter_depth_inner <- ""
   if (!identical(toupper(level), "ALL")) {
     filter_depth_inner <- paste0("FILTER (STR(?Depth0) = '", level, "')")
   }
   
-  # --- Query (flat select + normalized aggregations) --------------------------
+  # --- Query (flat select + normalized aggregations)-----
   SPARQL.query <- paste0(
     prefix_block, "\n",
     "SELECT ?Concept\n",
@@ -164,7 +186,7 @@ retrieveClassificationTable <- function(endpoint,
     "ORDER BY ?Code\n"
   )
   
-  # --- Execute: POST (CSV) with GET fallback ---------------------------------
+  # --- Execute: POST (CSV) with GET fallback ----
   resp <- httr::POST(
     url    = endpoint_url,
     body   = list(query = SPARQL.query, format = "text/csv"),
@@ -199,10 +221,10 @@ retrieveClassificationTable <- function(endpoint,
   
   data <- .read_sparql_csv(csv_text)
   
-  # --- Cleanup: remove embedded newlines from character fields ----------------
+  # --- Cleanup--
   data[] <- lapply(data, function(x) if (is.character(x)) gsub("\n", " ", x) else x)
   
-  # --- Return -----------------------------------------------------------------
+  # --- Return --
   if (isTRUE(showQuery)) {
     return(list(SPARQL.query = SPARQL.query, scheme_uri = scheme_uri, ClassificationTable = data))
   } else {
@@ -210,7 +232,7 @@ retrieveClassificationTable <- function(endpoint,
   }
 }
 
-# ------------------------- Internal helpers (unchanged API) -------------------
+# Internal helpers -------------------
 
 # Read CSV with row-name sanitization (prevents duplicate colname issues)
 #' @keywords internal
@@ -360,10 +382,10 @@ LIMIT 50", language, prefix, prefix)
 #' @noRd
 .get_known_schemes_from_classificationList <- function(endpoint,
                                                        knownSchemes_override = NULL) {
-  endpoint <- .validate_endpoints(endpoint)  # replaces old check_endpoint()
+  endpoint <- .validate_endpoints(endpoint)  
   
   # 1) external override (if provided)
-  ks <- .normalize_known_schemes(knownSchemes_override)
+  ks <- .normalize_known_schemes(knownSchemes_override) #if NULL, it stays NULL
   if (!is.null(ks)) {
     if ("Endpoint" %in% names(ks)) {
       ks_src <- ks[toupper(ks$Endpoint) == endpoint, setdiff(names(ks), "Endpoint"), drop = FALSE]
@@ -392,9 +414,9 @@ LIMIT 50", language, prefix, prefix)
                                 language = "en",
                                 knownSchemes = NULL,
                                 preferMappingOnly = FALSE) {
-  endpoint <- .validate_endpoints(endpoint)  # replaces old check_endpoint()
+  endpoint <- .validate_endpoints(endpoint)
   
-  # 1) try authoritative mapping (override -> classificationList())
+  # 1) authoritative mapping (override -> classificationList())
   known_schemes <- .get_known_schemes_from_classificationList(
     endpoint = endpoint,
     knownSchemes_override = knownSchemes
@@ -413,27 +435,34 @@ LIMIT 50", language, prefix, prefix)
       ord <- order(!ends_scheme, hit[["URI"]], decreasing = TRUE)
       hit <- hit[ord, , drop = FALSE]
       uri <- hit[["URI"]][1]
+      
+      # NEW: if mapping-only, return the mapped URI AS-IS (ASK is done by caller)
+      if (isTRUE(preferMappingOnly)) return(uri)
+      # Otherwise (not mapping-only), do a sanity ASK here to avoid extra hop later
       if (isTRUE(.ask_scheme_exists(endpoint_url, uri))) return(uri)
-      if (isTRUE(preferMappingOnly)) return(NA_character_)  # mapping-only mode
+      # If ASK fails and not mapping-only, continue to discovery/fallback below
     } else if (isTRUE(preferMappingOnly)) {
+      # Mapping-only and no pair in mapping -> hard NA
       return(NA_character_)
     }
   } else if (isTRUE(preferMappingOnly)) {
+    # Mapping-only and no mapping table available at all -> hard NA
     return(NA_character_)
   }
   
-  # 2) SPARQL discovery (if allowed)
-  disc <- try(.discover_scheme_uri(endpoint_url, prefix, conceptScheme, language), silent = TRUE)
-  if (!inherits(disc, "try-error") && is.character(disc) && nzchar(disc)) {
-    if (.ask_scheme_exists(endpoint_url, disc)) return(disc)
-  }
-  
-  # 3) CELLAR-only fallback pattern (validated by ASK)
-  if (identical(endpoint, "CELLAR")) {
-    pat <- paste0("http://data.europa.eu/xsp/", tolower(prefix), "/", conceptScheme)
-    if (.ask_scheme_exists(endpoint_url, pat)) return(pat)
+  # 2) SPARQL discovery (ONLY if not mapping-only)
+  if (!isTRUE(preferMappingOnly)) {
+    disc <- try(.discover_scheme_uri(endpoint_url, prefix, conceptScheme, language), silent = TRUE)
+    if (!inherits(disc, "try-error") && is.character(disc) && nzchar(disc)) {
+      if (.ask_scheme_exists(endpoint_url, disc)) return(disc)
+    }
+    
+    # 3) CELLAR-only fallback pattern (validated by ASK)
+    if (identical(endpoint, "CELLAR")) {
+      pat <- paste0("http://data.europa.eu/xsp/", tolower(prefix), "/", conceptScheme)
+      if (.ask_scheme_exists(endpoint_url, pat)) return(pat)
+    }
   }
   
   NA_character_
 }
-

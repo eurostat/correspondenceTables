@@ -233,10 +233,24 @@ retrieveCorrespondenceTable <- function(
     "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>"
   )
   prefix_vec   <- unique(c(.clean_prefix_token(A), .clean_prefix_token(B), .clean_prefix_token(prefix)))
-  discovered   <- tryCatch({
-    pl <- prefixList(endpoint, prefix = prefix_vec)
-    paste(as.character(pl), collapse = "\n")
-  }, error = function(e) "")
+  discovered <- tryCatch({
+    withCallingHandlers(
+      {
+        pl <- prefixList(endpoint, prefix = prefix_vec)
+        paste(as.character(pl), collapse = "\n")
+      },
+      warning = function(w) {
+        stop(
+          sprintf("prefixList() produced a warning and execution was stopped: %s", conditionMessage(w)),
+          call. = FALSE
+        )
+      }
+    )
+  }, error = function(e) {
+    # Qui decidi se: 1) propagare l'errore o 2) degradare a stringa vuota.
+    # Se vuoi BLOCCARE davvero la funzione, NON "mangiare" l'errore:
+    stop(e)
+  })
   prefix_block <- paste(c(core, discovered), collapse = "\n")
   
   # ---- decide anchor mode: prefer full URI; otherwise bind by dct:identifier ----

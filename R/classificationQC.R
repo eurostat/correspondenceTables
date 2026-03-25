@@ -195,7 +195,7 @@ classificationQC = function(classification, lengths, fullHierarchy = TRUE, label
   QC_noLevels = QC_output[na_level, ]
   
   if (length(na_level) > 0) {
-    stop("Some codes have no specified level. There might be possible errors in the classification or in the length file (see 'QC_noLevels').")
+    warning("Some codes have no specified level. There might be possible errors in the classification or in the length file (see 'QC_noLevels').")
   }
   
   

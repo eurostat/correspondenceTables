@@ -594,6 +594,19 @@ updateCorrespondenceTable <- function(
   # --- Return ---------------------------------------------------------------
   FinalResults <- list()
   FinalResults[[1]] <- data.frame(Final, check.names = FALSE, row.names = NULL)
+  
+  cols_to_convert <- c(
+    "CodeChange", "Redundancy", "Redundancy_keep",
+    "NoMatchToAStar", "NoMatchToB",
+    "NoMatchFromAStar", "NoMatchFromB",
+    "LabelChange", "Review"
+  )
+  
+  for (col in cols_to_convert) {
+    if (col %in% names(FinalResults[[1]])) {
+      FinalResults[[1]][[col]] <- suppressWarnings(as.numeric(FinalResults[[1]][[col]]))
+    }
+  }
   FinalResults[[2]] <- CsvNames
   names(FinalResults) <- c("updateCorrespondenceTable", "classificationNames")
   FinalResults
