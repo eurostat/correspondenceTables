@@ -1,33 +1,12 @@
-#' @title List available classification schemes (deprecated wrapper)
-#'
-#' @description
-#' This function is deprecated and kept only for backward compatibility.
-#' Users should now use \code{classificationList()} instead, which provides
-#' the same functionality with a clearer and more stable interface.
-#'
-#' @param endpoint Character string indicating which endpoint to query.
-#'   Valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"}.
-#' @param showQuery Logical. If \code{TRUE}, the underlying SPARQL query (or
-#'   queries) used by \code{classificationList()} are returned or printed,
-#'   depending on the implementation of that function. If \code{FALSE}
-#'   (default), only the classification list is returned.
-#'
-#' @section Deprecated:
-#' This function is deprecated. It is now a thin wrapper around
-#' \code{classificationList()} and will be removed in a future release.
-#'
-#' @return
-#' The same object as returned by
-#' \code{classificationList(endpoint = endpoint, showQuery = showQuery)}.
-#'
-#' @examples
-#' \dontrun{
-#'   # Deprecated: please use classificationList() instead.
-#'   cl <- classificationEndpoint("ALL", showQuery = FALSE)
-#'   print(cl)
-#' }
-#'
-#' @export
+
+# This function is deprecated and kept only for backward compatibility.
+# Users should now use \code{classificationList()} instead, which provides
+# the same functionality with a clearer and more stable interface.
+
+#   Deprecated: please use classificationList() instead.
+#   cl <- classificationEndpoint("ALL", showQuery = FALSE)
+#   print(cl)
+
  classificationEndpoint <- function(endpoint = "ALL", showQuery = FALSE) {
    .Deprecated("classificationList")
    classificationList(endpoint = endpoint, showQuery = showQuery)

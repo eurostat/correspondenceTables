@@ -1,178 +1,488 @@
 ---
 title: "Retrieve classifications and correspondence tables stored as Linked Open Data"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: TRUE
+
 vignette: >
   %\VignetteIndexEntry{Retrieve classifications and correspondence tables stored as Linked Open Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-options(width = 300)
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = "center")
+old <- getOption("useLocalDataForVignettes")
+options(useLocalDataForVignettes = TRUE)
+on.exit(options(useLocalDataForVignettes = old), add = TRUE)
+
 ```
-## Overview
-
-Statistical classifications and correspondence tables  are stored as Linked Open Data (LOD) by various organisations, including the Publications Office of the European Union (OP) and the Food and Agriculture Organization (FAO). 
-Experts in the SPARQL query language (for LOD) can access those classifications and correspondence tables directly via their SPARQL endpoints of these organisations. 
-
-The `retrieveClassification()` and `retrieveCorrespondenceTable()` functions allow practitioners that are not SPARQL experts to get these data themselves (as data frames, and optionally in CSV format). As an added bonus, they also return the relevant SPARQL code, allowing it to be re-used or adapted as needed.
 
 
+## Overview  
+
+Statistical classifications and correspondence tables are published as Linked Open Data (LOD) by several organisations, notably the Publications Office of the European Union (OP, via CELLAR) and the Food and Agriculture Organization (FAO).
+
+While these resources can be accessed directly using SPARQL, this requires specific technical expertise. The **correspondenceTables** package provides high‑level R functions that allow users to retrieve these data as standard R data frames, without writing SPARQL queries themselves.
+
+Two core retrieval functions are provided:
+
+- `retrieveClassificationTable()`: retrieves the structure of a statistical
+  classification (codes, labels, hierarchy).
+- `retrieveCorrespondenceTable()`: retrieves a correspondence (mapping) table
+  between two classifications.
+
+Optionally, both functions can return the SPARQL query used for the retrieval, making the process transparent, inspectable, and reproducible.  
 
 ```{r}
 library(correspondenceTables)
 ```
 
 
-This vignette uses the option `useLocalDataForVignettes = TRUE` to ensure reproducibility. All examples are based on static data files and can be executed without requiring a network connection or SPARQL access.
+## Discovering available data
+
+Before using the core retrieval functions
+retrieveClassificationTable() and retrieveCorrespondenceTable(),
+it is necessary to know what can be retrieved and how it is identified.
+In practice, this means answering the following questions:
+
+- Which classifications or correspondence tables are available?
+- From which endpoint (CELLAR or FAO)?
+- Which identifiers (prefix, conceptScheme, ID_table) should be used?
+- For hierarchical classifications, which levels are available?
+
+The package provides lightweight discovery utilities to support this step.
+
+### Gathering information necessary for classification retrieval
+
+To retrieve a statistical classification, users first need to know which
+classifications are available at a given endpoint and how they are identified.
+The `classificationList()` utility provides this information.
+
+### Example 1: Available classifications (CELLAR)
+The example below illustrates the typical output structure using a static
+snapshot of the CELLAR classification list bundled with the package. To retrieve the updated information about the available classifications, the user just need to execute the `classificationList()` function, which will retrieve a data frame with all the available classification in a selected endpoint. 
+
 
 ```{r}
-options(useLocalDataForVignettes = TRUE)
+list_data <- read.csv(
+  system.file("extdata", "classificationList_CELLAR.csv",
+              package = "correspondenceTables"),
+  stringsAsFactors = FALSE
+)
+
+knitr::kable(
+  head(list_data, 3),
+  caption = "Example output of classificationList()"
+)
+
+```
+  
+
+For each classification, three identifiers are required to retrieve the data:
+
+- endpoint: "CELLAR" or "FAO"
+- prefix: namespace prefix used in the SPARQL endpoint
+- conceptScheme: unique identifier of the classification
+
+For example, the NACE Rev. 2 classification:
+
+- is available from the CELLAR repository,  
+- uses prefix "nace2",
+- uses concept scheme "nace2".
+
+## Inspecting the structure of hierarchical classifications
+
+Many statistical classifications are hierarchical.
+If only a specific level is required (e.g. divisions or classes),
+it is recommended to inspect the classification structure first.
+The dataStructure() function provides this information.
+
+### Example 2: Classification structure (NACE Rev. 2, CELLAR)
+
+The following call illustrates how to inspect the structure of
+NACE Rev. 2.
+It is shown for documentation purposes and not executed during
+vignette rendering to avoid reliance on live SPARQL endpoints.
+
+
+Inspecting a classification structure from CELLAR (NACE Rev. 2)
+
+
+```{r, eval = FALSE}
+
+endpoint <- "CELLAR"
+prefix <- "nace2"
+conceptScheme <- "nace2"
+
+ds <- dataStructure(
+  endpoint = endpoint,
+  prefix = prefix,
+  conceptScheme = conceptScheme,
+  language = "en",
+  showQuery = FALSE
+)
+
 ```
 
 
-## Utility function to help you use the core functions
+For **NACE Rev. 2**, four hierarchical levels are available:
 
-In order to be able to use the core functions (`retrieveClassification()`  and `retrieveCorrespondenceTable()`), you need to know what to ask for: which classifications (or correspondence tables) can be retrieved from the selectable SPARQL endpoints? For hierarchical classifications, you would also need to know which levels could be selected for a given classification.
+1. Sections  
+2. Divisions  
+3. Groups  
+4. Classes  
 
-**Gathering information necessary for classification retrieval**
-
-The utility function `classificationList()` provides a list of all classifications available for retrieval – either at a specific SPARQL endpoint (FAO or CELLAR).
+If the required level is already known, this inspection step can be skipped.
 
 
-**EXAMPLE A**
+### Example 3: classification structure  (CPC2.1, FAO)
 
-```{r}
-endpoint = "CELLAR"
-list_data = classificationList(endpoint)
-knitr::kable(head(list_data), caption = "Example output of classificationList() using CELLAR endpoint")
+The same approach can be used for FAO classifications.  
+The example below illustrates how to inspect the structure of **CPC2.1**.
+
+
+
+```{r, eval = FALSE}
+endpoint <- "FAO"
+prefix <- "CPC21"
+conceptScheme <- "CPC21"
+
+ds_cpc <- dataStructure(
+  endpoint = endpoint,
+  prefix = prefix,
+  conceptScheme = conceptScheme,
+  language = "en",
+  showQuery = FALSE
+)
 
 ```
 
 
-For any classification that you want to retrieve, you will have to indicate the “prefix” and “concept scheme” features in the core retrieval function (`retrieveClassification()`). Assuming that you are interested in the NACE Rev. 2 classification, the above output shows that this classification:
+As with classifications retrieved from CELLAR, the output describes the hierarchical organisation of the classification and the levels available for retrieval.
 
-- is available in the "`CELLAR`" repository.
-
-- has the prefix “`nace2`”.
-
-- has the concept scheme “`nace2`”.
+If the required level is already known in advance, this inspection step can be skipped.
 
 
-In case you only are interested in a particular level of this hierarchical classification, you are advised to check the structural information for this classification before proceeding (to check which levels are available). The `dataStructure()` function allows you to do so – and the necessary arguments are those that you have just obtained using `classificationList()`.
+## Retrieving classification tables
 
-**EXAMPLE B**
+Once the classification identifiers and (optionally) the desired level are known,
+the `retrieveClassificationTable()` function can be used to retrieve the data.
 
-```{r}
-endpoint = "CELLAR"
-prefix = "nace2"
-conceptScheme = "nace2"
-dataStructure(endpoint, prefix, conceptScheme)
+The function returns a flat data frame suitable for:
+
+- browsing and documentation;
+- validation of codes and hierarchy;
+- downstream correspondence analysis.
+
+**Main arguments**
+
+- `endpoint`: `"CELLAR"` or `"FAO"`
+- `prefix`
+- `conceptScheme`
+- `language` (default: `"en"`)
+- `level` (default: `"ALL"`)
+- `showQuery` (logical)
+
+### Example 4: Class‑level NACE Rev. 2 in multiple languages
+
+The following example demonstrates how to retrieve level‑4 (“class”)
+data for the German, French, and Bulgarian versions of **NACE Rev. 2**.
+The code is **not executed** during vignette rendering.
+
+
+```{r retrieve-nace-multilang, eval=FALSE}
+endpoint <- "CELLAR"
+prefix <- "nace2"
+conceptScheme <- "nace2"
+level <- "4"
+
+languages <- c("de", "fr", "bg")
+
+results <- lapply(languages, function(lang) {
+  retrieveClassificationTable(
+    endpoint = endpoint,
+    prefix = prefix,
+    conceptScheme = conceptScheme,
+    language = lang,
+    level = level,
+    showQuery = FALSE
+  )
+})
+
+
 ```
 
-The above output shows you that the NACE Rev. 2 features 4 levels (level 1 = sections, level 2 = divisions, level 3 = groups, level 4 = classes).  
 
-In case you already are familiar with the structure of the NACE Rev. 2 classification (meaning that you know that classes have level 4), you could skip this step, since you then already know what to indicate in `retrieveClassification()`.
+### Example 5: FAO classification at group level
 
-**Retrieving a classification**
+The FAO endpoint provides access to a limited subset of international classifications. Availability depends on the endpoint configuration.
 
-The function `retrieveClassificationTable()` retrieves the classification table from the CELLAR and FAO repository, formatted in such a way that it can be used as an input to the `newCorrespondenceTable()`, `updateCorrespondenceTable()` functions. For an input to `analyseCorrespondenceTable()` and `aggredateCorrespondenceTable()`, a reformatting will most probably be necessary. 
+The following example illustrates how a FAO classification *would* be retrieved. The code is not executed during vignette rendering.
 
-This function has seven arguments:
+This call queries the FAO repository and returns metadata describing all published classification schemes (prefix, concept scheme, title, etc.).
 
--	endpoint - the SPARQL Endpoint: CELLAR or FAO
-- prefix - the SPARQL instruction for a declaration of a namespace prefix
--	conceptScheme - a unique identifier associated to specific classification table
--	language - language of the table, default is "en" for english. (for language codes, please refer to *https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Language_codes*) 
--	level – level of the objects in the collection to be retrieved, default is "ALL" for all levels.
--	CSVout – if non-null: a string with the full path of the CSV file where the retrieved classification table is to be saved 
--	showQuery – Boolean argument – if TRUE, the SPARQL query generated is printed as output.
+```{r, eval=FALSE}
 
-Using the values of the prefix and conceptScheme retrieved in the above example for `classificationList()`, and using one of the available levels (level 4) as per the above example for `dataStructure()`, the following code is used to retrieve the class-level (level 4) data of the German, French and Bulgarian versions of the NACE Rev. 2 classification (from static data, as noted above):
+cl_fao <- classificationList("FAO")
 
-```{r}
-endpoint = "CELLAR"
-prefix = "nace2"
-conceptScheme = "nace2"
-level = "4"
-CSVout = NULL
-showQuery = TRUE
+knitr::kable(
+  head(cl_fao),
+  caption = "Retrieving a classification table from the FAO endpoint"
+)
 
-result_de <-retrieveClassificationTable(endpoint, prefix, conceptScheme, language = "de", level, CSVout, showQuery)
-
-result_fr <-retrieveClassificationTable(endpoint, prefix, conceptScheme, language = "fr", level, CSVout, showQuery)
-
-result_bg <-retrieveClassificationTable(endpoint, prefix, conceptScheme, language = "bg", level, CSVout, showQuery)
-
-print(head(result_fr),right= FALSE)
 ```
 
-When using dynamic data, the return value is a list with two elements. The SPARQL query is saved in the first element of the returned list and the classification table is saved in the second element of the list.
+ **Inspect available prefix identifiers**
+ 
+ The Prefix field identifies the catalogue or namespace under which
+ each FAO classification is published.
 
-```{r}
-#Extract the SPARQL query used
- SPARQLquery = result_de[[1]]
-# 
-##Obtain data frame in which the classification table is saved
- table = result_de[[2]]
+```{r, eval=FALSE}
+knitr::kable(
+  head(unique(cl_fao$Prefix)))
 ```
+
+ **Inspect available concept schemes**
+ 
+ The ConceptScheme field identifies the underlying classification schemes
+ that can be queried using retrieveClassificationTable().
+
+```{r, eval=FALSE}
+knitr::kable(
+  head(unique(cl_fao$ConceptScheme)))
+```
+
+
+### Retrieving a classification table from the FAO endpoint
+
+The following example illustrates how to retrieve a classification from the FAO repository using retrieveClassificationTable().
+Because FAO data availability and response times may vary, this example is shown for documentation purposes and is not executed in the vignette.
+
+
+```{r retrieve-fao-classification, eval=FALSE}
+endpoint <- "FAO"
+prefix <- "cpc21"
+conceptScheme <- "core"
+
+out <- retrieveClassificationTable(
+  endpoint      = endpoint,
+  prefix        = prefix,
+  conceptScheme = conceptScheme,
+  language      = "en",
+  level         = "2",
+  showQuery     = TRUE
+)
+```
+
+
+The FAO endpoint provides access to selected international and
+domain‑specific classifications maintained by FAO.
+Not all CELLAR classifications are available via FAO, and viceversa.
+
+
+
+## Retrieving correspondence tables
 
 **Gathering information necessary for correspondence table retrieval**
 
-The `correspondenceTableList()` function is analogous to the `classificationList()` function – but serves to list the available correspondence tables in the CELLAR and/or FAO repositories.
+Before retrieving a correspondence table, users need to identify which correspondences are available and how they are referenced at a given SPARQL endpoint.
+The `correspondenceTableList()` utility serves this purpose. It is analogous to `classificationList()`, but lists correspondence tables instead of classifications.
 
-```{r}
+### Example 6: Available correspondence tables
+
+The following example illustrates how to list correspondence tables available
+from the CELLAR and FAO repositories.
+It is shown for documentation purposes and not executed during vignette
+rendering to avoid reliance on live external SPARQL endpoints.
+
+```{r, eval = FALSE}
+
 corr_list = correspondenceTableList("ALL")
+
 names(corr_list)
-head(corr_list$CELLAR)
-head(corr_list$FAO)
+#Correspondence tables available from CELLAR
+knitr::kable(
+  head(corr_list$CELLAR, 10),
+  caption = "Available correspondence tables from the CELLAR endpoint (preview)"
+)
+#Correspondence tables available from FAO
+knitr::kable(
+  head(corr_list$FAO, 10),
+  caption = "Available correspondence tables from the FAO endpoint (preview)"
+)
 
 ```
 
-**EXAMPLE C**
+When executed interactively, this call returns a list whose elements correspond
+to the selected endpoints (e.g. `CELLAR`, `FAO`). Each element is a data frame
+describing the available correspondence tables, including their identifiers,
+associated prefixes, and human-readable labels.
+
+Each correspondence table is identified by:
+
+- **endpoint**: `"CELLAR"` or `"FAO"`
+- **prefix**: namespace associated with the source classification
+- **ID_table**: unique identifier of the correspondence table
 
 
-Assuming that you are interested in the *CPC 2.1 : ISIC Rev. 4* correspondence table, the above output shows that the table: 
+**Retrieving correspondence tables**
 
-```{r}
-endpoint = "FAO"
-prefix = "CPC21"
-ID_table = "CPC21-ISIC4"
-```
+The `retrieveCorrespondenceTable()` function retrieves a correspondence (mapping) table between two statistical classifications from a SPARQL endpoint. Its interface is similar to `retrieveClassificationTable()`, with the main difference that correspondence tables are identified using `ID_table` (instead of `conceptScheme`). Correspondence tables are usually provided at the
+most granular level of the classifications involved.
 
-•	is available in the *FAO* repository
 
-•	is associated with the prefix *“CPC21”*
+### Inspect available correspondence tables (CELLAR)
 
-•	is available in the table with ID *“CPC21-ISIC4”*
+The following examples illustrate how to inspect the correspondence tables
+available from the CELLAR endpoints.
 
-**Retrieving a correspondence table**
+```{r corr-table-list, eval=FALSE}
 
-The `retrieveCorrespondenceTable()` function has virtually the same set of parameters as the `retrieveClassification()` function. The main difference is that the “ID_table” parameter is used rather than the “conceptScheme”, and that it is not possible to select a level (since correspondence tables are typically established at the most granular level of the two classifications involved).
+# Inspect correspondence tables available from CELLAR
+tbl_cellar <- correspondenceTableList("CELLAR")
 
-Using the values of the prefix and ID table retrieved in the above example for `correspondenceTableList()`, the English language version of the *CPC 2.1 : ISIC Rev. 4* correspondence table is retrieved with the following code:
+#Correspondence tables available from CELLAR
+knitr::kable(
+  head(tbl_cellar, 10),
+  caption = "Available correspondence tables from the CELLAR endpoint "
+)
 
-```{r}
-endpoint = "FAO"
-prefix = "CPC21"
-ID_table = "CPC21-ISIC4"
-language = "en"
-CSVout = NULL
-showQuery= TRUE
 
-result_en = retrieveCorrespondenceTable(endpoint, prefix, ID_table, language, CSVout, showQuery)
-print(head(result_en),right= FALSE)
-```
-Similar to retrieveClassificationTable, the return value is a list with two elements.
-
-```{r}
-# # Extract the SPARQL query used
- SPARQLquery = result_en[[1]]
-# 
-# # Obtain data frame in which the correspondence table is saved
- table = result_en[[2]]
 ```
 
 
+### Example 7: Retrieve a correspondence table from CELLAR
+The following example illustrates the retrieval of a correspondence table published by the Publications Office of the European Union via the CELLAR endpoint.
+Users should note that the availability of correspondence data depends on what is currently exposed by the underlying SPARQL endpoint. Although a correspondence table may be listed by `correspondenceTableList()`, it can legitimately return an empty result when queried. For some CELLAR correspondences (including several PRODCOM‑related mappings), `retrieveCorrespondenceTable()` may therefore return avalid but empty data frame, which does not indicate a failure of the retrieval
+process.
+
+
+```{r retrieve-prodcom, eval=FALSE}
+
+
+res <- retrieveCorrespondenceTable(
+  endpoint  = "CELLAR",
+  prefix    = "prodcom2023",
+  ID_table  = "PRODCOM2023_CPA21",
+  language  = "en",
+  showQuery = FALSE
+)
+
+
+knitr::kable(
+  head(res, 10),
+  caption = "PRODCOM2023_CPA21 CorrespondenceTable "
+)
+```
+
+
+
+To reduce potential user confusion, it is helpful to include at least one
+correspondence example that is more likely to return data when queried.
+
+
+```{r, eval = FALSE}
+res2 <- retrieveCorrespondenceTable(
+  endpoint = "CELLAR",
+  prefix   = "nace2",
+  ID_table = "NACE2_CPA21",
+  language = "en"
+)
+
+
+knitr::kable(
+  head(res2, 10),
+  caption = "NACE2_CPA21 CorrespondenceTable from the CELLAR endpoint "
+)
+
+```
+
+
+
+
+For transparency and reproducibility, the SPARQL query used for retrieval can
+also be inspected by setting `showQuery = TRUE`.
+
+
+##Retrieve a correspondence table from FAO
+
+### Inspect available correspondence tables (FAO)
+
+The following examples illustrate how to inspect the correspondence tables
+available from the FAO endpoints.
+
+```{r, eval = FALSE}
+# Inspect correspondence tables available from FAO
+tbl_fao <- correspondenceTableList("FAO")
+head(tbl_fao)
+
+knitr::kable(
+  head(tbl_fao, 10),
+  caption = "correspondence tables available from FAO"
+)
+
+
+```
+
+### Example 8: Retrieve a correspondence table from FAO: *CPC 2.1 : ISIC Rev. 4*
+
+The following example illustrates the retrieval of a correspondence table published by the Food and Agriculture Organization of the United Nations (FAO) via the FAO endpoint.
+
+Users should note that the availability of correspondence data depends on what is currently exposed by the underlying SPARQL endpoint. Although a correspondence table may be listed by `correspondenceTableList()`, it can legitimately return an empty result when queried. In practice, however, correspondence tables exposed by the FAO endpoint tend to be more consistently populated than some of those available from CELLAR.
+
+The English-language version of the *CPC 2.1 : ISIC Rev. 4* correspondence table can be retrieved as follows. This example is not executed during vignette rendering.
+
+
+```{r retrieve-cpc21-isic4_FAO , eval = FALSE}
+Res <- retrieveCorrespondenceTable(
+  endpoint = "FAO",
+  prefix   = "CPC21",
+  ID_table = "CPC21-ISIC4",
+  language = "en"
+)
+
+knitr::kable(
+  head(Res[, 1:5], 10),
+  caption = "CPC21–ISIC4 correspondence tables available from FAO"
+)
+```
+
+### (Optional) Inspect the underlying SPARQL query
+
+For transparency and reproducibility, the SPARQL query used for retrieval can also be inspected by setting `showQuery = TRUE`.
+
+
+```{r, eval = FALSE}
+Res2 <- retrieveCorrespondenceTable(
+  endpoint = "FAO",
+  prefix   = "CPC21",
+  ID_table = "CPC21-ISIC4",
+  language = "en",
+  showQuery = TRUE
+)
+
+
+
+# Extract the SPARQL query used
+SPARQLquery <- Res2$SPARQL.query
+SPARQLquery
+
+
+```
+
+
+## Summary   
+
+The correspondenceTables package provides a consistent and transparent interface
+to:
+
+- discover available classifications and correspondence tables;
+- retrieve them as standard R data frames;
+- optionally inspect the underlying SPARQL queries used for retrieval.
+
+This allows statisticians and data analysts to work with official classification systems and mappings without requiring SPARQL expertise, while preserving reproducibility and traceability.
 

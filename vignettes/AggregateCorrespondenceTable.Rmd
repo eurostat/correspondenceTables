@@ -1,62 +1,153 @@
 ---
 title: "Aggregate Correspondence Table"
-output: html_document
-
-
+output:
+  rmarkdown::html_vignette:
+    toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Aggregate a correspondence table to higher hierarchical levels}
+  %\VignetteIndexEntry{Aggregate Correspondence Table}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEncoding{UTF-8}  
 ---
-
+    
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  cache = FALSE
+)
+
 ```
 
-This vignette provides information about the functions included in the correspondenceTables package used to create an aggregation between two classifications
+## Overview
 
-Load the package correspondenceTables : 
+This vignette demonstrates how to use the aggregateCorrespondenceTable() function from the correspondenceTables package.
+The function aggregates numeric values expressed in a source classification (A) into a target classification (B), using a correspondence table that links A to B (denoted A → B).
+When correspondence weights are available, values are redistributed proportionally according to these weights.
+If no weights are provided, values are split equally across the corresponding target codes.
+This type of aggregation is commonly used to convert statistics between classification systems, for example:
+
+NACE → CPA
+
+CPA → CN
+
+PRODCOM → CPA
+
+CPC → HS
+
+Load the package correspondenceTables: 
 ```{r cars}
 library(correspondenceTables)
 ```
 
-The `aggregateCorrespondenceTable` function in R is designed to aggregate correspondence tables between two hierarchical classifications. It facilitates the process of expressing statistics compiled at different levels in classification A to corresponding levels in  classification B. The function output is mechanically defined and provides candidate  aggregations for subsequent analysis by statistical classification experts.
+
+**Inputs** 
+
+The aggregateCorrespondenceTable() function expects the following inputs:
+
+**AB**
+A data frame representing the correspondence table between classification A and classification B.
+It must contain at least:
+
+a source code column (from_code)
+a target code column (to_code)
+optionally, a weight column
+
+**A**
+A data frame containing values expressed in the source classification A.
+This typically includes:
+
+a source classification code
+one or more numeric variables to be aggregated
+
+**B (optional)**
+A data frame defining the domain of the target classification B.
+If provided, all B codes are preserved in the output; target codes with no matching contributions receive a value of zero.
  
-The function expects three mandatory CSV files (AB, A, and B) as input. The structure of these files is crucial.
  
-- **AB**: Input correspondence table
-- **A**: Source classification table
-- **B**: Target classification table
-- **CSVOUT** Retrieve the result as a csv
+## **Application of the aggregateCorrespondenceTable()**
+
+### **Example 1: Basic aggregation using a correspondence table**
+
+In this example, all inputs are read from sample datasets included in the package.
 
 
-**Application of the aggregateCorrespondenceTable()**
+```{r}
+AB_path <- system.file("extdata", "ab_data.csv", package = "correspondenceTables")
+A_path  <- system.file("extdata", "a_data.csv",  package = "correspondenceTables")
+B_path  <- system.file("extdata", "b_data.csv",  package = "correspondenceTables")
 
-```{r, results = "hide"}
- AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
- A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
- B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
+stopifnot(nzchar(AB_path), nzchar(A_path), nzchar(B_path))
 
- 
- result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
- 
- print(result)
+AB <- utils::read.csv(AB_path, stringsAsFactors = FALSE)
+A  <- utils::read.csv(A_path,  stringsAsFactors = FALSE)
+B  <- utils::read.csv(B_path,  stringsAsFactors = FALSE)
+
+#For clarity and consistency, the correspondence table columns are renamed to the expected identifiers:
+
+names(AB)[names(AB) == "NACE.Rev..2.Code"]   <- "from_code"
+names(AB)[names(AB) == "NACE.Rev..2.1.Code"] <- "to_code"
+
+#<- "to_code"Show more lines
+
+res <- aggregateCorrespondenceTable(AB = AB, A = A, B = B)
+
+
+knitr::kable(
+  head(res$result),
+  caption = "Aggregation using a correspondence table",
+  align = "lll"
+)
 
 ```
 
-**Other Example** 
+The returned object is a list.
+The aggregated values are stored in the result element, which is a data frame structured according to the target classification B.
 
-```{r, results = "hide"}
+**Notes**
 
- AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
- A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
- B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
+If a source code maps to multiple target codes, values are split according to the correspondence weights.
+If no weights are supplied, equal splitting is applied.
+Supplying the B argument ensures that the output covers the full target classification domain, even for codes with zero contributions.
 
- 
- result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
- 
- print(result)
+
+### **Example 2: Weighted correspondence (proportional allocation)**
+This example shows how values from A are redistributed to B using explicit weights.  
+
+```{r}
+
+ # Correspondence table with weights
+AB <- data.frame(
+  from_code = c("A1", "A1", "A2"),
+  to_code   = c("B1", "B2", "B2"),
+  weight    = c(0.7, 0.3, 1.0)
+)
+
+# Source classification with values  
+A <- data.frame(
+  code  = c("A1", "A2"),
+  value = c(100, 50)
+)
+
+# Target classification domain
+B <- data.frame(
+  code = c("B1", "B2")
+)
+
+res2 <- aggregateCorrespondenceTable(AB = AB, A = A, B = B) 
+
+
+
+knitr::kable(
+  head(res2$result),
+  caption = "Weighted correspondence (proportional allocation)",
+  align = "lll"
+)
+
+
+
 ```
 

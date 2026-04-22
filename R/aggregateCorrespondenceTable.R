@@ -112,18 +112,71 @@ aggregateCorrespondenceTable <- function(AB, A, B = NULL) {
   
   # ----- Standardization helpers --------------------------------------------
   # Standardize AB to: code_A, code_B, weight (normalized per code_A)
-  standardize_AB <- function(AB_df) {
-    A_cand <- c("code_A","from_code","A","from","source","code","a_code","Acode")
-    B_cand <- c("code_B","to_code","B","to","target","dest","code","b_code","Bcode")
+  
+  standardize_AB <- function(AB_df, A_codes = NULL) {
+    
+    # 1) First try explicit known names (your existing logic)
+    A_cand <- c("code_A","from_code","A","from","source","a_code","Acode")
+    B_cand <- c("code_B","to_code","B","to","target","dest","b_code","Bcode")
     W_cand <- c("weight","w","share","split","prop","ratio","coef")
     
     cA <- guess_col(AB_df, A_cand, want_numeric = FALSE)
     cB <- guess_col(AB_df, B_cand, want_numeric = FALSE)
     cW <- guess_col(AB_df, W_cand, want_numeric = TRUE)
     
-    stop_if(is.null(cA) || is.null(cB),
-            "Could not detect A/B code columns in 'AB' (e.g., 'from_code'/'to_code').")
+    # 2) If explicit names NOT found, use a smarter heuristic
+    if (is.null(cA) || is.null(cB) || identical(cA, cB)) {
+      
+      nms <- names(AB_df)
+      nms_lc <- tolower(nms)
+      
+      # (a) ignore typical metadata columns from retrieveCorrespondenceTable()
+      ignore_pat <- "^(correspondenceid|prefix|uri|url|table\\.name|comment)$|label|include|exclude|broader"
+      keep <- !grepl(ignore_pat, nms_lc)
+      
+      # candidate columns are non-numeric and not ignored
+      cand <- nms[keep & vapply(AB_df, function(z) !(is.numeric(z) || is.logical(z)), logical(1))]
+      if (length(cand) < 2) {
+        stop("Could not detect A/B code columns in 'AB'. Please provide columns like 'from_code'/'to_code' or two code columns.", call. = FALSE)
+      }
+      
+      # (b) If CorrespondenceID exists like "NACE2_CPA21" and columns NACE2 + CPA21 exist, use them
+      if ("CorrespondenceID" %in% nms) {
+        id <- unique(as.character(AB_df[["CorrespondenceID"]]))
+        id <- id[!is.na(id) & nzchar(id)]
+        if (length(id)) {
+          toks <- strsplit(id[1], "_", fixed = TRUE)[[1]]
+          if (length(toks) >= 2 && all(toks[1:2] %in% nms)) {
+            cA <- toks[1]
+            cB <- toks[2]
+          }
+        }
+      }
+      
+      # (c) If still not found, choose cA as the column that best matches A_codes
+      if (is.null(cA) || is.null(cB) || identical(cA, cB)) {
+        score_overlap <- function(col) {
+          v <- trimws(as.character(AB_df[[col]]))
+          v <- v[!is.na(v) & nzchar(v)]
+          if (is.null(A_codes)) return(0L)
+          sum(v %in% A_codes)
+        }
+        
+        scores <- vapply(cand, score_overlap, integer(1))
+        ord <- order(scores, decreasing = TRUE)
+        
+        cA <- cand[ord[1]]
+        cB <- cand[ord[2]]
+        
+        # If overlap is useless (all 0), fall back to the first two remaining candidates
+        if (all(scores == 0L)) {
+          cA <- cand[1]
+          cB <- cand[2]
+        }
+      }
+    }
     
+    # ---- Now proceed with your existing standardization logic ----
     code_A <- trim_chr(AB_df[[cA]])
     code_B <- trim_chr(AB_df[[cB]])
     keep   <- !is.na(code_A) & !is.na(code_B)
@@ -131,34 +184,28 @@ aggregateCorrespondenceTable <- function(AB, A, B = NULL) {
     out <- data.frame(code_A = code_A[keep], code_B = code_B[keep], stringsAsFactors = FALSE)
     stop_if(nrow(out) == 0, "Argument 'AB' has no valid records.")
     
-    # attach weight if present & numeric; else equal-split placeholder
     if (!is.null(cW) && is.numeric(AB_df[[cW]])) {
       w <- AB_df[[cW]][keep]
       w[!is.finite(w)] <- NA_real_
       out$weight <- as.numeric(w)
-      # Combine duplicates (code_A, code_B) by summing weights
       out <- stats::aggregate(weight ~ code_A + code_B, data = out, FUN = function(z) sum(z, na.rm = TRUE))
       out <- out[, c("code_A","code_B","weight")]
     } else {
-      # equal split placeholder; will normalize per A below
       n_per_A <- table(out$code_A)
       out$weight <- 1 / as.numeric(n_per_A[match(out$code_A, names(n_per_A))])
     }
     
-    # Normalize weights per code_A; fallback to equal-split if non-positive or all NA
-    split_idx <- split(seq_len(nrow(out)), out$code_A)
+    split_idx <- split(seq_len(nrow(out)), out$code_A)  
     for (idx in split_idx) {
       sw <- sum(out$weight[idx], na.rm = TRUE)
       if (isTRUE(sw > 0)) {
         out$weight[idx] <- out$weight[idx] / sw
       } else {
-        k <- length(idx)
-        out$weight[idx] <- 1 / k
+        out$weight[idx] <- 1 / length(idx)
       }
     }
     out
   }
-  
   # Standardize A to: code_A, value
   standardize_A <- function(A_df) {
     A_code_cand <- c("code_A","A","from","source","code","item","prod","id","Acode")
@@ -188,8 +235,8 @@ aggregateCorrespondenceTable <- function(AB, A, B = NULL) {
   }
   
   # --- Standardize inputs ---------------------------------------------------
-  AB_std <- standardize_AB(AB)
   A_std  <- standardize_A(A)
+  AB_std <- standardize_AB(AB, A_codes = unique(A_std$code_A))
   B_std  <- standardize_B(B)
   
   # --- Join and proportional allocation ------------------------------------
@@ -239,5 +286,4 @@ aggregateCorrespondenceTable <- function(AB, A, B = NULL) {
   
   list(result = agg, mapping = AB_std, diagnostics = diagnostics)
 }
-
 

@@ -10,11 +10,12 @@ read_extdata_csv <- function(fname) {
 ############################################################
 # [1] classificationQC() works with real NACE example
 ############################################################
+
 {
   classification_df <- read_extdata_csv("Nace2.csv")
   lengths_df        <- data.frame(charb = c(1,2,3,5), chare = c(1,2,4,5))
   
-  result <- classificationQC(
+  expect_warning(result <- classificationQC(
     classification  = classification_df,
     lengths         = lengths_df,
     fullHierarchy   = TRUE,
@@ -22,12 +23,13 @@ read_extdata_csv <- function(fname) {
     labelHierarchy  = TRUE,
     singleChildCode = NULL,
     sequencing      = NULL
-  )
+  ))
   
   expect_inherits(result, "list")
   expect_true("QC_output" %in% names(result))
   expect_inherits(result$QC_output, "data.frame")
-}
+} 
+
 
 
 ############################################################
@@ -80,6 +82,7 @@ read_extdata_csv <- function(fname) {
   )
 }
 
+# Tests from 5 to 9 momentarily skipped as we are missing the datasets
 
 ############################################################
 # [5] error on duplicate codes
@@ -166,7 +169,6 @@ read_extdata_csv <- function(fname) {
 
 ############################################################
 # [9] singleChildCode rule violations are reported
-# (Pass data.frames, not file paths)
 ############################################################
 # {
 #   classification_df  <- read_extdata_csv("test_singleChildCode_classification.csv")
@@ -193,7 +195,7 @@ read_extdata_csv <- function(fname) {
 # 
 
 ############################################################
-# [11] Works with in-memory data.frames (minimal example)
+# [10] Works with in-memory data.frames (minimal example)
 ############################################################
 {
   classification_df <- data.frame(
@@ -207,13 +209,14 @@ read_extdata_csv <- function(fname) {
     chare = c(1, 3)
   )
   
-  result <- classificationQC(
-    classification  = classification_df,
-    lengths         = lengths_df,
-    fullHierarchy   = TRUE,
-    labelUniqueness = TRUE,
-    labelHierarchy  = TRUE
-  )
+  expect_warning(
+    result <- classificationQC(
+      classification  = classification_df,
+      lengths         = lengths_df,
+      fullHierarchy   = TRUE,
+      labelUniqueness = TRUE,
+      labelHierarchy  = TRUE
+    ) )
   
   expect_inherits(result, "list")
   expect_inherits(result$QC_output, "data.frame")
@@ -222,7 +225,7 @@ read_extdata_csv <- function(fname) {
 
 
 ############################################################
-# [12] Works with in-memory singleChildCode & sequencing
+# [11] Works with in-memory singleChildCode & sequencing
 ############################################################
 {
   classification_df <- data.frame(
@@ -249,33 +252,31 @@ read_extdata_csv <- function(fname) {
     stringsAsFactors = FALSE
   )
   
-  result <- suppressWarnings(
-    classificationQC(
-      classification  = classification_df,
-      lengths         = lengths_df,
-      singleChildCode = singleChildCode_df,
-      sequencing      = sequencing_df,
-      fullHierarchy   = TRUE,
-      labelUniqueness = FALSE,
-      labelHierarchy  = FALSE
-    )
+  result <- classificationQC(
+    classification  = classification_df,
+    lengths         = lengths_df,
+    singleChildCode = singleChildCode_df,
+    sequencing      = sequencing_df,
+    fullHierarchy   = TRUE,
+    labelUniqueness = FALSE,
+    labelHierarchy  = FALSE
   )
+  
   
   expect_true(all(c("singleCodeError", "gapBefore") %in% names(result$QC_output)))
 }
 
 
 ############################################################
-# [13] Structure sanity: always has QC_output; optional frames appear only if triggered
+# [12] Structure sanity: always has QC_output; optional frames appear only if triggered
 # (Safer than asserting an exact full list of names)
 ############################################################
 {
   classification_df <- read_extdata_csv("Nace2.csv")
-  # lengths_df        <- read_extdata_csv("lenghtsNace.csv")
   lengths_df        <- data.frame(charb = c(1,2,3,5), chare = c(1,2,4,5))
   
-  result <- suppressWarnings(
-    classificationQC(
+  expect_warning(
+    result <- classificationQC(
       classification  = classification_df,
       lengths         = lengths_df,
       fullHierarchy   = TRUE,

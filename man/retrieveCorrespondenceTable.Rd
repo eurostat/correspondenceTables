@@ -9,7 +9,6 @@ retrieveCorrespondenceTable(
   prefix,
   ID_table,
   language = "en",
-  CSVout = FALSE,
   showQuery = FALSE
 )
 }
@@ -28,10 +27,6 @@ Discover identifiers via \code{\link{correspondenceTableList}()}.}
 
 \item{language}{Character. Preferred label language as a BCP‑47 code.
 Defaults to \code{"en"} (English). Examples: \code{"fr"}, \code{"de"}.}
-
-\item{CSVout}{Logical or character. \strong{Deprecated} and ignored.
-Retained only for backward compatibility. If you need a CSV, call
-\code{utils::write.csv()} on the returned data.}
 
 \item{showQuery}{Logical. If \code{TRUE}, returns a list with the SPARQL
 query and the result data frame; otherwise (default) returns just the data frame.}
@@ -86,7 +81,6 @@ data frame explicitly (e.g., \code{utils::write.csv(x, file)}).
 \section{Notes}{
 
 \itemize{
-  \item \code{CSVout} is deprecated and ignored (no side effects).
   \item The function focuses on retrieval. Any code normalization is left to
         downstream steps (unless enabled internally by package options).
 }

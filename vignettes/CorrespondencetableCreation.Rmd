@@ -1,6 +1,8 @@
 ---
 title: "Correspondence table creation"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: TRUE
 
 vignette: >
   %\VignetteIndexEntry{Correspondence table creation}
@@ -19,7 +21,9 @@ When a correspondence table between two classifications does not yet exist, but 
 
 For the *general case*, where classifications **A** and **B** using their correspondences are indirectly linked (via correspondence tables) with one or more intermediate classifications C1, ..., Ck, the `newCorrespondenceTable()` function can automatically generate a new correspondence table. 
 
-A *special case* of the above occurs when a classification **A** is updated to a new version **A*** (with the correspondence table **A:A*** assumed to have been created as part of this update), and the correspondence table **A:B** between the old version of A and another classification of interest B exists. Here, the `updateCorrespondenceTable()` function can be used to automatically generate the new correspondence table **A*** **:B**. (The `newCorrespondenceTable()` function could also be applied to achieve this, but the `updateCorrespondenceTable` function makes takes the fact that **A** and **A*** are different versions of the same classification into consideration when generating its output, and is therefore recommended for the special (updating) case.)
+A *special case* of the above occurs when a classification **A** is updated to a new version **A*** (with the correspondence table **A:A*** assumed to have been created as part of this update), and the correspondence table **A:B** between the old version of A and another classification of interest B exists. 
+
+Here, the `updateCorrespondenceTable()` function can be used to automatically generate the new correspondence table **A*** **:B**. (The `newCorrespondenceTable()` function could also be applied to achieve this, but the `updateCorrespondenceTable` function makes takes the fact that **A** and **A*** are different versions of the same classification into consideration when generating its output, and is therefore recommended for the special (updating) case.)
 
 ## Utility functions and resources
 
@@ -33,18 +37,26 @@ library(correspondenceTables)
 
 #### Input/output management
 
-Both of the functions `newCorrespondenceTable()` and `updateCorrespondenceTable()` are designed to accept their core input (i.e. classification tables and correspondence tables) both in the format of data frames and in the format of (paths to) CSV files. In the case of `newCorrespondenceTable()`, the number of intermediary classifications is variable, so the input is required to either be in the format of a (‘quadratic’) CSV file containing the paths of the input CSV files, or in the format of a (‘quadratic’ 2-level) list of data frames.
+The function `newCorrespondenceTable()` accepts input either as data frames or as CSV file paths.
+The function `updateCorrespondenceTable()` accepts data frames only; CSV files must be read explicitly before calling the function.
 
-In terms of output, both functions return lists (including the resulting correspondence table as a data frame). Additionally, the optional CSVout argument may indicate to where a CSV file containing the resulting correspondence table should be exported.
+In the case of `newCorrespondenceTable()`, the number of intermediary classifications is variable, so the input is required to either be in the format of a (‘square’) CSV file containing the paths of the input CSV files, or in the format of a (‘square’ 2-level) list of data frames.
+
+In terms of output, both functions return lists (including the resulting correspondence table as a data frame). 
 
 #### Working directory
 
 It is recommended that a folder different from the folder in which the package has been installed is set as the work directory. In case you have no preferences, you could use a temporary directory as follows:
 
 ```{r}
-tmp_dir<-tempdir()
-csv_files<-list.files(tmp_dir, pattern = ".csv")
-if (length(csv_files)>0) unlink(csv_files)
+tmp_dir <- tempdir()
+
+files_to_clean <- setdiff(
+  list.files(tmp_dir, pattern = "\\.csv$", full.names = TRUE),
+  file.path(tmp_dir, "names.csv")
+)
+
+if (length(files_to_clean) > 0) unlink(files_to_clean)
 ```
 #### Using sample data
 
@@ -60,8 +72,7 @@ If you wish, you can make copies of the sample datasets in a local folder of you
 
 #### Full file paths
 
-For the `newCorrespondenceTable()` function, which requires that the CSV file containing file names contains full file paths, the table cells of the CSV file provided in the sample input has to be appended so that the file names are preceded by the full path
-.
+For the `newCorrespondenceTable()` function, which requires that the CSV file containing file names contains full file paths, the table cells of the CSV file provided in the sample input has to be appended so that the file names are preceded by the full path.
 To streamline this appending, the utility function fullPath, defined below, is used in all cases.
 
 ```{r}
@@ -88,14 +99,43 @@ fullPath("names1.csv", "names.csv")
 
 Execute the following code to apply function newCorrespondenceTable() on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase1.csv"), "A", 0.5, FALSE))
-```
 
 ```{r}
-print(NCT[[1]][1:10, 1:6])
-print(NCT[[2]])
+timing <- suppressMessages(
+  suppressWarnings(
+    system.time(
+      NCT <- newCorrespondenceTable(
+        Tables = file.path(tmp_dir, "names.csv"),
+        Reference = "A",
+        MismatchTolerance = 0.5,
+        Redundancy_trim = FALSE
+      )
+    )
+  )
+)
+
 ```
+
+
+
+
+
+```{r}
+
+knitr::kable(
+  head(NCT[[1]][4318:4328, 1:6]),
+  caption = "newCorrespondenceTable Case 1",
+  align = "lll"
+)
+
+knitr::kable(
+  head(NCT[[2]]),
+  caption = "newCorrespondenceTable Case 1",  
+  align = "lll"
+)
+
+```
+
 
 #### Example 2: CN 2022 : NACE Rev. 2 (via CPA Ver. 2.1)
 
@@ -104,8 +144,35 @@ fullPath("names2.csv", "names.csv")
 ```
 Execute the following code to apply function `newCorrespondenceTable()` on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase2.csv"), "B", 0.5, FALSE))
+```{r}
+timing_B <- suppressMessages(
+  suppressWarnings(
+    system.time(
+      NCT <- newCorrespondenceTable(
+        Tables = file.path(tmp_dir, "names.csv"),
+        Reference = "B",
+        MismatchTolerance = 0.5,
+        Redundancy_trim = FALSE
+      )
+    )
+  )
+)
+
+
+knitr::kable(
+ head(NCT[[1]][6189:6199, 1:6]),
+  caption = "newCorrespondenceTable Case 2",
+  align = "lll"
+)
+
+knitr::kable(
+  head(NCT[[2]]),
+  caption = "newCorrespondenceTable Case 2",
+  align = "lll"
+)
+
+
+
 ```
 
 #### Example 3: NACE Rev. 2 : ISIC Rev. 4 (via CPA Ver. 2.1 and CPC Ver. 2.1)
@@ -119,8 +186,37 @@ fullPath("names3.csv", "names.csv")
 ```
 Execute the following code to apply function `newCorrespondenceTable()` on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase3.csv"), "B", 0.5, TRUE))
+
+
+
+```{r}
+timing_B_trim <- suppressMessages(
+  suppressWarnings(
+    system.time(
+      NCT <- newCorrespondenceTable(
+        Tables = file.path(tmp_dir, "names.csv"),
+        Reference = "B",
+        MismatchTolerance = 0.5,
+        Redundancy_trim = TRUE
+      )
+    )
+  )
+)
+
+knitr::kable(
+  head(NCT[[1]][1227:1232, 1:6]),
+  caption = "newCorrespondenceTable Case 3",
+  align = "lll"
+)
+
+knitr::kable(
+  head(NCT[[2]]),
+  caption = "newCorrespondenceTable Case 3",
+  align = "lll"
+)
+
+
+
 ```
 #### Example 4: NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022)
 
@@ -130,8 +226,31 @@ fullPath("names4.csv", "names.csv")
 
 Execute the following code to apply function `newCorrespondenceTable()` on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
-```{r, results = "hide"}
-system.time(NCT <- newCorrespondenceTable(file.path(tmp_dir,"names.csv"), file.path(tmp_dir,"newCorrespondenceTableCase4.csv"), "none", 0.96, TRUE))
+```{r}
+timing_none <- suppressMessages(
+  suppressWarnings(
+    system.time(
+      NCT <- newCorrespondenceTable(
+        Tables = file.path(tmp_dir, "names.csv"),
+        Reference = "none",
+        MismatchTolerance = 0.96,
+        Redundancy_trim = TRUE
+      )
+    )
+  )
+)
+
+knitr::kable(
+  head(NCT[[1]][5442:5450, 1:6]),
+  caption = "newCorrespondenceTable Case 4",
+  align = "lll"
+)
+
+knitr::kable(
+  head(NCT[[2]]),
+  caption = "newCorrespondenceTable Case 4",
+  align = "lll"
+)
 ```
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
@@ -146,39 +265,133 @@ if (length(csv_files)>0) unlink(csv_files)
 Execute the following code in order to get the path of the required input files.
 
 ```{r}
-A <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
-AStar <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
-B <- system.file("extdata", "CPA21.csv", package = "correspondenceTables")
-AB <- system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables")
-AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+A <- read.csv(
+  system.file("extdata", "CN2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+B <- read.csv(
+  system.file("extdata", "CPA21.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AB <- read.csv(
+  system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AAStar <- read.csv(
+  system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)   
+
 ```
 
 
 Execute the following code line to apply function `updateCorrespondenceTable()` on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
 ```{r}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase1.csv"),
-                                 "B", 0.4, 0.4, TRUE)
-print(UPC[[1]][1:10, 1:7])
-print(UPC[[2]])
+UPC <- updateCorrespondenceTable(
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "B",
+  MismatchToleranceB = 0.4,
+  MismatchToleranceAStar = 0.4,
+  Redundancy_trim = TRUE
+)
+
+
+knitr::kable(
+  head(UPC[[1]][7950:7960, 1:7]),
+  caption = "updateCorrespondenceTable CN - CPA",
+  align = "lll"
+)
+
+
+knitr::kable(
+  head(UPC[[2]]),
+  caption = "updateCorrespondenceTable CN - CPA",
+  align = "lll"
+)
+
+
+
 ```
+
 
 #### Example 6: Updating CN : PRODCOM (triggered by CN update)
 
 Execute the following code in order to get the path of the required input files.
 
 ```{r}
-A <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
-AStar <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
-B <- system.file("extdata", "PRODCOM2021.csv", package = "correspondenceTables")
-AB <- system.file("extdata", "CN2021_PRODCOM2021.csv", package = "correspondenceTables")
-AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+A <- read.csv(
+  system.file("extdata", "CN2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+B <- read.csv(
+  system.file("extdata", "PRODCOM2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AB <- read.csv(
+  system.file("extdata", "CN2021_PRODCOM2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AAStar <- read.csv(
+  system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"  
+)
+
 ```
 
 Execute the following code line to apply function `updateCorrespondenceTable()` on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
-```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase2.csv"), "A", 0.4, 0.3, TRUE)
+```{r}
+
+UPC2 <- updateCorrespondenceTable(
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "A",
+  MismatchToleranceB = 0.4,
+  MismatchToleranceAStar = 0.3,
+  Redundancy_trim = TRUE
+)
+
+
+knitr::kable(
+  head(UPC2[[1]][4030:4040, 1:7]),
+  caption = "updateCorrespondenceTable CN - PRODCOM",
+  align = "lll"
+)
+
+
+knitr::kable(
+  head(UPC2[[2]]),
+  caption = "updateCorrespondenceTable CN - PRODCOM",
+  align = "lll"
+)
+
+
+
+
 ```
 
 #### Example 7: Updating NAICS : NACE (triggered by NAICS update)
@@ -186,17 +399,61 @@ UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"upd
 Execute the following code in order to get the path of the required input files.
 
 ```{r}
-A <- system.file("extdata", "NAICS2017.csv", package = "correspondenceTables")
-AStar <- system.file("extdata", "NAICS2022.csv", package = "correspondenceTables")
-B <- system.file("extdata", "NACE.csv", package = "correspondenceTables")
-AB <- system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTables")
-AAStar <- system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables")
+A <- read.csv(
+  system.file("extdata", "NAICS2017.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "NAICS2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+B <- read.csv(
+  system.file("extdata", "NACE.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AB <- read.csv(
+  system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AAStar <- read.csv(
+  system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
 ```
 
 Execute the following code line to apply function `updateCorrespondenceTable()` on these data. When there are redundant records, these are removed and kept exactly one record for each unique combination.
 
-```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase3.csv"), "none", 0.5, 0.3, TRUE)
+```{r}
+
+UPC3 <- updateCorrespondenceTable(
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "none",
+  MismatchToleranceB = 0.5,
+  MismatchToleranceAStar = 0.8,  
+  Redundancy_trim = TRUE
+)
+
+
+knitr::kable(
+  head(UPC3[[1]][1208:1218, 1:7]),
+  caption = "updateCorrespondenceTable NAICS - NACE",
+  align = "lll"
+)
+
+  knitr::kable(
+  head(UPC3[[2]]),
+  caption = "updateCorrespondenceTable NAICS - NACE",
+  align = "lll"
+)
 ```
 
 #### Example 8: Updating CN : NST (triggered by CN update)
@@ -204,17 +461,63 @@ UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"upd
 Execute the following code in order to get the path of the required input files.
 
 ```{r}
-A <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
-AStar <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
-B <- system.file("extdata", "NST2007.csv", package = "correspondenceTables")
-AB <- system.file("extdata", "CN2021_NST2007.csv", package = "correspondenceTables")
-AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+A <- read.csv(
+  system.file("extdata", "CN2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+
+B <- read.csv(
+  system.file("extdata", "NST2007.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AB <- read.csv(
+  system.file("extdata", "CN2021_NST2007.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AAStar <-read.csv( 
+  system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
 ```
 
 Execute the following code line to apply function `updateCorrespondenceTable()` on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
-```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase4.csv"), "B", 0.4, 0.3, TRUE)
+```{r}
+
+UPC4 <- updateCorrespondenceTable(
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "B",
+  MismatchToleranceB = 0.4,
+  MismatchToleranceAStar = 0.3,
+  Redundancy_trim = TRUE
+)
+
+knitr::kable(
+  head(UPC4[[1]][5225:5235, 1:7]),
+  caption = "updateCorrespondenceTable CN - NST",
+  align = "lll"
+)
+
+
+ knitr::kable(
+  head(UPC4[[2]]),
+  caption = "updateCorrespondenceTable CN - NST",
+  align = "lll"
+)  
+
+
 ```
 
 ### Example 9: Updating CN : SITC (triggered by CN update)
@@ -222,17 +525,63 @@ UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"upd
 Execute the following code in order to get the path of the required input files. 
 
 ```{r}
-A <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
-AStar <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
-B <- system.file("extdata", "SITC4.csv", package = "correspondenceTables")
-AB <- system.file("extdata", "CN2021_SITC4.csv", package = "correspondenceTables")
-AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+A <- read.csv(
+  system.file("extdata", "CN2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+B <- read.csv(
+  system.file("extdata", "SITC4.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AB <- read.csv(
+  system.file("extdata", "CN2021_SITC4.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AAStar <- read.csv(
+  system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
 ```
 
 Execute the following code line to apply function `updateCorrespondenceTable()` on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
 
-```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase5.csv"), "B", 0.3, 0.7, TRUE)
+```{r}
+
+
+UPC5 <- updateCorrespondenceTable(
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "B",
+  MismatchToleranceB = 0.3,
+  MismatchToleranceAStar = 0.7,
+  Redundancy_trim = TRUE
+)
+
+knitr::kable(
+  head(UPC5[[1]][10766:10776, 1:7]),
+  caption = "updateCorrespondenceTable CN - SITC",
+  align = "lll"
+)
+
+
+knitr::kable(
+  head(UPC5[[2]]),
+  caption = "updateCorrespondenceTable CN - SITC",
+  align = "lll"
+)
+
 ```
 
 ### Example 10: Updating CN : BEC 4 (triggered by CN update)
@@ -240,17 +589,67 @@ UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"upd
 Execute the following code in order to get the path of the required input files.
 
 ```{r}
-A <- system.file("extdata", "CN2021.csv", package = "correspondenceTables")
-AStar <- system.file("extdata", "CN2022.csv", package = "correspondenceTables")
-B <- system.file("extdata", "BEC4.csv", package = "correspondenceTables")
-AB <- system.file("extdata", "CN2021_BEC4.csv", package = "correspondenceTables")
-AAStar <- system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables")
+A <- read.csv(
+  system.file("extdata", "CN2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+
+B <- read.csv(
+  system.file("extdata", "BEC4.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+
+AB <- read.csv(
+  system.file("extdata", "CN2021_BEC4.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+
+AAStar <- read.csv(
+  system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)  
+
+
 ```
 
-Execute the following code line to apply function `updateCorrespondenceTable()` on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.
+Execute the following code line to apply function `updateCorrespondenceTable()` on these data. When no trimming is executed, redundant records are shown, together with the redundancy flag.  
 
-```{r, results = "hide"}
-UPC <- updateCorrespondenceTable(A, B, AStar, AB, AAStar, file.path(tmp_dir,"updateCorrespondenceTableCase6.csv"), "B", 0.3, 0.6, FALSE)
+```{r}
+
+UPC6 <- updateCorrespondenceTable(  
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "B",
+  MismatchToleranceB = 0.3,
+  MismatchToleranceAStar = 0.6,
+  Redundancy_trim = TRUE
+)
+
+
+knitr::kable(
+  head(UPC6[[1]][5512:5522, 1:7]),
+  caption = "updateCorrespondenceTable_CN_BEC4",
+  align = "lll"
+)
+
+
+knitr::kable(
+  head(UPC6[[2]]),
+  caption = "updateCorrespondenceTable_CN_BEC4",
+  align = "lll"
+)
+
 ```
 
 

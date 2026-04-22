@@ -1,18 +1,11 @@
-#' @title Deprecated alias for classificationList
-#' @description
-#' `classEndpoint()` is deprecated.  
-#' Please use [classificationList()] instead.
-#'
-#' @param endpoint Character. One of "CELLAR", "FAO", "ALL".
-#'
-#' @return Output of classificationList().
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' classEndpoint("ALL")   # deprecated
-#' classificationList("ALL")  # use this instead
-#' }
+# Deprecated alias for classificationList
+
+# `classEndpoint()` is deprecated.  
+# Please use [classificationList()] instead.
+
+# classEndpoint("ALL")   # deprecated
+# classificationList("ALL")  # use this instead
+
 classEndpoint <- function(endpoint = "ALL") {
   .Deprecated("classificationList")
   classificationList(endpoint = endpoint)

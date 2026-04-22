@@ -1,32 +1,11 @@
-#' @title Deprecated alias for correspondenceTableList
-#'
-#' @description
-#' This function is deprecated and kept only for backward compatibility.
-#' Users should now use \code{correspondenceTableList()} instead, which provides
-#' the same functionality with a clearer and more stable interface.
-#'
-#' @param endpoint Character string indicating which endpoint to query.
-#'   Valid values typically include \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"}.
-#' @param showQuery Logical. If \code{TRUE}, \code{correspondenceTableList()}
-#'   will also return the underlying SPARQL query (or queries), depending on its
-#'   implementation. Defaults to \code{FALSE}.
-#'
-#' @section Deprecated:
-#' This function is deprecated. It is now a thin wrapper around
-#' \code{correspondenceTableList()} and will be removed in a future release.
-#'
-#' @return
-#' The same object as returned by
-#' \code{correspondenceTableList(endpoint = endpoint, showQuery = showQuery)}.
-#'
-#' @examples
-#' \dontrun{
-#'   # Deprecated: please use correspondenceTableList() instead.
-#'   x <- correspondenceList("ALL", showQuery = FALSE)
-#'   str(x)
-#' }
-#'
-#' @export
+# This function is deprecated and kept only for backward compatibility.
+# Users should now use \code{correspondenceTableList()} instead, which provides
+# the same functionality with a clearer and more stable interface.
+
+#   # Deprecated: please use correspondenceTableList() instead.
+#   x <- correspondenceList("ALL", showQuery = FALSE)
+#   str(x)
+
 correspondenceList <- function(endpoint = "ALL", showQuery = FALSE) {
   .Deprecated("correspondenceTableList")
   correspondenceTableList(endpoint = endpoint, showQuery = showQuery)

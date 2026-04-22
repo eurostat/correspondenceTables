@@ -31,6 +31,23 @@ calling `retrieveCorrespondenceTable()`.
 \details{
 Read-only queries; no side effects (no file writes or caching).
 }
+\examples{
+\dontrun{
+# List correspondence tables available in CELLAR
+ct <- correspondenceTableList(endpoint = "CELLAR")
+head(ct)
+
+# List correspondence tables available in FAO
+ct_fao <- correspondenceTableList(endpoint = "FAO")
+head(ct_fao)
+
+# Get correspondence tables from both repositories
+ct_all <- correspondenceTableList(endpoint = "ALL")
+names(ct_all)
+}
+
+
+}
 \seealso{
 retrieveCorrespondenceTable()
 }

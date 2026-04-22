@@ -6,9 +6,10 @@ expect_error(
   fixed = FALSE
 )
 
-# -------- 2) Online path: CELLAR returns a data.frame -----------------------
-
 if (at_home()) {
+  
+  # -------- 2) Online path: CELLAR returns a data.frame -----------------------
+  
   prefix        <- "cn2022"
   conceptScheme <- "cn2022"
   
@@ -22,13 +23,11 @@ if (at_home()) {
   
   expect_inherits(res, "data.frame")
   expect_true(is.numeric(nrow(res)))
-} else {
-  message("Skipping CELLAR online test: not at_home().")
-}
-
-# -------- 3) Online path: FAO returns a data.frame ---------------------------
-
-if (at_home()) {
+  
+  
+  # -------- 3) Online path: FAO returns a data.frame ---------------------------
+  
+  
   prefix        <- "icc11"
   conceptScheme <- "scheme"
   
@@ -42,63 +41,57 @@ if (at_home()) {
   
   expect_inherits(res, "data.frame")
   expect_true(is.numeric(nrow(res)))
-} else {
-  message("Skipping FAO online test: not at_home().")
-}
-
-# -------- 4) showQuery = TRUE: structure per 'return' -----------------------
-
-if (at_home()) {
+  
+  # -------- 4) showQuery = TRUE: structure per 'return' -----------------------
+  
+  
   prefix        <- "icc11"
   conceptScheme <- "scheme"
   
   # return = "summary"
-  res_sum <- dataStructure(
+  res_sum <- suppressMessages( dataStructure(
     endpoint      = "FAO",
     prefix        = prefix,
     conceptScheme = conceptScheme,
     language      = "en",
     showQuery     = TRUE,
     return        = "summary"
-  )
+  ) )
   expect_true(is.list(res_sum))
   expect_true(all(c("resolved", "query.summary", "dataStructure") %in% names(res_sum)))
   expect_true(is.character(res_sum[["query.summary"]]))
   expect_inherits(res_sum[["dataStructure"]], "data.frame")
   
   # return = "details"
-  res_det <- dataStructure(
+  res_det <- suppressMessages( dataStructure(
     endpoint      = "FAO",
     prefix        = prefix,
     conceptScheme = conceptScheme,
     language      = "en",
     showQuery     = TRUE,
     return        = "details"
-  )
+  ) )
   expect_true(is.list(res_det))
   expect_true(all(c("resolved", "query.details", "details") %in% names(res_det)))
   expect_true(is.character(res_det[["query.details"]]))
   expect_inherits(res_det[["details"]], "data.frame")
   
   # return = "both"
-  res_both <- dataStructure(
+  res_both <- suppressMessages(dataStructure(
     endpoint      = "FAO",
     prefix        = prefix,
     conceptScheme = conceptScheme,
     language      = "en",
     showQuery     = TRUE,
     return        = "both"
-  )
+  ) )
   expect_true(is.list(res_both))
   expect_true(all(c("resolved", "query.summary", "query.details", "summary", "details") %in% names(res_both)))
   expect_true(is.character(res_both[["query.summary"]]))
   expect_true(is.character(res_both[["query.details"]]))
   expect_inherits(res_both[["summary"]], "data.frame")
   expect_inherits(res_both[["details"]], "data.frame")
-} else {
-  message("Skipping showQuery structure tests: not at_home().")
 }
-
 # -------- 5) Unresolvable prefix/conceptScheme for FAO -----------------------
 
 # This test does not need internet (it fails at registry resolution),

@@ -1,68 +1,182 @@
 ---
 title: "Analyse Correspondence Table"
-output:  rmarkdown::html_vignette
-
-vignette:  >
-  %\VignetteIndexEntry{Perform analysis on correspondence tables} 
-  %\VignetteEngine{knitr::rmarkdown} 
+output:
+  rmarkdown::html_vignette:  
+    toc: TRUE
+description: "This vignette explains how to use the analyseCorrespondenceTable function."
+vignette: >
+  %\VignetteIndexEntry{Analyse Correspondence Table}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-
-## Description
-
-This vignette explains how to use the `analyseCorrespondenceTable` function to perform analysis on correspondence tables.
-
-### Package Installation
-
-To use the `analyseCorrespondenceTable` function, you first need to install and load the `correspondenceTables` package. You can use the following command:
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
+
+## Overview
+This vignette demonstrates how to use the analyseCorrespondenceTable() function from the correspondenceTables package to analyse classification correspondence tables.
+The function provides diagnostic information on the structure and quality of a correspondence table, such as:
+
+
+* the inventory of codes involved on both sides of the correspondence;
+* the presence of one‑to‑one, one‑to‑many, or many‑to‑many relationships;
+* potential structural issues that may affect downstream use (aggregation, updates, or quality checks).
+
+
+Load the package correspondenceTables: 
 ```{r}
-library(correspondenceTables)
+library(correspondenceTables)  
 ```
 
-```{r results='hide'}
+## Application of analyseCorrespondenceTable
+
+### **Example 1: Basic analysis of a correspondence table**
+In this first example, only a correspondence table is provided.
+No explicit source or target classification tables are supplied.
+
+
+```{r}
+# Load example correspondence table
+AB <- read.csv(
+  system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),
+  stringsAsFactors = FALSE
+)
+
+```
+
+
+The analysis is then performed using default settings:
+
+
+```{r}
 # Perform analysis
-result <- analyseCorrespondenceTable(AB =system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables")
-                                     , A = NULL, longestAcodeOnly = FALSE, B = NULL, longestBcodeOnly = FALSE,
-                                     CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL)
-
-
-
-# Print the results
-print(result$Inventory)
-print(result$Analysis)
-
+result <- analyseCorrespondenceTable(
+  AB = AB,
+  A  = NULL,
+  B  = NULL,
+  longestAcodeOnly = FALSE,
+  longestBcodeOnly = FALSE
+)
+#head(result$Inventory)
+#head(result$Analysis)
 ```
 
-For this example we use output  **CSVcorrespondenceInventory** **CSVcorrespondenceAnalysis** are not NULL. 
-Indeed we put our output in these csv files and we can see these with the both print on this function.
-
-
-**Another example**
-
-Here we use all the function parameters. 
-
-We'll see what happens with AB, which contains data from nace2 & nace2.1. 
-
-A which contains Nace2 as a classification source 
-
-B which contains Nace2.1 as the classification target 
-
-longestAcodeOnly and longestBcodeOnly will be set to TRUE here to have only the retain only the lowest level. 
+The function returns a list containing multiple outputs.
+Two key components are displayed below:
 
 ```{r}
-result2 <-analyseCorrespondenceTable(AB = system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"), 
-                                     A =  NULL , longestAcodeOnly = FALSE , B = NULL, longestBcodeOnly = FALSE, 
-                                     CSVcorrespondenceInventory = NULL, CSVcorrespondenceAnalysis = NULL)
+# Display results
 
-print(result2$Inventory)
-###for Inventory run this code : View(result2$Inventory)
-print(result2$Analysis)
+knitr::kable(
+  head(result$Inventory),
+  caption = "Inventory results: Basic analysis of a correspondence table",
+  align = "lll"
+)
+
+
+knitr::kable(
+  head(result$Analysis),
+  caption = "Analysisresults: Basic analysis of a correspondence table",
+  align = "lll"
+)
+
 ```
+ 
+In this example, both the correspondence inventory and the analytical summary
+are available and printed. These outputs can be used to inspect the overall
+structure of the correspondence table.
+
+
+### **Example 2: Full analysis with source and target classifications**
+In this second example, all supported parameters of the function are used.
+
+AB contains a correspondence table between NACE Rev. 2 and NACE Rev. 2.1
+A contains the source classification (NACE Rev. 2)
+B contains the target classification (NACE Rev. 2.1)
+
+The analysis is restricted to the lowest‑level codes on both sides of the
+correspondence.
+ 
+
+```{r}
+# Load correspondence table (NACE Rev.2 -> NACE Rev.2.1)
+AB <- read.csv(
+  system.file("extdata", "ab_data.csv", package = "correspondenceTables"),
+  stringsAsFactors = FALSE
+)
+
+# Load source classification (NACE Rev.2)
+A <- read.csv(
+  system.file("extdata", "a_data.csv", package = "correspondenceTables"),
+  stringsAsFactors = FALSE
+)
+
+# Load target classification (NACE Rev.2.1)
+B <- read.csv(
+  system.file("extdata", "b_data.csv", package = "correspondenceTables"),
+  stringsAsFactors = FALSE
+)
+
+```
+
+
+```{r warning = FALSE}
+# Perform analysis using all function parameters
+result2 <- analyseCorrespondenceTable(
+  AB = AB,
+  A  = A,
+  B  = B,
+  longestAcodeOnly = TRUE,
+  longestBcodeOnly = TRUE
+)
+
+```
+
+
+The resulting inventory and analysis summary are shown below:
+
+
+```{r}
+# Display results
+
+knitr::kable(
+  head(result2$Inventory),
+  caption = "Inventory results: Full analysis with source and target classifications",
+  align = "lll"
+)
+
+
+knitr::kable(
+  head(result2$Analysis),
+  caption = "Analysis results: Full analysis with source and target classifications",
+  align = "lll"
+)  
+
+
+
+
+
+
+
+
+
+```
+
+ 
+
+
+Restricting the analysis to the lowest‑level codes can be useful when the
+correspondence table is intended for aggregation or conversion at the most
+granular classification level.
+
+
+## Notes
+
+If A and B are provided, the function can perform additional consistency checks against the source and target classification domains.
+The longestAcodeOnly and longestBcodeOnly arguments allow users to focus the analysis on the most detailed codes, which is often desirable in practical statistical workflows.
+
 
 

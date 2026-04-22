@@ -21,38 +21,33 @@ expect_error(
   fixed  = FALSE
 )
 
-# Valid endpoints should not error (even if discovery fails => core-only)
-res_cellar <- try(prefixList("CELLAR"), silent = TRUE)
-expect_true(!inherits(res_cellar, "try-error"))
-
-res_fao <- try(prefixList("FAO"), silent = TRUE)
-expect_true(!inherits(res_fao, "try-error"))
-
-# 2) 'CELLAR' structure checks (character vector) ----------------------------
-
 if (at_home()) {
+  # Valid endpoints should not error (even if discovery fails => core-only)
+  res_cellar <- try(prefixList("CELLAR"), silent = TRUE)
+  expect_true(!inherits(res_cellar, "try-error"))
+  
+  res_fao <- try(prefixList("FAO"), silent = TRUE)
+  expect_true(!inherits(res_fao, "try-error"))
+  
+  # 2) 'CELLAR' structure checks (character vector) ----------------------------
+  
   res <- prefixList("CELLAR")
   expect_true(is.character(res))
   expect_true(length(res) >= length(.core_tokens))
   expect_true(all(grepl("^PREFIX\\s+", res)))
-} else {
-  message("Skipping CELLAR structure test: not at_home().")
-}
-
-# 3) 'FAO' structure checks (character vector) -------------------------------
-
-if (at_home()) {
+  
+  
+  # 3) 'FAO' structure checks (character vector) -------------------------------
+  
   res <- prefixList("FAO")
   expect_true(is.character(res))
   expect_true(length(res) >= length(.core_tokens))
   expect_true(all(grepl("^PREFIX\\s+", res)))
-} else {
-  message("Skipping FAO structure test: not at_home().")
-}
-
-# 4) Filtering by subset of prefixes -----------------------------------------
-
-if (at_home()) {
+  
+  
+  # 4) Filtering by subset of prefixes -----------------------------------------
+  
+  
   all_prefixes <- prefixList("FAO")
   prefix_names <- .extract_tokens(all_prefixes)
   
@@ -73,13 +68,10 @@ if (at_home()) {
     # at least one core prefix should still be present
     expect_true(any(.core_tokens %in% filtered_tokens))
   }
-} else {
-  message("Skipping filtering test: not at_home().")
-}
-
-# 5) Requested prefixes do not exist -> warning + core-only result -----------
-
-if (at_home()) {
+  
+  
+  # 5) Requested prefixes do not exist -> warning + core-only result -----------
+  
   # Current behavior: warn + return only core prefixes
   expect_warning(
     not_found <- prefixList("FAO", prefix = "THISDOESNOTEXIST"),
@@ -94,6 +86,5 @@ if (at_home()) {
   expect_false("thisdoesnotexist" %in% tokens_nf)
   # Should contain core tokens (at least these)
   expect_true(all(.core_tokens %in% tokens_nf))
-} else {
-  message("Skipping 'nonexistent prefix' test: not at_home().")
+  
 }

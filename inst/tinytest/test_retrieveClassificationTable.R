@@ -1,12 +1,3 @@
-# ---- Helper ---------------------------------------------------------------
-
-# Try a network call; if it fails, skip the file gracefully
-skip_if_endpoint_unreachable <- function(expr, reason = "SPARQL endpoint not reachable for this test.") {
-  obj <- tryCatch(force(expr), error = function(e) NULL)
-  if (is.null(obj)) exit_file(reason)
-  obj
-}
-
 # ---- 1) rejects invalid endpoint -------------------------------------------
 
 expect_error(
@@ -18,13 +9,13 @@ expect_error(
   pattern = "Unsupported endpoint"
 )
 
-# ---- 2) returns a data.frame when showQuery = FALSE ------------------------
 
 
 if(at_home()){
   
+  # ---- 2) returns a data.frame when showQuery = FALSE ------------------------
   
-  res_df <- skip_if_endpoint_unreachable(
+  res_df <- 
     retrieveClassificationTable(
       endpoint      = "CELLAR",
       prefix        = "cn2022",
@@ -32,8 +23,8 @@ if(at_home()){
       language      = "en",
       level         = "ALL",
       showQuery     = FALSE
+      
     )
-  )
   
   expect_inherits(res_df, "data.frame")
   # Columns depend on endpoint response; keep only stable checks.
@@ -44,7 +35,7 @@ if(at_home()){
   
   
   
-  res_q <- skip_if_endpoint_unreachable(
+  res_q <- (
     retrieveClassificationTable(
       endpoint      = "CELLAR",
       prefix        = "cn2022",
@@ -67,7 +58,7 @@ if(at_home()){
   
   
   
-  df_all <- skip_if_endpoint_unreachable(
+  df_all <- (
     retrieveClassificationTable(
       endpoint      = "CELLAR",
       prefix        = "cn2022",
@@ -78,7 +69,7 @@ if(at_home()){
     )
   )
   
-  df_2 <- skip_if_endpoint_unreachable(
+  df_2 <- (
     retrieveClassificationTable(
       endpoint      = "CELLAR",
       prefix        = "cn2022",

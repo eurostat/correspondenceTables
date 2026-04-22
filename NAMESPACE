@@ -2,11 +2,8 @@
 
 export(aggregateCorrespondenceTable)
 export(analyseCorrespondenceTable)
-export(classEndpoint)
-export(classificationEndpoint)
 export(classificationList)
 export(classificationQC)
-export(correspondenceList)
 export(correspondenceTableList)
 export(dataStructure)
 export(newCorrespondenceTable)

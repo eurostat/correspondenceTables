@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Classification Quality Control</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Classification Quality Control</h1>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#auxiliary-tables-for-classification-validation" id="toc-auxiliary-tables-for-classification-validation">Auxiliary Tables
+for Classification Validation</a>
+<ul>
+<li><a href="#definition-of-expected-code-lengths-by-level" id="toc-definition-of-expected-code-lengths-by-level">Definition of
+expected code lengths by level</a></li>
+<li><a href="#standardising-column-names-for-the-lengths-table" id="toc-standardising-column-names-for-the-lengths-table">Standardising
+column names for the lengths table</a></li>
+<li><a href="#single-child-code-constraints" id="toc-single-child-code-constraints">Single-child code
+constraints</a></li>
+<li><a href="#sequencing-rules-between-hierarchical-levels" id="toc-sequencing-rules-between-hierarchical-levels">Sequencing rules
+between hierarchical levels</a></li>
+</ul></li>
+<li><a href="#example-1-basic-quality-control-using-hierarchy-definitions" id="toc-example-1-basic-quality-control-using-hierarchy-definitions">Example
+1: Basic quality control using hierarchy definitions</a>
+<ul>
+<li><a href="#codes-with-no-hierarchy-level-qc_nolevels" id="toc-codes-with-no-hierarchy-level-qc_nolevels">Codes with no
+hierarchy level (<code>QC_noLevels</code>)</a></li>
+<li><a href="#orphan-codes-qc_orphan" id="toc-orphan-codes-qc_orphan">Orphan codes
+(<code>QC_orphan</code>)</a></li>
+<li><a href="#childless-codes-qc_childless" id="toc-childless-codes-qc_childless">Childless codes
+(<code>QC_childless</code>)</a></li>
+</ul></li>
+<li><a href="#example-2-quality-control-with-singlechild-coding-rules" id="toc-example-2-quality-control-with-singlechild-coding-rules">Example
+2: Quality control with single‑child coding rules</a></li>
+<li><a href="#example-3-quality-control-with-sequencing-constraints" id="toc-example-3-quality-control-with-sequencing-constraints">Example
+3: Quality control with sequencing constraints</a></li>
+</ul>
+</div>
+
+<p>This vignette provides information about the functions included in
+the correspondenceTables package used to create a quality control of the
+classification</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)</span></code></pre></div>
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>Classification quality control</p>
+<p>The main function classificationQC() is designed to perform
+structural and logical quality control on hierarchical classifications.
+It returns a list of data frames, including an enriched version of the
+classification (QC_output) and additional tables flagging potential
+issues such as orphan codes, duplicate labels, or sequencing problems.
+The function takes the following arguments:</p>
+<ul>
+<li><strong>classification</strong> – a data frame containing the
+classification codes and labels.</li>
+<li><strong>lengths</strong> – a data frame defining the hierarchical
+structure of the codes using the columns charb and chare.</li>
+<li><strong>fullHierarchy</strong> – when TRUE, the function checks both
+the absence of orphan codes and the absence of childless internal nodes.
+When FALSE, no hierarchical completeness checks are performed.</li>
+<li><strong>labelUniqueness</strong> – when TRUE, checks that labels are
+unique within each hierarchical level.</li>
+<li><strong>labelHierarchy</strong> – when TRUE, checks label
+consistency between parents and children.</li>
+<li><strong>singleChildCode</strong> – an optional data frame defining
+admissible coding rules for single‑child and multiple‑child
+situations.</li>
+<li><strong>sequencing</strong> – an optional data frame defining
+admissible ordering rules for multiple‑child situations.</li>
+</ul>
+<p>The function does not write output files. Export to CSV must be
+handled explicitly by the user outside the function.</p>
+<p><strong>Requirements</strong> The following auxiliary input files are
+expected when using the arguments lengths, singleChildCode, and
+sequencing.</p>
+<p><strong>lengths</strong> The user provides a data frame with the
+headers <strong>charb and chare</strong>. If these headers are missing
+or incorrect, the function issues a warning and automatically renames
+the first two columns accordingly.</p>
+<p><strong>singleChildCode</strong> The user provides a data frame with
+the headers <strong>level, singleCode, and multipleCode</strong>. If
+these headers are missing or incorrect, the function issues a warning
+and renames the first three columns accordingly.</p>
+<p><strong>sequencing</strong> The user provides a data frame with the
+headers <strong>level and multipleCode</strong>. As with
+singleChildCode, incorrect or missing headers are automatically detected
+and corrected with a warning.</p>
+<p>In the following example, the auxiliary files are loaded to
+illustrate how the function handles both correctly and incorrectly
+specified column headers.</p>
+</div>
+<div id="auxiliary-tables-for-classification-validation" class="section level2">
+<h2>Auxiliary Tables for Classification Validation</h2>
+<p>The validation procedures rely on a small set of auxiliary tables
+that define structural constraints such as expected code lengths,
+single-child rules, and sequencing between levels.</p>
+<p>We load three auxiliary tables used for classification validation.
+Some of the raw CSV files do not use standard column names and must
+therefore be normalised explicitly.</p>
+<div id="definition-of-expected-code-lengths-by-level" class="section level3">
+<h3>Definition of expected code lengths by level</h3>
+<p>We first load the file defining the expected code lengths by level.
+This raw file does not provide meaningful column names, so we inspect
+its structure before standardisation.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>lengths <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;lenghtsNaceNoColumn.csv&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>              <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="fu">head</span>(lengths, <span class="dv">5</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Original lengths file (no meaningful column names)&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Original lengths file (no meaningful column names)</caption>
+<thead>
+<tr class="header">
+<th align="right">X1</th>
+<th align="right">X1.1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="standardising-column-names-for-the-lengths-table" class="section level3">
+<h3>Standardising column names for the lengths table</h3>
+<p>To make the table usable in validation routines, we explicitly assign
+semantic column names: level for the hierarchical level and nchar for
+the expected code length.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">colnames</span>(lengths) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;level&quot;</span>, <span class="st">&quot;nchar&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">head</span>(lengths, <span class="dv">5</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Lengths table after renaming columns&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Lengths table after renaming columns</caption>
+<thead>
+<tr class="header">
+<th align="right">level</th>
+<th align="right">nchar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="single-child-code-constraints" class="section level3">
+<h3>Single-child code constraints</h3>
+<p>The following table specifies levels where codes are expected to have
+a single child (or allow multiple children). This structure is already
+correctly formatted and can be used as-is.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>singleChildCode <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SingleChild.csv&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>              <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  singleChildCode,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Single-child code rules&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Single-child code rules</caption>
+<thead>
+<tr class="header">
+<th align="right">level</th>
+<th align="right">singleCode</th>
+<th align="right">multipleCode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sequencing-rules-between-hierarchical-levels" class="section level3">
+<h3>Sequencing rules between hierarchical levels</h3>
+<p>Finally, we normalise the sequencing table, which defines ordering
+constraints between levels. Column names are adjusted to make the
+intended structure explicit.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>sequencing <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>(<span class="st">&quot;C:/Users/mbaldacc/OneDrive - Capgemini/Projects/Correspondence Table R/updated functions/10.35/correspondenceTables-10.35/inst/extdata/Sequencing.csv&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># sequencing &lt;- read.csv(</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#   system.file(&quot;extdata&quot;, &quot;Sequencing.csv&quot;,</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#               package = &quot;correspondenceTables&quot;)</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="fu">colnames</span>(sequencing) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;level&quot;</span>, <span class="st">&quot;order&quot;</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>sequencing<span class="sc">$</span>order_short <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="fu">nchar</span>(sequencing<span class="sc">$</span>order) <span class="sc">&gt;</span> <span class="dv">12</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="fu">substr</span>(sequencing<span class="sc">$</span>order, <span class="dv">1</span>, <span class="dv">12</span>), <span class="st">&quot;...&quot;</span>),</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  sequencing<span class="sc">$</span>order</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>)</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  sequencing[, <span class="fu">c</span>(<span class="st">&quot;level&quot;</span>, <span class="st">&quot;order_short&quot;</span>)],</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Sequencing rules (order truncated for display)&quot;</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Sequencing rules (order truncated for display)</caption>
+<thead>
+<tr class="header">
+<th align="right">level</th>
+<th align="left">order_short</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">1.0203040506…</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">123456789</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">123456789</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="example-1-basic-quality-control-using-hierarchy-definitions" class="section level2">
+<h2>Example 1: Basic quality control using hierarchy definitions</h2>
+<p>The following example applies <code>classificationQC()</code> to the
+NACE Rev.2 classification using additional parameters</p>
+<p>In this example, the user provides: - a data frame containing the
+classification to be checked, and - a data frame defining the
+hierarchical structure of the classification through the
+<code>lengths</code> argument.</p>
+<p>Different parameters of the <code>classificationQC()</code> function
+are used to demonstrate how structural and logical quality checks are
+applied to the classification.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>classification <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Nace2.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>lengths <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">charb =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="at">chare =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">classificationQC</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">classification   =</span> classification,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">lengths          =</span> lengths,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">fullHierarchy    =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">labelUniqueness  =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">labelHierarchy   =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">singleChildCode  =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="at">sequencing       =</span> <span class="cn">NULL</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>qc_summary <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">Check               =</span> <span class="fu">c</span>(<span class="st">&quot;No levels&quot;</span>, <span class="st">&quot;Orphan codes&quot;</span>, <span class="st">&quot;Childless codes&quot;</span>),</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">Number_of_issues    =</span> <span class="fu">c</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    <span class="fu">nrow</span>(output<span class="sc">$</span>QC_noLevels),</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    <span class="fu">nrow</span>(output<span class="sc">$</span>QC_orphan),</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>    <span class="fu">nrow</span>(output<span class="sc">$</span>QC_childless)</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  )</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>)</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  qc_summary,</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Summary of quality control checks&quot;</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Summary of quality control checks</caption>
+<thead>
+<tr class="header">
+<th align="left">Check</th>
+<th align="right">Number_of_issues</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No levels</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Orphan codes</td>
+<td align="right">88</td>
+</tr>
+<tr class="odd">
+<td align="left">Childless codes</td>
+<td align="right">21</td>
+</tr>
+</tbody>
+</table>
+<div id="codes-with-no-hierarchy-level-qc_nolevels" class="section level3">
+<h3>Codes with no hierarchy level (<code>QC_noLevels</code>)</h3>
+<p>The following table lists classification codes that are missing a
+declared hierarchy level. Such codes cannot be placed correctly in the
+classification structure.</p>
+<p><strong>QC_noLevels</strong></p>
+<ul>
+<li>Rows: 0<br />
+</li>
+<li>Columns: 16</li>
+</ul>
+</div>
+<div id="orphan-codes-qc_orphan" class="section level3">
+<h3>Orphan codes (<code>QC_orphan</code>)</h3>
+<p>Orphan codes are codes that have no parent code at a higher
+hierarchical level. This usually indicates breaks in the hierarchical
+structure.</p>
+<p><strong>QC_orphan</strong></p>
+<ul>
+<li>Rows: 88<br />
+</li>
+<li>Columns: 18</li>
+</ul>
+<table>
+<caption>First 5 rows (first 7 columns)</caption>
+<colgroup>
+<col width="0%" />
+<col width="0%" />
+<col width="6%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="26%" />
+<col width="64%" />
+<col width="0%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Code</th>
+<th align="left">Label</th>
+<th align="right">Level</th>
+<th align="left">Parent</th>
+<th align="left">Include</th>
+<th align="left">Include_Also</th>
+<th align="left">Exclude</th>
+<th align="right">level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">01</td>
+<td align="left">Crop and animal production, hunting and related service
+activities</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">This division also includes service activities
+incidental to agriculture, as well as hunting, trapping and related
+activities.</td>
+<td align="left">Agricultural activities exclude any subsequent
+processing of the agricultural products (classified under divisions 10
+and 11 (Manufacture of food products and beverages) and division 12
+(Manufacture of tobacco products)), beyond that needed to prepare them
+for the primary markets. The preparation of products for the primary
+markets is included here. The division excludes field construction
+(e.g. agricultural land terracing, drainage, preparing rice paddies
+etc.) classified in section F (Construction) and buyers and cooperative
+associations engaged in the marketing of farm products classified in
+section G. Also excluded is the landscape care and maintenance, which is
+classified in class 81.30.</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="left">02</td>
+<td align="left">Forestry and logging</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Excluded is further processing of wood beginning with
+sawmilling and planing of wood, see division 16.</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">49</td>
+<td align="left">03</td>
+<td align="left">Fishing and aquaculture</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">Also included are activities that are normally
+integrated in the process of production for own account (e.g. seeding
+oysters for pearl production). Service activities incidental to marine
+or freshwater fishery or aquaculture are included in the related fishing
+or aquaculture activities.</td>
+<td align="left">This division does not include building and repairing
+of ships and boats (30.1, 33.15) and sport or recreational fishing
+activities (93.19). Processing of fish, crustaceans or molluscs is
+excluded, whether at land-based plants or on factory ships (10.20).</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">56</td>
+<td align="left">05</td>
+<td align="left">Mining of coal and lignite</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This division does not include coking (see 19.10),
+services incidental to coal or lignite mining (see 09.90) or the
+manufacture of briquettes (see 19.20).</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">61</td>
+<td align="left">06</td>
+<td align="left">Extraction of crude petroleum and natural gas</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This division excludes: - oil and gas field services,
+performed on a fee or contract basis, see 09.10 - oil and gas well
+exploration, see 09.10 - test drilling and boring, see 09.10 - refining
+of petroleum products, see 19.20 - geophysical, geologic and seismic
+surveying, see 71.12</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="childless-codes-qc_childless" class="section level3">
+<h3>Childless codes (<code>QC_childless</code>)</h3>
+<p>Childless codes are codes that have no descendants at lower
+hierarchical levels. This can be expected at the lowest level of a
+classification, but may indicate structural issues at higher levels.</p>
+<p><strong>QC_childless</strong></p>
+<ul>
+<li>Rows: 21<br />
+</li>
+<li>Columns: 19</li>
+</ul>
+<table>
+<caption>First 5 rows (first 7 columns)</caption>
+<colgroup>
+<col width="0%" />
+<col width="0%" />
+<col width="9%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="23%" />
+<col width="61%" />
+<col width="0%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Code</th>
+<th align="left">Label</th>
+<th align="right">Level</th>
+<th align="left">Parent</th>
+<th align="left">Include</th>
+<th align="left">Include_Also</th>
+<th align="left">Exclude</th>
+<th align="right">level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">976</td>
+<td align="left">A</td>
+<td align="left">AGRICULTURE, FORESTRY AND FISHING</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">977</td>
+<td align="left">B</td>
+<td align="left">MINING AND QUARRYING</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This section excludes: - processing of the extracted
+materials, see section C (Manufacturing) - usage of the extracted
+materials without a further transformation for construction purposes,
+see section F (Construction) - bottling of natural spring and mineral
+waters at springs and wells, see 11.07 - crushing, grinding or otherwise
+treating certain earths, rocks and minerals not carried on in
+conjunction with mining and quarrying, see 23.9</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">978</td>
+<td align="left">C</td>
+<td align="left">MANUFACTURING</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">979</td>
+<td align="left">D</td>
+<td align="left">ELECTRICITY, GAS, STEAM AND AIR CONDITIONING
+SUPPLY</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Also included is the provision of steam and
+air-conditioning supply.</td>
+<td align="left">This section excludes the operation of water and
+sewerage utilities, see 36, 37. This section also excludes the
+(typically long-distance) transport of gas through pipelines.</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">980</td>
+<td align="left">E</td>
+<td align="left">WATER SUPPLY; SEWERAGE, WASTE MANAGEMENT AND
+REMEDIATION ACTIVITIES</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Activities of water supply are also grouped in this
+section, since they are often carried out in connection with, or by
+units also engaged in, the treatment of sewage.</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Full hierarchy</strong></p>
+<p>When <code>fullHierarchy = TRUE</code>, the function checks the
+completeness of the hierarchical structure by applying two rules:</p>
+<ul>
+<li><p><strong>Orphan check</strong>:<br />
+A new field in the QC output, named <code>orphan</code>, takes the value
+1 for positions at hierarchical level <em>j &gt; 1</em> that lack a
+parent at the immediately higher level (<em>j − 1</em>), and 0
+otherwise.</p></li>
+<li><p><strong>Childless check</strong>:<br />
+A new field in the QC output, named <code>childless</code>, takes the
+value 1 for positions at hierarchical level <em>j &lt; k</em> that lack
+a child at the immediately lower level (<em>j + 1</em>), and 0
+otherwise.</p></li>
+</ul>
+<p>When <code>fullHierarchy = FALSE</code>, no hierarchical completeness
+checks (neither orphan nor childless) are performed.</p>
+<hr />
+<p>The <strong>labelUniqueness</strong> argument (default value:
+<code>TRUE</code>) indicates whether compliance with label uniqueness is
+tested.<br />
+The test outcome is reported in a new QC output column,
+<code>duplicateLabel</code>, which takes the value 1 for positions
+involved in duplicate labels within the same hierarchical level, and 0
+otherwise.</p>
+<hr />
+<p>The <strong>labelHierarchy</strong> argument (default value:
+<code>TRUE</code>) indicates whether label consistency between parents
+and children is tested.<br />
+The test outcome is reported in a new QC output column,
+<code>singleChildMismatch</code>, for hierarchical levels <em>j &gt;
+1</em> (with no value at the highest level):</p>
+<ul>
+<li>value <strong>1</strong> indicates a single child whose label does
+not match that of its parent;</li>
+<li>value <strong>9</strong> indicates a child whose label matches that
+of its parent without being a single child;</li>
+<li>value <strong>0</strong> indicates compliance.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="example-2-quality-control-with-singlechild-coding-rules" class="section level2">
+<h2>Example 2: Quality control with single‑child coding rules</h2>
+<p>The following example illustrates the quality control of the NACE
+Rev.2 classification from CELLAR using additional parameters, including
+the <code>singleChildCode</code> argument.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>singleChildCode <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SingleChild.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>output2 <span class="ot">&lt;-</span> <span class="fu">classificationQC</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="at">classification   =</span> classification,</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="at">lengths          =</span> lengths,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="at">fullHierarchy    =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  <span class="at">labelUniqueness  =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  <span class="at">labelHierarchy   =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="at">singleChildCode  =</span> singleChildCode,</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>  <span class="at">sequencing       =</span> <span class="cn">NULL</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>)</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#head(output2$QC_orphan[, c(&quot;Code&quot;, &quot;Parent&quot;, &quot;level&quot;)])  </span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#head(output2$QC_noLevels)</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#head(output2$QC_childless)  </span></span></code></pre></div>
+<p>This table lists orphan codes, i.e. codes that do not have a valid
+parent at the immediately higher hierarchical level.</p>
+<p><strong>QC_orphan</strong></p>
+<ul>
+<li>Rows: 88<br />
+</li>
+<li>Columns: 18</li>
+</ul>
+<table>
+<caption>First 5 rows (first 7 columns)</caption>
+<colgroup>
+<col width="0%" />
+<col width="0%" />
+<col width="6%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="26%" />
+<col width="64%" />
+<col width="0%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Code</th>
+<th align="left">Label</th>
+<th align="right">Level</th>
+<th align="left">Parent</th>
+<th align="left">Include</th>
+<th align="left">Include_Also</th>
+<th align="left">Exclude</th>
+<th align="right">level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">01</td>
+<td align="left">Crop and animal production, hunting and related service
+activities</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">This division also includes service activities
+incidental to agriculture, as well as hunting, trapping and related
+activities.</td>
+<td align="left">Agricultural activities exclude any subsequent
+processing of the agricultural products (classified under divisions 10
+and 11 (Manufacture of food products and beverages) and division 12
+(Manufacture of tobacco products)), beyond that needed to prepare them
+for the primary markets. The preparation of products for the primary
+markets is included here. The division excludes field construction
+(e.g. agricultural land terracing, drainage, preparing rice paddies
+etc.) classified in section F (Construction) and buyers and cooperative
+associations engaged in the marketing of farm products classified in
+section G. Also excluded is the landscape care and maintenance, which is
+classified in class 81.30.</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="left">02</td>
+<td align="left">Forestry and logging</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Excluded is further processing of wood beginning with
+sawmilling and planing of wood, see division 16.</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">49</td>
+<td align="left">03</td>
+<td align="left">Fishing and aquaculture</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">Also included are activities that are normally
+integrated in the process of production for own account (e.g. seeding
+oysters for pearl production). Service activities incidental to marine
+or freshwater fishery or aquaculture are included in the related fishing
+or aquaculture activities.</td>
+<td align="left">This division does not include building and repairing
+of ships and boats (30.1, 33.15) and sport or recreational fishing
+activities (93.19). Processing of fish, crustaceans or molluscs is
+excluded, whether at land-based plants or on factory ships (10.20).</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">56</td>
+<td align="left">05</td>
+<td align="left">Mining of coal and lignite</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This division does not include coking (see 19.10),
+services incidental to coal or lignite mining (see 09.90) or the
+manufacture of briquettes (see 19.20).</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">61</td>
+<td align="left">06</td>
+<td align="left">Extraction of crude petroleum and natural gas</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This division excludes: - oil and gas field services,
+performed on a fee or contract basis, see 09.10 - oil and gas well
+exploration, see 09.10 - test drilling and boring, see 09.10 - refining
+of petroleum products, see 19.20 - geophysical, geologic and seismic
+surveying, see 71.12</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<p>This table identifies classification codes for which no hierarchical
+level could be determined</p>
+<p><strong>QC_noLevels</strong></p>
+<ul>
+<li>Rows: 0<br />
+</li>
+<li>Columns: 16</li>
+</ul>
+<p>This table lists childless codes, i.e. codes that have no descendants
+at the immediately lower hierarchical level</p>
+<p><strong>QC_childless</strong></p>
+<ul>
+<li>Rows: 21<br />
+</li>
+<li>Columns: 19</li>
+</ul>
+<table>
+<caption>First 10 rows (first 7 columns)</caption>
+<colgroup>
+<col width="0%" />
+<col width="0%" />
+<col width="9%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="28%" />
+<col width="57%" />
+<col width="0%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Code</th>
+<th align="left">Label</th>
+<th align="right">Level</th>
+<th align="left">Parent</th>
+<th align="left">Include</th>
+<th align="left">Include_Also</th>
+<th align="left">Exclude</th>
+<th align="right">level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">976</td>
+<td align="left">A</td>
+<td align="left">AGRICULTURE, FORESTRY AND FISHING</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">977</td>
+<td align="left">B</td>
+<td align="left">MINING AND QUARRYING</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This section excludes: - processing of the extracted
+materials, see section C (Manufacturing) - usage of the extracted
+materials without a further transformation for construction purposes,
+see section F (Construction) - bottling of natural spring and mineral
+waters at springs and wells, see 11.07 - crushing, grinding or otherwise
+treating certain earths, rocks and minerals not carried on in
+conjunction with mining and quarrying, see 23.9</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">978</td>
+<td align="left">C</td>
+<td align="left">MANUFACTURING</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">979</td>
+<td align="left">D</td>
+<td align="left">ELECTRICITY, GAS, STEAM AND AIR CONDITIONING
+SUPPLY</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Also included is the provision of steam and
+air-conditioning supply.</td>
+<td align="left">This section excludes the operation of water and
+sewerage utilities, see 36, 37. This section also excludes the
+(typically long-distance) transport of gas through pipelines.</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">980</td>
+<td align="left">E</td>
+<td align="left">WATER SUPPLY; SEWERAGE, WASTE MANAGEMENT AND
+REMEDIATION ACTIVITIES</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Activities of water supply are also grouped in this
+section, since they are often carried out in connection with, or by
+units also engaged in, the treatment of sewage.</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">981</td>
+<td align="left">F</td>
+<td align="left">CONSTRUCTION</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This section also includes the development of building
+projects for buildings or civil engineering works by bringing together
+financial, technical and physical means to realise the construction
+projects for later sale.</td>
+<td align="left">If these activities are carried out not for later sale
+of the construction projects, but for their operation (e.g. rental of
+space in these buildings, manufacturing activities in these plants), the
+unit would not be classified here, but according to its operational
+activity, i.e. real estate, manufacturing etc.</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">982</td>
+<td align="left">G</td>
+<td align="left">WHOLESALE AND RETAIL TRADE; REPAIR OF MOTOR VEHICLES
+AND MOTORCYCLES</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">983</td>
+<td align="left">H</td>
+<td align="left">TRANSPORTATION AND STORAGE</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This section excludes: - major repair or alteration of
+transport equipment, except motor vehicles, see group 33.1 -
+construction, maintenance and repair of roads, railways, harbours,
+airfields, see division 42 - maintenance and repair of motor vehicles,
+see 45.20 - rental of transport equipment without driver or operator,
+see 77.1, 77.3</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">984</td>
+<td align="left">I</td>
+<td align="left">ACCOMMODATION AND FOOD SERVICE ACTIVITIES</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This section excludes the provision of long-term
+accommodation as primary residences, which is classified in real estate
+activities (section L). Also excluded is the preparation of food or
+drinks that are either not fit for immediate consumption or that are
+sold through independent distribution channels, i.e. through wholesale
+or retail trade activities. The preparation of these foods is classified
+in manufacturing (section C).</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">985</td>
+<td align="left">J</td>
+<td align="left">INFORMATION AND COMMUNICATION</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="example-3-quality-control-with-sequencing-constraints" class="section level2">
+<h2>Example 3: Quality control with sequencing constraints</h2>
+<p>In this final example, the <code>sequencing</code> parameter is used
+to check the ordering of multiple children within the hierarchy.</p>
+<p>Sequencing rules are applied at hierarchical levels 3 and 4, as
+specified in the <code>sequencing</code> input table.<br />
+At these levels, the function verifies that codes corresponding to
+multiple children follow the expected order and flags potential gaps or
+inconsistencies in the sequence.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="do">## Example: use of sequencing at levels 3 and 4</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>singleChildCode <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SingleChild2.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>sequencing <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">level =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>),</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">multipleCode =</span> <span class="fu">c</span>(<span class="st">&quot;123&quot;</span>, <span class="st">&quot;123&quot;</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>output3 <span class="ot">&lt;-</span> <span class="fu">classificationQC</span>(</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>  <span class="at">classification   =</span> classification, </span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="at">lengths          =</span> lengths,</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="at">fullHierarchy    =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="at">labelUniqueness  =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="at">labelHierarchy   =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  <span class="at">singleChildCode  =</span> singleChildCode,</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>  <span class="at">sequencing       =</span> sequencing</span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>)</span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#head(output3$QC_output)</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#head(output3$QC_gapBefore)</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#head(output3$QC_lastSibling)</span></span></code></pre></div>
+<p>This table identifies gaps in the expected sequence of sibling codes
+within the same parent</p>
+<p><strong>QC_gapBefore</strong></p>
+<ul>
+<li>Rows: 0<br />
+</li>
+<li>Columns: 25</li>
+</ul>
+<p>This table lists the last sibling codes within each group of
+children, used to assess sequencing completeness</p>
+<p><strong>QC_lastSibling</strong></p>
+<ul>
+<li>Rows: 0<br />
+</li>
+<li>Columns: 25</li>
+</ul>
+<p>This table contains the full classification enriched with all
+quality‑control flags produced by the checks</p>
+<p><strong>QC_output</strong></p>
+<ul>
+<li>Rows: 996<br />
+</li>
+<li>Columns: 25</li>
+</ul>
+<table>
+<caption>First 10 rows (first 7 columns)</caption>
+<colgroup>
+<col width="0%" />
+<col width="7%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="13%" />
+<col width="75%" />
+<col width="0%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">nace2</th>
+<th align="left">Label</th>
+<th align="right">Level</th>
+<th align="left">Parent</th>
+<th align="left">Include</th>
+<th align="left">Include_Also</th>
+<th align="left">Exclude</th>
+<th align="right">level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01</td>
+<td align="left">Crop and animal production, hunting and related service
+activities</td>
+<td align="right">2</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">This division also includes service activities
+incidental to agriculture, as well as hunting, trapping and related
+activities.</td>
+<td align="left">Agricultural activities exclude any subsequent
+processing of the agricultural products (classified under divisions 10
+and 11 (Manufacture of food products and beverages) and division 12
+(Manufacture of tobacco products)), beyond that needed to prepare them
+for the primary markets. The preparation of products for the primary
+markets is included here. The division excludes field construction
+(e.g. agricultural land terracing, drainage, preparing rice paddies
+etc.) classified in section F (Construction) and buyers and cooperative
+associations engaged in the marketing of farm products classified in
+section G. Also excluded is the landscape care and maintenance, which is
+classified in class 81.30.</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">01.1</td>
+<td align="left">Growing of non-perennial crops</td>
+<td align="right">3</td>
+<td align="left">01</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">01.11</td>
+<td align="left">Growing of cereals (except rice), leguminous crops and
+oil seeds</td>
+<td align="right">4</td>
+<td align="left">01.1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This class excludes: - growing of rice, see 01.12 -
+growing of sweet corn, see 01.13 - growing of maize for fodder, see
+01.19 - growing of oleaginous fruits, see 01.26</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">01.12</td>
+<td align="left">Growing of rice</td>
+<td align="right">4</td>
+<td align="left">01.1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">01.13</td>
+<td align="left">Growing of vegetables and melons, roots and tubers</td>
+<td align="right">4</td>
+<td align="left">01.1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This class excludes: - growing of chillies, peppers
+(capsicum sop.) and other spices and aromatic crops, see 01.28 - growing
+of mushroom spawn, see 01.30</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">01.14</td>
+<td align="left">Growing of sugar cane</td>
+<td align="right">4</td>
+<td align="left">01.1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This class excludes: - growing of sugar beet, see
+01.13</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">01.15</td>
+<td align="left">Growing of tobacco</td>
+<td align="right">4</td>
+<td align="left">01.1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This class excludes: - manufacture of tobacco products,
+see 12.00</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">01.16</td>
+<td align="left">Growing of fibre crops</td>
+<td align="right">4</td>
+<td align="left">01.1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">01.19</td>
+<td align="left">Growing of other non-perennial crops</td>
+<td align="right">4</td>
+<td align="left">01.1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">This class excludes: - growing of non-perennial spices,
+aromatic, drug and pharmaceutical crops, see 01.28</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">01.2</td>
+<td align="left">Growing of perennial crops</td>
+<td align="right">3</td>
+<td align="left">01</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

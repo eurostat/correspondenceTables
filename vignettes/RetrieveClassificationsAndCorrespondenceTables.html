@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Retrieve classifications and correspondence tables stored as Linked Open Data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Retrieve classifications and correspondence
+tables stored as Linked Open Data</h1>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#discovering-available-data" id="toc-discovering-available-data">Discovering available data</a>
+<ul>
+<li><a href="#gathering-information-necessary-for-classification-retrieval" id="toc-gathering-information-necessary-for-classification-retrieval">Gathering
+information necessary for classification retrieval</a></li>
+<li><a href="#example-1-available-classifications-cellar" id="toc-example-1-available-classifications-cellar">Example 1: Available
+classifications (CELLAR)</a></li>
+</ul></li>
+<li><a href="#inspecting-the-structure-of-hierarchical-classifications" id="toc-inspecting-the-structure-of-hierarchical-classifications">Inspecting
+the structure of hierarchical classifications</a>
+<ul>
+<li><a href="#example-2-classification-structure-nace-rev.-2-cellar" id="toc-example-2-classification-structure-nace-rev.-2-cellar">Example
+2: Classification structure (NACE Rev. 2, CELLAR)</a></li>
+<li><a href="#example-3-classification-structure-cpc2.1-fao" id="toc-example-3-classification-structure-cpc2.1-fao">Example 3:
+classification structure (CPC2.1, FAO)</a></li>
+</ul></li>
+<li><a href="#retrieving-classification-tables" id="toc-retrieving-classification-tables">Retrieving classification
+tables</a>
+<ul>
+<li><a href="#example-4-classlevel-nace-rev.-2-in-multiple-languages" id="toc-example-4-classlevel-nace-rev.-2-in-multiple-languages">Example
+4: Class‑level NACE Rev. 2 in multiple languages</a></li>
+<li><a href="#example-5-fao-classification-at-group-level" id="toc-example-5-fao-classification-at-group-level">Example 5: FAO
+classification at group level</a></li>
+<li><a href="#retrieving-a-classification-table-from-the-fao-endpoint" id="toc-retrieving-a-classification-table-from-the-fao-endpoint">Retrieving
+a classification table from the FAO endpoint</a></li>
+</ul></li>
+<li><a href="#retrieving-correspondence-tables" id="toc-retrieving-correspondence-tables">Retrieving correspondence
+tables</a>
+<ul>
+<li><a href="#example-6-available-correspondence-tables" id="toc-example-6-available-correspondence-tables">Example 6: Available
+correspondence tables</a></li>
+<li><a href="#inspect-available-correspondence-tables-cellar" id="toc-inspect-available-correspondence-tables-cellar">Inspect
+available correspondence tables (CELLAR)</a></li>
+<li><a href="#example-7-retrieve-a-correspondence-table-from-cellar" id="toc-example-7-retrieve-a-correspondence-table-from-cellar">Example
+7: Retrieve a correspondence table from CELLAR</a></li>
+<li><a href="#inspect-available-correspondence-tables-fao" id="toc-inspect-available-correspondence-tables-fao">Inspect available
+correspondence tables (FAO)</a></li>
+<li><a href="#example-8-retrieve-a-correspondence-table-from-fao-cpc-2.1-isic-rev.-4" id="toc-example-8-retrieve-a-correspondence-table-from-fao-cpc-2.1-isic-rev.-4">Example
+8: Retrieve a correspondence table from FAO: <em>CPC 2.1 : ISIC
+Rev. 4</em></a></li>
+<li><a href="#optional-inspect-the-underlying-sparql-query" id="toc-optional-inspect-the-underlying-sparql-query">(Optional) Inspect
+the underlying SPARQL query</a></li>
+</ul></li>
+<li><a href="#summary" id="toc-summary">Summary</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>Statistical classifications and correspondence tables are published
+as Linked Open Data (LOD) by several organisations, notably the
+Publications Office of the European Union (OP, via CELLAR) and the Food
+and Agriculture Organization (FAO).</p>
+<p>While these resources can be accessed directly using SPARQL, this
+requires specific technical expertise. The
+<strong>correspondenceTables</strong> package provides high‑level R
+functions that allow users to retrieve these data as standard R data
+frames, without writing SPARQL queries themselves.</p>
+<p>Two core retrieval functions are provided:</p>
+<ul>
+<li><code>retrieveClassificationTable()</code>: retrieves the structure
+of a statistical classification (codes, labels, hierarchy).</li>
+<li><code>retrieveCorrespondenceTable()</code>: retrieves a
+correspondence (mapping) table between two classifications.</li>
+</ul>
+<p>Optionally, both functions can return the SPARQL query used for the
+retrieval, making the process transparent, inspectable, and
+reproducible.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)</span></code></pre></div>
+</div>
+<div id="discovering-available-data" class="section level2">
+<h2>Discovering available data</h2>
+<p>Before using the core retrieval functions
+retrieveClassificationTable() and retrieveCorrespondenceTable(), it is
+necessary to know what can be retrieved and how it is identified. In
+practice, this means answering the following questions:</p>
+<ul>
+<li>Which classifications or correspondence tables are available?</li>
+<li>From which endpoint (CELLAR or FAO)?</li>
+<li>Which identifiers (prefix, conceptScheme, ID_table) should be
+used?</li>
+<li>For hierarchical classifications, which levels are available?</li>
+</ul>
+<p>The package provides lightweight discovery utilities to support this
+step.</p>
+<div id="gathering-information-necessary-for-classification-retrieval" class="section level3">
+<h3>Gathering information necessary for classification retrieval</h3>
+<p>To retrieve a statistical classification, users first need to know
+which classifications are available at a given endpoint and how they are
+identified. The <code>classificationList()</code> utility provides this
+information.</p>
+</div>
+<div id="example-1-available-classifications-cellar" class="section level3">
+<h3>Example 1: Available classifications (CELLAR)</h3>
+<p>The example below illustrates the typical output structure using a
+static snapshot of the CELLAR classification list bundled with the
+package. To retrieve the updated information about the available
+classifications, the user just need to execute the
+<code>classificationList()</code> function, which will retrieve a data
+frame with all the available classification in a selected endpoint.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>list_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;classificationList_CELLAR.csv&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>              <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="fu">head</span>(list_data, <span class="dv">3</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Example output of classificationList()&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Example output of classificationList()</caption>
+<colgroup>
+<col width="5%" />
+<col width="8%" />
+<col width="29%" />
+<col width="50%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Prefix</th>
+<th align="left">ConceptScheme</th>
+<th align="left">URI</th>
+<th align="left">Title</th>
+<th align="left">Languages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ACL 2018</td>
+<td align="left">acl2018</td>
+<td align="left"><a href="http://data.europa.eu/b8y/timeuse2018/acl2018" class="uri">http://data.europa.eu/b8y/timeuse2018/acl2018</a></td>
+<td align="left">Activity coding list for harmonised European time use
+surveys, 2018 (ACL 2018)</td>
+<td align="left">en</td>
+</tr>
+<tr class="even">
+<td align="left">CBF</td>
+<td align="left">cbf</td>
+<td align="left"><a href="http://data.europa.eu/38u/cbf1.0/cbf" class="uri">http://data.europa.eu/38u/cbf1.0/cbf</a></td>
+<td align="left">Classification of Business Functions (CBF)</td>
+<td align="left">en</td>
+</tr>
+<tr class="odd">
+<td align="left">CEP</td>
+<td align="left">cep</td>
+<td align="left"><a href="http://data.europa.eu/4k9/cep/cep" class="uri">http://data.europa.eu/4k9/cep/cep</a></td>
+<td align="left">Classification of Environmental Purposes (CEP)</td>
+<td align="left">en</td>
+</tr>
+</tbody>
+</table>
+<p>For each classification, three identifiers are required to retrieve
+the data:</p>
+<ul>
+<li>endpoint: “CELLAR” or “FAO”</li>
+<li>prefix: namespace prefix used in the SPARQL endpoint</li>
+<li>conceptScheme: unique identifier of the classification</li>
+</ul>
+<p>For example, the NACE Rev. 2 classification:</p>
+<ul>
+<li>is available from the CELLAR repository,<br />
+</li>
+<li>uses prefix “nace2”,</li>
+<li>uses concept scheme “nace2”.</li>
+</ul>
+</div>
+</div>
+<div id="inspecting-the-structure-of-hierarchical-classifications" class="section level2">
+<h2>Inspecting the structure of hierarchical classifications</h2>
+<p>Many statistical classifications are hierarchical. If only a specific
+level is required (e.g. divisions or classes), it is recommended to
+inspect the classification structure first. The dataStructure() function
+provides this information.</p>
+<div id="example-2-classification-structure-nace-rev.-2-cellar" class="section level3">
+<h3>Example 2: Classification structure (NACE Rev. 2, CELLAR)</h3>
+<p>The following call illustrates how to inspect the structure of NACE
+Rev. 2. It is shown for documentation purposes and not executed during
+vignette rendering to avoid reliance on live SPARQL endpoints.</p>
+<p>Inspecting a classification structure from CELLAR (NACE Rev. 2)</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>endpoint <span class="ot">&lt;-</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>prefix <span class="ot">&lt;-</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>conceptScheme <span class="ot">&lt;-</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>ds <span class="ot">&lt;-</span> <span class="fu">dataStructure</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">endpoint =</span> endpoint,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="at">prefix =</span> prefix,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="at">conceptScheme =</span> conceptScheme,</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="at">language =</span> <span class="st">&quot;en&quot;</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">showQuery =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>For <strong>NACE Rev. 2</strong>, four hierarchical levels are
+available:</p>
+<ol style="list-style-type: decimal">
+<li>Sections<br />
+</li>
+<li>Divisions<br />
+</li>
+<li>Groups<br />
+</li>
+<li>Classes</li>
+</ol>
+<p>If the required level is already known, this inspection step can be
+skipped.</p>
+</div>
+<div id="example-3-classification-structure-cpc2.1-fao" class="section level3">
+<h3>Example 3: classification structure (CPC2.1, FAO)</h3>
+<p>The same approach can be used for FAO classifications.<br />
+The example below illustrates how to inspect the structure of
+<strong>CPC2.1</strong>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>endpoint <span class="ot">&lt;-</span> <span class="st">&quot;FAO&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>prefix <span class="ot">&lt;-</span> <span class="st">&quot;CPC21&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>conceptScheme <span class="ot">&lt;-</span> <span class="st">&quot;CPC21&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>ds_cpc <span class="ot">&lt;-</span> <span class="fu">dataStructure</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">endpoint =</span> endpoint,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">prefix =</span> prefix,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">conceptScheme =</span> conceptScheme,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">language =</span> <span class="st">&quot;en&quot;</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">showQuery =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>As with classifications retrieved from CELLAR, the output describes
+the hierarchical organisation of the classification and the levels
+available for retrieval.</p>
+<p>If the required level is already known in advance, this inspection
+step can be skipped.</p>
+</div>
+</div>
+<div id="retrieving-classification-tables" class="section level2">
+<h2>Retrieving classification tables</h2>
+<p>Once the classification identifiers and (optionally) the desired
+level are known, the <code>retrieveClassificationTable()</code> function
+can be used to retrieve the data.</p>
+<p>The function returns a flat data frame suitable for:</p>
+<ul>
+<li>browsing and documentation;</li>
+<li>validation of codes and hierarchy;</li>
+<li>downstream correspondence analysis.</li>
+</ul>
+<p><strong>Main arguments</strong></p>
+<ul>
+<li><code>endpoint</code>: <code>&quot;CELLAR&quot;</code> or
+<code>&quot;FAO&quot;</code></li>
+<li><code>prefix</code></li>
+<li><code>conceptScheme</code></li>
+<li><code>language</code> (default: <code>&quot;en&quot;</code>)</li>
+<li><code>level</code> (default: <code>&quot;ALL&quot;</code>)</li>
+<li><code>showQuery</code> (logical)</li>
+</ul>
+<div id="example-4-classlevel-nace-rev.-2-in-multiple-languages" class="section level3">
+<h3>Example 4: Class‑level NACE Rev. 2 in multiple languages</h3>
+<p>The following example demonstrates how to retrieve level‑4 (“class”)
+data for the German, French, and Bulgarian versions of <strong>NACE
+Rev. 2</strong>. The code is <strong>not executed</strong> during
+vignette rendering.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>endpoint <span class="ot">&lt;-</span> <span class="st">&quot;CELLAR&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>prefix <span class="ot">&lt;-</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>conceptScheme <span class="ot">&lt;-</span> <span class="st">&quot;nace2&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>level <span class="ot">&lt;-</span> <span class="st">&quot;4&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>languages <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;de&quot;</span>, <span class="st">&quot;fr&quot;</span>, <span class="st">&quot;bg&quot;</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(languages, <span class="cf">function</span>(lang) {</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">retrieveClassificationTable</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="at">endpoint =</span> endpoint,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="at">prefix =</span> prefix,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    <span class="at">conceptScheme =</span> conceptScheme,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="at">language =</span> lang,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="at">level =</span> level,</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    <span class="at">showQuery =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  )</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="example-5-fao-classification-at-group-level" class="section level3">
+<h3>Example 5: FAO classification at group level</h3>
+<p>The FAO endpoint provides access to a limited subset of international
+classifications. Availability depends on the endpoint configuration.</p>
+<p>The following example illustrates how a FAO classification
+<em>would</em> be retrieved. The code is not executed during vignette
+rendering.</p>
+<p>This call queries the FAO repository and returns metadata describing
+all published classification schemes (prefix, concept scheme, title,
+etc.).</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>cl_fao <span class="ot">&lt;-</span> <span class="fu">classificationList</span>(<span class="st">&quot;FAO&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">head</span>(cl_fao),</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Retrieving a classification table from the FAO endpoint&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>Inspect available prefix identifiers</strong></p>
+<p>The Prefix field identifies the catalogue or namespace under which
+each FAO classification is published.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">head</span>(<span class="fu">unique</span>(cl_fao<span class="sc">$</span>Prefix)))</span></code></pre></div>
+<p><strong>Inspect available concept schemes</strong></p>
+<p>The ConceptScheme field identifies the underlying classification
+schemes that can be queried using retrieveClassificationTable().</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">head</span>(<span class="fu">unique</span>(cl_fao<span class="sc">$</span>ConceptScheme)))</span></code></pre></div>
+</div>
+<div id="retrieving-a-classification-table-from-the-fao-endpoint" class="section level3">
+<h3>Retrieving a classification table from the FAO endpoint</h3>
+<p>The following example illustrates how to retrieve a classification
+from the FAO repository using retrieveClassificationTable(). Because FAO
+data availability and response times may vary, this example is shown for
+documentation purposes and is not executed in the vignette.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>endpoint <span class="ot">&lt;-</span> <span class="st">&quot;FAO&quot;</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>prefix <span class="ot">&lt;-</span> <span class="st">&quot;cpc21&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>conceptScheme <span class="ot">&lt;-</span> <span class="st">&quot;core&quot;</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">retrieveClassificationTable</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">endpoint      =</span> endpoint,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">prefix        =</span> prefix,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">conceptScheme =</span> conceptScheme,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">language      =</span> <span class="st">&quot;en&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">level         =</span> <span class="st">&quot;2&quot;</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  <span class="at">showQuery     =</span> <span class="cn">TRUE</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>)</span></code></pre></div>
+<p>The FAO endpoint provides access to selected international and
+domain‑specific classifications maintained by FAO. Not all CELLAR
+classifications are available via FAO, and viceversa.</p>
+</div>
+</div>
+<div id="retrieving-correspondence-tables" class="section level2">
+<h2>Retrieving correspondence tables</h2>
+<p><strong>Gathering information necessary for correspondence table
+retrieval</strong></p>
+<p>Before retrieving a correspondence table, users need to identify
+which correspondences are available and how they are referenced at a
+given SPARQL endpoint. The <code>correspondenceTableList()</code>
+utility serves this purpose. It is analogous to
+<code>classificationList()</code>, but lists correspondence tables
+instead of classifications.</p>
+<div id="example-6-available-correspondence-tables" class="section level3">
+<h3>Example 6: Available correspondence tables</h3>
+<p>The following example illustrates how to list correspondence tables
+available from the CELLAR and FAO repositories. It is shown for
+documentation purposes and not executed during vignette rendering to
+avoid reliance on live external SPARQL endpoints.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>corr_list <span class="ot">=</span> <span class="fu">correspondenceTableList</span>(<span class="st">&quot;ALL&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="fu">names</span>(corr_list)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#Correspondence tables available from CELLAR</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="fu">head</span>(corr_list<span class="sc">$</span>CELLAR, <span class="dv">10</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Available correspondence tables from the CELLAR endpoint (preview)&quot;</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>)</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#Correspondence tables available from FAO</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  <span class="fu">head</span>(corr_list<span class="sc">$</span>FAO, <span class="dv">10</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Available correspondence tables from the FAO endpoint (preview)&quot;</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>)</span></code></pre></div>
+<p>When executed interactively, this call returns a list whose elements
+correspond to the selected endpoints (e.g. <code>CELLAR</code>,
+<code>FAO</code>). Each element is a data frame describing the available
+correspondence tables, including their identifiers, associated prefixes,
+and human-readable labels.</p>
+<p>Each correspondence table is identified by:</p>
+<ul>
+<li><strong>endpoint</strong>: <code>&quot;CELLAR&quot;</code> or
+<code>&quot;FAO&quot;</code></li>
+<li><strong>prefix</strong>: namespace associated with the source
+classification</li>
+<li><strong>ID_table</strong>: unique identifier of the correspondence
+table</li>
+</ul>
+<p><strong>Retrieving correspondence tables</strong></p>
+<p>The <code>retrieveCorrespondenceTable()</code> function retrieves a
+correspondence (mapping) table between two statistical classifications
+from a SPARQL endpoint. Its interface is similar to
+<code>retrieveClassificationTable()</code>, with the main difference
+that correspondence tables are identified using <code>ID_table</code>
+(instead of <code>conceptScheme</code>). Correspondence tables are
+usually provided at the most granular level of the classifications
+involved.</p>
+</div>
+<div id="inspect-available-correspondence-tables-cellar" class="section level3">
+<h3>Inspect available correspondence tables (CELLAR)</h3>
+<p>The following examples illustrate how to inspect the correspondence
+tables available from the CELLAR endpoints.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Inspect correspondence tables available from CELLAR</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>tbl_cellar <span class="ot">&lt;-</span> <span class="fu">correspondenceTableList</span>(<span class="st">&quot;CELLAR&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#Correspondence tables available from CELLAR</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="fu">head</span>(tbl_cellar, <span class="dv">10</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Available correspondence tables from the CELLAR endpoint &quot;</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="example-7-retrieve-a-correspondence-table-from-cellar" class="section level3">
+<h3>Example 7: Retrieve a correspondence table from CELLAR</h3>
+<p>The following example illustrates the retrieval of a correspondence
+table published by the Publications Office of the European Union via the
+CELLAR endpoint. Users should note that the availability of
+correspondence data depends on what is currently exposed by the
+underlying SPARQL endpoint. Although a correspondence table may be
+listed by <code>correspondenceTableList()</code>, it can legitimately
+return an empty result when queried. For some CELLAR correspondences
+(including several PRODCOM‑related mappings),
+<code>retrieveCorrespondenceTable()</code> may therefore return avalid
+but empty data frame, which does not indicate a failure of the retrieval
+process.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">retrieveCorrespondenceTable</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">endpoint  =</span> <span class="st">&quot;CELLAR&quot;</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">prefix    =</span> <span class="st">&quot;prodcom2023&quot;</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">ID_table  =</span> <span class="st">&quot;PRODCOM2023_CPA21&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">language  =</span> <span class="st">&quot;en&quot;</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">showQuery =</span> <span class="cn">FALSE</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  <span class="fu">head</span>(res, <span class="dv">10</span>),</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;PRODCOM2023_CPA21 CorrespondenceTable &quot;</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>)</span></code></pre></div>
+<p>To reduce potential user confusion, it is helpful to include at least
+one correspondence example that is more likely to return data when
+queried.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">retrieveCorrespondenceTable</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="at">endpoint =</span> <span class="st">&quot;CELLAR&quot;</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="at">prefix   =</span> <span class="st">&quot;nace2&quot;</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="at">ID_table =</span> <span class="st">&quot;NACE2_CPA21&quot;</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="at">language =</span> <span class="st">&quot;en&quot;</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  <span class="fu">head</span>(res2, <span class="dv">10</span>),</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;NACE2_CPA21 CorrespondenceTable from the CELLAR endpoint &quot;</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>)</span></code></pre></div>
+<p>For transparency and reproducibility, the SPARQL query used for
+retrieval can also be inspected by setting
+<code>showQuery = TRUE</code>.</p>
+<p>##Retrieve a correspondence table from FAO</p>
+</div>
+<div id="inspect-available-correspondence-tables-fao" class="section level3">
+<h3>Inspect available correspondence tables (FAO)</h3>
+<p>The following examples illustrate how to inspect the correspondence
+tables available from the FAO endpoints.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Inspect correspondence tables available from FAO</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>tbl_fao <span class="ot">&lt;-</span> <span class="fu">correspondenceTableList</span>(<span class="st">&quot;FAO&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">head</span>(tbl_fao)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="fu">head</span>(tbl_fao, <span class="dv">10</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;correspondence tables available from FAO&quot;</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="example-8-retrieve-a-correspondence-table-from-fao-cpc-2.1-isic-rev.-4" class="section level3">
+<h3>Example 8: Retrieve a correspondence table from FAO: <em>CPC 2.1 :
+ISIC Rev. 4</em></h3>
+<p>The following example illustrates the retrieval of a correspondence
+table published by the Food and Agriculture Organization of the United
+Nations (FAO) via the FAO endpoint.</p>
+<p>Users should note that the availability of correspondence data
+depends on what is currently exposed by the underlying SPARQL endpoint.
+Although a correspondence table may be listed by
+<code>correspondenceTableList()</code>, it can legitimately return an
+empty result when queried. In practice, however, correspondence tables
+exposed by the FAO endpoint tend to be more consistently populated than
+some of those available from CELLAR.</p>
+<p>The English-language version of the <em>CPC 2.1 : ISIC Rev. 4</em>
+correspondence table can be retrieved as follows. This example is not
+executed during vignette rendering.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>Res <span class="ot">&lt;-</span> <span class="fu">retrieveCorrespondenceTable</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">endpoint =</span> <span class="st">&quot;FAO&quot;</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">prefix   =</span> <span class="st">&quot;CPC21&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">ID_table =</span> <span class="st">&quot;CPC21-ISIC4&quot;</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">language =</span> <span class="st">&quot;en&quot;</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  <span class="fu">head</span>(Res[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="dv">10</span>),</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;CPC21–ISIC4 correspondence tables available from FAO&quot;</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="optional-inspect-the-underlying-sparql-query" class="section level3">
+<h3>(Optional) Inspect the underlying SPARQL query</h3>
+<p>For transparency and reproducibility, the SPARQL query used for
+retrieval can also be inspected by setting
+<code>showQuery = TRUE</code>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>Res2 <span class="ot">&lt;-</span> <span class="fu">retrieveCorrespondenceTable</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="at">endpoint =</span> <span class="st">&quot;FAO&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">prefix   =</span> <span class="st">&quot;CPC21&quot;</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="at">ID_table =</span> <span class="st">&quot;CPC21-ISIC4&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="at">language =</span> <span class="st">&quot;en&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="at">showQuery =</span> <span class="cn">TRUE</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co"># Extract the SPARQL query used</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>SPARQLquery <span class="ot">&lt;-</span> Res2<span class="sc">$</span>SPARQL.query</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>SPARQLquery</span></code></pre></div>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>The correspondenceTables package provides a consistent and
+transparent interface to:</p>
+<ul>
+<li>discover available classifications and correspondence tables;</li>
+<li>retrieve them as standard R data frames;</li>
+<li>optionally inspect the underlying SPARQL queries used for
+retrieval.</li>
+</ul>
+<p>This allows statisticians and data analysts to work with official
+classification systems and mappings without requiring SPARQL expertise,
+while preserving reproducibility and traceability.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
