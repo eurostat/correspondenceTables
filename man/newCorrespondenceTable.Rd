@@ -155,6 +155,7 @@ library. All sample datasets may be found there.
 
 \examples{
 {
+\dontrun{
 
 code_in   <- data.frame(code_in  = c("A","B"))
 code_mid  <- data.frame(code_mid = c("B","C","D"))
@@ -186,5 +187,5 @@ print(out$newCorrespondenceTable)
 print(out$classificationNames)
 
 
-    }
+    } }
 }

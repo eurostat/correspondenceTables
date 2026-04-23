@@ -134,6 +134,7 @@
 #'
 #' @examples
 #' {
+#' \dontrun{
 #' 
 #' code_in   <- data.frame(code_in  = c("A","B"))
 #' code_mid  <- data.frame(code_mid = c("B","C","D"))
@@ -165,7 +166,7 @@
 #' print(out$classificationNames)
 #' 
 #' 
-#'     }
+#'     } }
 
 newCorrespondenceTable <- function(
     Tables,

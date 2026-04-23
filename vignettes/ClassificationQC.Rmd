@@ -135,14 +135,10 @@ Column names are adjusted to make the intended structure explicit.
 ```{r}
 
 sequencing <- read.csv(
-("C:/Users/mbaldacc/OneDrive - Capgemini/Projects/Correspondence Table R/updated functions/10.35/correspondenceTables-10.35/inst/extdata/Sequencing.csv")
+  system.file("extdata", "Sequencing.csv",
+              package = "correspondenceTables")
 )
 
-# sequencing <- read.csv(
-#   system.file("extdata", "Sequencing.csv",
-#               package = "correspondenceTables")
-# )
-# 
 
 
 colnames(sequencing) <- c("level", "order")

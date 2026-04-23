@@ -1,5 +1,7 @@
 #' @importFrom data.table fread fwrite
 #' @importFrom stats aggregate
+#' @importFrom stats na.omit setNames
+#' @importFrom utils capture.output
 #' @importFrom utils menu read.csv tail write.csv txtProgressBar setTxtProgressBar
 
 .onLoad <- function(libname, pkgname) {

@@ -553,29 +553,25 @@ constraints between levels. Column names are adjusted to make the
 intended structure explicit.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>sequencing <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>(<span class="st">&quot;C:/Users/mbaldacc/OneDrive - Capgemini/Projects/Correspondence Table R/updated functions/10.35/correspondenceTables-10.35/inst/extdata/Sequencing.csv&quot;</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>)</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># sequencing &lt;- read.csv(</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#   system.file(&quot;extdata&quot;, &quot;Sequencing.csv&quot;,</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#               package = &quot;correspondenceTables&quot;)</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># )</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Sequencing.csv&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>              <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="fu">colnames</span>(sequencing) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;level&quot;</span>, <span class="st">&quot;order&quot;</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
 <span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="fu">colnames</span>(sequencing) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;level&quot;</span>, <span class="st">&quot;order&quot;</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>sequencing<span class="sc">$</span>order_short <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="fu">nchar</span>(sequencing<span class="sc">$</span>order) <span class="sc">&gt;</span> <span class="dv">12</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="fu">substr</span>(sequencing<span class="sc">$</span>order, <span class="dv">1</span>, <span class="dv">12</span>), <span class="st">&quot;...&quot;</span>),</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  sequencing<span class="sc">$</span>order</span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>)</span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  sequencing[, <span class="fu">c</span>(<span class="st">&quot;level&quot;</span>, <span class="st">&quot;order_short&quot;</span>)],</span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Sequencing rules (order truncated for display)&quot;</span></span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>sequencing<span class="sc">$</span>order_short <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">nchar</span>(sequencing<span class="sc">$</span>order) <span class="sc">&gt;</span> <span class="dv">12</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="fu">substr</span>(sequencing<span class="sc">$</span>order, <span class="dv">1</span>, <span class="dv">12</span>), <span class="st">&quot;...&quot;</span>),</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  sequencing<span class="sc">$</span>order</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>)</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  sequencing[, <span class="fu">c</span>(<span class="st">&quot;level&quot;</span>, <span class="st">&quot;order_short&quot;</span>)],</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Sequencing rules (order truncated for display)&quot;</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <caption>Sequencing rules (order truncated for display)</caption>
 <thead>
