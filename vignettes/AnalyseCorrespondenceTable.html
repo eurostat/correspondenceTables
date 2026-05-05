@@ -343,25 +343,22 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <ul>
 <li><a href="#overview" id="toc-overview">Overview</a></li>
 <li><a href="#application-of-analysecorrespondencetable" id="toc-application-of-analysecorrespondencetable">Application of
-analyseCorrespondenceTable</a>
+<code>analyseCorrespondenceTable</code></a>
 <ul>
-<li><a href="#example-1-basic-analysis-of-a-correspondence-table" id="toc-example-1-basic-analysis-of-a-correspondence-table"><strong>Example
-1: Basic analysis of a correspondence table</strong></a></li>
-<li><a href="#example-2-full-analysis-with-source-and-target-classifications" id="toc-example-2-full-analysis-with-source-and-target-classifications"><strong>Example
-2: Full analysis with source and target
-classifications</strong></a></li>
+<li><a href="#example-1-basic-analysis-of-a-correspondence-table" id="toc-example-1-basic-analysis-of-a-correspondence-table">Example 1:
+Basic analysis of a correspondence table</a></li>
+<li><a href="#example-2-full-analysis-with-source-and-target-classifications" id="toc-example-2-full-analysis-with-source-and-target-classifications">Example
+2: Full analysis with source and target classifications</a></li>
 </ul></li>
 <li><a href="#notes" id="toc-notes">Notes</a></li>
 </ul>
 </div>
 
-<div id="overview" class="section level2">
+<div id="overview" class="section level2" style="text-align: justify;">
 <h2>Overview</h2>
-<p>This vignette demonstrates how to use the
-analyseCorrespondenceTable() function from the correspondenceTables
-package to analyse classification correspondence tables. The function
-provides diagnostic information on the structure and quality of a
-correspondence table, such as:</p>
+<p>This vignette demonstrates how to extract key diagnostic information
+from correspondence tables using the
+<code>analyseCorrespondenceTable()</code> function, including:</p>
 <ul>
 <li>the inventory of codes involved on both sides of the
 correspondence;</li>
@@ -370,14 +367,20 @@ relationships;</li>
 <li>potential structural issues that may affect downstream use
 (aggregation, updates, or quality checks).</li>
 </ul>
-<p>Load the package correspondenceTables:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)  </span></code></pre></div>
 </div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)  </span></code></pre></div>
+<style>
+table {
+width: 100% !important;
+}
+table caption {
+text-align: center;
+}
+</style>
 <div id="application-of-analysecorrespondencetable" class="section level2">
-<h2>Application of analyseCorrespondenceTable</h2>
+<h2>Application of <code>analyseCorrespondenceTable</code></h2>
 <div id="example-1-basic-analysis-of-a-correspondence-table" class="section level3">
-<h3><strong>Example 1: Basic analysis of a correspondence
-table</strong></h3>
+<h3>Example 1: Basic analysis of a correspondence table</h3>
 <p>In this first example, only a correspondence table is provided. No
 explicit source or target classification tables are supplied.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load example correspondence table</span></span>
@@ -393,23 +396,23 @@ explicit source or target classification tables are supplied.</p>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">B  =</span> <span class="cn">NULL</span>,</span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">longestAcodeOnly =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="at">longestBcodeOnly =</span> <span class="cn">FALSE</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>)</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#head(result$Inventory)</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#head(result$Analysis)</span></span></code></pre></div>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>)</span></code></pre></div>
 <p>The function returns a list containing multiple outputs. Two key
-components are displayed below:</p>
+components are displayed below.</p>
+<p>The tables below illustrate the first rows of the outputs returned by
+the function:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Display results</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">head</span>(result<span class="sc">$</span>Inventory),</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Inventory results: Basic analysis of a correspondence table&quot;</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;lll&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <caption>Inventory results: Basic analysis of a correspondence
 table</caption>
 <colgroup>
-<col width="9%" />
+<col width="10%" />
 <col width="15%" />
 <col width="27%" />
 <col width="19%" />
@@ -418,62 +421,62 @@ table</caption>
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">Component</th>
-<th align="left">CorrespondenceType</th>
-<th align="left">SourcePositions</th>
-<th align="left">TargetPositions</th>
-<th align="left">nSourcePositions</th>
-<th align="left">nTargetPositions</th>
+<th align="center">Component</th>
+<th align="center">CorrespondenceType</th>
+<th align="center">SourcePositions</th>
+<th align="center">TargetPositions</th>
+<th align="center">nSourcePositions</th>
+<th align="center">nTargetPositions</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Component 1</td>
-<td align="left">M:M</td>
-<td align="left">C01, C06, C12, C21, C24</td>
-<td align="left">D04, D21, D13, D20, D11</td>
-<td align="left">5</td>
-<td align="left">5</td>
+<td align="center">Component 1</td>
+<td align="center">M:M</td>
+<td align="center">C01, C06, C12, C21, C24</td>
+<td align="center">D04, D21, D13, D20, D11</td>
+<td align="center">5</td>
+<td align="center">5</td>
 </tr>
 <tr class="even">
-<td align="left">Component 2</td>
-<td align="left">M:M</td>
-<td align="left">C02, C09, C11, C17, C18, C22, C25</td>
-<td align="left">D22, D03, D12</td>
-<td align="left">7</td>
-<td align="left">3</td>
+<td align="center">Component 2</td>
+<td align="center">M:M</td>
+<td align="center">C02, C09, C11, C17, C18, C22, C25</td>
+<td align="center">D22, D03, D12</td>
+<td align="center">7</td>
+<td align="center">3</td>
 </tr>
 <tr class="odd">
-<td align="left">Component 3</td>
-<td align="left">M:M</td>
-<td align="left">C03, C05, C08, C15</td>
-<td align="left">D07, D08, D05, D02, D17</td>
-<td align="left">4</td>
-<td align="left">5</td>
+<td align="center">Component 3</td>
+<td align="center">M:M</td>
+<td align="center">C03, C05, C08, C15</td>
+<td align="center">D07, D08, D05, D02, D17</td>
+<td align="center">4</td>
+<td align="center">5</td>
 </tr>
 <tr class="even">
-<td align="left">Component 4</td>
-<td align="left">M:M</td>
-<td align="left">C04, C16, C20</td>
-<td align="left">D24, D19, D10</td>
-<td align="left">3</td>
-<td align="left">3</td>
+<td align="center">Component 4</td>
+<td align="center">M:M</td>
+<td align="center">C04, C16, C20</td>
+<td align="center">D24, D19, D10</td>
+<td align="center">3</td>
+<td align="center">3</td>
 </tr>
 <tr class="odd">
-<td align="left">Component 5</td>
-<td align="left">M:M</td>
-<td align="left">C07, C14, C23</td>
-<td align="left">D16, D06</td>
-<td align="left">3</td>
-<td align="left">2</td>
+<td align="center">Component 5</td>
+<td align="center">M:M</td>
+<td align="center">C07, C14, C23</td>
+<td align="center">D16, D06</td>
+<td align="center">3</td>
+<td align="center">2</td>
 </tr>
 <tr class="even">
-<td align="left">Component 6</td>
-<td align="left">1:M</td>
-<td align="left">C10</td>
-<td align="left">D01, D18, D09</td>
-<td align="left">1</td>
-<td align="left">3</td>
+<td align="center">Component 6</td>
+<td align="center">1:M</td>
+<td align="center">C10</td>
+<td align="center">D01, D18, D09</td>
+<td align="center">1</td>
+<td align="center">3</td>
 </tr>
 </tbody>
 </table>
@@ -481,93 +484,132 @@ table</caption>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">head</span>(result<span class="sc">$</span>Analysis),</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Analysisresults: Basic analysis of a correspondence table&quot;</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;lll&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Analysis results: Basic analysis of a correspondence table&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>)</span></code></pre></div>
 <table>
-<caption>Analysisresults: Basic analysis of a correspondence
+<caption>Analysis results: Basic analysis of a correspondence
 table</caption>
 <colgroup>
-<col width="7%" />
-<col width="7%" />
+<col width="8%" />
+<col width="8%" />
 <col width="16%" />
-<col width="26%" />
+<col width="25%" />
 <col width="16%" />
-<col width="26%" />
+<col width="25%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">ClassA</th>
-<th align="left">ClassB</th>
-<th align="left">nTargetClasses</th>
-<th align="left">SourceToTargetMapping</th>
-<th align="left">nSourceClasses</th>
-<th align="left">TargetToSourceMapping</th>
+<th align="center">ClassA</th>
+<th align="center">ClassB</th>
+<th align="center">nTargetClasses</th>
+<th align="center">SourceToTargetMapping</th>
+<th align="center">nSourceClasses</th>
+<th align="center">TargetToSourceMapping</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">C01</td>
-<td align="left">D04</td>
-<td align="left">5</td>
-<td align="left">D04, D21, D13, D20, D11</td>
-<td align="left">1</td>
-<td align="left">C01</td>
+<td align="center">C01</td>
+<td align="center">D04</td>
+<td align="center">5</td>
+<td align="center">D04, D21, D13, D20, D11</td>
+<td align="center">1</td>
+<td align="center">C01</td>
 </tr>
 <tr class="even">
-<td align="left">C01</td>
-<td align="left">D11</td>
-<td align="left">5</td>
-<td align="left">D04, D21, D13, D20, D11</td>
-<td align="left">1</td>
-<td align="left">C01</td>
+<td align="center">C01</td>
+<td align="center">D11</td>
+<td align="center">5</td>
+<td align="center">D04, D21, D13, D20, D11</td>
+<td align="center">1</td>
+<td align="center">C01</td>
 </tr>
 <tr class="odd">
-<td align="left">C01</td>
-<td align="left">D13</td>
-<td align="left">5</td>
-<td align="left">D04, D21, D13, D20, D11</td>
-<td align="left">1</td>
-<td align="left">C01</td>
+<td align="center">C01</td>
+<td align="center">D13</td>
+<td align="center">5</td>
+<td align="center">D04, D21, D13, D20, D11</td>
+<td align="center">1</td>
+<td align="center">C01</td>
 </tr>
 <tr class="even">
-<td align="left">C01</td>
-<td align="left">D20</td>
-<td align="left">5</td>
-<td align="left">D04, D21, D13, D20, D11</td>
-<td align="left">1</td>
-<td align="left">C01</td>
+<td align="center">C01</td>
+<td align="center">D20</td>
+<td align="center">5</td>
+<td align="center">D04, D21, D13, D20, D11</td>
+<td align="center">1</td>
+<td align="center">C01</td>
 </tr>
 <tr class="odd">
-<td align="left">C01</td>
-<td align="left">D21</td>
-<td align="left">5</td>
-<td align="left">D04, D21, D13, D20, D11</td>
-<td align="left">5</td>
-<td align="left">C01, C06, C12, C21, C24</td>
+<td align="center">C01</td>
+<td align="center">D21</td>
+<td align="center">5</td>
+<td align="center">D04, D21, D13, D20, D11</td>
+<td align="center">5</td>
+<td align="center">C01, C06, C12, C21, C24</td>
 </tr>
 <tr class="even">
-<td align="left">C02</td>
-<td align="left">D03</td>
-<td align="left">2</td>
-<td align="left">D22, D03</td>
-<td align="left">3</td>
-<td align="left">C02, C11, C18</td>
+<td align="center">C02</td>
+<td align="center">D03</td>
+<td align="center">2</td>
+<td align="center">D22, D03</td>
+<td align="center">3</td>
+<td align="center">C02, C11, C18</td>
 </tr>
 </tbody>
 </table>
-<p>In this example, both the correspondence inventory and the analytical
-summary are available and printed. These outputs can be used to inspect
-the overall structure of the correspondence table.</p>
+<div style="text-align: justify;">
+<p><strong>Interpretation of the results</strong></p>
+<p>The <code>analyseCorrespondenceTable()</code> function returns a list
+of outputs that summarise the structure of the correspondence table from
+complementary perspectives. In this example, two components are
+displayed: <strong>Inventory</strong> and <strong>Analysis</strong>.</p>
+<p><strong>Inventory table</strong></p>
+<p>The <code>Inventory</code> table provides descriptive information
+about the codes appearing on each side of the correspondence. Typical
+columns include:</p>
+<ul>
+<li>the identifiers of codes on side <em>A</em> and side
+<em>B</em>;</li>
+<li>the number of times each code appears in the correspondence;</li>
+<li>summary indicators describing how codes are connected.</li>
+</ul>
+<p>This table is useful for identifying which codes are involved in the
+correspondence and for detecting duplicates or unexpected patterns.</p>
+<p><strong>Analysis table</strong></p>
+<p>The <code>Analysis</code> table summarises the relationship structure
+between the two classifications. In particular, it classifies the
+relationships between codes as:</p>
+<ul>
+<li><strong>1:1 (one‑to‑one)</strong>: each code on side <em>A</em>
+corresponds to exactly one code on side <em>B</em>;</li>
+<li><strong>1:M (one‑to‑many)</strong>: one code on side <em>A</em>
+corresponds to multiple codes on side <em>B</em>;</li>
+<li><strong>M:1 (many‑to‑one)</strong>: multiple codes on side
+<em>A</em> correspond to one code on side <em>B</em>;</li>
+<li><strong>M:M (many‑to‑many)</strong>: multiple codes on side
+<em>A</em> correspond to multiple codes on side <em>B</em>.</li>
+</ul>
+<p>Many‑to‑many (M:M) relationships are typically the most complex and
+may require special attention, as they can introduce ambiguity in
+aggregation, conversion, or validation processes.</p>
+<p>Together, the inventory and analysis outputs provide an overview of
+both the content and the structural properties of the correspondence
+table.</p>
+</div>
 </div>
 <div id="example-2-full-analysis-with-source-and-target-classifications" class="section level3">
-<h3><strong>Example 2: Full analysis with source and target
-classifications</strong></h3>
-<p>In this second example, all supported parameters of the function are
+<h3>Example 2: Full analysis with source and target classifications</h3>
+<p>In this second example, all main parameters of the function are
 used.</p>
-<p>AB contains a correspondence table between NACE Rev. 2 and NACE
-Rev. 2.1 A contains the source classification (NACE Rev. 2) B contains
-the target classification (NACE Rev. 2.1)</p>
+<ul>
+<li><code>AB</code>: correspondence table between NACE Rev.2 and NACE
+Rev.2.1</li>
+<li><code>A</code>: source classification (NACE Rev.2)<br />
+</li>
+<li><code>B</code>: target classification (NACE Rev.2.1)</li>
+</ul>
 <p>The analysis is restricted to the lowest‑level codes on both sides of
 the correspondence.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Load correspondence table (NACE Rev.2 -&gt; NACE Rev.2.1)</span></span>
@@ -595,14 +637,16 @@ the correspondence.</p>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">longestAcodeOnly =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">longestBcodeOnly =</span> <span class="cn">TRUE</span></span>
 <span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>)</span></code></pre></div>
-<p>The resulting inventory and analysis summary are shown below:</p>
+<p>The tables illustrate the first rows of the outputs returned by the
+function: The resulting inventory and analysis summary are shown
+below:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Display results</span></span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">head</span>(result2<span class="sc">$</span>Inventory),</span>
 <span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Inventory results: Full analysis with source and target classifications&quot;</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;lll&quot;</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>) </span></code></pre></div>
 <table>
 <caption>Inventory results: Full analysis with source and target
 classifications</caption>
@@ -616,173 +660,133 @@ classifications</caption>
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">Component</th>
-<th align="left">CorrespondenceType</th>
-<th align="left">SourcePositions</th>
-<th align="left">TargetPositions</th>
-<th align="left">nSourcePositions</th>
-<th align="left">nTargetPositions</th>
+<th align="center">Component</th>
+<th align="center">CorrespondenceType</th>
+<th align="center">SourcePositions</th>
+<th align="center">TargetPositions</th>
+<th align="center">nSourcePositions</th>
+<th align="center">nTargetPositions</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Component 1</td>
-<td align="left">1:1</td>
-<td align="left">10.11</td>
-<td align="left">10.11</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td align="center">Component 1</td>
+<td align="center">1:1</td>
+<td align="center">10.11</td>
+<td align="center">10.11</td>
+<td align="center">1</td>
+<td align="center">1</td>
 </tr>
 <tr class="even">
-<td align="left">Component 2</td>
-<td align="left">1:1</td>
-<td align="left">10.12</td>
-<td align="left">10.12</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td align="center">Component 2</td>
+<td align="center">1:1</td>
+<td align="center">10.12</td>
+<td align="center">10.12</td>
+<td align="center">1</td>
+<td align="center">1</td>
 </tr>
 <tr class="odd">
-<td align="left">Component 3</td>
-<td align="left">1:1</td>
-<td align="left">10.13</td>
-<td align="left">10.13</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td align="center">Component 3</td>
+<td align="center">1:1</td>
+<td align="center">10.13</td>
+<td align="center">10.13</td>
+<td align="center">1</td>
+<td align="center">1</td>
 </tr>
 <tr class="even">
-<td align="left">Component 4</td>
-<td align="left">1:1</td>
-<td align="left">10.31</td>
-<td align="left">10.31</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td align="center">Component 4</td>
+<td align="center">1:1</td>
+<td align="center">10.31</td>
+<td align="center">10.31</td>
+<td align="center">1</td>
+<td align="center">1</td>
 </tr>
 <tr class="odd">
-<td align="left">Component 5</td>
-<td align="left">1:1</td>
-<td align="left">10.32</td>
-<td align="left">10.32</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td align="center">Component 5</td>
+<td align="center">1:1</td>
+<td align="center">10.32</td>
+<td align="center">10.32</td>
+<td align="center">1</td>
+<td align="center">1</td>
 </tr>
 <tr class="even">
-<td align="left">Component 6</td>
-<td align="left">1:1</td>
-<td align="left">10.39</td>
-<td align="left">10.39</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td align="center">Component 6</td>
+<td align="center">1:1</td>
+<td align="center">10.39</td>
+<td align="center">10.39</td>
+<td align="center">1</td>
+<td align="center">1</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">head</span>(result2<span class="sc">$</span>Analysis),</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">head</span>(result2<span class="sc">$</span>Analysis[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]),</span>
 <span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Analysis results: Full analysis with source and target classifications&quot;</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;lll&quot;</span></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>)  </span></code></pre></div>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <caption>Analysis results: Full analysis with source and target
 classifications</caption>
 <colgroup>
-<col width="11%" />
-<col width="12%" />
-<col width="10%" />
-<col width="14%" />
-<col width="10%" />
-<col width="14%" />
-<col width="5%" />
-<col width="7%" />
-<col width="5%" />
-<col width="7%" />
+<col width="19%" />
+<col width="21%" />
+<col width="17%" />
+<col width="24%" />
+<col width="17%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">NACE.Rev..2.Code</th>
-<th align="left">NACE.Rev..2.1.Code</th>
-<th align="left">nTargetClasses</th>
-<th align="left">SourceToTargetMapping</th>
-<th align="left">nSourceClasses</th>
-<th align="left">TargetToSourceMapping</th>
-<th align="left">Level.x</th>
-<th align="left">Superior.x</th>
-<th align="left">Level.y</th>
-<th align="left">Superior.y</th>
+<th align="center">NACE.Rev..2.Code</th>
+<th align="center">NACE.Rev..2.1.Code</th>
+<th align="center">nTargetClasses</th>
+<th align="center">SourceToTargetMapping</th>
+<th align="center">nSourceClasses</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">10.11</td>
-<td align="left">10.11</td>
-<td align="left">1</td>
-<td align="left">10.11</td>
-<td align="left">1</td>
-<td align="left">10.11</td>
-<td align="left">4</td>
-<td align="left">10.1</td>
-<td align="left">4</td>
-<td align="left">10.1</td>
+<td align="center">10.11</td>
+<td align="center">10.11</td>
+<td align="center">1</td>
+<td align="center">10.11</td>
+<td align="center">1</td>
 </tr>
 <tr class="even">
-<td align="left">10.12</td>
-<td align="left">10.12</td>
-<td align="left">1</td>
-<td align="left">10.12</td>
-<td align="left">1</td>
-<td align="left">10.12</td>
-<td align="left">4</td>
-<td align="left">10.1</td>
-<td align="left">4</td>
-<td align="left">10.1</td>
+<td align="center">10.12</td>
+<td align="center">10.12</td>
+<td align="center">1</td>
+<td align="center">10.12</td>
+<td align="center">1</td>
 </tr>
 <tr class="odd">
-<td align="left">10.13</td>
-<td align="left">10.13</td>
-<td align="left">1</td>
-<td align="left">10.13</td>
-<td align="left">1</td>
-<td align="left">10.13</td>
-<td align="left">4</td>
-<td align="left">10.1</td>
-<td align="left">4</td>
-<td align="left">10.1</td>
+<td align="center">10.13</td>
+<td align="center">10.13</td>
+<td align="center">1</td>
+<td align="center">10.13</td>
+<td align="center">1</td>
 </tr>
 <tr class="even">
-<td align="left">10.31</td>
-<td align="left">10.31</td>
-<td align="left">1</td>
-<td align="left">10.31</td>
-<td align="left">1</td>
-<td align="left">10.31</td>
-<td align="left">4</td>
-<td align="left">10.3</td>
-<td align="left">4</td>
-<td align="left">10.3</td>
+<td align="center">10.31</td>
+<td align="center">10.31</td>
+<td align="center">1</td>
+<td align="center">10.31</td>
+<td align="center">1</td>
 </tr>
 <tr class="odd">
-<td align="left">10.32</td>
-<td align="left">10.32</td>
-<td align="left">1</td>
-<td align="left">10.32</td>
-<td align="left">1</td>
-<td align="left">10.32</td>
-<td align="left">4</td>
-<td align="left">10.3</td>
-<td align="left">4</td>
-<td align="left">10.3</td>
+<td align="center">10.32</td>
+<td align="center">10.32</td>
+<td align="center">1</td>
+<td align="center">10.32</td>
+<td align="center">1</td>
 </tr>
 <tr class="even">
-<td align="left">10.39</td>
-<td align="left">10.39</td>
-<td align="left">1</td>
-<td align="left">10.39</td>
-<td align="left">1</td>
-<td align="left">10.39</td>
-<td align="left">4</td>
-<td align="left">10.3</td>
-<td align="left">4</td>
-<td align="left">10.3</td>
+<td align="center">10.39</td>
+<td align="center">10.39</td>
+<td align="center">1</td>
+<td align="center">10.39</td>
+<td align="center">1</td>
 </tr>
 </tbody>
 </table>
@@ -791,13 +795,17 @@ the correspondence table is intended for aggregation or conversion at
 the most granular classification level.</p>
 </div>
 </div>
-<div id="notes" class="section level2">
+<div id="notes" class="section level2" style="text-align: justify;">
 <h2>Notes</h2>
-<p>If A and B are provided, the function can perform additional
-consistency checks against the source and target classification domains.
-The longestAcodeOnly and longestBcodeOnly arguments allow users to focus
-the analysis on the most detailed codes, which is often desirable in
-practical statistical workflows.</p>
+<p>If <code>A</code> and <code>B</code> are provided, the function
+performs additional consistency checks against the source and target
+classification domains.</p>
+<p>The <code>longestAcodeOnly</code> and <code>longestBcodeOnly</code>
+arguments allow users to restrict the analysis to the most detailed
+codes, which is often desirable in practical statistical workflows.</p>
+<p>This functionality supports the validation and interpretation of
+correspondence tables, particularly when preparing data for aggregation,
+transformation, or integration tasks.</p>
 </div>
 
 

@@ -41,24 +41,22 @@ cleanup_names_csv <- function() {
   
   names_path <- materialize_names_csv("names1.csv", "names.csv")
   
-  null <- if (.Platform$OS.type == "windows") "NUL" else "/dev/null"
-  sink(null)
-  
-  
-  TEST <- suppressMessages( newCorrespondenceTable(
+  TEST <- newCorrespondenceTable(
     Tables = names_path,
     Reference = "none",
     MismatchTolerance = 0.96,
-    Redundancy_trim = FALSE
-  ) )
-  TEST_trim <- suppressMessages( newCorrespondenceTable(
+    Redundancy_trim = FALSE,
+    Progress = FALSE
+  ) 
+  TEST_trim <- newCorrespondenceTable(
     Tables = names_path,
     Reference = "none",
     MismatchTolerance = 0.96,
-    Redundancy_trim = TRUE
-  ) )
+    Redundancy_trim = TRUE,
+    Progress = FALSE
+  ) 
   
-  sink()
+  
   
   ABC      <- read_test_csv("ABC.csv")
   ABC_Trim <- read_test_csv("ABC_trim.csv")
@@ -75,17 +73,15 @@ cleanup_names_csv <- function() {
   dir_test <- system.file("extdata/test", package = "correspondenceTables")
   
   names_path <- materialize_names_csv("names2.csv", "names.csv")
-  null <- if (.Platform$OS.type == "windows") "NUL" else "/dev/null"
   
-  
-  sink(null)
-  TEST2 <- suppressMessages( newCorrespondenceTable(
+  TEST2 <- newCorrespondenceTable(
     Tables = names_path,
     Reference = "none",
     MismatchTolerance = 0.96,
-    Redundancy_trim = FALSE
-  ))
-  sink()
+    Redundancy_trim = FALSE,
+    Progress = FALSE
+  )
+  
   
   TEST2[[1]]$sort <- seq_len(nrow(TEST2[[1]]))
   TEST2_T <- read_test_csv("nomatch_test_new.csv")

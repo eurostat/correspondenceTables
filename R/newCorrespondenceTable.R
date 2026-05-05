@@ -15,6 +15,8 @@
 #'   used to facilitate the trimming of the redundant records.
 #'   The default value is \code{TRUE}, which removes all redundant records.
 #'   The other values is \code{FALSE}, which shows redundant records together with the redundancy flag.
+#' @param Progress  An argument in the function containing the logical values \code{TRUE} (default) or \code{FALSE}. 
+#'   Used to switch ON (when \code{TRUE}) or OFF (when \code{FALSE}) the progress bar that interactively display the creation process of the new table in the console output.
 #'   
 #' @export
 #' @details
@@ -26,9 +28,9 @@
 #'         \item The file that corresponds to argument \code{Tables} must contain filenames, \emph{and nothing else}, in
 #'         a \eqn{(k+2)} × \eqn{(k+2)} table, where \eqn{k}, a positive integer, is the number of "pivot" classifications.
 #'         The cells in the main diagonal of the table provide the filenames of the files which contain, with this order,
-#'         the classifications A, \eqn{C_1}, \eqn{\ldots}, \eqn{C_k} and B. The off-diagonal directly above the main
+#'         the classifications  \eqn{A, C_1}, \eqn{\ldots}, \eqn{C_k} and \eqn{B}. The off-diagonal directly above the main
 #'         diagonal contains the filenames of the files that contain, with this order, the correspondence tables
-#'         A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and B:\eqn{C_k}. All other cells of the table
+#'         \eqn{A:C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and \eqn{B:C_k}. All other cells of the table
 #'         must be empty.
 #'     }
 #' Classification table requirements:
@@ -172,7 +174,8 @@ newCorrespondenceTable <- function(
     Tables,
     Reference = "none",
     MismatchTolerance = 0.2,
-    Redundancy_trim = TRUE
+    Redundancy_trim = TRUE,
+    Progress = TRUE
 ){
   # Check if the Tables is a File or a list of vectors
   # Check if the file that contains the names of both classifications and correspondence tables exists in working directory
@@ -206,10 +209,7 @@ newCorrespondenceTable <- function(
         inputs_name[i]<- paste0("Table[",i, ",", i, "]")
         
       }
-      #Upper triangular elements excluding empty entries
-      # Initialize a counter to keep track of positions in `inputs`
       counter <- length(inputs) + 1
-      # Loop through each row and each column above the diagonal
       for (i in 1:(n - 1)) {
         for (j in (i + 1):n) {
           if (!is.null(y[[i]][[j]])) {  # Check that the entry is not empty
@@ -504,8 +504,10 @@ newCorrespondenceTable <- function(
     counter <- 0
     if (length(R) == 2) {
       #creating a progress bar
-      message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
       
       # The following for loop creates the desirable correspondence
       # table.  The operations are conducted for each unique element of
@@ -514,7 +516,9 @@ newCorrespondenceTable <- function(
         
         # Print the percentage of codes that have been processed.
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
         # Matrix TT contains the rows of correspondence table A:C1 for
         # a specific element of classification A.  Matrix T contains
         # the rows of correspondence table B:C1 that match with the
@@ -583,22 +587,26 @@ newCorrespondenceTable <- function(
         F_AtoB[[counter]] <- ZZ
         
       }
+      if (Progress) close(pb)
     }
     
     # The following if statement is used when we have only the
     # correspondence tables A:C1, C1:C2 and B:C2.
     if (length(R) == 3) {
       #creating a progress bar
-      message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
-      
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
       
       # The following for loop creates the desirable correspondence
       # table.  The operations are conducted for each unique element of
       # classification A of the correspondence table A:C1.
       for (i in unique(R[[1]][, 1])) {
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        if (Progress){
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
         
         # Matrix T contains the rows of correspondence table C1:C2 that
         # match with the specific element of classification A based on
@@ -713,6 +721,7 @@ newCorrespondenceTable <- function(
         
       }
       
+      if (Progress) close(pb)
     }
     
     # The following if statement is used in the general situation, in which
@@ -720,9 +729,10 @@ newCorrespondenceTable <- function(
     # (k-1) Ci and B:Ck.
     M <- list()
     if (length(R) >= 4) {
-      message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
-      
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
       
       # The following for loop creates the desirable correspondence
       # table.  The operations are conducted for each unique element of
@@ -730,7 +740,9 @@ newCorrespondenceTable <- function(
       for (i in unique(R[[1]][, 1])) {
         
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
         
         
         for (j in 1:(length(R) - 2)) {
@@ -990,6 +1002,7 @@ newCorrespondenceTable <- function(
                                                                             M), M4)
         }
       }
+      if (Progress) close(pb)
     }
     
     # Create the desired correspondence table for the selected element of
@@ -1032,16 +1045,19 @@ newCorrespondenceTable <- function(
     F_BtoA <- list()
     
     counter <- 0
-    message("\n")
+    if (Progress) message("\n")
     if (length(R) == 2) {
-      
-      message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
       
       for (i in unique(R[[1]][, 1])) {
         
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
         
         x1 <- R[[1]][which(R[[1]][, 1] == i), 2]
         TT <- matrix(R[[1]][which(R[[1]][, 1] == i), 1:2], ncol = 2)
@@ -1091,15 +1107,21 @@ newCorrespondenceTable <- function(
         F_BtoA[[counter]] <- ZZ
         
       }
+      if (Progress) close(pb)
     }
     
     if (length(R) == 3) {
-      message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       for (i in unique(R[[1]][, 1])) {
         
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
         
         x1 <- R[[1]][which(R[[1]][, 1] == i), 2]
         T <- matrix(R[[2]][!is.na(match(R[[2]][, 1], x1)), 1:2], ncol = 2)
@@ -1189,16 +1211,21 @@ newCorrespondenceTable <- function(
         }
         
       }
-      
+      if (Progress) close(pb)
     }
     M <- list()
     if (length(R) >= 4) {
-      message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       for (i in unique(R[[1]][, 1])) {
         
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
         
         for (j in 1:(length(R) - 2)) {
           if (j == 1) {
@@ -1440,6 +1467,7 @@ newCorrespondenceTable <- function(
         
         
       }
+      if (Progress) close(pb)
     }
     
     F_BtoA <- do.call(rbind, F_BtoA)
@@ -1793,7 +1821,7 @@ newCorrespondenceTable <- function(
     stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data.",e)))
   })
   
-  message("\n")
+  if (Progress) message("\n")
   
   # Check the number of the unmatched codes.
   if (length(which(as.vector(correspondenceAB$Unmatched) == 1))/nrow(correspondenceAB) <

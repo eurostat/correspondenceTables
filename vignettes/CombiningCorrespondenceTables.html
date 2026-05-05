@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Combining correspondence tables</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Combining correspondence tables</h1>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a>
+<ul>
+<li><a href="#input" id="toc-input">Input</a></li>
+<li><a href="#output" id="toc-output">Output</a></li>
+<li><a href="#helper-for-the-examples" id="toc-helper-for-the-examples">Helper for the examples</a></li>
+</ul></li>
+<li><a href="#creating-correspondence-tables-general-case-using-newcorrespondencetable" id="toc-creating-correspondence-tables-general-case-using-newcorrespondencetable">Creating
+correspondence tables: general case using
+<code>newCorrespondenceTable()</code></a>
+<ul>
+<li><a href="#example-1-isic-rev.-4-cpa-ver.-2.1-via-cpc-ver.-2.1" id="toc-example-1-isic-rev.-4-cpa-ver.-2.1-via-cpc-ver.-2.1">Example 1:
+ISIC Rev. 4 : CPA Ver. 2.1 (via CPC Ver. 2.1)</a></li>
+<li><a href="#example-2-nace-rev.-2-sitc-4-via-cpa-ver.-2.1-and-cn-2022-many-to-many-case." id="toc-example-2-nace-rev.-2-sitc-4-via-cpa-ver.-2.1-and-cn-2022-many-to-many-case.">Example
+2: NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022), many-to-many
+case.</a></li>
+</ul></li>
+<li><a href="#updating-correspondence-tables-using-updatecorrespondencetable" id="toc-updating-correspondence-tables-using-updatecorrespondencetable">Updating
+correspondence tables using <code>updateCorrespondenceTable()</code></a>
+<ul>
+<li><a href="#example-3-updating-cn-2021-cpa-ver.-2.1-triggered-by-cn-update" id="toc-example-3-updating-cn-2021-cpa-ver.-2.1-triggered-by-cn-update">Example
+3: Updating CN 2021 : CPA Ver. 2.1 (triggered by CN update)</a></li>
+<li><a href="#example-4-updating-naics-nace-triggered-by-naics-update" id="toc-example-4-updating-naics-nace-triggered-by-naics-update">Example
+4: Updating NAICS : NACE (triggered by NAICS update)</a></li>
+</ul></li>
+</ul>
+</div>
+
+<style>
+table {
+width: 100% !important;
+}
+table caption {
+text-align: center;
+}
+</style>
+<div id="overview" class="section level2" style="text-align: justify;">
+<h2>Overview</h2>
+<p>A correspondence table serves as a translation between two
+statistical classifications. When a correspondence table between two
+classifications does not yet exist, but both are linked to one or more
+intermediate classifications through existing correspondence tables, a
+new correspondence table can be generated automatically.</p>
+<p>For the general case, where classifications <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are indirectly linked via one or more
+intermediate classifications <span class="math inline">\(C_1, \dots
+,C_k\)</span>, the <code>newCorrespondenceTable()</code> function can
+automatically generate a new correspondence table.</p>
+<p>A special case occurs when a classification <span class="math inline">\(A\)</span> is updated to a new version <span class="math inline">\(A^*\)</span> (with the correspondence table <span class="math inline">\(A:A^*\)</span> assumed to have been created as
+part of this update), and a correspondence table <span class="math inline">\(A:B\)</span> between the old version of <span class="math inline">\(A\)</span> and another classification of interest
+<span class="math inline">\(B\)</span> already exists.</p>
+<p>Here, the <code>updateCorrespondenceTable()</code> function can be
+used to automatically generate the new correspondence table <span class="math inline">\(A^*:B\)</span>. (The
+<code>newCorrespondenceTable()</code> function could also be applied to
+achieve this, but the <code>updateCorrespondenceTable()</code> function
+takes into consideration the fact that <span class="math inline">\(A\)</span> and <span class="math inline">\(A^*\)</span> are two versions of the same
+classification, and is therefore recommended for this updating
+scenario.</p>
+<div id="input" class="section level3">
+<h3>Input</h3>
+<p>In the case of <code>newCorrespondenceTable()</code>, the number of
+intermediate classifications is variable.<br />
+For this reason, the function accepts a flexible, matrix-like input
+structure that represents the relationships between classifications and
+their correspondence tables.</p>
+<p>The input must be provided <strong>either</strong>:</p>
+<ul>
+<li>as a <strong>square CSV file</strong> that specifies the input
+structure by listing the file paths of the classification tables (on the
+diagonal) and the correspondence tables (on the off-diagonal), or<br />
+</li>
+<li>as a <strong>square two-level list of data frames</strong>.</li>
+</ul>
+<p>In both cases, the diagonal elements of the structure correspond to
+classification tables (e.g. <span class="math inline">\(A\)</span>,
+<span class="math inline">\(B\)</span>, <span class="math inline">\(C\)</span>), while the off-diagonal elements
+represent the correspondence tables linking consecutive classifications
+(e.g. <span class="math inline">\(A:B\)</span>, <span class="math inline">\(B:C\)</span>).</p>
+<p>To generate a correspondence table between classifications <span class="math inline">\(A\)</span> and <span class="math inline">\(C\)</span> from the correspondence tables <span class="math inline">\(A:B\)</span> and <span class="math inline">\(B:C\)</span>, the function requires a matrix-like
+input structure with classifications on the diagonal and correspondence
+tables on the off-diagonal. Schematically, this structure can be
+represented as follows:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+A &amp; A\!:\!B &amp; \\
+  &amp; B       &amp; B\!:\!C \\
+  &amp;         &amp; C
+\end{bmatrix}
+\]</span></p>
+<p>This representation naturally extends to cases with multiple
+intermediate classifications.</p>
+<p>The input for <code>updateCorrespondenceTable()</code> simply
+requires the classifications (<span class="math inline">\(A,
+A^*\)</span> and <span class="math inline">\(B\)</span>) and
+correspondence tables (<span class="math inline">\(A:B\)</span> and
+<span class="math inline">\(A:A^*\)</span>) as data frames.</p>
+</div>
+<div id="output" class="section level3">
+<h3>Output</h3>
+<p>As output, both <code>newCorrespondenceTable()</code> and
+<code>updateCorrespondenceTable()</code> return a list containing:</p>
+<ul>
+<li>the resulting correspondence table as a data frame, and<br />
+</li>
+<li>a data frame reporting the names of the classifications involved in
+the correspondence</li>
+</ul>
+</div>
+<div id="helper-for-the-examples" class="section level3">
+<h3>Helper for the examples</h3>
+<p>When <code>newCorrespondenceTable()</code> is used with a CSV-based
+input structure, the CSV file that specifies the input layout must
+contain full file paths to the referenced CSV files, rather than file
+names alone. Accordingly, in the sample input, the file names appearing
+in the CSV table cells must be prefixed with their full path.</p>
+<p>To streamline this task, the utility function <code>fullPath</code>,
+defined below, is used in all the following examples.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>tmp_dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>fullPath <span class="ot">&lt;-</span> <span class="cf">function</span>(CSVraw, CSVappended){</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  NamesCsv <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, CSVraw, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  A <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(NamesCsv, <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>   <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(A)) {</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(A)) {</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>      <span class="cf">if</span> (A[i,j]<span class="sc">!=</span><span class="st">&quot;&quot;</span>) {</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>        A[i, j] <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, A[i, j], <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>      }}}</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="fu">write.table</span>(<span class="at">x =</span> A, <span class="at">file =</span> <span class="fu">file.path</span>(tmp_dir,CSVappended), <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">FALSE</span>, <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  <span class="fu">return</span>(A)</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+</div>
+<div id="creating-correspondence-tables-general-case-using-newcorrespondencetable" class="section level2">
+<h2>Creating correspondence tables: general case using
+<code>newCorrespondenceTable()</code></h2>
+<div id="example-1-isic-rev.-4-cpa-ver.-2.1-via-cpc-ver.-2.1" class="section level3">
+<h3>Example 1: ISIC Rev. 4 : CPA Ver. 2.1 (via CPC Ver. 2.1)</h3>
+<div style="text-align: justify;">
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">fullPath</span>(<span class="st">&quot;names1.csv&quot;</span>, <span class="st">&quot;names.csv&quot;</span>)</span></code></pre></div>
+<p>Execute the following code to apply function
+<code>newCorrespondenceTable()</code> and generate the correspondence
+table linking ISIC Rev. 4 (classification A) to CPA 2.1 (classification
+B) through the intermediate classification CPC 2.1. When no trimming is
+executed (<code>Redundancy_trim = FALSE</code>), redundant records are
+shown, together with the redundancy flag.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>NCT <span class="ot">&lt;-</span> <span class="fu">newCorrespondenceTable</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>        <span class="at">Tables =</span> <span class="fu">file.path</span>(tmp_dir, <span class="st">&quot;names.csv&quot;</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>        <span class="at">Reference =</span> <span class="st">&quot;A&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>        <span class="at">MismatchTolerance =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>        <span class="at">Redundancy_trim =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>        <span class="at">Progress =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  (NCT[[<span class="dv">1</span>]][<span class="dv">3748</span><span class="sc">:</span><span class="dv">3753</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>]),</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;ISIC Rev. 4 to CPA Ver. 2.1 (via CPC Ver. 2.1): Subsample of the new Correspondence Table&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>)</span></code></pre></div>
+<table style="width:100%;">
+<caption>ISIC Rev. 4 to CPA Ver. 2.1 (via CPC Ver. 2.1): Subsample of
+the new Correspondence Table</caption>
+<colgroup>
+<col width="4%" />
+<col width="11%" />
+<col width="7%" />
+<col width="8%" />
+<col width="7%" />
+<col width="10%" />
+<col width="15%" />
+<col width="9%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">ISIC Rev. 4</th>
+<th align="center">CPC 2.1</th>
+<th align="center">CPA 2.1</th>
+<th align="center">Review</th>
+<th align="center">Redundancy</th>
+<th align="center">Redundancy_keep</th>
+<th align="center">Unmatched</th>
+<th align="center">NoMatchFromA</th>
+<th align="center">NoMatchFromB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3748</td>
+<td align="center">1030</td>
+<td align="center">21495</td>
+<td align="center">10.39.23</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">3749</td>
+<td align="center">1030</td>
+<td align="center">21496</td>
+<td align="center">10.39.24</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">3750</td>
+<td align="center">1030</td>
+<td align="center">21429</td>
+<td align="center">10.39.25</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">3751</td>
+<td align="center">1030</td>
+<td align="center">21421</td>
+<td align="center">10.39.25</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">3752</td>
+<td align="center">1030</td>
+<td align="center">21424</td>
+<td align="center">10.39.25</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">3753</td>
+<td align="center">1030</td>
+<td align="center">21422</td>
+<td align="center">10.39.25</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>The table above represents a subset of the correspondence table
+generated in this example. Each row represents a candidate
+correspondence between an ISIC code and a CPA code, possibly mediated by
+one or more intermediate classifications.</p>
+<p>Here, the ISIC code <code>1030</code> is linked to several CPA
+codes:</p>
+<ul>
+<li><p>The rows linking <code>1030</code> to <code>10.39.23</code> and
+<code>10.39.24</code> are <strong>unique and unambiguous</strong>.<br />
+These rows have <code>Redundancy = 0</code>, <code>Unmatched = 0</code>,
+and no review or mismatch flags set.</p></li>
+<li><p>The CPA code <code>10.39.25</code> appears <strong>multiple
+times</strong> in combination with the same ISIC code <code>1030</code>,
+via different CPC codes.<br />
+These rows are therefore flagged with
+<code>Redundancy = 1</code>.</p></li>
+</ul>
+<p>When <code>Redundancy_trim = FALSE</code>, all redundant rows are
+retained and an additional column, <code>Redundancy_keep</code>, is
+included:</p>
+<ul>
+<li><code>Redundancy_keep = 1</code> identifies the record that would be
+kept if redundancy trimming were applied.</li>
+<li>Rows with <code>Redundancy_keep = 0</code> represent redundant
+alternatives.</li>
+</ul>
+<p>All rows in this example have <code>Unmatched = 0</code>, indicating
+that each ISIC code is matched to at least one CPA code and vice
+versa.<br />
+Similarly, <code>NoMatchFromA = 0</code> and
+<code>NoMatchFromB = 0</code> show that no codes from the original
+classification tables are missing from the correspondence tables
+involved in the construction.</p>
+<p>Finally, the <code>Review</code> flag is equal to <code>0</code> for
+all rows, indicating that given the selected reference classification,
+no hierarchical inconsistencies are detected.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">head</span>(NCT[[<span class="dv">2</span>]]),</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;ISIC Rev. 4 to CPA Ver. 2.1 (via CPC Ver. 2.1): Names of the classifications involved&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>ISIC Rev. 4 to CPA Ver. 2.1 (via CPC Ver. 2.1): Names of the
+classifications involved</caption>
+<thead>
+<tr class="header">
+<th align="center">Classification: Name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">A: ISIC Rev. 4</td>
+</tr>
+<tr class="even">
+<td align="center">C1: CPC 2.1</td>
+</tr>
+<tr class="odd">
+<td align="center">B: CPA 2.1</td>
+</tr>
+</tbody>
+</table>
+<p>The table above is the second element generated with
+<code>newCorrespondenceTable</code>, which simply is a data frame
+containing the names of all classifications involved.</p>
+</div>
+</div>
+<div id="example-2-nace-rev.-2-sitc-4-via-cpa-ver.-2.1-and-cn-2022-many-to-many-case." class="section level3">
+<h3>Example 2: NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022),
+many-to-many case.</h3>
+<div style="text-align: justify;">
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">fullPath</span>(<span class="st">&quot;names4.csv&quot;</span>, <span class="st">&quot;names.csv&quot;</span>)</span></code></pre></div>
+<p>Execute the following code to apply function
+<code>newCorrespondenceTable()</code> and generate the correspondence
+table linking NACE Rev. 2 (classification A) to SITC 4 (classification
+B) through the intermediate classifications CPA Ver. 2.1 and CN 2022.
+Given the option <code>Redundancy_trim = TRUE</code>, when there are
+redundant records, these are removed and kept exactly one record for
+each unique combination.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>NCT <span class="ot">&lt;-</span> <span class="fu">newCorrespondenceTable</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>        <span class="at">Tables =</span> <span class="fu">file.path</span>(tmp_dir, <span class="st">&quot;names.csv&quot;</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>        <span class="at">Reference =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>        <span class="at">MismatchTolerance =</span> <span class="fl">0.96</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>        <span class="at">Redundancy_trim =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>        <span class="at">Progress =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>      )</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="fu">head</span>(NCT[[<span class="dv">1</span>]][<span class="dv">5442</span><span class="sc">:</span><span class="dv">5450</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>]),</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022): Subsample of the new Correspondence Table&quot;</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022): Subsample
+of the new Correspondence Table</caption>
+<colgroup>
+<col width="5%" />
+<col width="13%" />
+<col width="10%" />
+<col width="10%" />
+<col width="7%" />
+<col width="12%" />
+<col width="11%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">NACE Rev. 2</th>
+<th align="center">CPA 2.1</th>
+<th align="center">CN 2022</th>
+<th align="center">SITC4</th>
+<th align="center">Redundancy</th>
+<th align="center">Unmatched</th>
+<th align="center">NoMatchFromA</th>
+<th align="center">NoMatchFromB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5442</td>
+<td align="center">28.41</td>
+<td align="center">28.41.24</td>
+<td align="center">84623210</td>
+<td align="center">73314</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">5443</td>
+<td align="center">28.41</td>
+<td align="center">28.41.24</td>
+<td align="center">84623290</td>
+<td align="center">73315</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">5444</td>
+<td align="center">28.41</td>
+<td align="center">28.41.32</td>
+<td align="center">84624200</td>
+<td align="center">73316</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">5445</td>
+<td align="center">28.41</td>
+<td align="center">28.41.32</td>
+<td align="center">84624900</td>
+<td align="center">73317</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">5446</td>
+<td align="center">28.41</td>
+<td align="center">28.41.33</td>
+<td align="center">Multiple</td>
+<td align="center">73318</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">5447</td>
+<td align="center">28.41</td>
+<td align="center">Multiple</td>
+<td align="center">Multiple</td>
+<td align="center">73399</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>Also in this case, the table above represents a subset of the
+correspondence table generated in this example. Each row corresponds to
+a correspondence between a NACE code and a SITC code, possibly mediated
+by multiple intermediate classifications.</p>
+<p>In this example, the NACE code <code>28.41</code> is mapped to
+several SITC codes:</p>
+<ul>
+<li><p>The first four rows represent unique and unambiguous
+correspondences, where specific CPA and CN codes are associated with
+specific SITC codes.<br />
+These rows have <code>Redundancy = 0</code> and
+<code>Unmatched = 0</code>, indicating clear one-to-one mappings across
+all classifications involved.</p></li>
+<li><p>The last two rows are flagged with
+<code>Redundancy = 1</code>.<br />
+In these cases, multiple intermediate codes (in CPA and/or CN)
+contribute to the same NACE–SITC mapping. As a result, the corresponding
+intermediate classification values are reported as
+<code>&quot;Multiple&quot;</code>.</p></li>
+</ul>
+<p>All rows have <code>Unmatched = 0</code>, indicating that each
+correspondence links a valid NACE code to a valid SITC code.<br />
+Additionally, <code>NoMatchFromA = 0</code> and
+<code>NoMatchFromB = 0</code> for all rows confirm that no
+classification codes are missing from the correspondence tables used to
+construct the result.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">head</span>(NCT[[<span class="dv">2</span>]]),</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022): Names of the classifications involved&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022): Names of
+the classifications involved</caption>
+<thead>
+<tr class="header">
+<th align="center">Classification: Name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">A: NACE Rev. 2</td>
+</tr>
+<tr class="even">
+<td align="center">C1: CPA 2.1</td>
+</tr>
+<tr class="odd">
+<td align="center">C2: CN 2022</td>
+</tr>
+<tr class="even">
+<td align="center">B: SITC4</td>
+</tr>
+</tbody>
+</table>
+<p>The table above corresponds to the second element returned by
+<code>newCorrespondenceTable</code> and is a data frame containing the
+names of all the classifications involved in the process.</p>
+</div>
+</div>
+</div>
+<div id="updating-correspondence-tables-using-updatecorrespondencetable" class="section level2">
+<h2>Updating correspondence tables using
+<code>updateCorrespondenceTable()</code></h2>
+<div id="example-3-updating-cn-2021-cpa-ver.-2.1-triggered-by-cn-update" class="section level3">
+<h3>Example 3: Updating CN 2021 : CPA Ver. 2.1 (triggered by CN
+update)</h3>
+<div style="text-align: justify;">
+<p>Execute the following code in order to get the path of the required
+input files.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;CN2021.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>AStar <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;CN2022.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;CPA21.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>AB <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;CN2021_CPA21.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>)</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>AAStar <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;CN2021_CN2022.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>)</span></code></pre></div>
+<p>Execute the following code line to apply function
+<code>updateCorrespondenceTable()</code> and generate the updated
+correspondence table. In this case the classification CN 2021 (A) has
+been updated to CN 2022 (A*), and the correspondence to CPA 2.1 (B) is
+revised accordingly. Given the option
+<code>Redundancy_trim = TRUE</code>, when there are redundant records,
+these are removed and kept exactly one record for each unique
+combination.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>UPC <span class="ot">&lt;-</span> <span class="fu">updateCorrespondenceTable</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">A =</span> A,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">B =</span> B,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">AStar =</span> AStar,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">AB =</span> AB,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">AAStar =</span> AAStar,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">Reference =</span> <span class="st">&quot;B&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">MismatchToleranceB =</span> <span class="fl">0.4</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">MismatchToleranceAStar =</span> <span class="fl">0.4</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">Redundancy_trim =</span> <span class="cn">TRUE</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  (UPC[[<span class="dv">1</span>]][<span class="dv">7950</span><span class="sc">:</span><span class="dv">7955</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>]),</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Updating CN 2021 : CPA Ver. 2.1  (triggered by CN update): Subsample of the new CorrespondenceTable&quot;</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Updating CN 2021 : CPA Ver. 2.1 (triggered by CN update):
+Subsample of the new CorrespondenceTable</caption>
+<colgroup>
+<col width="3%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="8%" />
+<col width="5%" />
+<col width="8%" />
+<col width="11%" />
+<col width="8%" />
+<col width="12%" />
+<col width="10%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">CN.2021</th>
+<th align="center">CN.2022</th>
+<th align="center">CPA.2.1</th>
+<th align="center">CodeChange</th>
+<th align="center">Review</th>
+<th align="center">Redundancy</th>
+<th align="center">NoMatchToAStar</th>
+<th align="center">NoMatchToB</th>
+<th align="center">NoMatchFromAStar</th>
+<th align="center">NoMatchFromB</th>
+<th align="center">LabelChange</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">7950</td>
+<td align="center">84148080</td>
+<td align="center">84148080</td>
+<td align="center">28.13.28</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="left">7951</td>
+<td align="center">84149000</td>
+<td align="center">84149000</td>
+<td align="center">28.13.32</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left">7952</td>
+<td align="center">84219990</td>
+<td align="center">84149000</td>
+<td align="center">28.29.82</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="left">7953</td>
+<td align="center">84151010</td>
+<td align="center">84151010</td>
+<td align="center">28.25.12</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">7954</td>
+<td align="center">84151090</td>
+<td align="center">84151090</td>
+<td align="center">28.25.12</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">7955</td>
+<td align="center">84152000</td>
+<td align="center">84152000</td>
+<td align="center">28.25.12</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>The table above represents a subset of the correspondence table
+generated in this example. Each row links a CN 2022 code to a CPA 2.1
+code and reflects changes from the previous version.</p>
+<p>In this example:</p>
+<ul>
+<li><p>The first three rows are flagged with
+<code>CodeChange = 1</code>, indicating that the original CN 2021 codes
+are associated with updated CN 2022 codes in a way that differs from the
+previous mapping.<br />
+These rows also have <code>LabelChange = 1</code>, meaning that the
+labels of the corresponding CN codes have changed between
+versions.</p></li>
+<li><p>Rows where <code>Review = 1</code> indicate potential
+hierarchical inconsistencies with respect to the selected reference
+classification, and therefore require manual inspection.</p></li>
+<li><p>The remaining rows have <code>CodeChange = 0</code> and
+<code>LabelChange = 0</code>, showing that both the code and its label
+remain unchanged between CN 2021 and CN 2022 for the given
+correspondence to CPA 2.1.</p></li>
+</ul>
+<p>All rows have <code>Redundancy = 0</code>, meaning that each CN
+2022–CPA 2.1 combination appears only once in the updated correspondence
+table.<br />
+Similarly, <code>NoMatchToAStar = 0</code> and
+<code>NoMatchToB = 0</code> indicate that each row contains valid codes
+for both CN 2022 and CPA 2.1.</p>
+<p>Finally, the flags <code>NoMatchFromAStar = 0</code> and
+<code>NoMatchFromB = 0</code> for all rows confirm that every code
+appearing in the updated correspondence is consistently represented in
+both the updated classification table and the underlying concordance
+tables.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">head</span>(UPC[[<span class="dv">2</span>]]),</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Updating CN 2021 : CPA Ver. 2.1  (triggered by CN update): Names of the classifications involved&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="st">&quot;Classification: Name&quot;</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Updating CN 2021 : CPA Ver. 2.1 (triggered by CN update): Names
+of the classifications involved</caption>
+<thead>
+<tr class="header">
+<th align="center">Classification: Name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">A: CN.2021</td>
+</tr>
+<tr class="even">
+<td align="center">B: CPA.2.1</td>
+</tr>
+<tr class="odd">
+<td align="center">AStar: CN.2022</td>
+</tr>
+</tbody>
+</table>
+<p>The table above is the second element generated with
+<code>updateCorrespondenceTable</code>, which simply is a data frame
+containing the names of all classifications involved.</p>
+</div>
+</div>
+<div id="example-4-updating-naics-nace-triggered-by-naics-update" class="section level3">
+<h3>Example 4: Updating NAICS : NACE (triggered by NAICS update)</h3>
+<div style="text-align: justify;">
+<p>Execute the following code in order to get the path of the required
+input files.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;NAICS2017.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>AStar <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;NAICS2022.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;NACE.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>)</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>AB <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;NAICS2017_NACE.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>)</span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>AAStar <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;NAICS2017_NAICS2022.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>  <span class="at">colClasses =</span> <span class="st">&quot;character&quot;</span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>)</span></code></pre></div>
+<p>Execute the following code line to apply function
+<code>updateCorrespondenceTable()</code> and generate the updated
+correspondence table. In this case the classification NAICS 2017 (A) has
+been updated to NAICS 2022 (A*), and the correspondence to NACE Rev. 2
+(B) is revised accordingly. Given the option
+<code>Redundancy_trim = TRUE</code>, when there are redundant records,
+these are removed and kept exactly one record for each unique
+combination.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>UPC3 <span class="ot">&lt;-</span> <span class="fu">updateCorrespondenceTable</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">A =</span> A,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">B =</span> B,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">AStar =</span> AStar,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">AB =</span> AB,</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="at">AAStar =</span> AAStar,</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="at">Reference =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="at">MismatchToleranceB =</span> <span class="fl">0.5</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  <span class="at">MismatchToleranceAStar =</span> <span class="fl">0.8</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  <span class="at">Redundancy_trim =</span> <span class="cn">TRUE</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>)</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>  <span class="fu">head</span>(UPC3[[<span class="dv">1</span>]][<span class="dv">1208</span><span class="sc">:</span><span class="dv">1218</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Updating NAICS : NACE (triggered by NAICS update): Subsample of the new Correspondence Table&quot;</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>)</span></code></pre></div>
+<table style="width:100%;">
+<caption>Updating NAICS : NACE (triggered by NAICS update): Subsample of
+the new Correspondence Table</caption>
+<colgroup>
+<col width="3%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="11%" />
+<col width="8%" />
+<col width="12%" />
+<col width="10%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">NAICS.2017</th>
+<th align="center">NAICS.2022</th>
+<th align="center">NACE.Rev..2</th>
+<th align="center">CodeChange</th>
+<th align="center">Redundancy</th>
+<th align="center">NoMatchToAStar</th>
+<th align="center">NoMatchToB</th>
+<th align="center">NoMatchFromAStar</th>
+<th align="center">NoMatchFromB</th>
+<th align="center">LabelChange</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1208</td>
+<td align="center">332313</td>
+<td align="center">332313</td>
+<td align="center">25.11</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">1209</td>
+<td align="center">332313</td>
+<td align="center">332313</td>
+<td align="center">25.29</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">1210</td>
+<td align="center">332313</td>
+<td align="center">332313</td>
+<td align="center">25.30</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">1211</td>
+<td align="center">332313</td>
+<td align="center">332313</td>
+<td align="center">28.22</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">1212</td>
+<td align="center">332313</td>
+<td align="center">332313</td>
+<td align="center">28.91</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">1213</td>
+<td align="center">332313</td>
+<td align="center">332313</td>
+<td align="center">30.11</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>The table above represents a subset of the correspondence table
+generated in this example. Each row represents a candidate
+correspondence between a NAICS 2022 code and a NACE Rev. 2 code, derived
+from the previous version of the classification (NAICS 2017).</p>
+<p>In this example:</p>
+<ul>
+<li><p>The NAICS code <code>332313</code> is unchanged between NAICS
+2017 and NAICS 2022, as indicated by <code>CodeChange = 0</code> for all
+rows. This shows that the classification update did not introduce any
+code-level changes for this activity.</p></li>
+<li><p>The same NAICS code <code>332313</code> is mapped to multiple
+NACE Rev. 2 codes (<code>25.11</code>, <code>25.29</code>,
+<code>25.30</code>, <code>28.22</code>, <code>28.91</code>,
+<code>30.11</code>), reflecting a one-to-many correspondence that
+already existed and remains valid after the update.</p></li>
+<li><p>All rows have <code>Redundancy = 0</code>, meaning that each
+NAICS 2022–NACE Rev. 2 combination appears only once in the updated
+correspondence table.</p></li>
+<li><p>The flags <code>NoMatchToAStar = 0</code> and
+<code>NoMatchToB = 0</code> indicate that every row contains valid and
+consistent codes for both the updated classification (NAICS 2022) and
+the target classification (NACE Rev. 2).</p></li>
+<li><p>Similarly, <code>NoMatchFromAStar = 0</code> and
+<code>NoMatchFromB = 0</code> confirm that all codes appearing in the
+updated correspondence are present in the respective classification
+tables and supported by the underlying concordance tables.</p></li>
+<li><p>Finally, <code>LabelChange = 0</code> for all rows shows that the
+labels associated with the NAICS codes are identical between the 2017
+and 2022 versions.</p></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">head</span>(UPC3[[<span class="dv">2</span>]]),</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Updating NAICS : NACE (triggered by NAICS update): Names of the classifications involved&quot;</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="st">&quot;Classification: Name&quot;</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Updating NAICS : NACE (triggered by NAICS update): Names of the
+classifications involved</caption>
+<thead>
+<tr class="header">
+<th align="center">Classification: Name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">A: NAICS.2017</td>
+</tr>
+<tr class="even">
+<td align="center">B: NACE.Rev..2</td>
+</tr>
+<tr class="odd">
+<td align="center">AStar: NAICS.2022</td>
+</tr>
+</tbody>
+</table>
+<p>The table above corresponds to the second element returned by
+<code>updateCorrespondenceTable</code> and is a data frame containing
+the names of all relevant classifications.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

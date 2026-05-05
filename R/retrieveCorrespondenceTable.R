@@ -36,8 +36,6 @@
 #'   \item Issues an HTTP request and parses the response into a data frame.
 #' }
 #'
-#' The function does not write to disk. If you need a file, export the returned
-#' data frame explicitly (e.g., \code{utils::write.csv(x, file)}).
 #'
 #' @return
 #' A \code{data.frame} where each row represents one mapping from the source
@@ -45,14 +43,14 @@
 #'
 #' Columns (when available):
 #' \itemize{
-#'   \item \code{CorrespondenceID} — Requested identifier (e.g., \code{"NACE2_CPA21"}).
-#'   \item \code{Prefix} — Catalogue prefix (constant per table).
-#'   \item \code{&lt;A&gt;} — Source code (\code{A} parsed from \code{ID_table}).
-#'   \item \code{&lt;B&gt;} — Target code (\code{B} parsed from \code{ID_table}).
-#'   \item \code{Label_&lt;A&gt;}, \code{Label_&lt;B&gt;} — Human‑readable labels in \code{language}.
-#'   \item \code{Include_&lt;A&gt;}, \code{Exclude_&lt;A&gt;}, \code{Include_&lt;B&gt;}, \code{Exclude_&lt;B&gt;} — Notes, if present.
-#'   \item \code{Comment} — Free‑text comment on the mapping, if any.
-#'   \item \code{URL} — URI of the mapping association.
+#'   \item \code{CorrespondenceID}:  Requested identifier (e.g., \code{"NACE2_CPA21"}).
+#'   \item \code{Prefix}: Catalogue prefix (constant per table).
+#'   \item \code{A}: Source code (\code{A} parsed from \code{ID_table}).
+#'   \item \code{B}: Target code (\code{B} parsed from \code{ID_table}).
+#'   \item \code{Label_A}, \code{Label_B}: Human‑readable labels in \code{language}.
+#'   \item \code{Include_A}, \code{Exclude_A}, \code{Include_B}, \code{Exclude_B}: Notes, if available.
+#'   \item \code{Comment}: Free‑text comment on the mapping, if any.
+#'   \item \code{URL}: URI of the mapping association.
 #' }
 #'
 #' Attributes attached for traceability:
@@ -64,7 +62,7 @@
 #' @section Notes:
 #' \itemize{
 #'   \item The function focuses on retrieval. Any code normalization is left to
-#'         downstream steps (unless enabled internally by package options).
+#'         downstream steps.
 #' }
 #'
 #' @examples

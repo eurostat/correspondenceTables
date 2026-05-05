@@ -8,7 +8,8 @@ newCorrespondenceTable(
   Tables,
   Reference = "none",
   MismatchTolerance = 0.2,
-  Redundancy_trim = TRUE
+  Redundancy_trim = TRUE,
+  Progress = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,9 @@ real numbers in the interval [0, 1].}
 used to facilitate the trimming of the redundant records.
 The default value is \code{TRUE}, which removes all redundant records.
 The other values is \code{FALSE}, which shows redundant records together with the redundancy flag.}
+
+\item{Progress}{An argument in the function containing the logical values \code{TRUE} (default) or \code{FALSE}. 
+Used to switch ON (when \code{TRUE}) or OFF (when \code{FALSE}) the progress bar that interactively display the creation process of the new table in the console output.}
 }
 \value{
 \code{newCorrespondenceTable()} returns a list with two elements, both of which are data frames.
@@ -53,9 +57,9 @@ File and file name requirements:
         \item The file that corresponds to argument \code{Tables} must contain filenames, \emph{and nothing else}, in
         a \eqn{(k+2)} × \eqn{(k+2)} table, where \eqn{k}, a positive integer, is the number of "pivot" classifications.
         The cells in the main diagonal of the table provide the filenames of the files which contain, with this order,
-        the classifications A, \eqn{C_1}, \eqn{\ldots}, \eqn{C_k} and B. The off-diagonal directly above the main
+        the classifications  \eqn{A, C_1}, \eqn{\ldots}, \eqn{C_k} and \eqn{B}. The off-diagonal directly above the main
         diagonal contains the filenames of the files that contain, with this order, the correspondence tables
-        A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and B:\eqn{C_k}. All other cells of the table
+        \eqn{A:C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and \eqn{B:C_k}. All other cells of the table
         must be empty.
     }
 Classification table requirements:

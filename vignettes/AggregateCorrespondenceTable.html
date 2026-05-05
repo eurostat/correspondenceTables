@@ -342,58 +342,78 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="TOC">
 <ul>
 <li><a href="#overview" id="toc-overview">Overview</a></li>
-<li><a href="#application-of-the-aggregatecorrespondencetable" id="toc-application-of-the-aggregatecorrespondencetable"><strong>Application
-of the aggregateCorrespondenceTable()</strong></a>
+<li><a href="#application-of-aggregatecorrespondencetable" id="toc-application-of-aggregatecorrespondencetable">Application of
+<code>aggregateCorrespondenceTable()</code></a>
 <ul>
-<li><a href="#example-1-basic-aggregation-using-a-correspondence-table" id="toc-example-1-basic-aggregation-using-a-correspondence-table"><strong>Example
-1: Basic aggregation using a correspondence table</strong></a></li>
-<li><a href="#example-2-weighted-correspondence-proportional-allocation" id="toc-example-2-weighted-correspondence-proportional-allocation"><strong>Example
-2: Weighted correspondence (proportional allocation)</strong></a></li>
+<li><a href="#example-1-basic-aggregation-using-a-correspondence-table" id="toc-example-1-basic-aggregation-using-a-correspondence-table">Example
+1: Basic aggregation using a correspondence table</a></li>
+<li><a href="#example-2-weighted-correspondence-proportional-allocation" id="toc-example-2-weighted-correspondence-proportional-allocation">Example
+2: Weighted correspondence (proportional allocation)</a></li>
 </ul></li>
 </ul>
 </div>
 
-<div id="overview" class="section level2">
+<div id="overview" class="section level2" style="text-align: justify;">
 <h2>Overview</h2>
-<p>This vignette demonstrates how to use the
-aggregateCorrespondenceTable() function from the correspondenceTables
-package. The function aggregates numeric values expressed in a source
-classification (A) into a target classification (B), using a
-correspondence table that links A to B (denoted A → B). When
-correspondence weights are available, values are redistributed
-proportionally according to these weights. If no weights are provided,
-values are split equally across the corresponding target codes. This
-type of aggregation is commonly used to convert statistics between
-classification systems, for example:</p>
+<p>This vignette illustrates how to aggregate numeric values across
+classification systems using the
+<code>aggregateCorrespondenceTable()</code> function from the
+<code>correspondenceTables</code> package. The function aggregates
+numeric values expressed in a source classification (A) into a target
+classification (B), using a correspondence table that links A to B
+(denoted A → B). When correspondence weights are available, values are
+redistributed proportionally according to these weights. If no weights
+are provided, values are distributed equally across all corresponding
+target codes.</p>
+<p>This type of aggregation is commonly used to convert statistics
+between classification systems, for example:</p>
 <p>NACE → CPA</p>
 <p>CPA → CN</p>
 <p>PRODCOM → CPA</p>
 <p>CPC → HS</p>
-<p>Load the package correspondenceTables:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)</span></code></pre></div>
-<p><strong>Inputs</strong></p>
-<p>The aggregateCorrespondenceTable() function expects the following
-inputs:</p>
-<p><strong>AB</strong> A data frame representing the correspondence
-table between classification A and classification B. It must contain at
-least:</p>
-<p>a source code column (from_code) a target code column (to_code)
-optionally, a weight column</p>
-<p><strong>A</strong> A data frame containing values expressed in the
-source classification A. This typically includes:</p>
-<p>a source classification code one or more numeric variables to be
-aggregated</p>
-<p><strong>B (optional)</strong> A data frame defining the domain of the
-target classification B. If provided, all B codes are preserved in the
-output; target codes with no matching contributions receive a value of
-zero.</p>
 </div>
-<div id="application-of-the-aggregatecorrespondencetable" class="section level2">
-<h2><strong>Application of the
-aggregateCorrespondenceTable()</strong></h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(correspondenceTables)</span></code></pre></div>
+<style>
+table {
+width: 100% !important;
+}
+table caption {
+text-align: center;
+}
+</style>
+<p><strong>Inputs</strong></p>
+<div style="text-align: justify;">
+<p>The <code>aggregateCorrespondenceTable()</code> function expects the
+following inputs:</p>
+<ul>
+<li><p><strong>AB</strong>: A data frame representing the correspondence
+table between classification A and classification B.<br />
+It must contain:</p>
+<ul>
+<li>a source code column (<code>from_code</code>)</li>
+<li>a target code column (<code>to_code</code>)</li>
+<li>optionally, a weight column</li>
+</ul></li>
+<li><p><strong>A</strong>: A data frame containing values expressed in
+the source classification A. It typically includes:</p>
+<ul>
+<li>a source classification code</li>
+<li>one or more numeric variables to be aggregated</li>
+</ul>
+<p>By default, the function expects the source code column in
+<strong>A</strong> to be named <code>code</code>. This can be adapted if
+the function supports custom column names.</p></li>
+<li><p><strong>B (optional)</strong>: A data frame defining the domain
+of the target classification B.<br />
+If provided, all B codes are preserved in the output, and target codes
+with no matching contributions receive a value of zero.</p></li>
+</ul>
+</div>
+<div id="application-of-aggregatecorrespondencetable" class="section level2">
+<h2>Application of <code>aggregateCorrespondenceTable()</code></h2>
 <div id="example-1-basic-aggregation-using-a-correspondence-table" class="section level3">
-<h3><strong>Example 1: Basic aggregation using a correspondence
-table</strong></h3>
+<h3>Example 1: Basic aggregation using a correspondence table</h3>
+<div style="text-align: justify;">
 <p>In this example, all inputs are read from sample datasets included in
 the package.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>AB_path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;ab_data.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
@@ -411,81 +431,117 @@ the package.</p>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="fu">names</span>(AB)[<span class="fu">names</span>(AB) <span class="sc">==</span> <span class="st">&quot;NACE.Rev..2.Code&quot;</span>]   <span class="ot">&lt;-</span> <span class="st">&quot;from_code&quot;</span></span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="fu">names</span>(AB)[<span class="fu">names</span>(AB) <span class="sc">==</span> <span class="st">&quot;NACE.Rev..2.1.Code&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;to_code&quot;</span></span>
 <span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&lt;- &quot;to_code&quot;Show more lines</span></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">aggregateCorrespondenceTable</span>(<span class="at">AB =</span> AB, <span class="at">A =</span> A, <span class="at">B =</span> B)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">aggregateCorrespondenceTable</span>(<span class="at">AB =</span> AB, <span class="at">A =</span> A, <span class="at">B =</span> B)</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a></span>
 <span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>  <span class="fu">head</span>(res<span class="sc">$</span>result),</span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Aggregation using a correspondence table&quot;</span>,</span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;lll&quot;</span></span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>  <span class="fu">head</span>(res<span class="sc">$</span>result),</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Aggregation using a correspondence table&quot;</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <caption>Aggregation using a correspondence table</caption>
 <thead>
 <tr class="header">
-<th align="left">code_B</th>
-<th align="left">Level</th>
-<th align="left">Superior</th>
-<th align="left">value</th>
+<th align="center">code_B</th>
+<th align="center">Level</th>
+<th align="center">Superior</th>
+<th align="center">value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">12</td>
-<td align="left">2</td>
-<td align="left">C</td>
-<td align="left">2.0</td>
+<td align="center">12</td>
+<td align="center">2</td>
+<td align="center">C</td>
+<td align="center">2.0</td>
 </tr>
 <tr class="even">
-<td align="left">31</td>
-<td align="left">2</td>
-<td align="left">C</td>
-<td align="left">16.0</td>
+<td align="center">31</td>
+<td align="center">2</td>
+<td align="center">C</td>
+<td align="center">16.0</td>
 </tr>
 <tr class="odd">
-<td align="left">36</td>
-<td align="left">2</td>
-<td align="left">E</td>
-<td align="left">2.0</td>
+<td align="center">36</td>
+<td align="center">2</td>
+<td align="center">E</td>
+<td align="center">2.0</td>
 </tr>
 <tr class="even">
-<td align="left">37</td>
-<td align="left">2</td>
-<td align="left">E</td>
-<td align="left">2.0</td>
+<td align="center">37</td>
+<td align="center">2</td>
+<td align="center">E</td>
+<td align="center">2.0</td>
 </tr>
 <tr class="odd">
-<td align="left">39</td>
-<td align="left">2</td>
-<td align="left">E</td>
-<td align="left">2.0</td>
+<td align="center">39</td>
+<td align="center">2</td>
+<td align="center">E</td>
+<td align="center">2.0</td>
 </tr>
 <tr class="even">
-<td align="left">41</td>
-<td align="left">2</td>
-<td align="left">F</td>
-<td align="left">1.5</td>
+<td align="center">41</td>
+<td align="center">2</td>
+<td align="center">F</td>
+<td align="center">1.5</td>
 </tr>
 </tbody>
 </table>
-<p>The returned object is a list. The aggregated values are stored in
-the result element, which is a data frame structured according to the
-target classification B.</p>
+<p>The function returns a list. The aggregated values are stored in the
+<code>result</code> element, which is a data frame structured according
+to the target classification B.</p>
+<p><strong>Interpretation of the output</strong></p>
+<p>In this example:</p>
+<ul>
+<li>Dataset <strong>A</strong> contains numeric values expressed in the
+source classification.</li>
+<li>The correspondence table <strong>AB</strong> specifies how each
+source code is linked to one or more target codes.</li>
+<li>No weights are supplied in the correspondence table.</li>
+</ul>
+<p>For each source code in <strong>A</strong>:</p>
+<ul>
+<li>If it maps to <strong>a single target code</strong>, its full value
+is assigned to that target code.</li>
+<li>If it maps to <strong>multiple target codes</strong>, its value is
+<strong>split equally</strong> among them.</li>
+</ul>
+<p>All allocated contributions are then <strong>summed for each target
+code</strong>. The column containing numeric values in the output
+therefore represents the total value aggregated to each target
+classification code in B.</p>
 <p><strong>Notes</strong></p>
-<p>If a source code maps to multiple target codes, values are split
-according to the correspondence weights. If no weights are supplied,
-equal splitting is applied. Supplying the B argument ensures that the
-output covers the full target classification domain, even for codes with
-zero contributions.</p>
+<ul>
+<li>The aggregation performed by
+<code>aggregateCorrespondenceTable()</code> is additive: values are
+redistributed and summed, not averaged or otherwise summarized.</li>
+<li>Supplying the <strong>B</strong> argument ensures that the output
+covers the full target classification domain; target codes with no
+matching contributions receive a value of zero.</li>
+</ul>
+</div>
 </div>
 <div id="example-2-weighted-correspondence-proportional-allocation" class="section level3">
-<h3><strong>Example 2: Weighted correspondence (proportional
-allocation)</strong></h3>
-<p>This example shows how values from A are redistributed to B using
-explicit weights.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a> <span class="co"># Correspondence table with weights</span></span>
+<h3>Example 2: Weighted correspondence (proportional allocation)</h3>
+<div style="text-align: justify;">
+<p>This example illustrates aggregation when the correspondence table
+includes <strong>explicit weights</strong>.</p>
+<p>Here:</p>
+<ul>
+<li>Source code <strong>A1</strong> is linked to two target codes:
+<ul>
+<li>70% of its value goes to <strong>B1</strong></li>
+<li>30% goes to <strong>B2</strong></li>
+</ul></li>
+<li>Source code <strong>A2</strong> is linked entirely to
+<strong>B2</strong></li>
+</ul>
+<p>The function multiplies each source value by the corresponding weight
+for each correspondence link and then sums all weighted contributions
+per target code.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Correspondence table with weights  </span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>AB <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">from_code =</span> <span class="fu">c</span>(<span class="st">&quot;A1&quot;</span>, <span class="st">&quot;A1&quot;</span>, <span class="st">&quot;A2&quot;</span>),</span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">to_code   =</span> <span class="fu">c</span>(<span class="st">&quot;B1&quot;</span>, <span class="st">&quot;B2&quot;</span>, <span class="st">&quot;B2&quot;</span>),</span>
@@ -494,7 +550,7 @@ explicit weights.</p>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co"># Source classification with values  </span></span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">code  =</span> <span class="fu">c</span>(<span class="st">&quot;A1&quot;</span>, <span class="st">&quot;A2&quot;</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">code  =</span> <span class="fu">c</span>(<span class="st">&quot;A1&quot;</span>, <span class="st">&quot;A2&quot;</span>), </span>
 <span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">50</span>)</span>
 <span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>)</span>
 <span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
@@ -503,34 +559,56 @@ explicit weights.</p>
 <span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="at">code =</span> <span class="fu">c</span>(<span class="st">&quot;B1&quot;</span>, <span class="st">&quot;B2&quot;</span>)</span>
 <span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>)</span>
 <span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">aggregateCorrespondenceTable</span>(<span class="at">AB =</span> AB, <span class="at">A =</span> A, <span class="at">B =</span> B) </span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">aggregateCorrespondenceTable</span>(<span class="at">AB =</span> AB, <span class="at">A =</span> A, <span class="at">B =</span> B)</span>
 <span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>  <span class="fu">head</span>(res2<span class="sc">$</span>result),</span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Weighted correspondence (proportional allocation)&quot;</span>,</span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;lll&quot;</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="fu">head</span>(res2<span class="sc">$</span>result),</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Weighted correspondence (proportional allocation)&quot;</span>,</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <caption>Weighted correspondence (proportional allocation)</caption>
 <thead>
 <tr class="header">
-<th align="left">code_B</th>
-<th align="left">value</th>
+<th align="center">code_B</th>
+<th align="center">value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">B1</td>
-<td align="left">70</td>
+<td align="center">B1</td>
+<td align="center">70</td>
 </tr>
 <tr class="even">
-<td align="left">B2</td>
-<td align="left">80</td>
+<td align="center">B2</td>
+<td align="center">80</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Interpretation of the output</strong></p>
+<p>The values shown in the output represent the total weighted sums per
+target code.</p>
+<p>For example:</p>
+<ul>
+<li>Target code <strong>B1</strong> receives 70% of the value associated
+with <strong>A1</strong></li>
+<li>Target code <strong>B2</strong> receives:
+<ul>
+<li>30% of <strong>A1</strong></li>
+<li>100% of <strong>A2</strong></li>
+</ul></li>
+</ul>
+<p>All contributions are summed to produce the final totals.</p>
+<p><strong>Tiny numeric illustration</strong></p>
+<p>If <strong>A1</strong> has a value of 100:</p>
+<ul>
+<li>70 is allocated to <strong>B1</strong></li>
+<li>30 is allocated to <strong>B2</strong></li>
+</ul>
+<p>If <strong>A2</strong> has a value of 50 and maps fully to
+<strong>B2</strong>, the final value for <strong>B2</strong> is:</p>
+<p><span class="math inline">\(30 + 50 = 80\)</span></p>
+</div>
 </div>
 </div>
 

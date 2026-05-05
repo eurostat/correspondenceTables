@@ -21,7 +21,7 @@ and labels of the classification to be checked. This argument is mandatory.}
 \item{lengths}{A \code{data.frame} with one row per hierarchical level giving the
         initial and final positions of the segment of the code referring
         to that level. The number of rows implicitly defines the number of hierarchical levels
-(\eqn{k}). This argument is mandatory.}
+(\eqn{k}). This argument is mandatory. The column names should be \code{charb} and \code{chare}, if this is not the case, they will be automatically changed and a warning will appear.}
 
 \item{fullHierarchy}{Logical.
 If \code{FALSE}, the function checks that all positions at levels greater

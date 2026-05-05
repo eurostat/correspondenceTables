@@ -20,99 +20,162 @@ knitr::opts_chunk$set(
 
 ```
 
-This vignette provides information about the functions included in the correspondenceTables package used to create a quality control of the classification
+<div style="text-align: justify;">
+
+This vignette provides information about the `classificationQC()` function included in the `correspondenceTables` package, which is used to perform quality control on classifications.
+
+</div>
 
 ```{r}
-library(correspondenceTables)
+library(correspondenceTables) 
 ```
 
-
-
-
+```{r, echo=FALSE, results="asis"}
+cat("<style>table {  width: 100% !important;}table caption {  text-align: center;}
+</style>")
+```
+ 
 ## Overview
 
-Classification quality control
+<div style="text-align: justify;">
+
+The main function `classificationQC()` performs structural and logical quality 
+control on hierarchical classifications. It returns a list of data frames,
+including an enriched version of the classification (QC_output) and additional
+tables flagging potential issues such as orphan codes, duplicate labels, or
+sequencing problems.
+
+The quality‑control checks identify several types of potential structural
+or logical issues commonly observed in official classifications:
+
+- **Missing hierarchy levels**: codes for which no hierarchical level can be
+  inferred from the provided structure (for example because their code length
+  does not match any declared level). Such codes cannot be positioned reliably
+  in the hierarchy.
+
+- **Orphan codes**: codes that do not have a valid parent code at the immediately
+  higher hierarchical level. This indicates a break in the hierarchical
+  structure and usually reflects missing or inconsistent higher‑level codes.
+
+- **Childless codes**: internal codes that do not have any descendants at the
+  immediately lower hierarchical level. While expected at the lowest level,
+  this may signal incomplete structures or unintended dead ends at higher
+  levels.
+
+- **Duplicate labels**: identical labels occurring more than once within the
+  same hierarchical level. This does not invalidate the hierarchy, but may
+  reduce interpretability and cause ambiguity when classifications are used
+  in tabular or statistical contexts.
+
+- **Label‑hierarchy inconsistencies**: situations in which the label of a
+  child code does not reflect the label of its parent where such inheritance
+  is expected (for example in single‑child situations), suggesting potential
+  inconsistencies in naming conventions.
+
+- **Sequencing anomalies**: gaps or breaks in expected code sequences among
+  sibling codes under the same parent. In structured coding systems where
+  code values are meaningful (for example numeric ranges), such gaps may
+  indicate missing or omitted codes.
+
+**Main arguments**
+
+The main arguments of the function are:
+
+- **classification**: A data frame containing the classification codes and labels.
+
+- **lengths**:  A data frame with one row per hierarchical level giving the initial and final positions of the segment of the code referring to that level. The number of rows implicitly defines the number of hierarchical levels ($k$). The column names should be `charb` and `chare`, if this is not the case, they will be automatically changed and a warning will appear.
+
+- **fullHierarchy**: Logical. If `FALSE`, the function checks that all positions at levels greater than 1 have a parent at the level immediately above (no orphans). If `TRUE`, it additionally checks that positions at levels strictly lower than $k$ have children in the next level (no childless nodes). More specifically, the function checks the completeness of the hierarchical structure by applying two rules:
+  - **Orphan check**: A new field in the QC output, named `orphan`, takes the value 1 for positions at hierarchical level $j > 1$ that lack a parent at the immediately higher level ($j − 1$), and 0 otherwise.
+  - **Childless check**: A new field in the QC output, named `childless`, takes the value 1 for positions at hierarchical level $j < k$ that lack a child at the immediately lower level ($j + 1$), and 0 otherwise.
 
 
-The main function classificationQC() is designed to perform structural and logical quality control on hierarchical classifications.
-It returns a list of data frames, including an enriched version of the classification (QC_output) and additional tables flagging potential issues such as orphan codes, duplicate labels, or sequencing problems.
-The function takes the following arguments:
+- **labelUniqueness**: Logical. When `TRUE`, the function checks whether labels are unique, at each hierarchical level. Duplicates are listed in the `QC_duplicatesLabel` table.
 
-* **classification** – a data frame containing the classification codes and labels.
-* **lengths** – a data frame defining the hierarchical structure of the codes using the columns charb and chare.
-* **fullHierarchy** – when TRUE, the function checks both the absence of orphan codes and the absence of childless internal nodes. When FALSE, no hierarchical completeness checks are performed.
-* **labelUniqueness** – when TRUE, checks that labels are unique within each hierarchical level.
-* **labelHierarchy** – when TRUE, checks label consistency between parents and children.
-* **singleChildCode** – an optional data frame defining admissible coding rules for single‑child and multiple‑child situations.
-* **sequencing** – an optional data frame defining admissible ordering rules for multiple‑child situations.
+- **labelHierarchy**:Logical. When `TRUE`, the function checks that single children share the same label as their parent and if a parent shares a label with one of its children, it must be a single-child parent. The possible values are:
+  - **1**: indicates a single child whose label does not match that of its parent;
+  - **9**: indicates a child whose label matches that of its parent without being a single child;
+  - **0**: indicates compliance.
 
-The function does not write output files. Export to CSV must be handled explicitly by the user outside the function.
+- **singleChildCode**: an optional data frame defining admissible coding rules
+  for single‑child and multiple‑child situations, with columns **level**,
+  **singleCode**, and **multipleCode**. If these headers are missing or
+  incorrect, they are automatically corrected with a warning.
 
-**Requirements**
-The following auxiliary input files are expected when using the arguments lengths, singleChildCode, and sequencing.
+- **sequencing**: an optional data frame defining admissible code‑range rules for
+  multiple‑child situations, used to identify potential gaps in structured code
+  sequences. The expected columns are **level** and **multipleCode**.
 
-**lengths**
-The user provides a data frame with the headers **charb and chare**.
-If these headers are missing or incorrect, the function issues a warning and automatically renames the first two columns accordingly.
+It is important to note that not all detected issues necessarily indicate errors. The quality‑control checks are diagnostic signals intended to support expert review of classification quality and consistency, and they do not impose constraints on the hierarchical structure itself.
+In particular:
 
-**singleChildCode**
-The user provides a data frame with the headers **level, singleCode, and multipleCode**.
-If these headers are missing or incorrect, the function issues a warning and renames the first three columns accordingly.
+- parent codes may legitimately have any number of children;
+- sequencing checks are not about the order in which children appear;
+- sequencing diagnostics are used to identify gaps in expected, structured code ranges where code values carry semantic meaning.
 
-**sequencing**
-The user provides a data frame with the headers **level and multipleCode**.
-As with singleChildCode, incorrect or missing headers are automatically detected and corrected with a warning.
 
-In the following example, the auxiliary files are loaded to illustrate how the function handles both correctly and incorrectly specified column headers.
-
+</div>
 
 ## Auxiliary Tables for Classification Validation
 
-The validation procedures rely on a small set of auxiliary tables that
-define structural constraints such as expected code lengths, single-child
-rules, and sequencing between levels.
+<div style="text-align: justify;">
 
-We load three auxiliary tables used for classification validation.
-Some of the raw CSV files do not use standard column names and must
-therefore be normalised explicitly.
+The validation procedures rely on a small set of auxiliary tables that define structural constraints, such as expected code lengths, single‑child rules, and sequencing between levels.
 
+We load three auxiliary tables used for classification validation.  
 
-### Definition of expected code lengths by level
+</div>
 
-We first load the file defining the expected code lengths by level.
-This raw file does not provide meaningful column names, so we inspect its structure before standardisation.
+### Definition of expected code lengths using the mandatory `lengths` argument
+
+<div style="text-align: justify;">
+
+The `lengths` table specifies the character positions at which each hierarchical level of a classification code starts and ends.
+Specifically, column `charb` indicates the starting position of the segment (character beginning), while column `chare` indicates the ending position (character end).
+
+For example, the following definition indicates that:
+
+- level 1 codes start at the first position and end at the second,
+- level 2 codes start at the third position and end at the fourth,
+- level 3 codes start at the fifth position and end at the seventh.
+
+An example of such a structure is shown below:
 
 ```{r}
-lengths <- read.csv(
-  system.file("extdata", "lenghtsNaceNoColumn.csv",
-              package = "correspondenceTables")
+lengths_example <- data.frame(
+  charb = c(1, 3, 5),
+  chare = c(2, 4, 7)
 )
 
 knitr::kable(
-  head(lengths, 5),
-  caption = "Original lengths file (no meaningful column names)"
-)
-```
-
-### Standardising column names for the lengths table
-
-To make the table usable in validation routines, we explicitly assign semantic column names:
-level for the hierarchical level and nchar for the expected code length.
-
-```{r}
-colnames(lengths) <- c("level", "nchar")
-
-knitr::kable(
-  head(lengths, 5),
-  caption = "Lengths table after renaming columns"
+  lengths_example,
+  caption = "Example of expected code lengths by hierarchical level",
+  align = "c"
 )
 
 ```
 
-### Single-child code constraints
-The following table specifies levels where codes are expected to have a single child (or allow multiple children).
-This structure is already correctly formatted and can be used as-is.
+</div>
 
+### Single‑child code constraints
+
+<div style="text-align: justify;">
+
+In some classifications, specific coding conventions are used to distinguish between situations where a parent code has a single child and situations where it has multiple children. These conventions do **not** restrict the hierarchical structure itself and do **not** limit the number of children per node.
+
+Instead, they verify whether observed codes comply with predefined coding
+patterns **when a single‑child or multiple‑child situation occurs**.
+
+The `singleChildCode` table defines these admissible patterns and contains
+the following columns:
+
+- **level**: the hierarchical level at which the rule applies.
+- **singleCode**: the expected coding pattern when a parent has exactly one
+  child (for example, retaining the same code).
+- **multipleCode**: the expected coding pattern when a parent has multiple
+  children (for example, using a sequence of numeric or alphanumeric suffixes).
+
+These checks do not modify the classification and do not enforce a specific hierarchical shape. They merely flag cases where observed coding does not match the declared conventions, which may indicate inconsistencies in code design.
 
 ```{r}
 singleChildCode <- read.csv(
@@ -122,15 +185,38 @@ singleChildCode <- read.csv(
 
 knitr::kable(
   singleChildCode,
-  caption = "Single-child code rules"
+  caption = "Single-child code rules",
+  align = "c"
 )
 ```
 
+</div>
+
 ### Sequencing rules between hierarchical levels
 
-Finally, we normalise the sequencing table, which defines ordering constraints between levels.
-Column names are adjusted to make the intended structure explicit.
+<div style="text-align: justify;">
 
+Sequencing checks are not intended to impose an ordering on hierarchical trees.
+In a pure tree structure, only parent‑child relationships matter.
+
+However, in many official classifications, code values themselves convey
+implicit structure (for example numeric or alphanumeric sequences).
+In such systems, sibling codes are often expected to follow predefined ranges
+or patterns.
+
+The purpose of sequencing checks is therefore **diagnostic**, not normative:
+they aim to detect gaps or breaks in otherwise structured code spaces, which
+may indicate missing, omitted, or inconsistently defined codes.
+
+Sequencing rules are defined through a table with the following columns:
+
+- **level**: the hierarchical level at which sequencing rules apply.
+- **multipleCode**: the expected pattern or range of sibling codes used to
+  detect potential gaps under the same parent.
+
+Sequencing anomalies do not invalidate the hierarchy, but they may point to
+classification maintenance issues or incomplete implementations of official
+coding schemes.
 
 ```{r}
 
@@ -139,49 +225,51 @@ sequencing <- read.csv(
               package = "correspondenceTables")
 )
 
-
-
-colnames(sequencing) <- c("level", "order")
-
-
-sequencing$order_short <- ifelse(
-  nchar(sequencing$order) > 12,
-  paste0(substr(sequencing$order, 1, 12), "..."),
-  sequencing$order
-)
-
 knitr::kable(
-  sequencing[, c("level", "order_short")],
-  caption = "Sequencing rules (order truncated for display)"
+  sequencing,
+  caption = "Example of sequencing rules by hierarchical level",
+  align = "c"
 )
 
 ```
 
+</div>
 
 ## Example 1: Basic quality control using hierarchy definitions
 
-The following example applies `classificationQC()` to the NACE Rev.2 classification using additional parameters
+<div style="text-align: justify;">
+
+The following example applies `classificationQC()` to the NACE Rev.2
+classification using additional parameters.
 
 In this example, the user provides:
+
 - a data frame containing the classification to be checked, and
-- a data frame defining the hierarchical structure of the classification through the `lengths` argument.
+- a data frame defining the hierarchical structure of the classification  through the `lengths` argument. 
 
-Different parameters of the `classificationQC()` function are used to demonstrate how structural and logical quality checks are applied to the classification.
-
+This example demonstrates how different parameters of `classificationQC()` are
+used to perform structural and logical quality checks.
 
 ```{r}
 classification <- read.csv(
   system.file("extdata", "Nace2.csv", package = "correspondenceTables")
 )
 
-lengths <- data.frame(charb = c(1,2,3,5), chare = c(1,2,4,5))
+lengths <- data.frame(
+  charb = c(1, 2, 3, 5),
+  chare = c(1, 2, 4, 5)
+)
 
 ```
 
+We now apply the `classificationQC()` function using the previously defined
+classification and hierarchy structure. The function performs structural and
+logical quality checks on the NACE Rev.2 classification. For illustration
+purposes, the output is summarised by reporting the number of detected issues
+for selected quality checks.
 
 
 ```{r}
-
 output <- classificationQC(
   classification   = classification,
   lengths          = lengths,
@@ -193,8 +281,8 @@ output <- classificationQC(
 )
 
 qc_summary <- data.frame(
-  Check               = c("No levels", "Orphan codes", "Childless codes"),
-  Number_of_issues    = c(
+  Check            = c("No levels", "Orphan codes", "Childless codes"),
+  Number_of_issues = c(
     nrow(output$QC_noLevels),
     nrow(output$QC_orphan),
     nrow(output$QC_childless)
@@ -203,19 +291,21 @@ qc_summary <- data.frame(
 
 knitr::kable(
   qc_summary,
-  caption = "Summary of quality control checks"
+  caption = "Summary of quality control checks",
+  align = "c"
 )
 
 ```
 
-
-
+</div>
 
 ### Codes with no hierarchy level (`QC_noLevels`)
 
-The following table lists classification codes that are missing a declared
-hierarchy level. Such codes cannot be placed correctly in the classification
-structure.
+<div style="text-align: justify;">
+
+In this example, all classification codes have a properly defined hierarchy level.
+As a result, the quality check `QC_noLevels` does not produce any output.
+
 
 ```{r, echo=FALSE, results="asis"}  
 
@@ -229,8 +319,11 @@ cat(sprintf(
 
 ```
 
+</div>
 
 ### Orphan codes (`QC_orphan`)
+
+<div style="text-align: justify;">
 
 Orphan codes are codes that have no parent code at a higher hierarchical level.
 This usually indicates breaks in the hierarchical structure.
@@ -245,17 +338,20 @@ cat(sprintf(
   ncol(tbl2) 
 ))
 
-
-
 knitr::kable(
   head(tbl2[, 1:8], 5),
-  caption = "First 5 rows (first 7 columns)"
+  caption = "Orphan codes (First 5 rows (first 7 columns))",
+  align = "c"
 )
 ```
 
+</div>
+
 ### Childless codes (`QC_childless`)  
 
-Childless codes are codes that have no descendants at lower hierarchical levels.
+<div style="text-align: justify;">
+
+Childless codes are codes at high level that have no descendants at lower hierarchical levels.
 This can be expected at the lowest level of a classification, but may indicate
 structural issues at higher levels.
 
@@ -271,40 +367,17 @@ cat(sprintf(
 
 knitr::kable(
   head(tbl3[, 1:8], 5),
-  caption = "First 5 rows (first 7 columns)"
+  caption = "First 5 rows (first 7 columns)",
+  align = "c"
 )
 
 ```
 
+</div> 
 
-**Full hierarchy**  
-
-When `fullHierarchy = TRUE`, the function checks the completeness of the hierarchical structure by applying two rules:
-
-- **Orphan check**:  
-  A new field in the QC output, named `orphan`, takes the value 1 for positions at hierarchical level *j > 1* that lack a parent at the immediately higher level (*j − 1*), and 0 otherwise.
-
-- **Childless check**:  
-  A new field in the QC output, named `childless`, takes the value 1 for positions at hierarchical level *j < k* that lack a child at the immediately lower level (*j + 1*), and 0 otherwise.
-
-When `fullHierarchy = FALSE`, no hierarchical completeness checks (neither orphan nor childless) are performed.
-
----
-
-The **labelUniqueness** argument (default value: `TRUE`) indicates whether compliance with label uniqueness is tested.  
-The test outcome is reported in a new QC output column, `duplicateLabel`, which takes the value 1 for positions involved in duplicate labels within the same hierarchical level, and 0 otherwise.
-
----
-
-The **labelHierarchy** argument (default value: `TRUE`) indicates whether label consistency between parents and children is tested.  
-The test outcome is reported in a new QC output column, `singleChildMismatch`, for hierarchical levels *j > 1* (with no value at the highest level):
-
-- value **1** indicates a single child whose label does not match that of its parent;
-- value **9** indicates a child whose label matches that of its parent without being a single child;
-- value **0** indicates compliance.
-
----
 ## Example 2: Quality control with single‑child coding rules
+
+<div style="text-align: justify;">
 
 The following example illustrates the quality control of the NACE Rev.2 classification from CELLAR using additional parameters, including the `singleChildCode` argument.
 
@@ -314,7 +387,11 @@ The following example illustrates the quality control of the NACE Rev.2 classifi
 singleChildCode <- read.csv(
   system.file("extdata", "SingleChild.csv", package = "correspondenceTables")
 )
-
+knitr::kable(
+  singleChildCode,
+  caption = "singleChildCode argument",
+  align = "c"
+)
 
 output2 <- classificationQC(
   classification   = classification,
@@ -325,11 +402,6 @@ output2 <- classificationQC(
   singleChildCode  = singleChildCode,
   sequencing       = NULL
 )
-
-
-#head(output2$QC_orphan[, c("Code", "Parent", "level")])  
-#head(output2$QC_noLevels)
-#head(output2$QC_childless)  
 ```
 
 This table lists orphan codes, i.e. codes that do not have a valid parent at the immediately higher hierarchical level.
@@ -346,24 +418,12 @@ cat(sprintf(
 
 knitr::kable(
   head(tbl4[, 1:8], 5),
-  caption = "First 5 rows (first 7 columns)"
+  caption = "First 5 rows (first 7 columns)",
+  align = "c"
 )
 
 ```
 
-This table identifies classification codes for which no hierarchical level could be determined
-
-
-```{r, echo=FALSE, results="asis"}
-tbl5 <- output2$QC_noLevels
-
-cat(sprintf(
-  "**QC_noLevels** \n\n- Rows: %d  \n- Columns: %d\n\n",
-  nrow(tbl5), 
-  ncol(tbl5)
-))
-
-```
 
 This table lists childless codes, i.e. codes that have no descendants at the immediately lower hierarchical level
 
@@ -379,32 +439,38 @@ cat(sprintf(
 
 knitr::kable(
   head(tbl6[, 1:8], 10),
-  caption = "First 10 rows (first 7 columns)"
+  caption = "First 10 rows (first 7 columns)",
+  align = "c"
 )
 
 
 ```
 
+</div>
+
 
 ## Example 3: Quality control with sequencing constraints
 
-In this final example, the `sequencing` parameter is used to check the ordering of multiple children within the hierarchy.
+<div style="text-align: justify;">
 
-Sequencing rules are applied at hierarchical levels 3 and 4, as specified in the `sequencing` input table.  
-At these levels, the function verifies that codes corresponding to multiple children follow the expected order and flags potential gaps or inconsistencies in the sequence.
+In this final example, the `sequencing` parameter is used to detect potential gaps
+in structured sequences of sibling codes within the hierarchy.
+
+Sequencing rules are applied at hierarchical levels 3 and 4, as specified in the
+`sequencing` input table. At these levels, the function identifies missing or
+inconsistent code values within predefined numeric or alphanumeric ranges,
+which may indicate incomplete or faulty classification structures.
 
 
 ```{r}
-
-## Example: use of sequencing at levels 3 and 4
 
 singleChildCode <- read.csv(
   system.file("extdata", "SingleChild2.csv", package = "correspondenceTables")
 )
 
-sequencing <- data.frame(
-  level = c(3, 4),
-  multipleCode = c("123", "123")
+sequencing <- read.csv(
+  system.file("extdata", "Sequencing.csv",
+              package = "correspondenceTables")
 )
 
 output3 <- classificationQC(
@@ -417,13 +483,10 @@ output3 <- classificationQC(
   sequencing       = sequencing
 )
 
-#head(output3$QC_output)
-#head(output3$QC_gapBefore)
-#head(output3$QC_lastSibling)
 
 ```
 
-This table identifies gaps in the expected sequence of sibling codes within the same parent
+The `QC_gapBefore` argument identifies gaps in expected code sequences among sibling codes within the same parent.
 
 ```{r, echo=FALSE, results="asis"}
 tbl7 <- output3$QC_gapBefore
@@ -434,10 +497,17 @@ cat(sprintf(
   ncol(tbl7)
 ))
 
+
+knitr::kable(
+  head(tbl7[, 1:8], 10),
+  caption = "QC_gapBefore. First 10 rows (first 7 columns)",
+  align = "c"
+)
+
+
 ```
 
-This table lists the last sibling codes within each group of children, used to assess sequencing completeness
- 
+This table lists the last sibling codes within each group of children, used to assess sequence completeness.
 
 ```{r, echo=FALSE, results="asis"}  
 tbl8 <- output3$QC_lastSibling
@@ -447,6 +517,13 @@ cat(sprintf(
   nrow(tbl8),
   ncol(tbl8)
 ))
+
+
+knitr::kable(
+  head(tbl8[, 1:8], 10),
+  caption = "QC_lastSibling. First 10 rows (first 7 columns)",
+  align = "c"
+)
 
 
 ```
@@ -466,10 +543,12 @@ cat(sprintf(
 
 knitr::kable(
   head(tbl9[, 1:8], 10),
-  caption = "First 10 rows (first 7 columns)"
+  caption = "First 10 rows (first 7 columns)",
+  align = "c"
 )
 
 
 ```
 
+</div>
 

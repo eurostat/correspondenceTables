@@ -14,7 +14,7 @@
 #' @param lengths A \code{data.frame} with one row per hierarchical level giving the
 #'           initial and final positions of the segment of the code referring
 #'           to that level. The number of rows implicitly defines the number of hierarchical levels
-#'   (\eqn{k}). This argument is mandatory.
+#'   (\eqn{k}). This argument is mandatory. The column names should be \code{charb} and \code{chare}, if this is not the case, they will be automatically changed and a warning will appear.
 #'
 #' @param fullHierarchy Logical.  
 #'   If \code{FALSE}, the function checks that all positions at levels greater
@@ -108,7 +108,7 @@ classificationQC = function(classification, lengths, fullHierarchy = TRUE, label
   
   expected_headers <- c("charb", "chare")
   if (!all(expected_headers %in% colnames(lengths))) {
-    warning("Variable names do not match expected headers. Renaming.")
+    warning("Variable names in 'lenghts' argument do not match expected headers. Renaming.")
     colnames(lengths)[1:2] <- expected_headers
   }
   

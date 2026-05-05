@@ -3,7 +3,7 @@ title: "Analyse Correspondence Table"
 output:
   rmarkdown::html_vignette:  
     toc: TRUE
-description: "This vignette explains how to use the analyseCorrespondenceTable function."
+description: "This vignette explains how to use the `analyseCorrespondenceTable()` function to explore and diagnose correspondence tables."
 vignette: >
   %\VignetteIndexEntry{Analyse Correspondence Table}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,25 +15,36 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
+<div style="text-align: justify;">
+## Overview  
+ 
+This vignette demonstrates how to extract key diagnostic information from correspondence tables using the `analyseCorrespondenceTable()` function, including:
 
-## Overview
-This vignette demonstrates how to use the analyseCorrespondenceTable() function from the correspondenceTables package to analyse classification correspondence tables.
-The function provides diagnostic information on the structure and quality of a correspondence table, such as:
+- the inventory of codes involved on both sides of the correspondence;
+- the presence of one‑to‑one, one‑to‑many, or many‑to‑many relationships;
+- potential structural issues that may affect downstream use (aggregation, updates, or quality checks).
+</div>
 
-
-* the inventory of codes involved on both sides of the correspondence;
-* the presence of one‑to‑one, one‑to‑many, or many‑to‑many relationships;
-* potential structural issues that may affect downstream use (aggregation, updates, or quality checks).
-
-
-Load the package correspondenceTables: 
 ```{r}
 library(correspondenceTables)  
 ```
 
-## Application of analyseCorrespondenceTable
+```{r, echo=FALSE, results="asis"}
+cat("
+<style>
+table {
+  width: 100% !important;
+}
+table caption {
+  text-align: center;
+}
+</style>
+")
+```
 
-### **Example 1: Basic analysis of a correspondence table**
+## Application of `analyseCorrespondenceTable`
+
+### Example 1: Basic analysis of a correspondence table
 In this first example, only a correspondence table is provided.
 No explicit source or target classification tables are supplied.
 
@@ -60,12 +71,14 @@ result <- analyseCorrespondenceTable(
   longestAcodeOnly = FALSE,
   longestBcodeOnly = FALSE
 )
-#head(result$Inventory)
-#head(result$Analysis)
 ```
 
+ 
 The function returns a list containing multiple outputs.
-Two key components are displayed below:
+Two key components are displayed below.
+
+The tables below illustrate the first rows of the outputs returned by the function:
+
 
 ```{r}
 # Display results
@@ -73,33 +86,72 @@ Two key components are displayed below:
 knitr::kable(
   head(result$Inventory),
   caption = "Inventory results: Basic analysis of a correspondence table",
-  align = "lll"
+  align = "c"
 )
 
 
 knitr::kable(
   head(result$Analysis),
-  caption = "Analysisresults: Basic analysis of a correspondence table",
-  align = "lll"
+  caption = "Analysis results: Basic analysis of a correspondence table",
+  align = "c"
 )
 
 ```
- 
-In this example, both the correspondence inventory and the analytical summary
-are available and printed. These outputs can be used to inspect the overall
-structure of the correspondence table.
+
+ <div style="text-align: justify;">
+**Interpretation of the results**
+
+The `analyseCorrespondenceTable()` function returns a list of outputs that
+summarise the structure of the correspondence table from complementary
+perspectives. In this example, two components are displayed:
+**Inventory** and **Analysis**.
+
+**Inventory table**
+
+The `Inventory` table provides descriptive information about the codes
+appearing on each side of the correspondence. Typical columns include:
+
+- the identifiers of codes on side *A* and side *B*;
+- the number of times each code appears in the correspondence;
+- summary indicators describing how codes are connected.
+
+This table is useful for identifying which codes are involved in the
+correspondence and for detecting duplicates or unexpected patterns.
+
+**Analysis table**
+
+The `Analysis` table summarises the relationship structure between the
+two classifications. In particular, it classifies the relationships between codes as:
+
+- **1:1 (one‑to‑one)**: each code on side *A* corresponds to exactly one
+  code on side *B*;
+- **1:M (one‑to‑many)**: one code on side *A* corresponds to multiple
+  codes on side *B*;
+- **M:1 (many‑to‑one)**: multiple codes on side *A* correspond to one
+  code on side *B*;
+- **M:M (many‑to‑many)**: multiple codes on side *A* correspond to
+  multiple codes on side *B*.
+
+Many‑to‑many (M:M) relationships are typically the most complex and may require
+special attention, as they can introduce ambiguity in aggregation,
+conversion, or validation processes.
 
 
-### **Example 2: Full analysis with source and target classifications**
-In this second example, all supported parameters of the function are used.
+Together, the inventory and analysis outputs provide an overview of both
+the content and the structural properties of the correspondence
+table.
+</div>
 
-AB contains a correspondence table between NACE Rev. 2 and NACE Rev. 2.1
-A contains the source classification (NACE Rev. 2)
-B contains the target classification (NACE Rev. 2.1)
+### Example 2: Full analysis with source and target classifications
+In this second example, all main parameters of the function are used.
+
+- `AB`: correspondence table between NACE Rev.2 and NACE Rev.2.1
+- `A`: source classification (NACE Rev.2)  
+- `B`: target classification (NACE Rev.2.1)
 
 The analysis is restricted to the lowest‑level codes on both sides of the
 correspondence.
- 
+
 
 ```{r}
 # Load correspondence table (NACE Rev.2 -> NACE Rev.2.1)
@@ -136,7 +188,8 @@ result2 <- analyseCorrespondenceTable(
 ```
 
 
-The resulting inventory and analysis summary are shown below:
+The tables illustrate the first rows of the outputs returned by the function:
+The resulting inventory and analysis summary are shown below: 
 
 
 ```{r}
@@ -145,38 +198,30 @@ The resulting inventory and analysis summary are shown below:
 knitr::kable(
   head(result2$Inventory),
   caption = "Inventory results: Full analysis with source and target classifications",
-  align = "lll"
-)
+  align = "c"
+) 
 
 
 knitr::kable(
-  head(result2$Analysis),
+  head(result2$Analysis[, 1:5]),
   caption = "Analysis results: Full analysis with source and target classifications",
-  align = "lll"
-)  
-
-
-
-
-
-
-
+  align = "c"
+)
 
 
 ```
-
- 
-
 
 Restricting the analysis to the lowest‑level codes can be useful when the
 correspondence table is intended for aggregation or conversion at the most
 granular classification level.
 
-
+ <div style="text-align: justify;">
 ## Notes
 
-If A and B are provided, the function can perform additional consistency checks against the source and target classification domains.
-The longestAcodeOnly and longestBcodeOnly arguments allow users to focus the analysis on the most detailed codes, which is often desirable in practical statistical workflows.
+If `A` and `B` are provided, the function performs additional consistency checks against the source and target classification domains.
 
+The `longestAcodeOnly` and `longestBcodeOnly` arguments allow users to restrict the analysis to the most detailed codes, which is often desirable in practical statistical workflows.
 
+This functionality supports the validation and interpretation of correspondence tables, particularly when preparing data for aggregation, transformation, or integration tasks.
 
+</div>
