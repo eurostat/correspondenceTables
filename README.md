@@ -5,7 +5,7 @@ status](https://github.com/eurostat/correspondenceTables/workflows/R-CMD-check/b
 [![dependencies](https://tinyverse.netlify.com/badge/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![CRAN version](https://www.r-pkg.org/badges/version/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![CRAN status](https://badges.cranchecks.info/flavor/r-release-linux-x86_64/correspondenceTables.svg)](https://cran.r-project.org/web/checks/check_results_correspondenceTables.html)
-[![license](https://img.shields.io/badge/license-EUPL-success)](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
+[![license](https://img.shields.io/badge/license-EUPL-success)](https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
 [![weekly downloads](https://cranlogs.r-pkg.org/badges/last-week/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![monthly downloads](https://cranlogs.r-pkg.org/badges/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![all downloads](https://cranlogs.r-pkg.org/badges/grand-total/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
@@ -45,11 +45,11 @@ The package contains 11 functions:
 
 3. `prefixList` Create a list of prefixes for both CELLAR and FAO repositories.
 
-4. `CorrespondenceList` Overview of all the available correspondence classification from CELLAR and FAO repository.
+4. `CorrespondenceTableList` Overview of all the available correspondence classification from CELLAR and FAO repository.
 
 5. `dataStructure`  Retrieve information about the structure of each classification tables from CELLAR and FAO repositories.
 
-6. `classificationEndpoint` Retrieve a list of classification tables from CELLAR and FAO repositories or both.
+6. `classificationList` Retrieve a list of classification tables from CELLAR and FAO repositories or both.
 
 7. `retrieveClassificationTable` Retrieve stastistical classification tables from CELLAR and FAO repositories.
 

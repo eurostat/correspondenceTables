@@ -6,3 +6,13 @@
 ^docs$
 ^test$
 ^classificationListCellar\\.csv$
+^\.Rhistory$
+^\.RData$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.git$
+^\.gitignore$
+^\.github$
+^correspondenceTables\.Rcheck$
+^.*\.Rcheck$
+

@@ -2,8 +2,8 @@ Package: correspondenceTables
 Type: Package
 Title: Creating Correspondence Tables Between Two Statistical
         Classifications
-Date: 2026-05-05
-Version: 0.10.36
+Date: 2026-05-07
+Version: 0.10.37
 Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of Statistics, Athens University of Economics and Business"), 
       person("Photis", "Stavropoulos", role = "aut", comment="Quantos S.A. Statistics and Information Systems"),
       person("Martin", "Karlberg", role = "aut"),
@@ -13,7 +13,8 @@ Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of
       person("Clement", "Thomas", role = "aut"), 
       person("Loic", "Bienvenu", role = "aut"),
       person("Mauro", "Baldacchini", role = "aut"),
-      person("Khadija", "Sossey-Lallemand", role = "aut"))
+      person("Khadija", "Sossey-Lallemand", role = "aut"),
+      person("Mark", "Van Der Loo", role = "aut"))
 Description: 
     A candidate correspondence table between two classifications can be created when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications. 
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
@@ -39,4 +40,5 @@ Author: Vasilis Chasiotis [aut] (Department of Statistics, Athens University of
   Clement Thomas [aut],
   Loic Bienvenu [aut],
   Mauro Baldacchini [aut],
-  Khadija Sossey-Lallemand [aut]
+  Khadija Sossey-Lallemand [aut],
+  Mark Van Der Loo [aut]
