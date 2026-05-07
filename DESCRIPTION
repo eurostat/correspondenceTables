@@ -14,7 +14,7 @@ Authors@R: c(person("Vasilis", "Chasiotis", role = "aut", comment="Department of
       person("Loic", "Bienvenu", role = "aut"),
       person("Mauro", "Baldacchini", role = "aut"),
       person("Khadija", "Sossey-Lallemand", role = "aut"),
-      person("Mark", "Van Der Loo", role = "aut"))
+      person("Mark", "van der Loo", role = "aut"))
 Description: 
     A candidate correspondence table between two classifications can be created when there are correspondence tables leading from the first classification to the second one via intermediate 'pivot' classifications. 
     The correspondence table between two statistical classifications can be updated when one of the classifications gets updated to a new version.
@@ -41,4 +41,4 @@ Author: Vasilis Chasiotis [aut] (Department of Statistics, Athens University of
   Loic Bienvenu [aut],
   Mauro Baldacchini [aut],
   Khadija Sossey-Lallemand [aut],
-  Mark Van Der Loo [aut]
+  Mark van der Loo [aut]
