@@ -45,7 +45,7 @@ jobs:
         run: |
           options(asciicast_timeout = 600)
           rmarkdown::render("README.md")
-          roxygen2::roxygenize()
+         # roxygen2::roxygenize()
           pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
         env:
