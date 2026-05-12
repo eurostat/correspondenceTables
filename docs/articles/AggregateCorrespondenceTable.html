@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">correspondenceTables</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -171,9 +171,9 @@ with no matching contributions receive a value of zero.</p></li>
 <p>In this example, all inputs are read from sample datasets included in
 the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">AB_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"ab_data.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
-<span><span class="va">A_path</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"a_data.csv"</span>,  package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
-<span><span class="va">B_path</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"b_data.csv"</span>,  package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">AB_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"ab_data.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
+<span><span class="va">A_path</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"a_data.csv"</span>,  package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
+<span><span class="va">B_path</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"b_data.csv"</span>,  package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">AB_path</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">A_path</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">B_path</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>

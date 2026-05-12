@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">correspondenceTables</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -232,12 +232,12 @@ defined below, is used in all the following examples.</p>
 <span><span class="va">tmp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fullPath</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">CSVraw</span>, <span class="va">CSVappended</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">NamesCsv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="va">CSVraw</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
+<span>  <span class="va">NamesCsv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="va">CSVraw</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
 <span>  <span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">NamesCsv</span>, header <span class="op">=</span> <span class="cn">FALSE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
 <span>   <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>      <span class="kw">if</span> <span class="op">(</span><span class="va">A</span><span class="op">[</span><span class="va">i</span>,<span class="va">j</span><span class="op">]</span><span class="op">!=</span><span class="st">""</span><span class="op">)</span> <span class="op">{</span></span>
-<span>        <span class="va">A</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="va">A</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
+<span>        <span class="va">A</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="va">A</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span></span>
 <span>      <span class="op">}</span><span class="op">}</span><span class="op">}</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">A</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_dir</span>,<span class="va">CSVappended</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, col.names <span class="op">=</span> <span class="cn">FALSE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
@@ -638,27 +638,27 @@ update)<a class="anchor" aria-label="anchor" href="#example-3-updating-cn-2021-c
 input files.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CN2021.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"CN2021.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">AStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CN2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"CN2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CPA21.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"CPA21.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">AB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CN2021_CPA21.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"CN2021_CPA21.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">AAStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CN2021_CN2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"CN2021_CN2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Execute the following code line to apply function
@@ -875,27 +875,27 @@ containing the names of all classifications involved.</p>
 input files.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"NAICS2017.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">AStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">AB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017_NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"NAICS2017_NACE.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">AAStar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"NAICS2017_NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test"</span>, <span class="st">"NAICS2017_NAICS2022.csv"</span>, package <span class="op">=</span> <span class="st">"correspondenceTables"</span><span class="op">)</span>,</span>
 <span>  colClasses <span class="op">=</span> <span class="st">"character"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Execute the following code line to apply function
