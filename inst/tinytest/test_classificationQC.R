@@ -12,7 +12,7 @@ read_extdata_csv <- function(fname) {
 ############################################################
 
 {
-  classification_df <- read_extdata_csv("Nace2.csv")
+  classification_df <- read_extdata_csv("NACE2.csv")
   lengths_df        <- data.frame(charb = c(1,2,3,5), chare = c(1,2,4,5))
   
   expect_warning(result <- classificationQC(
@@ -57,7 +57,7 @@ read_extdata_csv <- function(fname) {
 # (Replaces old NA/wrong-extension tests)
 ############################################################
 {
-  classification_df <- read_extdata_csv("Nace2.csv")
+  classification_df <- read_extdata_csv("NACE2.csv")
   
   expect_error(
     classificationQC(
@@ -108,7 +108,7 @@ read_extdata_csv <- function(fname) {
 # [6] error on overlapping length segments
 ############################################################
 # {
-#   classification_df <- read_extdata_csv("Nace2.csv")
+#   classification_df <- read_extdata_csv("NACE2.csv")
 #   lengths_df        <- read_extdata_csv("nace_lengths_overlap.csv")
 #   lengths_df        <- read.csv(system.file("extdata", "nace_lengths_overlap.csv", package = "correspondenceTables"))
 #   
@@ -272,7 +272,7 @@ read_extdata_csv <- function(fname) {
 # (Safer than asserting an exact full list of names)
 ############################################################
 {
-  classification_df <- read_extdata_csv("Nace2.csv")
+  classification_df <- read_extdata_csv("NACE2.csv")
   lengths_df        <- data.frame(charb = c(1,2,3,5), chare = c(1,2,4,5))
   
   expect_warning(

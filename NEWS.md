@@ -1,3 +1,7 @@
+# correspondenceTables 1.0.1
+
+- removing duplicate test files
+
 # correspondenceTables 1.0.0
 
 - major re-factoring, stable release
