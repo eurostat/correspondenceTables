@@ -1,0 +1,17 @@
+Prefix,ConceptScheme,URI,Title
+COICOP1999,COICOP1999,http://unstats.un.org/classifications/COICOP1999,Classification of Individual Consumption According to Purpose (COICOP) 1999
+CPC20,CPCv2.0,https://unstats.un.org/classifications/CPC/v2.0,The Central Product Classification (CPC) v2.0
+CPC21,CPCv2.1,https://unstats.un.org/classifications/CPC/v2.1,The Central Product Classification (CPC) v2.1
+CPC21AG,CPCv2.1,https://unstats.un.org/classifications/CPC/v2.1/ag,The Central Product Classification (CPC) v2.1. Expansion for agriculture and rural statistics
+CPC21FI,CPCv2.1,https://stats.fao.org/classifications/CPC21FI,The Central Product Classification (CPC) v2.1. Items relevant to FAO Fisheries and Aquaculture
+FCL,FCLscheme,https://stats.fao.org/classifications/FCL,The FAOSTAT Commodity List (FCL)
+FPCD2022,FPCDv2022,https://stats.fao.org/classifications/FPC&D2022,Forest Products Classification and Definitions (FPC&D) v2022
+ICATUS2016,icatus#ICATUS2016https:,https://metadata.officialstatistics.org/classifications/ICATUS2016,International Classification of Activities for Time-Use Statistics 2016
+ICC10,ICCv1.0,https://stats.fao.org/classifications/ICC/v1.0,The Indicative Crop Classification for the Agricultural Census (ICC) Version 1.0
+ICC11,ICCv1.1,https://stats.fao.org/classifications/ICC/v1.1,The Indicative Crop Classification for the World Agricultural Census (ICC) Version 1.1
+ISIC4,ISICrev4,https://unstats.un.org/classifications/ISIC/rev4,ISIC vRev4
+M49-UNSD,geoM49,https://unstats.un.org/classifications/M49-UNSD,Standard Country or Area Codes for Statistical Use (M49)
+NOCS,territorieshttp:,http://stats-class.fao.uniroma2.it/NOCS/NOCS,NOCS Territories members published as RDF/SKOS(XKOS) (v2.0)
+NOCS,nonFAO-membershttp:,http://stats-class.fao.uniroma2.it/NOCS/NOCS,NOCS non-FAO members published as RDF/SKOS(XKOS) (v2.0)
+NOCS,FAOmembershttp:,http://stats-class.fao.uniroma2.it/NOCS/NOCS,Names of Countries and Territories (NOCS) (RDF/SKOS/XKOS v2.0)
+WCACROPS,WCA2020crops,https://stats.fao.org/classifications/WCA2020,FAO WCA2020 Crop List

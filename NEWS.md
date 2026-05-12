@@ -1,3 +1,7 @@
+# correspondenceTables 1.0.0
+
+- major re-factoring, stable release
+
 # correspondenceTables 0.8.1
 
 - adding the functions `prefixList()`,  `classEndpoint()`, `correspondenceList()`, `retrieveCorrespondenceTable()`, `retrieveClassificationTable()`, `structureData()`
