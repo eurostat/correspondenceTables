@@ -1,0 +1,101 @@
+CPA 2.1,Name,Include,Exclude,URI
+01,"Products of agriculture, hunting and related services",,,01
+01.1,Non-perennial crops,,,011
+01.11,"Cereals (except rice), leguminous crops and oil seeds","This class includes:
+- cereals, leguminous crops and oil seeds grown for food and other purposes",,0111
+01.11.1,Wheat,,,01111
+01.11.11,Durum wheat,,,011111
+01.11.12,"Wheat, except durum wheat",,"This subcategory excludes:
+- durum wheat, see 01.11.11",011112
+01.11.2,Maize,,,01112
+01.11.20,Maize,,"This subcategory excludes: 
+- sweet corn, see 01.13.39
+- fodder maize, see 01.19.10",011120
+01.11.3,"Barley, rye and oats",,,01113
+01.11.31,Barley,,,011131
+01.11.32,Rye,,,011132
+01.11.33,Oats,,,011133
+01.11.4,"Sorghum, millet and other cereals",,,01114
+01.11.41,Sorghum,,"This subcategory excludes:
+- fodder sorghum, see 01.19.10
+- fodder seeds, see 01.19.31 
+- sweet sorghum, see 01.19.39",011141
+01.11.42,Millet,,,011142
+01.11.43,Triticale,,,011143
+01.11.49,Other cereals,,,011149
+01.11.5,Cereals straw and husks,,,01115
+01.11.50,Cereals straw and husks,,"This subcategory excludes:
+- cleaned, bleached or dyed straw, see 01.29.30
+- briquettes of straw, see 16.29.15",011150
+01.11.6,Green leguminous vegetables,,,01116
+01.11.61,"Beans, green",,,011161
+01.11.62,"Peas, green",,,011162
+01.11.69,Other green leguminous vegetables,,"This subcategory excludes:
+- soya beans, see 01.11.81",011169
+01.11.7,Dried leguminous vegetables,"This category includes: 
+- leguminous vegetables, dried, whether or not shelled or split",,01117
+01.11.71,"Beans, dry",,,011171
+01.11.72,"Broad beans, dry",,,011172
+01.11.73,"Chick peas, dry",,,011173
+01.11.74,"Lentils, dry",,,011174
+01.11.75,"Peas, dry",,,011175
+01.11.76,Cow peas,,,011176
+01.11.77,"Pigeon peas, dry",,,011177
+01.11.79,Pulses (dried leguminous vegetables) n.e.c.,,"This subcategory excludes:
+- soya beans, see 01.11.81",011179
+01.11.8,Soya beans and groundnuts,,,01118
+01.11.81,Soya beans,,"This subcategory excludes:
+- roasted soya beans used as coffee substitutes, see 10.83.12",011181
+01.11.82,"Groundnuts, in shell",,,011182
+01.11.9,Other oil seeds,,,01119
+01.11.91,Lin seed,,,011191
+01.11.92,Mustard seed,,,011192
+01.11.93,Rape or colza seed,,,011193
+01.11.94,Sesame seed,,,011194
+01.11.95,Sunflower seed,,,011195
+01.11.96,Castor oil seeds,,,011196
+01.11.99,Other oil seeds n.e.c.,,,011199
+01.12,"Rice, not husked",,,0112
+01.12.1,"Rice, not husked",,,01121
+01.12.10,"Rice, not husked",,,011210
+01.13,"Vegetables and melons, roots and tubers",,"This class excludes:
+- 	forage plants, see 01.19.10
+- 	seeds of forage plants, seeds of mangolds, see 01.19.31",0113
+01.13.1,Leafy or stem vegetables,,,01131
+01.13.11,Asparagus,,,011311
+01.13.12,Cabbages,,,011312
+01.13.13,Cauliflowers and broccoli,,,011313
+01.13.14,Lettuce,,,011314
+01.13.15,Chicory,,"This subcategory excludes:
+- chicory roots, see 01.28.19",011315
+01.13.16,Spinach,,,011316
+01.13.17,Artichokes,,,011317
+01.13.19,Other leafy or stem vegetables,,,011319
+01.13.2,Melons,,,01132
+01.13.21,Watermelons,,,011321
+01.13.29,Other melons,,,011329
+01.13.3,Other fruit-bearing vegetables,,,01133
+01.13.31,"Chillies and peppers, green (only capsicum)",,"This subcategory excludes:
+- fruit-bearing vegetables of the genus Pimenta, see 01.13.39",011331
+01.13.32,Cucumbers and gherkins,,,011332
+01.13.33,Eggplants (aubergines),,,011333
+01.13.34,Tomatoes,,,011334
+01.13.39,Other fruit-bearing vegetables n.e.c.,"This subcategory includes:
+- courgettes
+- sweet corn
+- vegetables of the genus Pimenta
+- pumpkins, squash and other vegetables n.e.c.","This subcategory excludes:
+- dried ears of sweetcorn, bleached, dyed or otherwise worked for ornamental purposes, see 02.30.30",011339
+01.13.4,"Root, bulb or tuberous vegetables",,,01134
+01.13.41,Carrots and turnips,,,011341
+01.13.42,Garlic,,,011342
+01.13.43,Onions,"This subcategory includes:
+- onions and shallots",,011343
+01.13.44,Leeks and other alliaceous vegetables,,,011344
+01.13.49,"Other root, bulb or tuberous vegetables (without high starch or inulin content)","This subcategory includes:
+- salad beetroot
+- radishes 
+- horse-radish
+- celeriac rooted celery or German celery
+- parsnip, similar edible roots n.e.c.","This subcategory excludes:
+- celery, other than rooted celery, see 01.13.90",011349

@@ -58,9 +58,9 @@ input data, identifies components, calculates correspondence types, and
 creates summary tables.
 }
 \examples{
-# Use data from the folder extdata
+# Use data from the folder extdata/test
 
-AB = read.csv(system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"))
+AB = read.csv(system.file("extdata/test", "ExempleAnnexe.csv", package = "correspondenceTables"))
 head(AB)
 
 result <- analyseCorrespondenceTable(
