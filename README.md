@@ -2,7 +2,7 @@
 [![last commit](https://img.shields.io/github/last-commit/eurostat/correspondenceTables?style=flat)](https://github.com/eurostat/correspondenceTables/commits/)
 [![R build
 status](https://github.com/eurostat/correspondenceTables/workflows/R-CMD-check/badge.svg)](https://github.com/eurostat/correspondenceTables/actions)
-[![dependencies](https://tinyverse.netlify.com/badge/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
+[![dependencies](https://tinyverse.netlify.app/badge/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![CRAN version](https://www.r-pkg.org/badges/version/correspondenceTables)](https://CRAN.R-project.org/package=correspondenceTables)
 [![CRAN status](https://badges.cranchecks.info/flavor/r-release-linux-x86_64/correspondenceTables.svg)](https://cran.r-project.org/web/checks/check_results_correspondenceTables.html)
 [![license](https://img.shields.io/badge/license-EUPL-success)](https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
