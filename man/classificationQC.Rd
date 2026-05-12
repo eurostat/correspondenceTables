@@ -83,7 +83,7 @@ The output is a list of data frames flagging potential issues.
 \examples{
 
 
-classification <- read.csv(system.file("extdata", "Nace2.csv",
+classification <- read.csv(system.file("extdata/test", "Nace2_long.csv",
                                       package = "correspondenceTables"))
 lengths <- data.frame(charb = c(1,2,3,5), chare = c(1,2,4,5))
 

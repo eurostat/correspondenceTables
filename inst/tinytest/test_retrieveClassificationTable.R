@@ -17,9 +17,9 @@ if(at_home()){
   
   res_df <- 
     retrieveClassificationTable(
-      endpoint      = "CELLAR",
-      prefix        = "cn2022",
-      conceptScheme = "cn2022",
+      endpoint      = "FAO",
+      prefix        = "coicop1999",
+      conceptScheme = "scheme",
       language      = "en",
       level         = "ALL",
       showQuery     = FALSE
@@ -37,9 +37,9 @@ if(at_home()){
   
   res_q <- (
     retrieveClassificationTable(
-      endpoint      = "CELLAR",
-      prefix        = "cn2022",
-      conceptScheme = "cn2022",
+      endpoint      = "FAO",
+      prefix        = "coicop1999",
+      conceptScheme = "scheme",
       language      = "en",
       level         = "ALL",
       showQuery     = TRUE
@@ -60,9 +60,9 @@ if(at_home()){
   
   df_all <- (
     retrieveClassificationTable(
-      endpoint      = "CELLAR",
-      prefix        = "cn2022",
-      conceptScheme = "cn2022",
+      endpoint      = "FAO",
+      prefix        = "coicop1999",
+      conceptScheme = "scheme",
       language      = "en",
       level         = "ALL",
       showQuery     = FALSE
@@ -71,9 +71,9 @@ if(at_home()){
   
   df_2 <- (
     retrieveClassificationTable(
-      endpoint      = "CELLAR",
-      prefix        = "cn2022",
-      conceptScheme = "cn2022",
+      endpoint      = "FAO",
+      prefix        = "coicop1999",
+      conceptScheme = "scheme",
       language      = "en",
       level         = "2",
       showQuery     = FALSE

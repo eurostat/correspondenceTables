@@ -252,7 +252,7 @@ used to perform structural and logical quality checks.
 
 ```{r}
 classification <- read.csv(
-  system.file("extdata/test", "Nace2.csv", package = "correspondenceTables")
+  system.file("extdata/test", "Nace2_long.csv", package = "correspondenceTables")
 )
 
 lengths <- data.frame(
