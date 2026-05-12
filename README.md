@@ -45,7 +45,7 @@ The package contains 11 functions:
 
 3. `prefixList` Create a list of prefixes for both CELLAR and FAO repositories.
 
-4. `CorrespondenceTableList` Overview of all the available correspondence classification from CELLAR and FAO repository.
+4. `correspondenceTableList` Overview of all the available correspondence classification from CELLAR and FAO repository.
 
 5. `dataStructure`  Retrieve information about the structure of each classification tables from CELLAR and FAO repositories.
 
@@ -53,11 +53,11 @@ The package contains 11 functions:
 
 7. `retrieveClassificationTable` Retrieve stastistical classification tables from CELLAR and FAO repositories.
 
-8. `retrieveCorrespondenceTable.` Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.
+8. `retrieveCorrespondenceTable` Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.
 
 9. `classificationQC` performs quality control checks on statistical classifications.
 
-10. `analyseCorrespondancetable` performs analysis on correspondence tables.  
+10. `analyseCorrespondanceTable` performs analysis on correspondence tables.  
 
 11. `aggregateCorrespondenceTable` aggregates correspondence tables to higher hierarchical levels.
 
