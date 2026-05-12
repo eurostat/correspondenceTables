@@ -179,7 +179,7 @@ These checks do not modify the classification and do not enforce a specific hier
 
 ```{r}
 singleChildCode <- read.csv(
-  system.file("extdata", "SingleChild.csv",
+  system.file("extdata/test", "SingleChild.csv",
               package = "correspondenceTables")
 )
 
@@ -221,7 +221,7 @@ coding schemes.
 ```{r}
 
 sequencing <- read.csv(
-  system.file("extdata", "Sequencing.csv",
+  system.file("extdata/test", "Sequencing.csv",
               package = "correspondenceTables")
 )
 
@@ -252,7 +252,7 @@ used to perform structural and logical quality checks.
 
 ```{r}
 classification <- read.csv(
-  system.file("extdata", "Nace2.csv", package = "correspondenceTables")
+  system.file("extdata/test", "Nace2.csv", package = "correspondenceTables")
 )
 
 lengths <- data.frame(
@@ -385,7 +385,7 @@ The following example illustrates the quality control of the NACE Rev.2 classifi
 ```{r}
 
 singleChildCode <- read.csv(
-  system.file("extdata", "SingleChild.csv", package = "correspondenceTables")
+  system.file("extdata/test", "SingleChild.csv", package = "correspondenceTables")
 )
 knitr::kable(
   singleChildCode,
@@ -465,11 +465,11 @@ which may indicate incomplete or faulty classification structures.
 ```{r}
 
 singleChildCode <- read.csv(
-  system.file("extdata", "SingleChild2.csv", package = "correspondenceTables")
+  system.file("extdata/test", "SingleChild2.csv", package = "correspondenceTables")
 )
 
 sequencing <- read.csv(
-  system.file("extdata", "Sequencing.csv",
+  system.file("extdata/test", "Sequencing.csv",
               package = "correspondenceTables")
 )
 

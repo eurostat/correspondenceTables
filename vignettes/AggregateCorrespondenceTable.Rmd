@@ -94,9 +94,9 @@ In this example, all inputs are read from sample datasets included in the packag
 
 
 ```{r}
-AB_path <- system.file("extdata", "ab_data.csv", package = "correspondenceTables")
-A_path  <- system.file("extdata", "a_data.csv",  package = "correspondenceTables")
-B_path  <- system.file("extdata", "b_data.csv",  package = "correspondenceTables")
+AB_path <- system.file("extdata/test", "ab_data.csv", package = "correspondenceTables")
+A_path  <- system.file("extdata/test", "a_data.csv",  package = "correspondenceTables")
+B_path  <- system.file("extdata/test", "b_data.csv",  package = "correspondenceTables")
 
 stopifnot(nzchar(AB_path), nzchar(A_path), nzchar(B_path))
 

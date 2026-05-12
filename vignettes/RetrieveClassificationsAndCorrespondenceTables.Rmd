@@ -108,7 +108,7 @@ users only need to execute the `classificationList()` function.
 
 ```{r}
 list_data <- read.csv(
-  system.file("extdata", "classificationList_CELLAR.csv",
+  system.file("extdata/test", "classificationList_CELLAR.csv",
               package = "correspondenceTables"),
   stringsAsFactors = FALSE
 )

@@ -52,7 +52,7 @@ No explicit source or target classification tables are supplied.
 ```{r}
 # Load example correspondence table
 AB <- read.csv(
-  system.file("extdata", "ExempleAnnexe.csv", package = "correspondenceTables"),
+  system.file("extdata/test", "ExempleAnnexe.csv", package = "correspondenceTables"),
   stringsAsFactors = FALSE
 )
 
@@ -156,19 +156,19 @@ correspondence.
 ```{r}
 # Load correspondence table (NACE Rev.2 -> NACE Rev.2.1)
 AB <- read.csv(
-  system.file("extdata", "ab_data.csv", package = "correspondenceTables"),
+  system.file("extdata/test", "ab_data.csv", package = "correspondenceTables"),
   stringsAsFactors = FALSE
 )
 
 # Load source classification (NACE Rev.2)
 A <- read.csv(
-  system.file("extdata", "a_data.csv", package = "correspondenceTables"),
+  system.file("extdata/test", "a_data.csv", package = "correspondenceTables"),
   stringsAsFactors = FALSE
 )
 
 # Load target classification (NACE Rev.2.1)
 B <- read.csv(
-  system.file("extdata", "b_data.csv", package = "correspondenceTables"),
+  system.file("extdata/test", "b_data.csv", package = "correspondenceTables"),
   stringsAsFactors = FALSE
 )
 
