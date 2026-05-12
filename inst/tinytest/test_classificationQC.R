@@ -1,7 +1,7 @@
 ## Helper to read extdata CSVs as data.frames (strings not factors)
 read_extdata_csv <- function(fname) {
   utils::read.csv(
-    system.file("extdata", fname, package = "correspondenceTables"),
+    system.file("extdata/test", fname, package = "correspondenceTables"),
     stringsAsFactors = FALSE,
     check.names = FALSE
   )

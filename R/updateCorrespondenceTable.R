@@ -102,27 +102,27 @@
 #' 
 #'   # Read CSVs outside, pass data frames in:
 #'   
-#'   A_df      <- utils::read.csv(system.file("extdata", "NAICS2017.csv",
+#'   A_df      <- utils::read.csv(system.file("extdata/test", "NAICS2017.csv",
 #'   package = "correspondenceTables"),
 #'   sep = ",", header = TRUE, check.names = FALSE, 
 #'   colClasses = "character", encoding = "UTF-8")
 #'                                
-#'   AStar_df  <- utils::read.csv(system.file("extdata", "NAICS2022.csv",
+#'   AStar_df  <- utils::read.csv(system.file("extdata/test", "NAICS2022.csv",
 #'   package = "correspondenceTables"),
 #'   sep = ",", header = TRUE, check.names = FALSE,
 #'   colClasses = "character", encoding = "UTF-8")
 #'                                
-#'   B_df      <- utils::read.csv(system.file("extdata", "NACE.csv",
+#'   B_df      <- utils::read.csv(system.file("extdata/test", "NACE.csv",
 #'   package = "correspondenceTables"),
 #'   sep = ",", header = TRUE, check.names = FALSE,
 #'   colClasses = "character", encoding = "UTF-8")
 #'   
-#'   AB_df     <- utils::read.csv(system.file("extdata", "NAICS2017_NACE.csv",
+#'   AB_df     <- utils::read.csv(system.file("extdata/test", "NAICS2017_NACE.csv",
 #'   package = "correspondenceTables"),
 #'   sep = ",", header = TRUE, check.names = FALSE,
 #'   colClasses = "character", encoding = "UTF-8")
 #'                                
-#'   AAStar_df <- utils::read.csv(system.file("extdata", "NAICS2017_NAICS2022.csv",
+#'   AAStar_df <- utils::read.csv(system.file("extdata/test", "NAICS2017_NAICS2022.csv",
 #'   package = "correspondenceTables"),
 #'   sep = ",", header = TRUE, check.names = FALSE,
 #'   colClasses = "character", encoding = "UTF-8")

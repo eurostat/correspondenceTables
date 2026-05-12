@@ -1,22 +1,14 @@
 
-read_extdata_csv <- function(fname) {
-  utils::read.csv(
-    system.file("extdata/test", fname, package = "correspondenceTables"),
-    stringsAsFactors = FALSE,
-    check.names = FALSE
-  )
-}
-
 ############################################################
 # TEST 1 — Redundancy trimming scenarios
 ############################################################
 
 {
-  A_df      <- read_extdata_csv("NACE2_Red.csv")
-  AStar_df  <- read_extdata_csv("NACE21_Red.csv")
-  B_df      <- read_extdata_csv("CPA_Red.csv")
-  AB_df     <- read_extdata_csv("NACECPA_Red.csv")
-  AAStar_df <- read_extdata_csv("NACE221_Red.csv")
+  A_df      <- utils::read.csv(system.file("extdata/test", "NACE2_Red.csv", package = "correspondenceTables"))
+  AStar_df  <- utils::read.csv(system.file("extdata/test","NACE21_Red.csv", package = "correspondenceTables"))
+  B_df      <- utils::read.csv(system.file("extdata/test","CPA_Red.csv", package = "correspondenceTables"))
+  AB_df     <- utils::read.csv(system.file("extdata/test","NACECPA_Red.csv", package = "correspondenceTables"))
+  AAStar_df <- utils::read.csv(system.file("extdata/test","NACE221_Red.csv", package = "correspondenceTables"))
   
   CT_nullT <- updateCorrespondenceTable(
     A = A_df, B = B_df, AStar = AStar_df, AB = AB_df, AAStar = AAStar_df,
@@ -57,14 +49,15 @@ read_extdata_csv <- function(fname) {
     Redundancy_trim = FALSE
   )
   
-  Ctext_nullT <- read_extdata_csv("LblYY_RednullTrim.csv")
-  Ctext_nullS <- read_extdata_csv("LblYY_RednullShow.csv")
+  Ctext_nullT <- utils::read.csv(system.file("extdata/test","LblYY_RednullTrim.csv", package = "correspondenceTables"))
+  Ctext_nullS <- utils::read.csv(system.file("extdata/test","LblYY_RednullShow.csv", package = "correspondenceTables"))
   
-  Ctext_AT <- read_extdata_csv("LblYY_RedATrim.csv")
-  Ctext_AS <- read_extdata_csv("LblYY_RedAShow.csv")
+  Ctext_AT <- utils::read.csv(system.file("extdata/test","LblYY_RedATrim.csv", package = "correspondenceTables"))
+  Ctext_AS <- utils::read.csv(system.file("extdata/test","LblYY_RedAShow.csv", package = "correspondenceTables"))
   
-  Ctext_BT <- read_extdata_csv("LblYY_RedBTrim.csv")
-  Ctext_BS <- read_extdata_csv("LblYY_RedBShow.csv")
+  Ctext_BT <- utils::read.csv(system.file("extdata/test","LblYY_RedBTrim.csv", package = "correspondenceTables"))
+  Ctext_BS <- utils::read.csv(system.file("extdata/test","LblYY_RedBShow.csv", package = "correspondenceTables"),header = T)
+  
   
   #transformation needed just for the test
   CT_nullT$updateCorrespondenceTable$NACE21code = as.numeric(CT_nullT$updateCorrespondenceTable$NACE21code)
@@ -114,7 +107,7 @@ read_extdata_csv <- function(fname) {
     Redundancy_trim = FALSE
   )
   
-  Ctext_nullT <- read_extdata_csv("LblYY.csv")
+  Ctext_nullT <- utils::read.csv(system.file("extdata/test","LblYY.csv", package = "correspondenceTables"))
   
   CT_nullT$updateCorrespondenceTable$NACE21code = as.numeric(CT_nullT$updateCorrespondenceTable$NACE21code)
   CT_nullT$updateCorrespondenceTable$NACE2code = as.numeric(CT_nullT$updateCorrespondenceTable$NACE2code)
@@ -141,7 +134,7 @@ read_extdata_csv <- function(fname) {
     Redundancy_trim = FALSE
   )
   
-  Ctext_nullTno <- read_extdata_csv("LblNY.csv")
+  Ctext_nullTno <- utils::read.csv(system.file("extdata/test","LblNY.csv", package = "correspondenceTables"))
   
   CT_nullTno$updateCorrespondenceTable$NACE21code = as.numeric(CT_nullTno$updateCorrespondenceTable$NACE21code)
   CT_nullTno$updateCorrespondenceTable$NACE2code = as.numeric(CT_nullTno$updateCorrespondenceTable$NACE2code)
@@ -153,11 +146,11 @@ read_extdata_csv <- function(fname) {
 # TEST 4 — Upper-case fixtures; legend merge check
 ############################################################
 {
-  A_df      <- read_extdata_csv("UcaseA.csv")
-  AStar_df  <- read_extdata_csv("UcaseAstar.csv")
-  B_df      <- read_extdata_csv("UcaseB.csv")
-  AB_df     <- read_extdata_csv("UcaseAB.csv")
-  AAStar_df <- read_extdata_csv("UcaseAAstar.csv")
+  A_df      <- utils::read.csv(system.file("extdata/test","UcaseA.csv", package = "correspondenceTables"))
+  AStar_df  <- utils::read.csv(system.file("extdata/test","UcaseAstar.csv", package = "correspondenceTables"))
+  B_df      <- utils::read.csv(system.file("extdata/test","UcaseB.csv", package = "correspondenceTables"))
+  AB_df     <- utils::read.csv(system.file("extdata/test","UcaseAB.csv", package = "correspondenceTables"))
+  AAStar_df <- utils::read.csv(system.file("extdata/test","UcaseAAstar.csv", package = "correspondenceTables"))
   
   UCT <- updateCorrespondenceTable(
     A = A_df, B = B_df, AStar = AStar_df, AB = AB_df, AAStar = AAStar_df,
@@ -168,10 +161,10 @@ read_extdata_csv <- function(fname) {
   )
   UCT[[1]]$sort <- seq_len(nrow(UCT[[1]]))
   
-  UTC_T <- read_extdata_csv("nomatch_test.csv")
+  UTC_T <- utils::read.csv(system.file("extdata/test","nomatch_test.csv", package = "correspondenceTables"))
   UTC_T$sort <- seq_len(nrow(UTC_T))
   
-  legend <- read_extdata_csv("legend_nomatch.csv")
+  legend <- utils::read.csv(system.file("extdata/test","legend_nomatch.csv", package = "correspondenceTables"))
   colnames(legend)[2:5] <- c("NoMatchToAStar","NoMatchToB","NoMatchFromAStar","NoMatchFromB")
   
   x <- as.data.frame(UCT[[1]])

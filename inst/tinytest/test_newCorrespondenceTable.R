@@ -4,7 +4,7 @@ read_test_csv <- function(fname) {
     system.file("extdata/test", fname, package = "correspondenceTables"),
     sep = ",", header = TRUE, check.names = FALSE,
     colClasses = c("character"), encoding = "UTF-8",
-    stringsAsFactors = FALSE
+    stringsAsFactors = FALSE, fileEncoding = "UTF-8-BOM"
   )
 }
 
@@ -39,7 +39,7 @@ cleanup_names_csv <- function() {
   on.exit(cleanup_names_csv(), add = TRUE)
   dir_test <- system.file("extdata/test", package = "correspondenceTables")
   
-  names_path <- materialize_names_csv("names1.csv", "names.csv")
+  names_path <- materialize_names_csv("names12.csv", "names.csv")
   
   TEST <- newCorrespondenceTable(
     Tables = names_path,
