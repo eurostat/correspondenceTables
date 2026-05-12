@@ -2,24 +2,52 @@
 % Please edit documentation in R/correspondenceTableList.R
 \name{correspondenceTableList}
 \alias{correspondenceTableList}
-\title{Overview of all the available correspondence classification from CELLAR and FAO repository.}
+\title{List available correspondence tables from online services}
 \usage{
-correspondenceTableList(endpoint)
+correspondenceTableList(endpoint = "ALL", showQuery = FALSE)
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data. 
-The valid values are \code{"CELLAR"}, \code{"FAO"} or \code{"ALL"} for both.}
+\item{endpoint}{Character. Which service(s) to query.
+One or more of the supported endpoints (e.g. "CELLAR", "FAO"),
+or "ALL" to query all available services. Case-insensitive.
+If multiple endpoints are supplied (including "ALL"), a **named list**
+is returned; otherwise a single `data.frame`.}
+
+\item{showQuery}{Logical. If `TRUE`, the SPARQL queries used are emitted via
+`message()` (suppress with `suppressMessages()`).}
 }
 \value{
-\code{correspondenceTableList()} returns a list of the correspondence tables available with prefix name, ID, Source classification, 
-Target classification, Table name and URI.
+If a single endpoint is requested, a `data.frame` (one row per correspondence).
+If multiple endpoints are requested (including "ALL"), a **named list**
+of data frames, one per endpoint.
 }
 \description{
-Provides an overview of all the available correspondence classification from CELLAR and FAO repository.
+Returns a data frame listing available correspondence tables (mappings between
+statistical classifications) published by one or more supported online services.
+
+Use this function to discover valid `prefix` and `ID_table` values before
+calling `retrieveCorrespondenceTable()`.
+}
+\details{
+Read-only queries; no side effects (no file writes or caching).
 }
 \examples{
-{
-    corr_list = correspondenceTableList("ALL")
-    }
+\dontrun{
+# List correspondence tables available in CELLAR
+ct <- correspondenceTableList(endpoint = "CELLAR")
+head(ct)
+
+# List correspondence tables available in FAO
+ct_fao <- correspondenceTableList(endpoint = "FAO")
+head(ct_fao)
+
+# Get correspondence tables from both repositories
+ct_all <- correspondenceTableList(endpoint = "ALL")
+names(ct_all)
+}
+
+
+}
+\seealso{
+retrieveCorrespondenceTable()
 }

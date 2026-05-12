@@ -2,24 +2,44 @@
 % Please edit documentation in R/prefixList.R
 \name{prefixList}
 \alias{prefixList}
-\title{Create a list of prefixes for both CELLAR and FAO repositories.}
+\title{Build SPARQL PREFIX declarations for an endpoint}
 \usage{
 prefixList(endpoint, prefix = NULL)
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data.  
-The valid values are \code{"CELLAR"} and \code{"FAO"}.}
+\item{endpoint}{Character. Endpoint name (case-insensitive). Typically
+`"CELLAR"` or `"FAO"`. The set of supported names is defined by the
+package's internal endpoint registry (see `.valid_endpoints()`).}
+
+\item{prefix}{Character vector of scheme tokens to include (e.g.,
+`c("cn2022","nace2")`). If `NULL` (default), returns all discovered schemes.}
 }
 \value{
-\code{prefixList()} returns a list of prefixes to be used when defying the SPARQL query.
+A character vector of SPARQL PREFIX declarations.
+Use `paste(result, collapse = "\\n")` to inject into a query string.
 }
 \description{
-Create a list of prefixes to be used when defying the SPARQL query to retrieve the tables
+Returns a character vector of `PREFIX ...` lines used by package queries.
+The result always includes core vocabularies (SKOS/XKOS/RDFS/DC/RDF/XSD),
+and—when available—adds classification scheme namespaces discovered via
+`classificationList(endpoint)`. You can filter to specific schemes with
+the `prefix` argument.
+}
+\details{
+- This function has no side effects and does not perform network I/O
+  by itself. Discovery is delegated to `classificationList()`.
+  
+- If `classificationList()` is unavailable or fails, the function returns
+  only the core vocabularies and emits a warning.
 }
 \examples{
-{
-    endpoint = "CELLAR"
-    prefix_list = prefixList(endpoint)
-    }
+\dontrun{
+# All known scheme prefixes for the endpoint
+pl <- prefixList("CELLAR")
+cat(paste(pl, collapse = "\n"))
+
+# Only include CN2022 and NACE2 if they exist
+pl2 <- prefixList("CELLAR", prefix = c("cn2022", "nace2"))
+}
+
 }

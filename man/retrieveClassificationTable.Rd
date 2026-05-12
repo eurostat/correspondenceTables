@@ -2,7 +2,7 @@
 % Please edit documentation in R/retrieveClassificationTable.R
 \name{retrieveClassificationTable}
 \alias{retrieveClassificationTable}
-\title{Retrieve classification tables from CELLAR and FAO repositories.}
+\title{Retrieve a full classification table from CELLAR or FAO}
 \usage{
 retrieveClassificationTable(
   endpoint,
@@ -10,64 +10,90 @@ retrieveClassificationTable(
   conceptScheme,
   language = "en",
   level = "ALL",
-  CSVout = NULL,
-  showQuery = TRUE
+  showQuery = FALSE,
+  knownSchemes = NULL,
+  preferMappingOnly = FALSE
 )
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets,
-making it easier to retrieve specific information or perform complex queries on linked data.
-The valid values are \code{"CELLAR"} or \code{"FAO"}.}
+\item{endpoint}{Character. Repository to query. Must be either "CELLAR" or "FAO".}
 
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query and are used throughout the query to make it more concise and easier to read.
-Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-The function 'prefixList()' can be used to generate the prefixes for the selected classification table.}
+\item{prefix}{Character. Classification prefix used for matching and URI resolution
+(e.g. "cn2022", "cpc21", "isic4").}
 
-\item{conceptScheme}{Refers to a unique identifier associated to specific classification table.
-The conceptScheme can be obtained by utilizing the "classificationList()" function.
-#' @param language Refers to the specific language used for providing label, include and exclude information in the selected classification table.
-By default is set to "en". This is an optional argument.}
+\item{conceptScheme}{Character. Local identifier of the scheme (often identical to
+\code{prefix}). The function automatically resolves this to the canonical
+ConceptScheme URI published in the endpoint.}
 
-\item{level}{Refers  to the hierarchical levels of the selected classification table.
-The detailed level information can be obtained by utilizing the "structureData() " function.
-By default is set to \code{"ALL"}. This is an optional argument.}
+\item{language}{Character. Desired language for labels, scope notes and exclusion notes.
+Default: "en".}
 
-\item{CSVout}{The valid value is a valid path to a csv file including file name and extension. By default, no csv file is produced, \code{NULL}
-If output should be saved as a csv file, the argument should be set as \code{TRUE}. By default, no csv file is produced.}
+\item{level}{Character. One of:
+\itemize{
+  \item "ALL" (default): return all levels in the hierarchy;
+  \item a specific depth value (e.g. "2") to filter concepts at that depth only.
+}}
 
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the classification table as an R object.
-If not needed to view the SPARQL query used, the argument should be set as \code{FALSE}. By default, the SPARQL query is produced.}
+\item{showQuery}{Logical.
+\itemize{
+  \item FALSE (default): returns only the classification table;
+  \item TRUE: returns a list containing the SPARQL query, the resolved scheme URI, and the table itself.
+}}
 
-\item{localData}{this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api}
+\item{knownSchemes}{Optional. A data.frame supplying authoritative mappings of the
+form \code{Prefix, ConceptScheme, URI[, Endpoint]}. When provided, this overrides
+automatic discovery. To be obtained using \code{classificationList(endpoint)}.}
+
+\item{preferMappingOnly}{Logical. If TRUE, the function never attempts SPARQL
+discovery and uses only information in \code{knownSchemes} or \code{classificationList(endpoint)}.
+Default: FALSE.}
 }
 \value{
-\code{retrieveClassificationTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
- \itemize{
-    \item Classification name (e.g. nace2): the code of each object
-    \item NAME: the corresponding name of each object
-    \item Include: details on each object
-    \item Include_Also: details on each object
-    \item Exclude: details on each object
-    \item URL: the URL from which the SPARQL query was retrieved
+If \code{showQuery = FALSE}, a \code{data.frame} with one row per concept and columns:
+\itemize{
+  \item \strong{Concept}: full concept URI;
+  \item \strong{Code}: \code{skos:notation} coerced to string;
+  \item \strong{Label}: preferred or alternative label in the requested language;
+  \item \strong{Depth}: \code{xkos:depth} if available;
+  \item \strong{BroaderList}: broader concept URIs (pipe-separated);
+  \item \strong{BroaderCodeList}: broader concept notations (pipe-separated);
+  \item \strong{IncludeNotes}: \code{skos:scopeNote} values (double-pipe-separated);
+  \item \strong{ExcludeNotes}: \code{xkos:exclusionNote} values (double-pipe-separated).
+}
+
+If \code{showQuery = TRUE}, returns a list with:
+\itemize{
+  \item \code{SPARQL.query} – the executed SPARQL string;
+  \item \code{scheme_uri} – the resolved ConceptScheme URI;
+  \item \code{ClassificationTable} – the data.frame described above.
 }
 }
 \description{
-To facilitate the utilization of European classifications as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions,
-"retrieveClassificationTable()" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
+Retrieves the complete structure of a statistical classification published in
+either CELLAR or FAO repositories based on a Prefix–ConceptScheme pair obtained
+using \code{classificationList()}.
+
+The resulting table is suitable for classification browsing, integrity checks,
+hierarchical analysis, documentation, and downstream correspondence mapping.
 }
 \examples{
-{
-    endpoint = "CELLAR"
-    prefix = "nace2"
-    conceptScheme = "nace2"
+\dontrun{
+# Retrieve full CN2022 classification (English)
+cn <- retrieveClassificationTable(
+  endpoint      = "CELLAR",
+  prefix        = "cn2022",
+  conceptScheme = "cn2022",
+  language      = "en"
+)
 
-    results_ls = retrieveClassificationTable(endpoint, prefix,  conceptScheme)
-
-    # View SPARQL Query
-    cat(results_ls[[1]])
-
-    #View Classification Table
-    #View(results_ls[[2]])
-    }
+# Retrieve CPC v2.1 from FAO and inspect query
+out <- retrieveClassificationTable(
+  endpoint      = "FAO",
+  prefix        = "cpc21",
+  conceptScheme = "cpc21",
+  showQuery     = TRUE
+)
+cat(out$SPARQL.query)
+}
 
 }

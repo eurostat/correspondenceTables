@@ -1,0 +1,424 @@
+---
+title: "Combining correspondence tables"
+output:
+  rmarkdown::html_vignette:
+    toc: TRUE
+
+vignette: >
+  %\VignetteIndexEntry{Combining correspondence tables}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(width = 300)
+```
+
+
+
+```{r, echo=FALSE, results="asis"}
+cat("
+<style>
+table {
+  width: 100% !important;
+}
+table caption {
+  text-align: center;
+}
+</style>
+")
+```
+
+<div style="text-align: justify;">
+
+## Overview
+
+A correspondence table serves as a translation between two statistical classifications. When a correspondence table between two classifications does not yet exist, but both are linked to one or more intermediate classifications through existing correspondence tables, a new correspondence table can be generated automatically.
+
+For the general case, where classifications $A$ and $B$ are indirectly linked via one or more intermediate classifications $C_1, \dots ,C_k$, the `newCorrespondenceTable()` function can automatically generate a new correspondence table.
+
+A special case occurs when a classification $A$ is updated to a new version $A^*$ (with the correspondence table $A:A^*$ assumed to have been created as part of this update), and a correspondence table $A:B$ between the old version of $A$ and another classification of interest $B$ already exists.
+
+Here, the `updateCorrespondenceTable()` function can be used to automatically generate the new correspondence table $A^*:B$. (The `newCorrespondenceTable()` function could also be applied to achieve this, but the `updateCorrespondenceTable()` function takes into consideration the fact that $A$ and $A^*$ are two versions of the same classification, and is therefore recommended for this updating scenario.
+
+```{r, echo = F}
+library(correspondenceTables)
+
+```
+
+### Input
+
+In the case of `newCorrespondenceTable()`, the number of intermediate classifications is variable.  
+For this reason, the function accepts a flexible, matrix-like input structure that represents the relationships between classifications and their correspondence tables.
+
+The input must be provided **either**:
+
+- as a **square CSV file** that specifies the input structure by listing the file paths of the classification tables (on the diagonal) and the correspondence tables (on the off-diagonal), or  
+- as a **square two-level list of data frames**.
+
+In both cases, the diagonal elements of the structure correspond to classification tables (e.g. $A$, $B$, $C$), while the off-diagonal elements represent the correspondence tables linking consecutive classifications (e.g. $A:B$, $B:C$).
+
+To generate a correspondence table between classifications $A$ and $C$ from the correspondence tables $A:B$ and $B:C$, the function requires a matrix-like input structure with classifications on the diagonal and correspondence tables on the off-diagonal. Schematically, this structure can be represented as follows:
+
+\[
+\begin{bmatrix}
+A & A\!:\!B & \\
+  & B       & B\!:\!C \\
+  &         & C
+\end{bmatrix}
+\]
+
+This representation naturally extends to cases with multiple intermediate classifications.
+
+The input for `updateCorrespondenceTable()` simply requires the classifications ($A, A^*$ and $B$) and correspondence tables ($A:B$ and $A:A^*$) as data frames.
+
+### Output
+
+
+As output, both `newCorrespondenceTable()` and `updateCorrespondenceTable()` return a list containing:
+
+- the resulting correspondence table as a data frame, and  
+- a data frame reporting the names of the classifications involved in the correspondence
+
+
+
+### Helper for the examples
+
+When `newCorrespondenceTable()` is used with a CSV-based input structure, the CSV file that specifies the input layout must contain full file paths to the referenced CSV files, rather than file names alone. Accordingly, in the sample input, the file names appearing in the CSV table cells must be prefixed with their full path.
+
+To streamline this task, the utility function `fullPath`, defined below, is used in all the following examples.
+
+```{r}
+
+tmp_dir <- tempdir()
+
+fullPath <- function(CSVraw, CSVappended){
+  NamesCsv <- system.file("extdata", CSVraw, package = "correspondenceTables")
+  A <- read.csv(NamesCsv, header = FALSE, sep = ",")
+   for (i in 1:nrow(A)) {
+    for (j in 1:ncol(A)) {
+      if (A[i,j]!="") {
+        A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
+      }}}
+  write.table(x = A, file = file.path(tmp_dir,CSVappended), row.names = FALSE, col.names = FALSE, sep = ",")
+  return(A)
+}
+```
+
+
+```{r, echo=FALSE}
+
+files_to_clean <- setdiff(
+  list.files(tmp_dir, pattern = "\\.csv$", full.names = TRUE),
+  file.path(tmp_dir, "names.csv")
+)
+
+if (length(files_to_clean) > 0) unlink(files_to_clean)
+```
+
+</div>
+
+## Creating correspondence tables: general case using `newCorrespondenceTable()`
+
+### Example 1: ISIC Rev. 4 : CPA Ver. 2.1 (via CPC Ver. 2.1)
+
+<div style="text-align: justify;">
+
+```{r, results = "hide"}
+fullPath("names1.csv", "names.csv")
+```
+
+Execute the following code to apply function `newCorrespondenceTable()` and generate the correspondence table linking ISIC Rev. 4 (classification A) to CPA 2.1 (classification B) through the intermediate classification CPC 2.1. When no trimming is executed (`Redundancy_trim = FALSE`), redundant records are shown, together with the redundancy flag.
+
+
+```{r}
+NCT <- newCorrespondenceTable(
+        Tables = file.path(tmp_dir, "names.csv"),
+        Reference = "A",
+        MismatchTolerance = 0.5,
+        Redundancy_trim = FALSE,
+        Progress = FALSE
+)
+
+knitr::kable(
+  (NCT[[1]][3748:3753, 1:9]),
+  caption = "ISIC Rev. 4 to CPA Ver. 2.1 (via CPC Ver. 2.1): Subsample of the new Correspondence Table",
+  align = "c"
+)
+```
+
+The table above represents a subset of the correspondence table generated in this example. Each row represents a candidate correspondence between an ISIC code and a CPA code, possibly mediated by one or more intermediate classifications.
+
+Here, the ISIC code `1030` is linked to several CPA codes:
+
+- The rows linking `1030` to `10.39.23` and `10.39.24` are **unique and unambiguous**.  
+  These rows have `Redundancy = 0`, `Unmatched = 0`, and no review or mismatch flags set.
+
+- The CPA code `10.39.25` appears **multiple times** in combination with the same ISIC code `1030`, via different CPC codes.  
+  These rows are therefore flagged with `Redundancy = 1`.
+
+When `Redundancy_trim = FALSE`, all redundant rows are retained and an additional column, `Redundancy_keep`, is included:
+
+- `Redundancy_keep = 1` identifies the record that would be kept if redundancy trimming were applied.
+- Rows with `Redundancy_keep = 0` represent redundant alternatives.
+
+All rows in this example have `Unmatched = 0`, indicating that each ISIC code is matched to at least one CPA code and vice versa.  
+Similarly, `NoMatchFromA = 0` and `NoMatchFromB = 0` show that no codes from the original classification tables are missing from the correspondence tables involved in the construction.
+
+Finally, the `Review` flag is equal to `0` for all rows, indicating that given the selected reference classification, no hierarchical inconsistencies are detected.
+
+
+```{r}
+knitr::kable(
+  head(NCT[[2]]),
+  caption = "ISIC Rev. 4 to CPA Ver. 2.1 (via CPC Ver. 2.1): Names of the classifications involved",
+  align = "c"
+)
+
+```
+
+The table above is the second element generated with `newCorrespondenceTable`, which simply is a data frame containing the names of all classifications involved.
+
+</div>
+
+### Example 2: NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022), many-to-many case.
+
+<div style="text-align: justify;">
+
+```{r, results = "hide"}
+fullPath("names4.csv", "names.csv")
+```
+
+Execute the following code to apply function `newCorrespondenceTable()` and generate the correspondence table linking NACE Rev. 2 (classification A) to SITC 4 (classification B) through the intermediate classifications CPA Ver. 2.1 and CN 2022. Given the option `Redundancy_trim = TRUE`, when there are redundant records, these are removed and kept exactly one record for each unique combination.
+
+```{r}
+NCT <- newCorrespondenceTable(
+        Tables = file.path(tmp_dir, "names.csv"),
+        Reference = "none",
+        MismatchTolerance = 0.96,
+        Redundancy_trim = TRUE,
+        Progress = FALSE
+      )
+
+
+
+knitr::kable(
+  head(NCT[[1]][5442:5450, 1:8]),
+  caption = "NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022): Subsample of the new Correspondence Table",
+  align = "c"
+)
+
+```
+
+Also in this case, the table above represents a subset of the correspondence table generated in this example. Each row corresponds to a correspondence between a NACE code and a SITC code, possibly mediated by multiple intermediate classifications.
+
+In this example, the NACE code `28.41` is mapped to several SITC codes:
+
+- The first four rows represent unique and unambiguous correspondences, where specific CPA and CN codes are associated with specific SITC codes.  
+  These rows have `Redundancy = 0` and `Unmatched = 0`, indicating clear one-to-one mappings across all classifications involved.
+
+- The last two rows are flagged with `Redundancy = 1`.  
+  In these cases, multiple intermediate codes (in CPA and/or CN) contribute to the same NACE–SITC mapping. As a result, the corresponding intermediate classification values are reported as `"Multiple"`.
+
+All rows have `Unmatched = 0`, indicating that each correspondence links a valid NACE code to a valid SITC code.  
+Additionally, `NoMatchFromA = 0` and `NoMatchFromB = 0` for all rows confirm that no classification codes are missing from the correspondence tables used to construct the result.
+
+
+```{r}
+knitr::kable(
+  head(NCT[[2]]),
+  caption = "NACE Rev. 2 : SITC 4 (via CPA Ver. 2.1 and CN 2022): Names of the classifications involved",
+  align = "c"
+)
+```
+
+```{r message=TRUE, warning=TRUE, include=FALSE}
+csv_files<-list.files(tmp_dir, pattern = ".csv")
+if (length(csv_files)>0) unlink(csv_files)
+```
+The table above corresponds to the second element returned by `newCorrespondenceTable` and is a data frame containing the names of all the classifications involved in the process.
+
+</div>
+
+
+## Updating correspondence tables using `updateCorrespondenceTable()`
+
+### Example 3: Updating CN 2021 : CPA Ver. 2.1  (triggered by CN update)
+
+<div style="text-align: justify;">
+
+Execute the following code in order to get the path of the required input files.
+
+```{r}
+A <- read.csv(
+  system.file("extdata", "CN2021.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+B <- read.csv(
+  system.file("extdata", "CPA21.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AB <- read.csv(
+  system.file("extdata", "CN2021_CPA21.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AAStar <- read.csv(
+  system.file("extdata", "CN2021_CN2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+```
+
+
+Execute the following code line to apply function `updateCorrespondenceTable()` and generate the updated correspondence table. In this case the classification CN 2021 (A) has been updated to CN 2022 (A\*), and the correspondence to CPA 2.1 (B) is revised accordingly. Given the option `Redundancy_trim = TRUE`, when there are redundant records, these are removed and kept exactly one record for each unique combination.
+
+```{r}
+UPC <- updateCorrespondenceTable(
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "B",
+  MismatchToleranceB = 0.4,
+  MismatchToleranceAStar = 0.4,
+  Redundancy_trim = TRUE
+)
+
+
+knitr::kable(
+  (UPC[[1]][7950:7955, 1:11]),
+  caption = "Updating CN 2021 : CPA Ver. 2.1  (triggered by CN update): Subsample of the new CorrespondenceTable",
+  align = "c"
+)
+
+```
+The table above represents a subset of the correspondence table generated in this example. 
+Each row links a CN 2022 code to a CPA 2.1 code and reflects changes from the previous version.
+
+In this example:
+
+- The first three rows are flagged with `CodeChange = 1`, indicating that the original CN 2021 codes are associated with updated CN 2022 codes in a way that differs from the previous mapping.  
+  These rows also have `LabelChange = 1`, meaning that the labels of the corresponding CN codes have changed between versions.
+
+- Rows where `Review = 1` indicate potential hierarchical inconsistencies with respect to the selected reference classification, and therefore require manual inspection.
+
+- The remaining rows have `CodeChange = 0` and `LabelChange = 0`, showing that both the code and its label remain unchanged between CN 2021 and CN 2022 for the given correspondence to CPA 2.1.
+
+All rows have `Redundancy = 0`, meaning that each CN 2022–CPA 2.1 combination appears only once in the updated correspondence table.  
+Similarly, `NoMatchToAStar = 0` and `NoMatchToB = 0` indicate that each row contains valid codes for both CN 2022 and CPA 2.1.
+
+Finally, the flags `NoMatchFromAStar = 0` and `NoMatchFromB = 0` for all rows confirm that every code appearing in the updated correspondence is consistently represented in both the updated classification table and the underlying concordance tables.
+ 
+
+```{r}
+knitr::kable(
+  head(UPC[[2]]),
+  caption = "Updating CN 2021 : CPA Ver. 2.1  (triggered by CN update): Names of the classifications involved",
+  align = "c",
+  col.names = "Classification: Name"
+)
+
+```
+The table above is the second element generated with `updateCorrespondenceTable`, which simply is a data frame containing the names of all classifications involved.
+
+</div>
+
+### Example 4: Updating NAICS : NACE (triggered by NAICS update)
+
+<div style="text-align: justify;">
+
+Execute the following code in order to get the path of the required input files.
+
+```{r}
+A <- read.csv(
+  system.file("extdata", "NAICS2017.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AStar <- read.csv(
+  system.file("extdata", "NAICS2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+B <- read.csv(
+  system.file("extdata", "NACE.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AB <- read.csv(
+  system.file("extdata", "NAICS2017_NACE.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+AAStar <- read.csv(
+  system.file("extdata", "NAICS2017_NAICS2022.csv", package = "correspondenceTables"),
+  colClasses = "character"
+)
+
+```
+
+Execute the following code line to apply function `updateCorrespondenceTable()` and generate the updated correspondence table. In this case the classification NAICS 2017 (A) has been updated to NAICS 2022 (A\*), and the correspondence to NACE Rev. 2 (B) is revised accordingly. Given the option `Redundancy_trim = TRUE`, when there are redundant records, these are removed and kept exactly one record for each unique combination.
+
+```{r}
+
+UPC3 <- updateCorrespondenceTable(
+  A = A,
+  B = B,
+  AStar = AStar,
+  AB = AB,
+  AAStar = AAStar,
+  Reference = "none",
+  MismatchToleranceB = 0.5,
+  MismatchToleranceAStar = 0.8,
+  Redundancy_trim = TRUE
+)
+
+
+knitr::kable(
+  head(UPC3[[1]][1208:1218, 1:10]),
+  caption = "Updating NAICS : NACE (triggered by NAICS update): Subsample of the new Correspondence Table",
+  align = "c"
+)
+
+```
+The table above represents a subset of the correspondence table generated in this example. Each row represents a candidate correspondence between a NAICS 2022 code and a NACE Rev. 2 code, derived from the previous version of the classification (NAICS 2017).
+
+In this example:
+
+- The NAICS code `332313` is unchanged between NAICS 2017 and NAICS 2022, as indicated by `CodeChange = 0` for all rows.
+  This shows that the classification update did not introduce any code-level changes for this activity.
+
+- The same NAICS code `332313` is mapped to multiple NACE Rev. 2 codes (`25.11`, `25.29`, `25.30`, `28.22`, `28.91`, `30.11`), reflecting a one-to-many correspondence that already existed and remains valid after the update.
+
+- All rows have `Redundancy = 0`, meaning that each NAICS 2022–NACE Rev. 2 combination appears only once in the updated correspondence table.
+
+- The flags `NoMatchToAStar = 0` and `NoMatchToB = 0` indicate that every row contains valid and consistent codes for both the updated classification (NAICS 2022) and the target classification (NACE Rev. 2).
+
+- Similarly, `NoMatchFromAStar = 0` and `NoMatchFromB = 0` confirm that all codes appearing in the updated correspondence are present in the respective classification tables and supported by the underlying concordance tables.
+
+- Finally, `LabelChange = 0` for all rows shows that the labels associated with the NAICS codes are identical between the 2017 and 2022 versions.
+
+```{r}
+
+  knitr::kable(
+  head(UPC3[[2]]),
+  caption = "Updating NAICS : NACE (triggered by NAICS update): Names of the classifications involved",
+  align = "c",
+  col.names = "Classification: Name"
+)
+```
+
+The table above corresponds to the second element returned by `updateCorrespondenceTable` and is a data frame containing the names of all relevant classifications.
+
+
+</div>

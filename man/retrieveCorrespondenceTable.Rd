@@ -2,71 +2,113 @@
 % Please edit documentation in R/retrieveCorrespondenceTable.R
 \name{retrieveCorrespondenceTable}
 \alias{retrieveCorrespondenceTable}
-\title{Retrieve correspondence tables between statistical classifications from CELLAR and FAO repositories.}
+\title{Download a correspondence (mapping) table between two classifications}
 \usage{
 retrieveCorrespondenceTable(
   endpoint,
   prefix,
   ID_table,
   language = "en",
-  CSVout = NULL,
-  showQuery = TRUE
+  showQuery = FALSE
 )
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets,
-making it easier to retrieve specific information or perform complex queries on linked data.
-The valid values are \code{"CELLAR"} or \code{"FAO"}.}
+\item{endpoint}{Character. The online service to query. Case-insensitive.
+Supported values are those returned by the internal endpoint registry
+(e.g., \code{"CELLAR"}, \code{"FAO"}).}
 
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query
-and are used throughout the query to make it more concise and easier to read.
-Multiple prefixes can be defined in a single query to cover different namespaces used in the dataset.
-The function 'prefixList()' can be used to generate the prefixes for the selected correspondence table.}
+\item{prefix}{Character. Catalogue prefix where the correspondence is
+published (e.g., \code{"nace2"}, \code{"cpa21"}, \code{"cn2022"}).
+Use \code{\link{correspondenceTableList}()} to discover valid values.}
 
-\item{ID_table}{Refers to a unique identifier associated with a specific correspondence table.
-The ID_table can be obtained by utilizing the "correspondenceTableList()" function.}
+\item{ID_table}{Character. Identifier of the correspondence, typically of
+the form \code{"A_B"} such as \code{"NACE2_CPA21"} or \code{"CN2022_NACE2"}.
+Discover identifiers via \code{\link{correspondenceTableList}()}.}
 
-\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected correspondence table.
-By default is set to "en". This is an optional argument.}
+\item{language}{Character. Preferred label language as a BCP‑47 code.
+Defaults to \code{"en"} (English). Examples: \code{"fr"}, \code{"de"}.}
 
-\item{CSVout}{The valid value is a valid path to a csv file including file name and extension. By default, no csv file is produced, \code{NULL}}
-
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object.
-If not needed to view the SPARQL query used, the argument should be set as \code{FALSE}. By default, the SPARQL query is produced.}
-
-\item{localData}{this parameter allow the user to retrieve static data from the package in order to avoid any issues from the api}
+\item{showQuery}{Logical. If \code{TRUE}, returns a list with the SPARQL
+query and the result data frame; otherwise (default) returns just the data frame.}
 }
 \value{
-\code{retrieveCorrespondenceTable()} returns a classification tables from CELLAR and FAO. The table includes the following variables:
- \itemize{
-    \item Source Classification name (e.g. cn2019): the code of each object in the source classification
-    \item Source Classification name (e.g. cn2021): the code of each object in the target classification
-    \item Target Classification label: the corresponding label of each object (e.g. cn2019)
-    \item Include: include details on each object (e.g. cn2019)
-    \item Exclude: details on each object (e.g. cn2019)
-    \item Target Classification label: the corresponding label of each object (e.g. cn2021)
-    \item Include: include details on each object (e.g. cn2021)
-    \item Exclude: details on each object (e.g. cn2021)
-    \item Comment: details on each object, if available
-    \item URL: the URL from which the SPARQL query was retrieved
+A \code{data.frame} where each row represents one mapping from the source
+classification (\strong{A}) to the target classification (\strong{B}).
+
+Columns (when available):
+\itemize{
+  \item \code{CorrespondenceID}:  Requested identifier (e.g., \code{"NACE2_CPA21"}).
+  \item \code{Prefix}: Catalogue prefix (constant per table).
+  \item \code{A}: Source code (\code{A} parsed from \code{ID_table}).
+  \item \code{B}: Target code (\code{B} parsed from \code{ID_table}).
+  \item \code{Label_A}, \code{Label_B}: Human‑readable labels in \code{language}.
+  \item \code{Include_A}, \code{Exclude_A}, \code{Include_B}, \code{Exclude_B}: Notes, if available.
+  \item \code{Comment}: Free‑text comment on the mapping, if any.
+  \item \code{URL}: URI of the mapping association.
+}
+
+Attributes attached for traceability:
+\itemize{
+  \item \code{endpoint}, \code{endpoint_url}, \code{prefix}, \code{ID_table}
+  \item \code{A}, \code{B}, \code{language}, \code{normalized_codes}, \code{anchor_mode}, \code{anchor}
 }
 }
 \description{
-To facilitate the utilization of correspondence tables as inputs for the newCorrespondenceTable and updateCorrespondenceTable functions,
-"retrieveCorrespondenceTable" utility function has been developed. This utility function leverage R packages that enable SPARQL queries.
+Downloads a correspondence table, a mapping of codes, from one statistical
+classification (A) to another (B) from an online service (CELLAR or
+FAO), and returns it as a plain data frame. The function has no side effects
+(it does not read or write files).
+
+A correspondence table tells you which codes in classification A relate
+to which codes in classification B (e.g., \code{NACE2} → \code{CPA21}).
 }
+\details{
+\strong{When to use this.} Use \code{retrieveCorrespondenceTable()} when you
+know (or have discovered) the \code{prefix} and \code{ID_table} of a
+correspondence and want the mapping rows as a standard data frame.
+
+\strong{How it works (short).}
+\enumerate{
+  \item Validates the selected service (\code{endpoint}).
+  \item Optionally resolves a stable anchor via \code{\link{correspondenceTableList}()}.
+  \item Builds a SPARQL query returning source/target codes, labels, notes, and link URI.
+  \item Issues an HTTP request and parses the response into a data frame.
+}
+}
+\section{Notes}{
+
+\itemize{
+  \item The function focuses on retrieval. Any code normalization is left to
+        downstream steps.
+}
+}
+
 \examples{
-{
-    endpoint = "CELLAR"
-    prefix = "cn2022"
-    ID_table = "CN2022_NST2007"
+\dontrun{
+# 1) Discover available correspondences at CELLAR
+ct <- correspondenceTableList(endpoint = "CELLAR")
+subset(ct, grepl("NACE2", ID) & grepl("CPA21", ID))
 
-    results_ls = retrieveCorrespondenceTable( endpoint, prefix, ID_table)
+# 2) Retrieve one correspondence (English labels)
+x <- retrieveCorrespondenceTable(
+  endpoint = "CELLAR",
+  prefix   = "nace2",
+  ID_table = "NACE2_CPA21",
+  language = "en"
+)
+head(x)
 
-    # View SPARQL Query
-    cat(results_ls[[1]])
+# 3) Save to CSV explicitly if needed (no automatic writing)
+# utils::write.csv(x, "NACE2_CPA21.csv", row.names = FALSE)
 
-    #View Classification Table
-    #View(results_ls[[2]])
-    }
+# 4) Inspect the generated SPARQL query
+dbg <- retrieveCorrespondenceTable(
+  endpoint = "FAO",
+  prefix   = "cpa21",
+  ID_table = "NACE2_CPA21",
+  showQuery = TRUE
+)
+message(substr(dbg$SPARQL.query, 1, 400), "...")
+}
+
 }

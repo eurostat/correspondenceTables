@@ -1,158 +1,206 @@
-#' @title Retrieve a list of classification tables from CELLAR and FAO repositories or both.
-#' @description The purpose of this function is to provide a comprehensive summary 
-#' of the data structure for each classification in CELLAR and FAO endpoint. 
-#' The summary includes information such as the prefix name, URI, key, concept scheme, and title associated with each classification.
-#' @param endpoint SPARQL endpoints provide a standardized way to access data sets, 
-#' making it easier to retrieve specific information or perform complex queries on linked data. This is an optional
-#' parameter, which by default is set to \code{"ALL"}.
-#' The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints.
-#' @param showQuery The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
-#' If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.
-#' @import httr
-#' @import jsonlite
-#' @export
+#' @title List available classification schemes from CELLAR or FAO
+#'
+#' @description
+#' List all classification schemes available on the selected repository
+#' (CELLAR, FAO, or both). Returns, for each scheme, its prefix, identifier,
+#' URI, English title, and the list of languages detected on its concepts.
+#'
+#' @param endpoint Character scalar. One of "CELLAR", "FAO" or "ALL".
+#'                 "ALL" queries both repositories and returns a named list.
+#' @param showQuery Logical; if TRUE, returns also the SPARQL query used.
+#'
 #' @return
-#' \code{classificationList()} returns a table with information needed to retrieve the classification table:
-#' \itemize{
-#'     \item Prefix name: the  SPARQL instruction for a declaration of a namespace prefix
-#'     \item Conceptscheme: taxonomy of the SKOS object to be retrieved
-#'     \item URI: the URL from which the SPARQL query was retrieved
-#'     \item Name: the name of the table retrieved
-#' }
+#' If endpoint is "CELLAR" or "FAO" and showQuery = FALSE: a data.frame with
+#' columns Prefix, ConceptScheme, URI, Title, Languages.
+#'
+#' If showQuery = TRUE: a list with "ClassificationList" and "SPARQL.query".
+#'
+#' If endpoint = "ALL": a named list with $CELLAR and $FAO. If showQuery = TRUE,
+#' each element is itself a list (ClassificationList + SPARQL.query).
+#'
 #' @examples
-#' {
-#'     endpoint = "ALL"
-#'     list_data = classificationList(endpoint)
-#'     }
-
-classificationList = function(endpoint = "ALL", showQuery = FALSE) {
-  #Check correctness of endpoint argument
-  endpoint <- toupper(endpoint)
-  if (!(endpoint %in% c("ALL", "FAO", "CELLAR"))) {
-    stop(simpleError(paste("The endpoint value:", endpoint, "is not accepted")))
-  }
-  # Check the useLocalDataForVignettes option
-  if (getOption("useLocalDataForVignettes", FALSE)) {
-    
-    localDataPath <- system.file("extdata", paste0("classificationlList_", endpoint, ".csv"), package = "correspondenceTables")
-    
-    if (file.exists(localDataPath)) {
-      # Read data from the local file if it exists
-      data <- read.csv(localDataPath)
-      if (showQuery) {
-        print("Data loaded from local file.")
-      }
-      return(data)
+#' \dontrun{
+#' head(classificationList("CELLAR"))
+#' res <- classificationList("FAO", showQuery = TRUE)
+#' names(res)
+#' }
+#'
+#' @import httr
+#' @importFrom utils read.csv
+#' @export
+classificationList <- function(endpoint = "ALL", showQuery = FALSE) {
+  # Validate and normalize endpoint using the internal helper.
+  # .expand_endpoints() returns a vector of endpoint names.
+  # Example: "ALL" -> c("CELLAR", "FAO")
+  endpoints <- .expand_endpoints(endpoint)
+  
+  # If multiple endpoints were requested, return a named list.
+  if (length(endpoints) > 1L) {
+    out <- setNames(vector("list", length(endpoints)), endpoints)
+    for (ep in endpoints) {
+      out[[ep]] <- .ct_classification_list_single(ep, showQuery = showQuery)
     }
-  } else {
-  
-  tryCatch(
-    {
-  ### Load the configuration file from GitHub
-  config <- fromJSON("https://raw.githubusercontent.com/eurostat/correspondenceTables/refs/heads/main/inst/extdata/endpoint_source_config.json")
-      
-  if (endpoint == "ALL" | endpoint == "CELLAR") {
-  ### Datasets in CELLAR
-  endpoint_cellar <- config$CELLAR
-
-  SPARQL.query_cellar = paste0("
-  SELECT DISTINCT ?s ?Title
-  WHERE { ?s a skos:ConceptScheme ;
-          skos:prefLabel ?Title ;
-          ?p <http://publications.europa.eu/resource/authority/corporate-body/ESTAT> 
-           FILTER (LANG(?Title) = 'en')}
-  ORDER BY ?Title
-  ")
-
-  response = POST(url = endpoint_cellar, accept("text/csv"), body = list(query = SPARQL.query_cellar), encode = "form")
-  data_cellar = read.csv(text=content(response, "text"), sep= ",")  
-
-  ## add prefix name
-  str_dt = t(sapply(data_cellar[,1], function(x) unlist(strsplit(as.character(x), "/+"))))
-  uri = paste0(str_dt[,1],"/", "/", str_dt[,2],"/",str_dt[,3],"/",str_dt[,4] )
-  prefix = str_dt[,4]
-  prefix = gsub("\\.","",prefix)
-  #key = str_dt[,4]
-  conceptscheme = str_dt[,5]
-  title = data_cellar[,2]
-  data_cellar = cbind(prefix, conceptscheme, uri, title)
-  rownames(data_cellar) = 1:nrow(data_cellar)
-  colnames(data_cellar) = c("Prefix", "ConceptScheme", "URI", "Title")
+    return(out)
   }
-    }, error = function(e) {
-      cat("The following SPARQL code was used in the call:\n", SPARQL.query_cellar, "\n")
-      cat("The following response was given for by the SPARQL call:\n", response)
-      stop(simpleError(paste("Error in function ClassificationList(", endpoint,"), Endpoint Cellar is not available or is returning unexpected data")))
-    })
   
-  tryCatch(
-    {
-  if (endpoint == "ALL" | endpoint == "FAO") {
-  ### Datasets in FAO
-  endpoint_fao <- config$FAO
-  SPARQL.query_fao = paste0("
-     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  # Single endpoint case.
+  .ct_classification_list_single(endpoints, showQuery = showQuery)
+}
+
+# -------------------------------------------------------------------
+# Internal: run the SPARQL query for a single endpoint
+# -------------------------------------------------------------------
+#' @keywords internal
+#' @noRd
+.ct_classification_list_single <- function(endpoint, showQuery = FALSE) {
+  
+  # Resolve the endpoint URL via internal single source of truth
+  endpoint_url <- .sparql_endpoint(endpoint)
+  
+  # Choose the SPARQL query by endpoint
+  if (identical(endpoint, "CELLAR")) {
+    SPARQL.query <- "
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT
+  (?scheme AS ?URI)
+  (COALESCE(STR(?notation),
+            REPLACE(REPLACE(STR(?scheme), '^.*/', ''), '[^A-Za-z]+.*', '')) AS ?Prefix)
+  (COALESCE(SAMPLE(STR(?title_en)), '') AS ?Title)
+  (GROUP_CONCAT(DISTINCT LANG(?clab); SEPARATOR=', ') AS ?Languages)
+WHERE {
+  ?scheme a skos:ConceptScheme ;
+          skos:prefLabel ?title_en .
+  FILTER (LANG(?title_en) = 'en')
+
+  FILTER (
+    STRSTARTS(STR(?scheme), 'http://data.europa.eu/') ||
+    STRSTARTS(STR(?scheme), 'https://data.europa.eu/')
+  )
+
+  ?scheme ?p <http://publications.europa.eu/resource/authority/corporate-body/ESTAT> .
+
+  OPTIONAL { ?scheme skos:notation ?notation }
+
+  ?concept a skos:Concept ;
+           skos:inScheme ?scheme ;
+           skos:prefLabel ?clab .
+  FILTER (LANG(?clab) != '')
+}
+GROUP BY ?scheme ?notation
+ORDER BY ?Prefix
+"
+  } else if (identical(endpoint, "FAO")) {
+    SPARQL.query <- "
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT
+  (?scheme AS ?URI)
+  (COALESCE(STR(?notation),
+            REPLACE(REPLACE(STR(?scheme), '^.*/', ''), '[^A-Za-z]+.*', '')) AS ?Prefix)
+  (COALESCE(SAMPLE(STR(?title_en)), '') AS ?Title)
+  (GROUP_CONCAT(DISTINCT LANG(?clab); SEPARATOR=', ') AS ?Languages)
+WHERE {
+  ?scheme rdf:type skos:ConceptScheme ;
+          skos:prefLabel ?title_en .
+  FILTER (LANG(?title_en) = 'en')
 
-SELECT  ?scheme ?notation ?label_en WHERE {
-   ?scheme rdf:type skos:ConceptScheme .
-   ?scheme skos:notation ?notation .
-  ?scheme skos:prefLabel ?label_en . FILTER(lang(?label_en)='en') .
-  }
-ORDER BY ASC(?notation)
-  ")
-  
-  response = httr::POST(url = endpoint_fao, accept("text/csv"), body = list(query = SPARQL.query_fao), encode = "form")
-  data_fao = read.csv(text=content(response, "text"), sep= ",")                                 
-  
-  ## add prefix name
-  # str_dt = t(sapply(data_fao[,1], function(x) unlist(strsplit(as.character(x), "/+"))))
-  str_dt<- strsplit(data_fao[, 1], "/")
-  mat_str_dt <- suppressWarnings(do.call(rbind, str_dt))
-  df_str_dt <- as.data.frame(mat_str_dt)
-  prefix = data_fao[,2]
-  # prefix = paste0(df_str_dt[,5], df_str_dt[,6])
-  # prefix = gsub("\\.","",prefix)
-  #uri = paste0(df_str_dt[,1],  "/", df_str_dt[,2], "/", df_str_dt[,3], "/", df_str_dt[,4], "/", prefix)
-  uri = read.csv(system.file("extdata", "classificationlList_FAO.csv", package = "correspondenceTables"))[,3]
-  #class = prefix
-  ConceptScheme = paste0(df_str_dt[,5], df_str_dt[,6])
-  data_fao = cbind(prefix, ConceptScheme, uri, data_fao[,3])
-  rownames(data_fao) = 1:nrow(data_fao)
-  colnames(data_fao) = c("Prefix", "ConceptScheme", "URI", "Title")
-  }
-    }, error = function(e) {
-      cat("The following SPARQL code was used in the call:\n", SPARQL.query_fao, "\n")
-      cat("The following response was given for by the SPARQL call:\n", response)
-      stop(simpleError(paste("Error in function ClassificationList(",endpoint,"),Endpoint Fao is not available or is returning unexpected data")))
-    })
-  if (endpoint == "ALL") {
-    data = list("CELLAR" = data_cellar, "FAO" = data_fao)
-    SPARQL.query <- paste0(SPARQL.query_cellar, "\n", SPARQL.query_fao )
-  }
-  
-  if (endpoint == "CELLAR") {
-    data = list("CELLAR" = data_cellar)
-    SPARQL.query <- SPARQL.query_cellar
-  }
-  
-  if (endpoint == "FAO") {
-    data = list("FAO" = data_fao)
-    SPARQL.query <- SPARQL.query_fao
-  }  
-  
-  if (showQuery) {
-    result=list()
-    result[[1]]= SPARQL.query
-    result[[2]]= data
-    names(result)=c("SPARQL.query" ,"ClassificationList")
-    cat(result$SPARQL.query, sep ="/n")
-    return(result)
+  OPTIONAL { ?scheme skos:notation ?notation }
+
+  ?concept a skos:Concept ;
+           skos:inScheme ?scheme ;
+           skos:prefLabel ?clab .
+  FILTER (LANG(?clab) != '')
+}
+GROUP BY ?scheme ?notation
+ORDER BY ?Prefix
+"
   } else {
-    return(data)
+    stop("Unsupported endpoint in .ct_classification_list_single().")
+  }
+
+# Optionally print the query for debugging
+if (isTRUE(showQuery)) {
+  message("Endpoint: ", endpoint_url)
+  message(SPARQL.query)
+}
+
+# Execute the request and parse CSV response
+out <- tryCatch({
+  resp <- httr::POST(
+    url    = endpoint_url,
+    httr::accept("text/csv"),
+    body   = list(query = SPARQL.query),
+    encode = "form"
+  )
+  txt <- httr::content(resp, "text", encoding = "UTF-8")
+  df  <- utils::read.csv(text = txt, sep = ",", stringsAsFactors = FALSE, check.names = FALSE)
+  
+  # Basic post-conditions: expected columns should exist
+  needed <- c("URI", "Prefix", "Title", "Languages")
+  if (!all(needed %in% names(df))) {
+    stop("Unexpected columns returned by SPARQL endpoint. Got: ",
+         paste(names(df), collapse = ", "))
   }
   
- }
+  # Prepare result structure; normalize prefix, extract basename of URI
+  uri    <- df[["URI"]]
+  prefix <- if (identical(endpoint, "CELLAR")) gsub("\\.", "", df[["Prefix"]]) else df[["Prefix"]]
+  prefix <- .ct_clean_prefix(prefix)
+  title  <- df[["Title"]]
+  langs  <- df[["Languages"]]
+  
+  result <- data.frame(
+    Prefix        = prefix,
+    ConceptScheme = .ct_basename_uri(uri),
+    URI           = uri,
+    Title         = title,
+    Languages     = langs,
+    stringsAsFactors = FALSE
+  )
+  rownames(result) <- seq_len(nrow(result))
+  result
+}, error = function(e) {
+  # Provide helpful diagnostics while keeping a clean error for callers
+  message("The following SPARQL code was used in the call:\n", SPARQL.query)
+  message("The above SPARQL call to ", endpoint_url,
+          " generated the following error message:\n", conditionMessage(e))
+  stop(simpleError(
+    paste0("Error in classificationList(", endpoint, "): endpoint unavailable or returned unexpected data")
+  ))
+})
+
+# Return either the data.frame alone or a list with the query
+if (isTRUE(showQuery)) {
+  return(list("SPARQL.query" = SPARQL.query, "ClassificationList" = out))
+} else {
+  return(out)
+}
+}
+
+# -------------------------------------------------------------------
+# Internal utilities
+# -------------------------------------------------------------------
+
+#' @keywords internal
+#' @noRd
+.ct_basename_uri <- function(x) {
+  # Keep only the last path/token after '/' or '#', then sanitize
+  out <- sub("^.*[/#]", "", x)
+  gsub("[^A-Za-z0-9_\\-\\.]", "", out)
+}
+
+#' @keywords internal
+#' @noRd
+.ct_clean_prefix <- function(prefix) {
+  # Normalize prefixes: lowercase, drop common version suffixes,
+  # remove dots/spaces and keep a safe alphanumeric/underscore set
+  prefix <- tolower(prefix)
+  prefix <- sub("(_v[0-9.]+)$", "", prefix)
+  prefix <- sub("(-v[0-9.]+)$", "", prefix)
+  prefix <- gsub("\\.", "", prefix)
+  prefix <- gsub(" ", "", prefix)
+  prefix <- gsub("[^a-z0-9_]", "", prefix)
+  trimws(prefix)
 }
 

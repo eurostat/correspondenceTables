@@ -1,15 +1,8 @@
-#' @title Ex novo creation of candidate correspondence tables between two classifications via pivot tables
-#' @description Creation of a candidate correspondence table between two classifications, A and B, when there are
-#'   correspondence tables leading from the first classification to the second one via \eqn{k} intermediate pivot
-#'   classifications \eqn{C_1, \ldots, C_k}.
-#'   The correspondence tables leading from A to B are A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}: \eqn{1 \le i \le k -1}\}, B:\eqn{C_k}.
+#' @title Correspondence table creation
+#' @description Create a candidate correspondence table between two classifications based on their correspondences with intermediate classifications
 #' @param Tables A string of type character containing the name of a csv file which contains the names of the files that
 #'   contain the classifications and the intermediate correspondence tables OR a list of vectors with the names of the dataframes
 #'   classifications and the intermediate correspondence tables (see "Details" below).
-#' @param CSVout The preferred name for the \emph{output csv files} that will contain the candidate correspondence table
-#'   and information about the classifications involved. The valid values are \code{NULL} or strings of type \code{character}.
-#'   If the selected value is \code{NULL}, the default, no output file is produced. If the value is a string, then the output
-#'   is exported into two csv files whose names contain the provided name (see "Value" below).
 #' @param Reference The reference classification among A and B. If a classification is the reference to the other, and hence
 #'  \emph{hierarchically superior} to it, each code of the other classification is expected to be mapped to at most one code
 #'   of the reference classification. The valid values are \code{"none"}, \code{"A"}, and \code{"B"}. If the selected value
@@ -19,9 +12,12 @@
 #'   no code for classification A or no code for classification B. The default value is \code{0.2}. The valid values are
 #'   real numbers in the interval [0, 1].
 #' @param Redundancy_trim An argument in the function containing the logical values \code{TRUE} or \code{FALSE}
-#' used to facilitate the trimming of the redundant records.
-#' The default value is \code{TRUE}, which removes all redundant records.
-#' The other values is \code{FALSE}, which shows redundant records together with the redundancy flag.
+#'   used to facilitate the trimming of the redundant records.
+#'   The default value is \code{TRUE}, which removes all redundant records.
+#'   The other values is \code{FALSE}, which shows redundant records together with the redundancy flag.
+#' @param Progress  An argument in the function containing the logical values \code{TRUE} (default) or \code{FALSE}. 
+#'   Used to switch ON (when \code{TRUE}) or OFF (when \code{FALSE}) the progress bar that interactively display the creation process of the new table in the console output.
+#'   
 #' @export
 #' @details
 #' File and file name requirements:
@@ -32,12 +28,10 @@
 #'         \item The file that corresponds to argument \code{Tables} must contain filenames, \emph{and nothing else}, in
 #'         a \eqn{(k+2)} × \eqn{(k+2)} table, where \eqn{k}, a positive integer, is the number of "pivot" classifications.
 #'         The cells in the main diagonal of the table provide the filenames of the files which contain, with this order,
-#'         the classifications A, \eqn{C_1}, \eqn{\ldots}, \eqn{C_k} and B. The off-diagonal directly above the main
+#'         the classifications  \eqn{A, C_1}, \eqn{\ldots}, \eqn{C_k} and \eqn{B}. The off-diagonal directly above the main
 #'         diagonal contains the filenames of the files that contain, with this order, the correspondence tables
-#'         A:\eqn{C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and B:\eqn{C_k}. All other cells of the table
+#'         \eqn{A:C_1}, \{\eqn{C_i}:\eqn{C_{i+1}}, \eqn{1 \le i \le k-1}\} and \eqn{B:C_k}. All other cells of the table
 #'         must be empty.
-#'         \item If any of the two files where the output will be stored is read protected (for instance because it is open
-#'         elsewhere) an error message will be reported and execution will be halted.
 #'     }
 #' Classification table requirements:
 #'     \itemize{
@@ -122,8 +116,7 @@
 #'
 #' @section Sample datasets included in the package:
 #'
-#' Running \code{browseVignettes("correspondenceTables")} in the console opens an html page in the user's default browser. Selecting HTML from the menu, users can read information about the use of the sample datasets that are included in the package.
-#' If they wish to access the csv files with the sample data, users have two options:
+#' If the user wish to access the csv files with the sample data, they have two options:
 #' \itemize{
 #' \item Option 1: Unpack into any folder of their choice the tar.gz file into which the package has arrived. All sample
 #' datasets may be found in the "inst/extdata" subfolder of this folder.
@@ -139,72 +132,69 @@
 #'      the additional columns of the classification and intermediate correspondence table files.
 #'     \item The second element contains the names of classification A, the "pivot" classifications and classification B as
 #'     read from the top left-hand side cell of the respective input files.
-#'     \item If the value of argument \code{CSVout} a string of type \code{character}, the elements of the list are exported
-#'     into files of csv format. The name of the file for the first element is the value of argument \code{CSVout} and the
-#'     name of the file for the second element is classificationNames_\code{CSVout}. For example, if
-#'     \code{CSVout} = "newCorrespondenceTable.csv", the elements of the list are exported into "newCorrespondenceTable.csv"
-#'     and "classificationNames_newCorrespondenceTable.csv" respectively.
 #' }
 #'
 #' @examples
 #' {
-#'    ## Application of function newCorrespondenceTable() with "example.csv" being the file
-#'    ## that includes the names the files  and the intermediate tables in a sparse square
-#'    ## matrix containing the 100 rows of the classifications (from ISIC v4 to CPA v2.1 through
-#'    ## CPC v2.1). The desired name for the csv file that will contain the candidate
-#'    ## correspondence table is "newCorrespondenceTable.csv", the reference classification is
-#'    ## ISIC v4 ("A") and the maximum acceptable proportion of unmatched codes between
-#'    ## ISIC v4 and CPC v2.1 is 0.56 (this is the minimum mismatch tolerance for the first 100 row
-#'    ## as 55.5% of the code of ISIC v4 is unmatched).
-#'
-#'      tmp_dir<-tempdir()
-#'      A <- read.csv(system.file("extdata", "example.csv", package = "correspondenceTables"),
-#'                    header = FALSE,
-#'                    sep = ",")
-#'      for (i in 1:nrow(A)) {
-#'        for (j in 1:ncol(A)) {
-#'          if (A[i,j]!="") {
-#'            A[i, j] <- system.file("extdata", A[i, j], package = "correspondenceTables")
-#'        }}}
-#'      write.table(x = A,
-#'                  file = file.path(tmp_dir,"example.csv"),
-#'                  row.names = FALSE,
-#'                  col.names = FALSE,
-#'                  sep = ",")
-#'
-#'      NCT<-newCorrespondenceTable(file.path(tmp_dir,"example.csv"),
-#'                                  file.path(tmp_dir,"newCorrespondenceTable.csv"),
-#'                                  "A",
-#'                                  0.56,
-#'                                  FALSE)
-#'
-#'      summary(NCT)
-#'      head(NCT$newCorrespondenceTable)
-#'      NCT$classificationNames
-#'      csv_files<-list.files(tmp_dir, pattern = ".csv")
-#'      unlink(csv_files)
-#'     }
+#' \dontrun{
+#' 
+#' code_in   <- data.frame(code_in  = c("A","B"))
+#' code_mid  <- data.frame(code_mid = c("B","C","D"))
+#' in_to_mid <- data.frame(code_in  = c("A","B")
+#'                         , code_out = c("C","B"))
+#' code_out  <- data.frame(code_out = c("B","C","D","E"))
+#' mid_to_out <- data.frame(code_mid = c("B","C","D")
+#'                          , code_out = c("B","C","D"))
+#' 
+#' write.csv(code_in,    file = "code_in.csv",   row.names  = FALSE)
+#' write.csv(code_mid,   file = "code_mid.csv",  row.names  = FALSE)
+#' write.csv(in_to_mid,  file = "in_to_mid.csv", row.names  = FALSE)
+#' write.csv(mid_to_out, file = "mid_to_out.csv", row.names = FALSE)
+#' write.csv(code_out,   file = "code_out.csv",   row.names = FALSE)
+#' 
+#' 
+#' m <- matrix("",3,3)
+#' diag(m) <- c("code_in.csv","code_mid.csv","code_out.csv")
+#' m[1,2] <- "in_to_mid.csv"
+#' m[2,3] <- "mid_to_out.csv"
+#' 
+#' 
+#' 
+#' write.table(m, file="merge_sequence.csv",row.names=FALSE,col.names=FALSE,sep=",")
+#' 
+#' 
+#' out <- newCorrespondenceTable("merge_sequence.csv",MismatchTolerance = 0.9)
+#' print(out$newCorrespondenceTable)
+#' print(out$classificationNames)
+#' 
+#' 
+#'     } }
 
-newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", MismatchTolerance = 0.2, Redundancy_trim = TRUE) {
-
+newCorrespondenceTable <- function(
+    Tables,
+    Reference = "none",
+    MismatchTolerance = 0.2,
+    Redundancy_trim = TRUE,
+    Progress = TRUE
+){
   # Check if the Tables is a File or a list of vectors
   # Check if the file that contains the names of both classifications and correspondence tables exists in working directory
-
+  
   if (is.list(Tables)) {
     x <- as.matrix(do.call(rbind, Tables))
     y <- Tables
-
+    
     # The following if statement checks if the names of both classifications
     # and correspondence tables lists construct a sparse square matrix.
     is_square <- TRUE
     n <- length(y)
-
+    
     for (i in seq_along(y)) {
       if (length(y[[i]]) != n) {
         is_square <- FALSE
-       }
+      }
     }
-
+    
     if (is_square) {
       # Define inputs as an empty list
       inputs <- list()
@@ -217,12 +207,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
       for (i in 2:n) {
         inputs[i] <- y[[i]][i]
         inputs_name[i]<- paste0("Table[",i, ",", i, "]")
-
+        
       }
-      #Upper triangular elements excluding empty entries
-      # Initialize a counter to keep track of positions in `inputs`
       counter <- length(inputs) + 1
-      # Loop through each row and each column above the diagonal
       for (i in 1:(n - 1)) {
         for (j in (i + 1):n) {
           if (!is.null(y[[i]][[j]])) {  # Check that the entry is not empty
@@ -237,8 +224,8 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
       # sparse square matrix.
       stop(paste("The List do not construct a sparse square matrix. \n Please verify that the appropriate number of elements are inserted in the appropriate cells."))
     }
-
-
+    
+    
   } else if (file.exists(Tables)) {
     # x <- as.matrix(utils::read.csv(Tables, sep = ",", header = FALSE, colClasses = c("character"),
     #                                 encoding = "UTF-8"))
@@ -247,7 +234,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     mat.list <- apply(x, 2, function(x) {
       as.character(which(x != ""))
     })
-
+    
     # Check if files exist in working directory
     test.names <- as.vector(x)[which(as.vector(x) != "")]
     if (!all(file.exists(test.names))) {
@@ -258,61 +245,47 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     if (length(which(duplicated(test.names) == TRUE)) >= 1) {
       stop(simpleError(paste("At least two of the filenames in", Tables, "are the same.")))
     }
-
-  test.list <- list()
-  test.list[[1]] <- "1"
-  for (mat.index in 2:ncol(x)) {
-    test.list[[mat.index]] <- as.character(c((mat.index - 1):mat.index))
-  }
-
-  # The following if statement checks if the names of both classifications
-  # and correspondence tables in the 'names.csv' file construct a sparse
-  # square matrix.
-  if (all(unlist(Map(identical, mat.list, test.list)) == TRUE) && nrow(x) >= 3) {
-    k <- nrow(x) - 2
-
-  } else {
-    # Error message in case the names of both classifications and
-    # correspondence tables in the 'names.csv' file do not construct a
-    # sparse square matrix.
-    stop(paste("The filenames  in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
-  }
-
-  # The list inputs includes the names of both classifications and
-  # correspondence tables.
-  inputs <- list()
-  inputs[[1]] <- diag(x)[1]
-  inputs[seq(k) + 1] = as.list(diag(x)[seq(k) + 1])
-  inputs[[k + 2]] <- diag(x)[length(diag(x))]
-  inputs[(k + 3):(k + 2 + length(as.list(x[upper.tri(x)][x[upper.tri(x)] != ""])))] <- as.list(x[upper.tri(x)][x[upper.tri(x)] !=
-                                                                                                                 ""])
-
+    
+    test.list <- list()
+    test.list[[1]] <- "1"
+    for (mat.index in 2:ncol(x)) {
+      test.list[[mat.index]] <- as.character(c((mat.index - 1):mat.index))
+    }
+    
+    # The following if statement checks if the names of both classifications
+    # and correspondence tables in the 'names.csv' file construct a sparse
+    # square matrix.
+    if (all(unlist(Map(identical, mat.list, test.list)) == TRUE) && nrow(x) >= 3) {
+      k <- nrow(x) - 2
+      
+    } else {
+      # Error message in case the names of both classifications and
+      # correspondence tables in the 'names.csv' file do not construct a
+      # sparse square matrix.
+      stop(paste("The filenames  in", Tables, "do not construct a sparse square matrix. \n Please verify that the appropriate number of filenames are inserted in the appropriate cells."))
+    }
+    
+    # The list inputs includes the names of both classifications and
+    # correspondence tables.
+    inputs <- list()
+    inputs[[1]] <- diag(x)[1]
+    inputs[seq(k) + 1] = as.list(diag(x)[seq(k) + 1])
+    inputs[[k + 2]] <- diag(x)[length(diag(x))]
+    inputs[(k + 3):(k + 2 + length(as.list(x[upper.tri(x)][x[upper.tri(x)] != ""])))] <- as.list(x[upper.tri(x)][x[upper.tri(x)] !=
+                                                                                                                   ""])
+    
   } else {
     stop(simpleError(paste("There is no file with name", Tables, "in your working directory. Or the argument is not a list of vectors")))
   }
-
-
-  # Check CSVout
-  if (!is.null(CSVout)) {
-    while (file.exists(CSVout)) {
-      message(paste("Your working directory contains already a file with the name that you selected for the output file: ",
-                    CSVout))
-      answer <- utils::menu(c("Yes", "No"), title = "Do you want to overwrite it?")
-      if (answer == 2) {
-        CSVout <- readline(prompt = "Please enter a new name for the output file: ")
-      }
-      if (answer == 1) {
-        break
-      }
-    }
-  }
-
-   if (is.list(Tables)) {
+  
+  
+  
+  if (is.list(Tables)) {
     RRR <- inputs
     k <- nrow(x) - 2
-
+    
     inputs <- inputs_name
-
+    
   } else {
     # Create a list of the classifications and the known correspondence tables
     # as data frames.
@@ -333,9 +306,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
       1) {
     stop(simpleError("You entered a non-allowed value for MismatchTolerance. The allowed values are numbers in the interval [0, 1]."))
   }
-
-
-
+  
+  
+  
   removeBOM <- function(headers) {
     gsub("\\xef\\xbb\\xbf", "", headers, useBytes = T)
   }
@@ -531,9 +504,11 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     counter <- 0
     if (length(R) == 2) {
       #creating a progress bar
-      message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
-
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       # The following for loop creates the desirable correspondence
       # table.  The operations are conducted for each unique element of
       # classification A of the correspondence table A:C1.
@@ -541,7 +516,9 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
         # Print the percentage of codes that have been processed.
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
         # Matrix TT contains the rows of correspondence table A:C1 for
         # a specific element of classification A.  Matrix T contains
         # the rows of correspondence table B:C1 that match with the
@@ -610,23 +587,27 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         F_AtoB[[counter]] <- ZZ
 
       }
+      if (Progress) close(pb)
     }
 
     # The following if statement is used when we have only the
     # correspondence tables A:C1, C1:C2 and B:C2.
     if (length(R) == 3) {
       #creating a progress bar
-      message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
-
-
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       # The following for loop creates the desirable correspondence
       # table.  The operations are conducted for each unique element of
       # classification A of the correspondence table A:C1.
       for (i in unique(R[[1]][, 1])) {
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
-
+        if (Progress){
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
+        
         # Matrix T contains the rows of correspondence table C1:C2 that
         # match with the specific element of classification A based on
         # classification C1.
@@ -739,7 +720,8 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
       }
-
+      
+      if (Progress) close(pb)
     }
 
     # The following if statement is used in the general situation, in which
@@ -747,19 +729,22 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     # (k-1) Ci and B:Ck.
     M <- list()
     if (length(R) >= 4) {
-      message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
-
-
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       # The following for loop creates the desirable correspondence
       # table.  The operations are conducted for each unique element of
       # classification A of the correspondence table A:C1.
       for (i in unique(R[[1]][, 1])) {
 
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
-
-
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
+        
+        
         for (j in 1:(length(R) - 2)) {
           # The same operations as in the case that we have only the
           # correspondence tables A:C1 and B:C1, but here for the
@@ -1017,6 +1002,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                                                                             M), M4)
         }
       }
+      if (Progress) close(pb)
     }
 
     # Create the desired correspondence table for the selected element of
@@ -1059,17 +1045,20 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     F_BtoA <- list()
 
     counter <- 0
-    message("\n")
+    if (Progress) message("\n")
     if (length(R) == 2) {
-
-      message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
-
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       for (i in unique(R[[1]][, 1])) {
 
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
-
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
+        
         x1 <- R[[1]][which(R[[1]][, 1] == i), 2]
         TT <- matrix(R[[1]][which(R[[1]][, 1] == i), 1:2], ncol = 2)
         T <- matrix(R[[2]][!is.na(match(R[[2]][, 2], x1)), 1:2], ncol = 2)
@@ -1118,16 +1107,22 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         F_BtoA[[counter]] <- ZZ
 
       }
+      if (Progress) close(pb)
     }
 
     if (length(R) == 3) {
-      message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       for (i in unique(R[[1]][, 1])) {
 
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
-
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
+        
         x1 <- R[[1]][which(R[[1]][, 1] == i), 2]
         T <- matrix(R[[2]][!is.na(match(R[[2]][, 1], x1)), 1:2], ncol = 2)
 
@@ -1216,17 +1211,22 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         }
 
       }
-
+      if (Progress) close(pb)
     }
     M <- list()
     if (length(R) >= 4) {
-      message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
-      pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      if (Progress) {
+        message("Percentage of codes of ", colnames(RRR_BtoA[[1]][1]), " processed:")
+        pb <- txtProgressBar(min = 0, max = 100, style = 3, width = 50, char = "=")
+      }
+      
       for (i in unique(R[[1]][, 1])) {
 
         counter <- counter + 1
-        setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
-
+        if (Progress) {
+          setTxtProgressBar(pb, round(counter/length(unique(R[[1]][, 1])) * 100, digits = 0))
+        }
+        
         for (j in 1:(length(R) - 2)) {
           if (j == 1) {
 
@@ -1467,6 +1467,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
 
       }
+      if (Progress) close(pb)
     }
 
     F_BtoA <- do.call(rbind, F_BtoA)
@@ -1817,11 +1818,11 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
                                             1, paste, collapse = " ") %in% apply(f1, 1, paste, collapse = " "))] <- 1
 
   }, error = function(e) {
-    stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Details line 1734:\n",e)))
+    stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data.",e)))
   })
-
-  message("\n")
-
+  
+  if (Progress) message("\n")
+  
   # Check the number of the unmatched codes.
   if (length(which(as.vector(correspondenceAB$Unmatched) == 1))/nrow(correspondenceAB) <
       MismatchTolerance) {
@@ -1924,7 +1925,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
         correspondenceAB <- cbind(correspondenceAB, A1)
       }
     }, error = function(e) {
-      stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Details line 1841: \n",e)))
+      stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data.",e)))
     })
 
   } else {
@@ -1936,66 +1937,73 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
 
   tryCatch({
-
+    
     # The final correspondence table A:B is sorted, firstly, based on
     # classification A, and then, based on classification B.
     correspondenceAB <- correspondenceAB[order(correspondenceAB[, 1], correspondenceAB[,
                                                                                        (length(RRR) + 1)/2], decreasing = FALSE), ]
-
-
+    
+    
     # Redundancy_trim parameter (MP)
     # Find the columns which are related to linking datasets which values need to be recorded as "Multiple"
     ## 2 + n_link_data*2 + 1 = n_data
     if (is.list(Tables)){
       num_link = (length(inputs_name) - 3)/2
-
+      
     }else {
       num_link = (length(test.names) - 3)/2
-
+      
     }
-
+    
     col_multiple = numeric(0)
     for (nl in 1:num_link){
-      col_multiple = unique(c(col_multiple, grep(colnames(correspondenceAB)[1 + nl], colnames(correspondenceAB), value = T)))
+      matches <- grep(colnames(correspondenceAB)[1 + nl], colnames(correspondenceAB), value = TRUE)
+      col_multiple <- unique(c(col_multiple, matches))
+      
     }
     max_col = num_link + 2
-
+    
     #Do redundancy trim only if redundancy is there (MP)
     if (length(which(correspondenceAB$Redundancy == 1)) != 0){
-
-    # Find unique combination of A and B and identify them with a number
-    uniqueAB = unique(correspondenceAB[which(correspondenceAB$Redundancy == 1),c(1, max_col)])
-    uniqueAB$id_to_use = 1:nrow(uniqueAB)
-
-    correspondenceAB = merge(correspondenceAB, uniqueAB, by = colnames(correspondenceAB)[c(1,max_col)], all.x = TRUE)[, union(names(correspondenceAB), names(uniqueAB))]
-    col_link = grep("id_to_use", colnames(correspondenceAB), value = T)
-
-    ### new but probably slower
-    if (Redundancy_trim == TRUE){
-      x_temp = split(correspondenceAB[which(correspondenceAB$Redundancy == 1), col_multiple], correspondenceAB[which(correspondenceAB$Redundancy == 1), col_link])
-
-      for (i in 1:nrow(uniqueAB)){
-        multiple_values = apply(x_temp[[i]], 2, function(x) length(unique(x)))
-        x_change = which(multiple_values != 1)
-        #replace with multiple
-        col_multiple_temp = c(col_multiple)[x_change]
-        correspondenceAB[which(correspondenceAB$Redundancy == 1 & correspondenceAB[,col_link] == i), unique(col_multiple_temp)] = "Multiple"
+      
+      # Find unique combination of A and B and identify them with a number
+      uniqueAB = unique(correspondenceAB[which(correspondenceAB$Redundancy == 1),c(1, max_col)])
+      uniqueAB$id_to_use = 1:nrow(uniqueAB)
+      
+      correspondenceAB = merge(correspondenceAB, uniqueAB, by = colnames(correspondenceAB)[c(1,max_col)], all.x = TRUE)[, union(names(correspondenceAB), names(uniqueAB))]
+      matches <- grep("id_to_use", colnames(correspondenceAB), value = TRUE)
+      if (length(matches) == 1) {
+        col_link <- matches
+      } else {
+        stop("The column 'id_to_use' is not uniquely identified in correspondenceAB.")
       }
-
-      correspondenceAB = correspondenceAB[,!names(correspondenceAB) %in% "id_to_use"]
-
-      ### old but probably faster
-      ##replace with multiple
-      ##replace with multiple
-      #correspondenceAB[which(correspondenceAB$Redundancy == 1), unique(col_multiple)] = "Multiple"
-
-      #eliminate duplicates
-      dup = as.numeric(duplicated(correspondenceAB[,1:max_col]))
-      correspondenceAB = correspondenceAB[which(dup == 0), ]
-
-    }
+      
+      ### new but probably slower
+      if (Redundancy_trim == TRUE){
+        x_temp = split(correspondenceAB[which(correspondenceAB$Redundancy == 1), col_multiple], correspondenceAB[which(correspondenceAB$Redundancy == 1), col_link])
+        
+        for (i in 1:nrow(uniqueAB)){
+          multiple_values = apply(x_temp[[i]], 2, function(x) length(unique(x)))
+          x_change = which(multiple_values != 1)
+          #replace with multiple
+          col_multiple_temp = c(col_multiple)[x_change]
+          correspondenceAB[which(correspondenceAB$Redundancy == 1 & correspondenceAB[,col_link] == i), unique(col_multiple_temp)] = "Multiple"
+        }
+        
+        correspondenceAB = correspondenceAB[,!names(correspondenceAB) %in% "id_to_use"]
+        
+        ### old but probably faster
+        ##replace with multiple
+        ##replace with multiple
+        #correspondenceAB[which(correspondenceAB$Redundancy == 1), unique(col_multiple)] = "Multiple"
+        
+        #eliminate duplicates
+        dup = as.numeric(duplicated(correspondenceAB[,1:max_col]))
+        correspondenceAB = correspondenceAB[which(dup == 0), ]
+        
+      }
     } else {
-
+      
       correspondenceAB = correspondenceAB
     }
 
@@ -2023,22 +2031,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
     }
 
     CsvNames <- data.frame(CsvNames)
-
-    ##Added condition when CSVout is null (MP)
-    if (!is.null(CSVout)) {
-
-      pos <- regexpr("\\/[^\\/]*$", CSVout)
-      Name1 <- substr(CSVout, 1, pos[[1]])
-      Name2 <- substr(CSVout, pos[[1]] + 1, nchar(CSVout))
-
-      pos <- regexpr("\\.[^\\.]*$", Name2)
-      if (pos[[1]] == -1) {
-        Name <- substr(Name2, pos[[1]] + 1, nchar(Name2))
-      } else {
-        Name <- substr(Name2, 1, pos[[1]] - 1)
-      }
-    }
-
+    
     colnames(CsvNames) <- paste("Classification:", "Name", sep = " ")
 
     # Create a data frame that contains the final correspondence table
@@ -2057,22 +2050,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
   }, error = function(e) {
     stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Deatils line 1895:\n",e)))
   })
-
-  # Check so as to write (or not) the final correspondence table (final
-  # desired table) as well as the names of classifications in two seperate
-  # csv files.
-  tryCatch({
-
-    if (!is.null(CSVout)) {
-      data.table::fwrite(data.frame(Final, check.names = FALSE), file = CSVout, quote = TRUE)
-      utils::write.csv(CsvNames, file = paste0(Name1, "classificationNames_", Name2),
-                       row.names = FALSE)
-    }
-
-  }, error = function(e) {
-    stop(simpleError("An error occurred while trying to write the output to the specified files. Please check the respective input parameters."))
-  })
-
+  
   # The final list that contains the final correspondence table (final
   # desired table) as a data frame as well as the names of classifications as
   # a data frame.
@@ -2092,7 +2070,7 @@ newCorrespondenceTable <- function(Tables, CSVout = NULL, Reference = "none", Mi
 
     return(FinalResults)
   }, error = function(e) {
-    stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data. \n Details line 1946:\n",e)))
+    stop(simpleError(paste("An error has occurred and execution needs to stop. Please check the input data.",e)))
   })
 
 }

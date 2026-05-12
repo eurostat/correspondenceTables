@@ -2,55 +2,108 @@
 % Please edit documentation in R/dataStructure.R
 \name{dataStructure}
 \alias{dataStructure}
-\title{Retrieve information about the structure of each classification tables from CELLAR and FAO repositories.}
+\title{Retrieve a classification structure (levels and concepts) from a supported service}
 \usage{
 dataStructure(
   endpoint,
   prefix,
-  conceptScheme,
+  conceptScheme = NULL,
   language = "en",
-  showQuery = FALSE
+  showQuery = FALSE,
+  return = c("summary", "details", "both"),
+  timeout_sec = 60,
+  retries = 3
 )
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data.
-The valid values are \code{"CELLAR"} or \code{"FAO"}.}
+\item{endpoint}{Character scalar. Accepted values are \code{"CELLAR"} or \code{"FAO"}.}
 
-\item{prefix}{Prefixes are typically defined at the beginning of a SPARQL query 
-and are used throughout the query to make it more concise and easier to read. 
-Multiple prefixes can be defined in a single query to cover different namespaces used in the data set.
-The function 'classificationList()' can be used to generate the prefixes for the selected classification table.}
+\item{prefix}{Character. A classification prefix used in the registry
+(e.g. \code{"NACE"}, \code{"CPA"}, \code{"CN2022"}). Used to resolve the scheme.}
 
-\item{conceptScheme}{Refers to a unique identifier associated to specific classification table. 
-The conceptScheme can be obtained by utilizing the "classificationList()" function.}
+\item{conceptScheme}{Character or \code{NULL}. Optional alternative identifier
+for the concept scheme. The resolver tries both \code{prefix} and \code{conceptScheme}
+using basic normalization (case-insensitive; dot removal).}
 
-\item{language}{Refers to the specific language used for providing label, include and exclude information in the selected classification table. 
-By default is set to "en". This is an optional argument.}
+\item{language}{Character scalar. Two-letter language code used to select
+labels (default: \code{"en"}). Fallback chain: requested language -> English (\code{"en"})
+-> no-language literal -> the local resource name.}
 
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
-If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.}
+\item{showQuery}{Logical. If \code{TRUE}, the generated queries are emitted via
+\code{message()} and also included in the returned list.}
+
+\item{return}{One of \code{c("summary", "details", "both")}. Controls which table(s)
+are fetched and returned.}
+
+\item{timeout_sec}{Numeric. HTTP timeout in seconds. Default: \code{60}.}
+
+\item{retries}{Integer. Number of automatic retries on transient HTTP errors.
+Default: \code{3}.}
 }
 \value{
-\code{structureData()} returns the structure of a classification table from CELLAR and FAO in form a table with the following colums:        
- \itemize{
-    \item Concept_Scheme: taxonomy of the SKOS object to be retrieved
-    \item Level: the levels of the objects in the collection 
-    \item Depth: identify the hierarchy of each level
-    \item Count: the number of objects retrieved in each level
+A \code{data.frame} (for \code{"summary"} or \code{"details"}), or a
+\code{list(summary, details)} when \code{return = "both"}.
+
+\strong{Columns:}
+\itemize{
+  \item All returned tables include a leading \code{Prefix} column (lower-case token).
+  \item \code{summary}: \code{Concept_Scheme}, \code{Depth}, \code{Level}, \code{Count}.
+  \item \code{details}: \code{Concept}, \code{Code}, \code{Label}, \code{Depth}, \code{Level},
+        \code{BroaderList}, \code{BroaderCodeList}.
+}
+
+If \code{showQuery = TRUE}, the return value is a list containing:
+\itemize{
+  \item \code{resolved}: metadata (\code{endpoint}, inputs, \code{scheme_id}, \code{ns_uri}, and optionally \code{title})
+  \item the query text (one or two elements depending on \code{return})
+  \item the retrieved table(s)
 }
 }
 \description{
-Retrieve information, for all the classification available in the repositories (CELLAR and FAO),
-about the level names their hierarchy and the numbers of records the function "dataStructure()" can be used.
+Queries the selected service (e.g., CELLAR or FAO) to retrieve the structure of a
+classification scheme (levels, depth, and concept rows), with language-aware
+label fallback. You can return a compact summary table, a detailed
+concept-level table, or both.
+
+The function first resolves the input classification using the in-package registry
+returned by \code{classificationList()}, then retrieves the structure and returns
+it as data frames. Network errors are handled with retry logic.
 }
+\details{
+\strong{Resolution of the scheme}
+
+The function calls \code{classificationList(endpoint)} and tries to match either
+\code{prefix} or \code{conceptScheme} using normalized keys. On success it extracts
+the classification namespace and scheme identifier needed to compose requests.
+
+\strong{Language fallback}
+
+Labels for both the classification levels and concepts follow a multi-step
+fallback: requested \code{language} -> \code{"en"} -> no-language literal -> local name.
+}
+\section{Errors and Warnings}{
+
+\itemize{
+  \item Errors if \code{endpoint} is not \code{"CELLAR"} or \code{"FAO"}, or if the
+        scheme cannot be resolved from the registry.
+  \item Warns (and still returns rows) if no explicit levels are declared.
+  \item Propagates HTTP errors from the service after retry policy.
+}
+}
+
 \examples{
-{
-   ## Obtain a list including the structure of each classification available 
-   ## CELLAR
-   #data_CELLAR = list()
-   #endpoint = "CELLAR"
-   #list_data = classificationList("ALL")
-  # 
+\dontrun{
+ds_cn <- dataStructure(
+  endpoint      = "CELLAR",
+  prefix        = "cn2022",
+  conceptScheme = "cn2022",
+  language      = "en",
+  return        = "summary"
+)
+head(ds_cn)
 }
+
+}
+\seealso{
+\code{\link{classificationList}}
 }

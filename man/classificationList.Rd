@@ -2,36 +2,35 @@
 % Please edit documentation in R/classificationList.R
 \name{classificationList}
 \alias{classificationList}
-\title{Retrieve a list of classification tables from CELLAR and FAO repositories or both.}
+\title{List available classification schemes from CELLAR or FAO}
 \usage{
 classificationList(endpoint = "ALL", showQuery = FALSE)
 }
 \arguments{
-\item{endpoint}{SPARQL endpoints provide a standardized way to access data sets, 
-making it easier to retrieve specific information or perform complex queries on linked data. This is an optional
-parameter, which by default is set to \code{"ALL"}.
-The valid values are \code{"CELLAR"}, \code{"FAO"} and \code{"ALL"} for both endpoints.}
+\item{endpoint}{Character scalar. One of "CELLAR", "FAO" or "ALL".
+"ALL" queries both repositories and returns a named list.}
 
-\item{showQuery}{The valid values are \code{FALSE} or \code{TRUE}. In both cases the correspondence table as an R object. 
-If needed to view the SPARQL query used, the argument should be set as \code{TRUE}. By default, NO SPARQL query is produced.}
+\item{showQuery}{Logical; if TRUE, returns also the SPARQL query used.}
 }
 \value{
-\code{classificationList()} returns a table with information needed to retrieve the classification table:
-\itemize{
-    \item Prefix name: the  SPARQL instruction for a declaration of a namespace prefix
-    \item Conceptscheme: taxonomy of the SKOS object to be retrieved
-    \item URI: the URL from which the SPARQL query was retrieved
-    \item Name: the name of the table retrieved
-}
+If endpoint is "CELLAR" or "FAO" and showQuery = FALSE: a data.frame with
+columns Prefix, ConceptScheme, URI, Title, Languages.
+
+If showQuery = TRUE: a list with "ClassificationList" and "SPARQL.query".
+
+If endpoint = "ALL": a named list with $CELLAR and $FAO. If showQuery = TRUE,
+each element is itself a list (ClassificationList + SPARQL.query).
 }
 \description{
-The purpose of this function is to provide a comprehensive summary 
-of the data structure for each classification in CELLAR and FAO endpoint. 
-The summary includes information such as the prefix name, URI, key, concept scheme, and title associated with each classification.
+List all classification schemes available on the selected repository
+(CELLAR, FAO, or both). Returns, for each scheme, its prefix, identifier,
+URI, English title, and the list of languages detected on its concepts.
 }
 \examples{
-{
-    endpoint = "ALL"
-    list_data = classificationList(endpoint)
-    }
+\dontrun{
+head(classificationList("CELLAR"))
+res <- classificationList("FAO", showQuery = TRUE)
+names(res)
+}
+
 }

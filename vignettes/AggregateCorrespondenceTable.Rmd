@@ -1,62 +1,226 @@
 ---
 title: "Aggregate Correspondence Table"
-output: html_document
-
-
+output:
+  rmarkdown::html_vignette:
+    toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Aggregate classification between A & B  with the correspondenceTables package}
+  %\VignetteIndexEntry{Aggregate Correspondence Table}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEncoding{UTF-8}  
 ---
-
+     
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  cache = FALSE
+)
+
 ```
 
-This vignette provides information about the functions included in the correspondenceTables package used to create an aggregation between two classifications
+<div style="text-align: justify;">
+## Overview
+This vignette illustrates how to aggregate numeric values across classification systems using the `aggregateCorrespondenceTable()` function from the `correspondenceTables` package.
+The function aggregates numeric values expressed in a source classification (A) into a target classification (B), using a correspondence table that links A to B (denoted A → B).
+When correspondence weights are available, values are redistributed proportionally according to these weights.
+If no weights are provided, values are distributed equally across all corresponding target codes.
 
-Load the package correspondenceTables : 
+This type of aggregation is commonly used to convert statistics between classification systems, for example:
+
+NACE → CPA
+
+CPA → CN
+
+PRODCOM → CPA
+
+CPC → HS
+</div>
+
 ```{r cars}
 library(correspondenceTables)
 ```
 
-The `aggregateCorrespondenceTable` function in R is designed to aggregate correspondence tables between two hierarchical classifications. It facilitates the process of expressing statistics compiled at different levels in classification A to corresponding levels in  classification B. The function output is mechanically defined and provides candidate  aggregations for subsequent analysis by statistical classification experts.
- 
-The function expects three mandatory CSV files (AB, A, and B) as input. The structure of these files is crucial.
- 
-- **AB**: Input correspondence table
-- **A**: Source classification table
-- **B**: Target classification table
-- **CSVOUT** Retrieve the result as a csv
+
+```{r, echo=FALSE, results="asis"}
+cat("
+<style>
+table {
+  width: 100% !important;
+}
+table caption {
+  text-align: center;
+}
+</style>
+")
+```
 
 
-**Application of the aggregateCorrespondenceTable()**
+**Inputs** 
 
-```{r, results = "hide"}
- AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
- A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
- B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
+<div style="text-align: justify;">
 
+The `aggregateCorrespondenceTable()` function expects the following inputs:
+
+- **AB**: A data frame representing the correspondence table between classification A and classification B.  
+  It must contain:
+  - a source code column (`from_code`)
+  - a target code column (`to_code`)
+  - optionally, a weight column
+
+- **A**: A data frame containing values expressed in the source classification A.
+  It typically includes:
+  - a source classification code
+  - one or more numeric variables to be aggregated  
+
+  By default, the function expects the source code column in **A** to be named `code`. 
+  This can be adapted if the function supports custom column names.
+
+- **B (optional)**: A data frame defining the domain of the target classification B.  
+  If provided, all B codes are preserved in the output, and target codes with no matching contributions receive a value of zero.
  
- result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
+</div> 
  
- print(result)
+## Application of  `aggregateCorrespondenceTable()`
+
+### Example 1: Basic aggregation using a correspondence table
+
+<div style="text-align: justify;">
+
+In this example, all inputs are read from sample datasets included in the package.
+
+
+```{r}
+AB_path <- system.file("extdata", "ab_data.csv", package = "correspondenceTables")
+A_path  <- system.file("extdata", "a_data.csv",  package = "correspondenceTables")
+B_path  <- system.file("extdata", "b_data.csv",  package = "correspondenceTables")
+
+stopifnot(nzchar(AB_path), nzchar(A_path), nzchar(B_path))
+
+AB <- utils::read.csv(AB_path, stringsAsFactors = FALSE)
+A  <- utils::read.csv(A_path,  stringsAsFactors = FALSE)
+B  <- utils::read.csv(B_path,  stringsAsFactors = FALSE)
+
+#For clarity and consistency, the correspondence table columns are renamed to the expected identifiers:
+
+names(AB)[names(AB) == "NACE.Rev..2.Code"]   <- "from_code"
+names(AB)[names(AB) == "NACE.Rev..2.1.Code"] <- "to_code"
+
+
+res <- aggregateCorrespondenceTable(AB = AB, A = A, B = B)
+
+
+knitr::kable(
+  head(res$result),
+  caption = "Aggregation using a correspondence table",
+  align = "c"
+)
 
 ```
 
-**Other Example** 
 
-```{r, results = "hide"}
+The function returns a list. 
+The aggregated values are stored in the `result` element, which is a data frame 
+structured according to the target classification B.
 
- AB <- (system.file("extdata", "ab_data.csv", package = "correspondenceTables"))
- A <- (system.file("extdata", "a_data.csv", package = "correspondenceTables"))
- B <- (system.file("extdata", "b_data.csv", package = "correspondenceTables"))
+**Interpretation of the output**
 
- 
- result <- aggregateCorrespondenceTable(AB = AB, A = A, B = B, CSVout = NULL)
- 
- print(result)
+In this example:
+
+- Dataset **A** contains numeric values expressed in the source classification.
+- The correspondence table **AB** specifies how each source code is linked to one or more target codes.
+- No weights are supplied in the correspondence table.
+
+For each source code in **A**:
+
+- If it maps to **a single target code**, its full value is assigned to that target code.
+- If it maps to **multiple target codes**, its value is **split equally** among them.
+
+All allocated contributions are then **summed for each target code**.
+The column containing numeric values in the output therefore represents the total value aggregated to each target classification code in B.
+
+**Notes**
+
+- The aggregation performed by `aggregateCorrespondenceTable()` is additive: values are redistributed and summed, not averaged or otherwise summarized.
+- Supplying the **B** argument ensures that the output covers the full target classification domain; target codes with no matching contributions receive a value of zero.
+
+
+</div>
+
+### Example 2: Weighted correspondence (proportional allocation)
+
+<div style="text-align: justify;">
+
+
+This example illustrates aggregation when the correspondence table includes **explicit weights**.
+
+Here:
+
+- Source code **A1** is linked to two target codes:
+  - 70% of its value goes to **B1**
+  - 30% goes to **B2**
+- Source code **A2** is linked entirely to **B2**
+
+The function multiplies each source value by the corresponding weight for each
+correspondence link and then sums all weighted contributions per target code.
+
+
+```{r}
+
+# Correspondence table with weights  
+AB <- data.frame(
+  from_code = c("A1", "A1", "A2"),
+  to_code   = c("B1", "B2", "B2"),
+  weight    = c(0.7, 0.3, 1.0)
+)
+
+# Source classification with values  
+A <- data.frame(
+  code  = c("A1", "A2"), 
+  value = c(100, 50)
+)
+
+# Target classification domain
+B <- data.frame(
+  code = c("B1", "B2")
+)
+
+res2 <- aggregateCorrespondenceTable(AB = AB, A = A, B = B)
+
+knitr::kable(
+  head(res2$result),
+  caption = "Weighted correspondence (proportional allocation)",
+  align = "c"
+)
+
 ```
 
+**Interpretation of the output**
+
+The values shown in the output represent the total weighted sums per target code.
+
+For example:
+
+- Target code **B1** receives 70% of the value associated with **A1**
+- Target code **B2** receives:
+  - 30% of **A1**
+  - 100% of **A2**
+
+All contributions are summed to produce the final totals.
+
+**Tiny numeric illustration**
+
+If **A1** has a value of 100:
+
+- 70 is allocated to **B1**
+- 30 is allocated to **B2**
+
+If **A2** has a value of 50 and maps fully to **B2**, the final value for **B2** is:
+
+\(30 + 50 = 80\)
+
+
+</div>
