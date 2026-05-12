@@ -1,51 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Implementation_of_sample_datasets.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Retrieve_classification_and_correspondence_tables.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/classEndpoint.html</loc>
-  </url>
-  <url>
-    <loc>/reference/correspondenceList.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/newCorrespondenceTable.html</loc>
-  </url>
-  <url>
-    <loc>/reference/prefixList.html</loc>
-  </url>
-  <url>
-    <loc>/reference/retrieveClassificationTable.html</loc>
-  </url>
-  <url>
-    <loc>/reference/retrieveCorrespondenceTable.html</loc>
-  </url>
-  <url>
-    <loc>/reference/structureData.html</loc>
-  </url>
-  <url>
-    <loc>/reference/updateCorrespondenceTable.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/articles/AggregateCorrespondenceTable.html</loc></url>
+<url><loc>/articles/AnalyseCorrespondenceTable.html</loc></url>
+<url><loc>/articles/ClassificationQC.html</loc></url>
+<url><loc>/articles/CombiningCorrespondenceTables.html</loc></url>
+<url><loc>/articles/Implementation_of_sample_datasets.html</loc></url>
+<url><loc>/articles/RetrieveClassificationsAndCorrespondenceTables.html</loc></url>
+<url><loc>/articles/Retrieve_classification_and_correspondence_tables.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/aggregateCorrespondenceTable.html</loc></url>
+<url><loc>/reference/analyseCorrespondenceTable.html</loc></url>
+<url><loc>/reference/build_prefix_lines.html</loc></url>
+<url><loc>/reference/classEndpoint.html</loc></url>
+<url><loc>/reference/classificationList.html</loc></url>
+<url><loc>/reference/classificationQC.html</loc></url>
+<url><loc>/reference/correspondenceList.html</loc></url>
+<url><loc>/reference/correspondenceTableList.html</loc></url>
+<url><loc>/reference/dataStructure.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/newCorrespondenceTable.html</loc></url>
+<url><loc>/reference/normalize_namespace_iri.html</loc></url>
+<url><loc>/reference/normalize_prefix_token.html</loc></url>
+<url><loc>/reference/prefixList.html</loc></url>
+<url><loc>/reference/prefix_declared_in_block.html</loc></url>
+<url><loc>/reference/retrieveClassificationTable.html</loc></url>
+<url><loc>/reference/retrieveCorrespondenceTable.html</loc></url>
+<url><loc>/reference/structureData.html</loc></url>
+<url><loc>/reference/updateCorrespondenceTable.html</loc></url>
 </urlset>
+
