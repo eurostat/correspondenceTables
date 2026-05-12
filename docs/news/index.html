@@ -78,99 +78,6 @@
 <ul><li>major re-factoring, stable release</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.1" id="correspondencetables-081">correspondenceTables 0.8.1<a class="anchor" aria-label="anchor" href="#correspondencetables-081"></a></h2>
-<ul><li>adding the functions <code><a href="../reference/prefixList.html">prefixList()</a></code>, <code>classEndpoint()</code>, <code>correspondenceList()</code>, <code><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable()</a></code>, <code><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable()</a></code>, <code>structureData()</code>
-</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.0" id="correspondencetables-080">correspondenceTables 0.8.0<a class="anchor" aria-label="anchor" href="#correspondencetables-080"></a></h2>
-<ul><li>adding test cases</li>
-<li>corrections for the <code><a href="../reference/newCorrespondenceTable.html">newCorrespondenceTable()</a></code> and <code><a href="../reference/updateCorrespondenceTable.html">updateCorrespondenceTable()</a></code> functions</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.5" id="correspondencetables-075">correspondenceTables 0.7.5<a class="anchor" aria-label="anchor" href="#correspondencetables-075"></a></h2>
-<ul><li>updating the vignette showing the initializing code part</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.4" id="correspondencetables-074">correspondenceTables 0.7.4<small>2022-09-27</small><a class="anchor" aria-label="anchor" href="#correspondencetables-074"></a></h2>
-<ul><li>aligning to the second round of comments from CRAN</li>
-<li>replacing <code><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">readr::write_excel_csv()</a></code> with <code><a href="https://rdrr.io/pkg/data.table/man/fwrite.html" class="external-link">data.table::fwrite()</a></code>
-</li>
-<li>removing absolute paths from vignettes and examples</li>
-<li>the example of <code><a href="../reference/newCorrespondenceTable.html">newCorrespondenceTable()</a></code> using only the 100 hundred rows of the classifications</li>
-<li>more details in the error messages</li>
-<li>CRAN release</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.3" id="correspondencetables-073">correspondenceTables 0.7.3<a class="anchor" aria-label="anchor" href="#correspondencetables-073"></a></h2>
-<ul><li>aligning to the comments from CRAN</li>
-<li>using <code><a href="https://rdrr.io/r/utils/txtProgressBar.html" class="external-link">txtProgressBar()</a></code> and <code><a href="https://rdrr.io/r/utils/txtProgressBar.html" class="external-link">setTxtProgressBar()</a></code> functions</li>
-<li>replacing <code><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat()</a></code> with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> function</li>
-<li>examples updated to be able to test it automatically</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2" id="correspondencetables-072">correspondenceTables 0.7.2<a class="anchor" aria-label="anchor" href="#correspondencetables-072"></a></h2>
-<ul><li>adjustment for CRAN approval</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.1" id="correspondencetables-071">correspondenceTables 0.7.1<a class="anchor" aria-label="anchor" href="#correspondencetables-071"></a></h2>
-<ul><li>initial public release on GitHub</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.22" id="correspondencetables-01022">correspondenceTables 0.10.22<a class="anchor" aria-label="anchor" href="#correspondencetables-01022"></a></h2>
-<div class="section level3">
-<h3 id="wrench-changes-and-improvements-0-10-22">🔧 Changes and Improvements<a class="anchor" aria-label="anchor" href="#wrench-changes-and-improvements-0-10-22"></a></h3>
-<ul><li>Rewrote the logic for <code><a href="../reference/classificationList.html">classificationList()</a></code> and <code><a href="../reference/correspondenceTableList.html">correspondenceTableList()</a></code> to handle the <code>"ALL"</code> endpoint through recursive calls, ensuring consistent and robust behavior.</li>
-<li>Internal function <code><a href="../reference/prefixList.html">prefixList()</a></code> is now no longer exported, as it is not meant for end-users. It remains accessible via <code>correspondenceTables:::prefixList()</code> if needed.</li>
-<li>Cleaned up the “RetrieveClassificationsAndCorrespondenceTables” vignette:
-<ul><li>Restored uncommented example code (e.g., <code>correspondenceTableList("ALL")</code>) to improve readability and reproducibility.</li>
-<li>Removed internal calls to <code><a href="../reference/prefixList.html">prefixList()</a></code> from examples to avoid confusion.</li>
-</ul></li>
-<li>Fixed vignette rendering errors by defining missing intermediate objects (e.g., <code>result_ls</code>).</li>
-<li>Improved <code>@examples</code> sections and corrected Rd documentation accordingly.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="package-infrastructure-0-10-22">Package Infrastructure<a class="anchor" aria-label="anchor" href="#package-infrastructure-0-10-22"></a></h3>
-<ul><li>Reduced export clutter by making utility-only functions internal.</li>
-<li>Ensured full <code>R CMD check</code> compliance (0 errors, 0 warnings, 1 note on line width).</li>
-</ul></div>
-<div class="section level3">
-<h3 id="minor-0-10-22">Minor<a class="anchor" aria-label="anchor" href="#minor-0-10-22"></a></h3>
-<ul><li>Cleaned up documentation and fixed formatting for clarity.</li>
-<li>Updated vignettes titles to ensure consistency between YAML and <code>\VignetteIndexEntry</code>.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="id_-correspondencetables-0-10-22">## correspondenceTables 0.10.29<a class="anchor" aria-label="anchor" href="#id_-correspondencetables-0-10-22"></a></h3>
-<p>New features <sub></sub> * Added <code>correspondenceList()</code> to list available correspondence tables in CELLAR and FAO, with a structured output and improved robustness against malformed SPARQL responses.</p>
-<ul><li>Extended <code><a href="../reference/classificationList.html">classificationList()</a></code> with:
-<ul><li>
-<code>endpoint</code> (“CELLAR”, “FAO”, “ALL”)</li>
-<li>
-<code>showQuery</code> to return SPARQL queries. Now supports offline mode via <code>options(useLocalDataForVignettes = TRUE)</code> using bundled CSV files for reproducible vignette builds and offline work.</li>
-</ul></li>
-</ul><p>Improvements and API changes <sub></sub> * <code>correctionClassification()</code>: - Added new <code>prefix</code> argument to enable prefix-specific corrections. - Replaced SPARQL example with static demo data (<code>inst/extdata/Nace2.csv</code>) so that examples work offline and during CRAN checks. - Documentation enhanced with clearer input/output description.</p>
-<ul><li>
-<code>lengthsFile()</code>:
-<ul><li>Improved detection of inconsistent code lengths across levels.</li>
-<li>More explicit warnings when code hierarchies do not behave as expected.</li>
-</ul></li>
-<li>
-<code><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable()</a></code>:
-<ul><li>Cleaned all non-ASCII characters in comments and messages.</li>
-<li>Strengthened error handling when SPARQL queries fail or return unexpected number of columns.</li>
-<li>Added explicit imports for <code><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">utils::capture.output</a></code> and <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">utils::str</a></code>.</li>
-</ul></li>
-</ul><p>Quality control module <sub></sub> * <code><a href="../reference/classificationQC.html">classificationQC()</a></code> functionality has been temporarily disabled for this release (tests skipped), but its supporting imports (<code>stringr</code>, <code>tools</code>) remain in place for the upcoming version.</p>
-<p>Testing improvements <sub></sub> * Added new unit tests for: - <code><a href="../reference/dataStructure.html">dataStructure()</a></code> : validation of returned level/size structure. - <code><a href="../reference/prefixList.html">prefixList()</a></code> : consistency of prefix extraction for each endpoint. - <code><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable()</a></code> : correct parsing, duplicate checks, error handling. - <code><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable()</a></code> : correct structure, column naming, error detection.</p>
-<ul><li>Updated existing tests for:
-<ul><li>
-<code><a href="../reference/analyseCorrespondenceTable.html">analyseCorrespondenceTable()</a></code> : better handling of missing files, mismatches, duplicates, and filtering options.</li>
-<li>
-<code><a href="../reference/aggregateCorrespondenceTable.html">aggregateCorrespondenceTable()</a></code> : improved robustness when validating AB tables.</li>
-</ul></li>
-</ul></div>
-</div>
-    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.10.30" id="correspondencetables-01030">correspondenceTables 0.10.30<a class="anchor" aria-label="anchor" href="#correspondencetables-01030"></a></h2>
 <ul><li><p>Cleaned helpfile to hide internal utility functions from end users.</p></li>
 <li><p>Removed obsolete function <code>structureData()</code> and related documentation.</p></li>
@@ -220,6 +127,113 @@
 <code>CSVout</code> is the last argument,</li>
 <li>input validation and CSV export are routed through the same shared helpers as the other correspondence-table functions.</li>
 </ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.10.29" id="correspondencetables-01029">correspondenceTables 0.10.29<a class="anchor" aria-label="anchor" href="#correspondencetables-01029"></a></h2>
+<p><strong>New features</strong></p>
+<ul><li><p>Added <code>correspondenceList()</code> to list available correspondence tables in CELLAR and FAO, with a structured output and improved robustness against malformed SPARQL responses.</p></li>
+<li>
+<p>Extended <code><a href="../reference/classificationList.html">classificationList()</a></code> with:</p>
+<ul><li>
+<code>endpoint</code> (“CELLAR”, “FAO”, “ALL”)</li>
+<li>
+<code>showQuery</code> to return SPARQL queries. Now supports offline mode via <code>options(useLocalDataForVignettes = TRUE)</code> using bundled CSV files for reproducible vignette builds and offline work.</li>
+</ul></li>
+</ul><p><strong>Improvements and API changes</strong></p>
+<ul><li>
+<code>correctionClassification()</code>:
+<ul><li>Added new <code>prefix</code> argument to enable prefix-specific corrections.</li>
+<li>Replaced SPARQL example with static demo data (<code>inst/extdata/Nace2.csv</code>) so that examples work offline and during CRAN checks.</li>
+<li>Documentation enhanced with clearer input/output description.</li>
+</ul></li>
+<li>
+<code>lengthsFile()</code>:
+<ul><li>Improved detection of inconsistent code lengths across levels.</li>
+<li>More explicit warnings when code hierarchies do not behave as expected.</li>
+</ul></li>
+<li>
+<code><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable()</a></code>:
+<ul><li>Cleaned all non-ASCII characters in comments and messages.</li>
+<li>Strengthened error handling when SPARQL queries fail or return unexpected number of columns.</li>
+<li>Added explicit imports for <code><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">utils::capture.output</a></code> and <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">utils::str</a></code>.</li>
+</ul></li>
+</ul><p><strong>Quality control module</strong></p>
+<ul><li>
+<code><a href="../reference/classificationQC.html">classificationQC()</a></code> functionality has been temporarily disabled for this release (tests skipped), but its supporting imports (<code>stringr</code>, <code>tools</code>) remain in place for the upcoming version.</li>
+</ul><p><strong>Testing improvements</strong></p>
+<ul><li>Added new unit tests for:
+<ul><li>
+<code><a href="../reference/dataStructure.html">dataStructure()</a></code> : validation of returned level/size structure.</li>
+<li>
+<code><a href="../reference/prefixList.html">prefixList()</a></code> : consistency of prefix extraction for each endpoint.</li>
+<li>
+<code><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable()</a></code> : correct parsing, duplicate checks, error handling.</li>
+<li>
+<code><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable()</a></code> : correct structure, column naming, error detection.</li>
+</ul></li>
+<li>Updated existing tests for:
+<ul><li>
+<code><a href="../reference/analyseCorrespondenceTable.html">analyseCorrespondenceTable()</a></code> : better handling of missing files, mismatches, duplicates, and filtering options.</li>
+<li>
+<code><a href="../reference/aggregateCorrespondenceTable.html">aggregateCorrespondenceTable()</a></code> : improved robustness when validating AB tables.</li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.10.22" id="correspondencetables-01022">correspondenceTables 0.10.22<a class="anchor" aria-label="anchor" href="#correspondencetables-01022"></a></h2>
+<p><strong>Changes and Improvements</strong></p>
+<ul><li>Rewrote the logic for <code><a href="../reference/classificationList.html">classificationList()</a></code> and <code><a href="../reference/correspondenceTableList.html">correspondenceTableList()</a></code> to handle the <code>"ALL"</code> endpoint through recursive calls, ensuring consistent and robust behavior.</li>
+<li>Internal function <code><a href="../reference/prefixList.html">prefixList()</a></code> is now no longer exported, as it is not meant for end-users. It remains accessible via <code>correspondenceTables:::prefixList()</code> if needed.</li>
+<li>Cleaned up the “RetrieveClassificationsAndCorrespondenceTables” vignette:
+<ul><li>Restored uncommented example code (e.g., <code>correspondenceTableList("ALL")</code>) to improve readability and reproducibility.</li>
+<li>Removed internal calls to <code><a href="../reference/prefixList.html">prefixList()</a></code> from examples to avoid confusion.</li>
+</ul></li>
+<li>Fixed vignette rendering errors by defining missing intermediate objects (e.g., <code>result_ls</code>).</li>
+<li>Improved <code>@examples</code> sections and corrected Rd documentation accordingly.</li>
+</ul><p><strong>Package Infrastructure</strong></p>
+<ul><li>Reduced export clutter by making utility-only functions internal.</li>
+<li>Ensured full <code>R CMD check</code> compliance (0 errors, 0 warnings, 1 note on line width).</li>
+</ul><p><strong>Minor</strong></p>
+<ul><li>Cleaned up documentation and fixed formatting for clarity.</li>
+<li>Updated vignettes titles to ensure consistency between YAML and <code>\VignetteIndexEntry</code>.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.8.1" id="correspondencetables-081">correspondenceTables 0.8.1<a class="anchor" aria-label="anchor" href="#correspondencetables-081"></a></h2>
+<ul><li>adding the functions <code><a href="../reference/prefixList.html">prefixList()</a></code>, <code>classEndpoint()</code>, <code>correspondenceList()</code>, <code><a href="../reference/retrieveCorrespondenceTable.html">retrieveCorrespondenceTable()</a></code>, <code><a href="../reference/retrieveClassificationTable.html">retrieveClassificationTable()</a></code>, <code>structureData()</code>
+</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.8.0" id="correspondencetables-080">correspondenceTables 0.8.0<a class="anchor" aria-label="anchor" href="#correspondencetables-080"></a></h2>
+<ul><li>adding test cases</li>
+<li>corrections for the <code><a href="../reference/newCorrespondenceTable.html">newCorrespondenceTable()</a></code> and <code><a href="../reference/updateCorrespondenceTable.html">updateCorrespondenceTable()</a></code> functions</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.5" id="correspondencetables-075">correspondenceTables 0.7.5<a class="anchor" aria-label="anchor" href="#correspondencetables-075"></a></h2>
+<ul><li>updating the vignette showing the initializing code part</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.4" id="correspondencetables-074">correspondenceTables 0.7.4<small>2022-09-27</small><a class="anchor" aria-label="anchor" href="#correspondencetables-074"></a></h2>
+<ul><li>aligning to the second round of comments from CRAN</li>
+<li>replacing <code><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">readr::write_excel_csv()</a></code> with <code><a href="https://rdrr.io/pkg/data.table/man/fwrite.html" class="external-link">data.table::fwrite()</a></code>
+</li>
+<li>removing absolute paths from vignettes and examples</li>
+<li>the example of <code><a href="../reference/newCorrespondenceTable.html">newCorrespondenceTable()</a></code> using only the 100 hundred rows of the classifications</li>
+<li>more details in the error messages</li>
+<li>CRAN release</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.3" id="correspondencetables-073">correspondenceTables 0.7.3<a class="anchor" aria-label="anchor" href="#correspondencetables-073"></a></h2>
+<ul><li>aligning to the comments from CRAN</li>
+<li>using <code><a href="https://rdrr.io/r/utils/txtProgressBar.html" class="external-link">txtProgressBar()</a></code> and <code><a href="https://rdrr.io/r/utils/txtProgressBar.html" class="external-link">setTxtProgressBar()</a></code> functions</li>
+<li>replacing <code><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat()</a></code> with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> function</li>
+<li>examples updated to be able to test it automatically</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.2" id="correspondencetables-072">correspondenceTables 0.7.2<a class="anchor" aria-label="anchor" href="#correspondencetables-072"></a></h2>
+<ul><li>adjustment for CRAN approval</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.1" id="correspondencetables-071">correspondenceTables 0.7.1<a class="anchor" aria-label="anchor" href="#correspondencetables-071"></a></h2>
+<ul><li>initial public release on GitHub</li>
 </ul></div>
   </div>
 
