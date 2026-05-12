@@ -581,7 +581,7 @@ specific hierarchical shape. They merely flag cases where observed
 coding does not match the declared conventions, which may indicate
 inconsistencies in code design.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>singleChildCode <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SingleChild.csv&quot;</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;SingleChild.csv&quot;</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>              <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>)</span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
@@ -646,7 +646,7 @@ point to classification maintenance issues or incomplete implementations
 of official coding schemes.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>sequencing <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Sequencing.csv&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;Sequencing.csv&quot;</span>,</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>              <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
@@ -696,7 +696,7 @@ classification through the <code>lengths</code> argument.</li>
 <code>classificationQC()</code> are used to perform structural and
 logical quality checks.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>classification <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Nace2.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;Nace2.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>)</span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>lengths <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
@@ -747,11 +747,11 @@ reporting the number of detected issues for selected quality checks.</p>
 </tr>
 <tr class="even">
 <td align="center">Orphan codes</td>
-<td align="center">88</td>
+<td align="center">6</td>
 </tr>
 <tr class="odd">
 <td align="center">Childless codes</td>
-<td align="center">21</td>
+<td align="center">6</td>
 </tr>
 </tbody>
 </table>
@@ -766,7 +766,7 @@ does not produce any output.</p>
 <ul>
 <li>Rows: 0<br />
 </li>
-<li>Columns: 16</li>
+<li>Columns: 12</li>
 </ul>
 </div>
 </div>
@@ -778,118 +778,84 @@ hierarchical level. This usually indicates breaks in the hierarchical
 structure.</p>
 <p><strong>QC_orphan</strong></p>
 <ul>
-<li>Rows: 88<br />
+<li>Rows: 6<br />
 </li>
-<li>Columns: 18</li>
+<li>Columns: 14</li>
 </ul>
 <table>
 <caption>Orphan codes (First 5 rows (first 7 columns))</caption>
 <colgroup>
-<col width="0%" />
-<col width="0%" />
-<col width="6%" />
-<col width="0%" />
-<col width="0%" />
-<col width="0%" />
-<col width="26%" />
-<col width="63%" />
-<col width="0%" />
+<col width="9%" />
+<col width="14%" />
+<col width="10%" />
+<col width="12%" />
+<col width="15%" />
+<col width="10%" />
+<col width="15%" />
+<col width="10%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="center">Code</th>
 <th align="center">Label</th>
-<th align="center">Level</th>
-<th align="center">Parent</th>
-<th align="center">Include</th>
-<th align="center">Include_Also</th>
-<th align="center">Exclude</th>
 <th align="center">level</th>
+<th align="center">Parent</th>
+<th align="center">segment1</th>
+<th align="center">Code1</th>
+<th align="center">segment2</th>
+<th align="center">Code2</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">1</td>
-<td align="center">01</td>
-<td align="center">Crop and animal production, hunting and related
-service activities</td>
+<td align="center">10</td>
+<td align="center">Apples</td>
 <td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
 <td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">This division also includes service activities
-incidental to agriculture, as well as hunting, trapping and related
-activities.</td>
-<td align="center">Agricultural activities exclude any subsequent
-processing of the agricultural products (classified under divisions 10
-and 11 (Manufacture of food products and beverages) and division 12
-(Manufacture of tobacco products)), beyond that needed to prepare them
-for the primary markets. The preparation of products for the primary
-markets is included here. The division excludes field construction
-(e.g. agricultural land terracing, drainage, preparing rice paddies
-etc.) classified in section F (Construction) and buyers and cooperative
-associations engaged in the marketing of farm products classified in
-section G. Also excluded is the landscape care and maintenance, which is
-classified in class 81.30.</td>
-<td align="center">2</td>
+<td align="center">10</td>
 </tr>
 <tr class="even">
-<td align="left">40</td>
-<td align="center">02</td>
-<td align="center">Forestry and logging</td>
+<td align="center">11</td>
+<td align="center">Pears</td>
 <td align="center">2</td>
-<td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Excluded is further processing of wood beginning with
-sawmilling and planing of wood, see division 16.</td>
-<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">11</td>
 </tr>
 <tr class="odd">
-<td align="left">49</td>
-<td align="center">03</td>
-<td align="center">Fishing and aquaculture</td>
+<td align="center">20</td>
+<td align="center">Oranges</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
 <td align="center">2</td>
 <td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">Also included are activities that are normally
-integrated in the process of production for own account (e.g. seeding
-oysters for pearl production). Service activities incidental to marine
-or freshwater fishery or aquaculture are included in the related fishing
-or aquaculture activities.</td>
-<td align="center">This division does not include building and repairing
-of ships and boats (30.1, 33.15) and sport or recreational fishing
-activities (93.19). Processing of fish, crustaceans or molluscs is
-excluded, whether at land-based plants or on factory ships (10.20).</td>
-<td align="center">2</td>
+<td align="center">20</td>
 </tr>
 <tr class="even">
-<td align="left">56</td>
-<td align="center">05</td>
-<td align="center">Mining of coal and lignite</td>
+<td align="center">21</td>
+<td align="center">Lemons</td>
 <td align="center">2</td>
-<td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This division does not include coking (see 19.10),
-services incidental to coal or lignite mining (see 09.90) or the
-manufacture of briquettes (see 19.20).</td>
 <td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">21</td>
 </tr>
 <tr class="odd">
-<td align="left">61</td>
-<td align="center">06</td>
-<td align="center">Extraction of crude petroleum and natural gas</td>
+<td align="center">30</td>
+<td align="center">Peaches</td>
 <td align="center">2</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">3</td>
 <td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This division excludes: - oil and gas field services,
-performed on a fee or contract basis, see 09.10 - oil and gas well
-exploration, see 09.10 - test drilling and boring, see 09.10 - refining
-of petroleum products, see 19.20 - geophysical, geologic and seismic
-surveying, see 71.12</td>
-<td align="center">2</td>
+<td align="center">30</td>
 </tr>
 </tbody>
 </table>
@@ -903,104 +869,84 @@ lower hierarchical levels. This can be expected at the lowest level of a
 classification, but may indicate structural issues at higher levels.</p>
 <p><strong>QC_childless</strong></p>
 <ul>
-<li>Rows: 21<br />
+<li>Rows: 6<br />
 </li>
-<li>Columns: 19</li>
+<li>Columns: 15</li>
 </ul>
 <table>
 <caption>First 5 rows (first 7 columns)</caption>
 <colgroup>
-<col width="0%" />
-<col width="0%" />
 <col width="9%" />
-<col width="0%" />
-<col width="1%" />
-<col width="1%" />
-<col width="23%" />
-<col width="61%" />
-<col width="0%" />
+<col width="14%" />
+<col width="10%" />
+<col width="12%" />
+<col width="15%" />
+<col width="10%" />
+<col width="15%" />
+<col width="10%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="center">Code</th>
 <th align="center">Label</th>
-<th align="center">Level</th>
-<th align="center">Parent</th>
-<th align="center">Include</th>
-<th align="center">Include_Also</th>
-<th align="center">Exclude</th>
 <th align="center">level</th>
+<th align="center">Parent</th>
+<th align="center">segment1</th>
+<th align="center">Code1</th>
+<th align="center">segment2</th>
+<th align="center">Code2</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">976</td>
-<td align="center">A</td>
-<td align="center">AGRICULTURE, FORESTRY AND FISHING</td>
+<td align="center">10</td>
+<td align="center">Apples</td>
+<td align="center">2</td>
 <td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
 <td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">10</td>
 </tr>
 <tr class="even">
-<td align="left">977</td>
-<td align="center">B</td>
-<td align="center">MINING AND QUARRYING</td>
+<td align="center">11</td>
+<td align="center">Pears</td>
+<td align="center">2</td>
 <td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This section excludes: - processing of the extracted
-materials, see section C (Manufacturing) - usage of the extracted
-materials without a further transformation for construction purposes,
-see section F (Construction) - bottling of natural spring and mineral
-waters at springs and wells, see 11.07 - crushing, grinding or otherwise
-treating certain earths, rocks and minerals not carried on in
-conjunction with mining and quarrying, see 23.9</td>
 <td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">11</td>
 </tr>
 <tr class="odd">
-<td align="left">978</td>
-<td align="center">C</td>
-<td align="center">MANUFACTURING</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">1</td>
+<td align="center">20</td>
+<td align="center">Oranges</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">0</td>
+<td align="center">20</td>
 </tr>
 <tr class="even">
-<td align="left">979</td>
-<td align="center">D</td>
-<td align="center">ELECTRICITY, GAS, STEAM AND AIR CONDITIONING
-SUPPLY</td>
+<td align="center">21</td>
+<td align="center">Lemons</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
 <td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Also included is the provision of steam and
-air-conditioning supply.</td>
-<td align="center">This section excludes the operation of water and
-sewerage utilities, see 36, 37. This section also excludes the
-(typically long-distance) transport of gas through pipelines.</td>
-<td align="center">1</td>
+<td align="center">21</td>
 </tr>
 <tr class="odd">
-<td align="left">980</td>
-<td align="center">E</td>
-<td align="center">WATER SUPPLY; SEWERAGE, WASTE MANAGEMENT AND
-REMEDIATION ACTIVITIES</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Activities of water supply are also grouped in this
-section, since they are often carried out in connection with, or by
-units also engaged in, the treatment of sewage.</td>
-<td align="center">NA</td>
-<td align="center">1</td>
+<td align="center">30</td>
+<td align="center">Peaches</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">0</td>
+<td align="center">30</td>
 </tr>
 </tbody>
 </table>
@@ -1015,7 +961,7 @@ Rev.2 classification from CELLAR using additional parameters, including
 the <code>singleChildCode</code> argument.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>singleChildCode <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SingleChild.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;SingleChild.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>)</span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  singleChildCode,</span>
@@ -1063,118 +1009,84 @@ the <code>singleChildCode</code> argument.</p>
 parent at the immediately higher hierarchical level.</p>
 <p><strong>QC_orphan</strong></p>
 <ul>
-<li>Rows: 88<br />
+<li>Rows: 6<br />
 </li>
-<li>Columns: 18</li>
+<li>Columns: 14</li>
 </ul>
 <table>
 <caption>First 5 rows (first 7 columns)</caption>
 <colgroup>
-<col width="0%" />
-<col width="0%" />
-<col width="6%" />
-<col width="0%" />
-<col width="0%" />
-<col width="0%" />
-<col width="26%" />
-<col width="63%" />
-<col width="0%" />
+<col width="9%" />
+<col width="14%" />
+<col width="10%" />
+<col width="12%" />
+<col width="15%" />
+<col width="10%" />
+<col width="15%" />
+<col width="10%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="center">Code</th>
 <th align="center">Label</th>
-<th align="center">Level</th>
-<th align="center">Parent</th>
-<th align="center">Include</th>
-<th align="center">Include_Also</th>
-<th align="center">Exclude</th>
 <th align="center">level</th>
+<th align="center">Parent</th>
+<th align="center">segment1</th>
+<th align="center">Code1</th>
+<th align="center">segment2</th>
+<th align="center">Code2</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">1</td>
-<td align="center">01</td>
-<td align="center">Crop and animal production, hunting and related
-service activities</td>
+<td align="center">10</td>
+<td align="center">Apples</td>
 <td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
 <td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">This division also includes service activities
-incidental to agriculture, as well as hunting, trapping and related
-activities.</td>
-<td align="center">Agricultural activities exclude any subsequent
-processing of the agricultural products (classified under divisions 10
-and 11 (Manufacture of food products and beverages) and division 12
-(Manufacture of tobacco products)), beyond that needed to prepare them
-for the primary markets. The preparation of products for the primary
-markets is included here. The division excludes field construction
-(e.g. agricultural land terracing, drainage, preparing rice paddies
-etc.) classified in section F (Construction) and buyers and cooperative
-associations engaged in the marketing of farm products classified in
-section G. Also excluded is the landscape care and maintenance, which is
-classified in class 81.30.</td>
-<td align="center">2</td>
+<td align="center">10</td>
 </tr>
 <tr class="even">
-<td align="left">40</td>
-<td align="center">02</td>
-<td align="center">Forestry and logging</td>
+<td align="center">11</td>
+<td align="center">Pears</td>
 <td align="center">2</td>
-<td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Excluded is further processing of wood beginning with
-sawmilling and planing of wood, see division 16.</td>
-<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">11</td>
 </tr>
 <tr class="odd">
-<td align="left">49</td>
-<td align="center">03</td>
-<td align="center">Fishing and aquaculture</td>
+<td align="center">20</td>
+<td align="center">Oranges</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
 <td align="center">2</td>
 <td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">Also included are activities that are normally
-integrated in the process of production for own account (e.g. seeding
-oysters for pearl production). Service activities incidental to marine
-or freshwater fishery or aquaculture are included in the related fishing
-or aquaculture activities.</td>
-<td align="center">This division does not include building and repairing
-of ships and boats (30.1, 33.15) and sport or recreational fishing
-activities (93.19). Processing of fish, crustaceans or molluscs is
-excluded, whether at land-based plants or on factory ships (10.20).</td>
-<td align="center">2</td>
+<td align="center">20</td>
 </tr>
 <tr class="even">
-<td align="left">56</td>
-<td align="center">05</td>
-<td align="center">Mining of coal and lignite</td>
+<td align="center">21</td>
+<td align="center">Lemons</td>
 <td align="center">2</td>
-<td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This division does not include coking (see 19.10),
-services incidental to coal or lignite mining (see 09.90) or the
-manufacture of briquettes (see 19.20).</td>
 <td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">21</td>
 </tr>
 <tr class="odd">
-<td align="left">61</td>
-<td align="center">06</td>
-<td align="center">Extraction of crude petroleum and natural gas</td>
+<td align="center">30</td>
+<td align="center">Peaches</td>
 <td align="center">2</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">3</td>
 <td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This division excludes: - oil and gas field services,
-performed on a fee or contract basis, see 09.10 - oil and gas well
-exploration, see 09.10 - test drilling and boring, see 09.10 - refining
-of petroleum products, see 19.20 - geophysical, geologic and seismic
-surveying, see 71.12</td>
-<td align="center">2</td>
+<td align="center">30</td>
 </tr>
 </tbody>
 </table>
@@ -1182,178 +1094,94 @@ surveying, see 71.12</td>
 at the immediately lower hierarchical level</p>
 <p><strong>QC_childless</strong></p>
 <ul>
-<li>Rows: 21<br />
+<li>Rows: 6<br />
 </li>
-<li>Columns: 19</li>
+<li>Columns: 15</li>
 </ul>
-<table>
+<table style="width:100%;">
 <caption>First 10 rows (first 7 columns)</caption>
 <colgroup>
-<col width="0%" />
-<col width="0%" />
-<col width="9%" />
-<col width="0%" />
-<col width="1%" />
-<col width="1%" />
-<col width="28%" />
-<col width="57%" />
-<col width="0%" />
+<col width="8%" />
+<col width="17%" />
+<col width="10%" />
+<col width="11%" />
+<col width="14%" />
+<col width="10%" />
+<col width="14%" />
+<col width="10%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="center">Code</th>
 <th align="center">Label</th>
-<th align="center">Level</th>
-<th align="center">Parent</th>
-<th align="center">Include</th>
-<th align="center">Include_Also</th>
-<th align="center">Exclude</th>
 <th align="center">level</th>
+<th align="center">Parent</th>
+<th align="center">segment1</th>
+<th align="center">Code1</th>
+<th align="center">segment2</th>
+<th align="center">Code2</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">976</td>
-<td align="center">A</td>
-<td align="center">AGRICULTURE, FORESTRY AND FISHING</td>
+<td align="center">10</td>
+<td align="center">Apples</td>
+<td align="center">2</td>
 <td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
 <td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">10</td>
 </tr>
 <tr class="even">
-<td align="left">977</td>
-<td align="center">B</td>
-<td align="center">MINING AND QUARRYING</td>
+<td align="center">11</td>
+<td align="center">Pears</td>
+<td align="center">2</td>
 <td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This section excludes: - processing of the extracted
-materials, see section C (Manufacturing) - usage of the extracted
-materials without a further transformation for construction purposes,
-see section F (Construction) - bottling of natural spring and mineral
-waters at springs and wells, see 11.07 - crushing, grinding or otherwise
-treating certain earths, rocks and minerals not carried on in
-conjunction with mining and quarrying, see 23.9</td>
 <td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">11</td>
 </tr>
 <tr class="odd">
-<td align="left">978</td>
-<td align="center">C</td>
-<td align="center">MANUFACTURING</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">1</td>
+<td align="center">20</td>
+<td align="center">Oranges</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">0</td>
+<td align="center">20</td>
 </tr>
 <tr class="even">
-<td align="left">979</td>
-<td align="center">D</td>
-<td align="center">ELECTRICITY, GAS, STEAM AND AIR CONDITIONING
-SUPPLY</td>
+<td align="center">21</td>
+<td align="center">Lemons</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
 <td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Also included is the provision of steam and
-air-conditioning supply.</td>
-<td align="center">This section excludes the operation of water and
-sewerage utilities, see 36, 37. This section also excludes the
-(typically long-distance) transport of gas through pipelines.</td>
-<td align="center">1</td>
+<td align="center">21</td>
 </tr>
 <tr class="odd">
-<td align="left">980</td>
-<td align="center">E</td>
-<td align="center">WATER SUPPLY; SEWERAGE, WASTE MANAGEMENT AND
-REMEDIATION ACTIVITIES</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Activities of water supply are also grouped in this
-section, since they are often carried out in connection with, or by
-units also engaged in, the treatment of sewage.</td>
-<td align="center">NA</td>
-<td align="center">1</td>
+<td align="center">30</td>
+<td align="center">Peaches</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">0</td>
+<td align="center">30</td>
 </tr>
 <tr class="even">
-<td align="left">981</td>
-<td align="center">F</td>
-<td align="center">CONSTRUCTION</td>
+<td align="center">31</td>
+<td align="center">Nectarines</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">3</td>
 <td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This section also includes the development of
-building projects for buildings or civil engineering works by bringing
-together financial, technical and physical means to realise the
-construction projects for later sale.</td>
-<td align="center">If these activities are carried out not for later
-sale of the construction projects, but for their operation (e.g. rental
-of space in these buildings, manufacturing activities in these plants),
-the unit would not be classified here, but according to its operational
-activity, i.e. real estate, manufacturing etc.</td>
-<td align="center">1</td>
-</tr>
-<tr class="odd">
-<td align="left">982</td>
-<td align="center">G</td>
-<td align="center">WHOLESALE AND RETAIL TRADE; REPAIR OF MOTOR VEHICLES
-AND MOTORCYCLES</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="left">983</td>
-<td align="center">H</td>
-<td align="center">TRANSPORTATION AND STORAGE</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This section excludes: - major repair or alteration
-of transport equipment, except motor vehicles, see group 33.1 -
-construction, maintenance and repair of roads, railways, harbours,
-airfields, see division 42 - maintenance and repair of motor vehicles,
-see 45.20 - rental of transport equipment without driver or operator,
-see 77.1, 77.3</td>
-<td align="center">1</td>
-</tr>
-<tr class="odd">
-<td align="left">984</td>
-<td align="center">I</td>
-<td align="center">ACCOMMODATION AND FOOD SERVICE ACTIVITIES</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This section excludes the provision of long-term
-accommodation as primary residences, which is classified in real estate
-activities (section L). Also excluded is the preparation of food or
-drinks that are either not fit for immediate consumption or that are
-sold through independent distribution channels, i.e. through wholesale
-or retail trade activities. The preparation of these foods is classified
-in manufacturing (section C).</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="left">985</td>
-<td align="center">J</td>
-<td align="center">INFORMATION AND COMMUNICATION</td>
-<td align="center">1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">1</td>
+<td align="center">31</td>
 </tr>
 </tbody>
 </table>
@@ -1372,11 +1200,11 @@ predefined numeric or alphanumeric ranges, which may indicate incomplete
 or faulty classification structures.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>singleChildCode <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SingleChild2.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;SingleChild2.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
 <span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>)</span>
 <span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
 <span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>sequencing <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Sequencing.csv&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;Sequencing.csv&quot;</span>,</span>
 <span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>              <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>)</span>
 <span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>)</span>
 <span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
@@ -1393,478 +1221,144 @@ or faulty classification structures.</p>
 code sequences among sibling codes within the same parent.</p>
 <p><strong>QC_gapBefore</strong></p>
 <ul>
-<li>Rows: 295<br />
+<li>Rows: 0<br />
 </li>
-<li>Columns: 25</li>
+<li>Columns: 21</li>
 </ul>
 <table>
 <caption>QC_gapBefore. First 10 rows (first 7 columns)</caption>
-<colgroup>
-<col width="0%" />
-<col width="1%" />
-<col width="12%" />
-<col width="1%" />
-<col width="1%" />
-<col width="1%" />
-<col width="20%" />
-<col width="59%" />
-<col width="1%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="center">Code</th>
 <th align="center">Label</th>
-<th align="center">Level</th>
-<th align="center">Parent</th>
-<th align="center">Include</th>
-<th align="center">Include_Also</th>
-<th align="center">Exclude</th>
 <th align="center">level</th>
+<th align="center">Parent</th>
+<th align="center">segment1</th>
+<th align="center">Code1</th>
+<th align="center">segment2</th>
+<th align="center">Code2</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">2</td>
-<td align="center">01.1</td>
-<td align="center">Growing of non-perennial crops</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="even">
-<td align="left">9</td>
-<td align="center">01.19</td>
-<td align="center">Growing of other non-perennial crops</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of non-perennial
-spices, aromatic, drug and pharmaceutical crops, see 01.28</td>
-<td align="center">4</td>
-</tr>
-<tr class="odd">
-<td align="left">10</td>
-<td align="center">01.2</td>
-<td align="center">Growing of perennial crops</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="even">
-<td align="left">20</td>
-<td align="center">01.3</td>
-<td align="center">Plant propagation</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="odd">
-<td align="left">22</td>
-<td align="center">01.4</td>
-<td align="center">Animal production</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This group excludes: - farm animal boarding and care,
-see 01.62 - production of hides and skins from slaughterhouses, see
-10.11</td>
-<td align="center">3</td>
-</tr>
-<tr class="even">
-<td align="left">30</td>
-<td align="center">01.49</td>
-<td align="center">Raising of other animals</td>
-<td align="center">4</td>
-<td align="center">01.4</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - production of hides and skins
-originating from hunting and trapping, see 01.70 - operation of frog
-farms, crocodile farms, marine worm farms, see 03.21, 03.22 - operation
-of fish farms, see 03.21, 03.22 - boarding and training of pet animals,
-see 96.09 - raising and breeding of poultry, see 01.47</td>
-<td align="center">4</td>
-</tr>
-<tr class="odd">
-<td align="left">31</td>
-<td align="center">01.5</td>
-<td align="center">Mixed farming</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="even">
-<td align="left">33</td>
-<td align="center">01.6</td>
-<td align="center">Support activities to agriculture and post-harvest
-crop activities</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">Also included are post-harvest crop activities, aimed
-at preparing agricultural products for the primary market.</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="odd">
-<td align="left">38</td>
-<td align="center">01.7</td>
-<td align="center">Hunting, trapping and related service activities</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="even">
-<td align="left">41</td>
-<td align="center">02.1</td>
-<td align="center">Silviculture and other forestry activities</td>
-<td align="center">3</td>
-<td align="center">02</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
 </tbody>
 </table>
 <p>This table lists the last sibling codes within each group of
 children, used to assess sequence completeness.</p>
 <p><strong>QC_lastSibling</strong></p>
 <ul>
-<li>Rows: 208<br />
+<li>Rows: 0<br />
 </li>
-<li>Columns: 25</li>
+<li>Columns: 21</li>
 </ul>
 <table>
 <caption>QC_lastSibling. First 10 rows (first 7 columns)</caption>
-<colgroup>
-<col width="0%" />
-<col width="1%" />
-<col width="8%" />
-<col width="1%" />
-<col width="1%" />
-<col width="1%" />
-<col width="31%" />
-<col width="53%" />
-<col width="1%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="center">Code</th>
 <th align="center">Label</th>
-<th align="center">Level</th>
-<th align="center">Parent</th>
-<th align="center">Include</th>
-<th align="center">Include_Also</th>
-<th align="center">Exclude</th>
 <th align="center">level</th>
+<th align="center">Parent</th>
+<th align="center">segment1</th>
+<th align="center">Code1</th>
+<th align="center">segment2</th>
+<th align="center">Code2</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">9</td>
-<td align="center">01.19</td>
-<td align="center">Growing of other non-perennial crops</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of non-perennial
-spices, aromatic, drug and pharmaceutical crops, see 01.28</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="left">19</td>
-<td align="center">01.29</td>
-<td align="center">Growing of other perennial crops</td>
-<td align="center">4</td>
-<td align="center">01.2</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of flowers, production
-of cut flower buds and growing of flower seeds, see 01.19 - gathering of
-tree sap or rubber-like gums in the wild, see 02.30</td>
-<td align="center">4</td>
-</tr>
-<tr class="odd">
-<td align="left">30</td>
-<td align="center">01.49</td>
-<td align="center">Raising of other animals</td>
-<td align="center">4</td>
-<td align="center">01.4</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - production of hides and skins
-originating from hunting and trapping, see 01.70 - operation of frog
-farms, crocodile farms, marine worm farms, see 03.21, 03.22 - operation
-of fish farms, see 03.21, 03.22 - boarding and training of pet animals,
-see 96.09 - raising and breeding of poultry, see 01.47</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="left">37</td>
-<td align="center">01.64</td>
-<td align="center">Seed processing for propagation</td>
-<td align="center">4</td>
-<td align="center">01.6</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of seeds, see groups
-01.1 and 01.2 - processing of seeds to obtain oil, see 10.41 - research
-to develop or modify new forms of seeds, see 72.11</td>
-<td align="center">4</td>
-</tr>
-<tr class="odd">
-<td align="left">38</td>
-<td align="center">01.7</td>
-<td align="center">Hunting, trapping and related service activities</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="even">
-<td align="left">47</td>
-<td align="center">02.4</td>
-<td align="center">Support services to forestry</td>
-<td align="center">3</td>
-<td align="center">02</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="odd">
-<td align="left">52</td>
-<td align="center">03.12</td>
-<td align="center">Freshwater fishing</td>
-<td align="center">4</td>
-<td align="center">03.1</td>
-<td align="center">NA</td>
-<td align="center">This class also includes: - gathering of freshwater
-materials</td>
-<td align="center">This class excludes: - processing of fish,
-crustaceans and molluscs, see 10.20 - fishing inspection, protection and
-patrol services, see 84.24 - fishing practiced for sport or recreation
-and related services, see 93.19 - operation of sport fishing preserves,
-see 93.19</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="left">53</td>
-<td align="center">03.2</td>
-<td align="center">Aquaculture</td>
-<td align="center">3</td>
-<td align="center">03</td>
-<td align="center">NA</td>
-<td align="center">In addition, “aquaculture” also encompasses
-individual, corporate or state ownership of the individual organisms
-throughout the rearing or culture stage, up to and including
-harvesting.</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
-<tr class="odd">
-<td align="left">55</td>
-<td align="center">03.22</td>
-<td align="center">Freshwater aquaculture</td>
-<td align="center">4</td>
-<td align="center">03.2</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - aquaculture activities in salt
-water filled tanks and reservoirs, see 03.21 - operation of sport
-fishing preserves, see 93.19</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="left">59</td>
-<td align="center">05.2</td>
-<td align="center">Mining of lignite</td>
-<td align="center">3</td>
-<td align="center">05</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
-</tr>
 </tbody>
 </table>
 <p>This table contains the full classification enriched with all
 quality‑control flags produced by the checks</p>
 <p><strong>QC_output</strong></p>
 <ul>
-<li>Rows: 996<br />
+<li>Rows: 6<br />
 </li>
-<li>Columns: 25</li>
+<li>Columns: 21</li>
 </ul>
-<table>
+<table style="width:100%;">
 <caption>First 10 rows (first 7 columns)</caption>
 <colgroup>
-<col width="0%" />
-<col width="7%" />
-<col width="0%" />
-<col width="0%" />
-<col width="0%" />
+<col width="15%" />
+<col width="16%" />
+<col width="9%" />
+<col width="11%" />
 <col width="13%" />
-<col width="75%" />
-<col width="0%" />
+<col width="9%" />
+<col width="13%" />
+<col width="9%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="center">nace2</th>
+<th align="center">NACE2code</th>
 <th align="center">Label</th>
-<th align="center">Level</th>
-<th align="center">Parent</th>
-<th align="center">Include</th>
-<th align="center">Include_Also</th>
-<th align="center">Exclude</th>
 <th align="center">level</th>
+<th align="center">Parent</th>
+<th align="center">segment1</th>
+<th align="center">Code1</th>
+<th align="center">segment2</th>
+<th align="center">Code2</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">01</td>
-<td align="center">Crop and animal production, hunting and related
-service activities</td>
+<td align="center">10</td>
+<td align="center">Apples</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">10</td>
+</tr>
+<tr class="even">
+<td align="center">11</td>
+<td align="center">Pears</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">11</td>
+</tr>
+<tr class="odd">
+<td align="center">20</td>
+<td align="center">Oranges</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
 <td align="center">2</td>
 <td align="center">0</td>
-<td align="center">NA</td>
-<td align="center">This division also includes service activities
-incidental to agriculture, as well as hunting, trapping and related
-activities.</td>
-<td align="center">Agricultural activities exclude any subsequent
-processing of the agricultural products (classified under divisions 10
-and 11 (Manufacture of food products and beverages) and division 12
-(Manufacture of tobacco products)), beyond that needed to prepare them
-for the primary markets. The preparation of products for the primary
-markets is included here. The division excludes field construction
-(e.g. agricultural land terracing, drainage, preparing rice paddies
-etc.) classified in section F (Construction) and buyers and cooperative
-associations engaged in the marketing of farm products classified in
-section G. Also excluded is the landscape care and maintenance, which is
-classified in class 81.30.</td>
+<td align="center">20</td>
+</tr>
+<tr class="even">
+<td align="center">21</td>
+<td align="center">Lemons</td>
 <td align="center">2</td>
-</tr>
-<tr class="even">
-<td align="center">01.1</td>
-<td align="center">Growing of non-perennial crops</td>
-<td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">21</td>
 </tr>
 <tr class="odd">
-<td align="center">01.11</td>
-<td align="center">Growing of cereals (except rice), leguminous crops
-and oil seeds</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of rice, see 01.12 -
-growing of sweet corn, see 01.13 - growing of maize for fodder, see
-01.19 - growing of oleaginous fruits, see 01.26</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="center">01.12</td>
-<td align="center">Growing of rice</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">4</td>
-</tr>
-<tr class="odd">
-<td align="center">01.13</td>
-<td align="center">Growing of vegetables and melons, roots and
-tubers</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of chillies, peppers
-(capsicum sop.) and other spices and aromatic crops, see 01.28 - growing
-of mushroom spawn, see 01.30</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="center">01.14</td>
-<td align="center">Growing of sugar cane</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of sugar beet, see
-01.13</td>
-<td align="center">4</td>
-</tr>
-<tr class="odd">
-<td align="center">01.15</td>
-<td align="center">Growing of tobacco</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - manufacture of tobacco
-products, see 12.00</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="center">01.16</td>
-<td align="center">Growing of fibre crops</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">4</td>
-</tr>
-<tr class="odd">
-<td align="center">01.19</td>
-<td align="center">Growing of other non-perennial crops</td>
-<td align="center">4</td>
-<td align="center">01.1</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">This class excludes: - growing of non-perennial
-spices, aromatic, drug and pharmaceutical crops, see 01.28</td>
-<td align="center">4</td>
-</tr>
-<tr class="even">
-<td align="center">01.2</td>
-<td align="center">Growing of perennial crops</td>
+<td align="center">30</td>
+<td align="center">Peaches</td>
+<td align="center">2</td>
 <td align="center">3</td>
-<td align="center">01</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
 <td align="center">3</td>
+<td align="center">3</td>
+<td align="center">0</td>
+<td align="center">30</td>
+</tr>
+<tr class="even">
+<td align="center">31</td>
+<td align="center">Nectarines</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">1</td>
+<td align="center">31</td>
 </tr>
 </tbody>
 </table>

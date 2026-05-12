@@ -385,7 +385,7 @@ text-align: center;
 explicit source or target classification tables are supplied.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load example correspondence table</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>AB <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;ExempleAnnexe.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;ExempleAnnexe.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>)</span></code></pre></div>
 <p>The analysis is then performed using default settings:</p>
@@ -614,19 +614,19 @@ Rev.2.1</li>
 the correspondence.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Load correspondence table (NACE Rev.2 -&gt; NACE Rev.2.1)</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>AB <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;ab_data.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;ab_data.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co"># Load source classification (NACE Rev.2)</span></span>
 <span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;a_data.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;a_data.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
 <span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
 <span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>)</span>
 <span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
 <span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co"># Load target classification (NACE Rev.2.1)</span></span>
 <span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;b_data.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/test&quot;</span>, <span class="st">&quot;b_data.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;correspondenceTables&quot;</span>),</span>
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
 <span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>)</span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Perform analysis using all function parameters</span></span>
