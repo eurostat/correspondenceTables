@@ -1,6 +1,7 @@
 # correspondenceTables 1.0.1
 
 - removing duplicate test files
+- CRAN release
 
 # correspondenceTables 1.0.0
 
