@@ -9,8 +9,8 @@ read_test_csv <- function(fname) {
 }
 
 # Helper: materialize names.csv by expanding fixture file names to absolute paths
+# Writes to tempdir() to avoid modifying the installed package directory.
 materialize_names_csv <- function(src_csv_name, out_csv_name = "names.csv") {
-  dir_test <- system.file("extdata/test", package = "correspondenceTables")
   templ <- system.file("extdata/test", src_csv_name, package = "correspondenceTables")
   
   A <- read.csv(templ, header = FALSE, sep = ",", stringsAsFactors = FALSE)
@@ -21,14 +21,13 @@ materialize_names_csv <- function(src_csv_name, out_csv_name = "names.csv") {
       }
     }
   }
-  out <- file.path(dir_test, out_csv_name)
+  out <- file.path(tempdir(), out_csv_name)
   write.table(A, file = out, row.names = FALSE, col.names = FALSE, sep = ",")
   invisible(out)
 }
 
 cleanup_names_csv <- function() {
-  dir_test <- system.file("extdata/test", package = "correspondenceTables")
-  p <- file.path(dir_test, "names.csv")
+  p <- file.path(tempdir(), "names.csv")
   if (file.exists(p)) file.remove(p)
 }
 
@@ -37,7 +36,6 @@ cleanup_names_csv <- function() {
 ############################################################
 {
   on.exit(cleanup_names_csv(), add = TRUE)
-  dir_test <- system.file("extdata/test", package = "correspondenceTables")
   
   names_path <- materialize_names_csv("names12.csv", "names.csv")
   
@@ -70,7 +68,6 @@ cleanup_names_csv <- function() {
 ############################################################
 {
   on.exit(cleanup_names_csv(), add = TRUE)
-  dir_test <- system.file("extdata/test", package = "correspondenceTables")
   
   names_path <- materialize_names_csv("names2.csv", "names.csv")
   
